@@ -3,28 +3,26 @@
  * validate against a predeclared data model. Data models are specified in
  * JSON. The following example illustrates the data model format:
  *
- *
- * 	{
- * 	  "experiment": {
- * 		"type": "string"
- * 	  },
- * 	  "timestamp": {
- * 		"type": "timestamp",
- * 		"optional": true
- * 	  },
- * 	  "version": {
- * 		"type": "int"
- * 	  },
- * 	  "bucket": {
- * 		"type": "enum",
- * 		"values": [
- * 		  "control",
- * 		  "experimental-1",
- * 		  "experimental-2"
- * 		]
- * 	  }
- * 	}
- *
+ *	{
+ *		"experiment": {
+ *			"type": "string"
+ *		},
+ *		"timestamp": {
+ *			"type": "timestamp",
+ *			"optional": true
+ *		},
+ *		"version": {
+ *			"type": "int"
+ *		},
+ *		"bucket": {
+ *			"type": "enum",
+ *			"values": [
+ *				"control",
+ *			"experimental-1",
+ *			"experimental-2"
+ *				]
+ *		}
+ *	}
  *
  * The following types are recognized:
  *
@@ -34,9 +32,7 @@
  *   | number    | JavaScript Number     |
  *   | string    | nonempty              |
  *   | timestamp | JavaScript Date       |
- *   | article   | unsigned 32-bit int   |
- *   | revision  |          "            |
- *   | user      |          "            |
+ *   | boolean   | True or False         |
  *   | enum      | TBD                   |
  *   +-----------+-----------------------+
  *
@@ -48,7 +44,7 @@
 /*jslint white:true, browser:true, forin:true, bitwise:true, vars:true */
 /*globals mediaWiki, models */
 
-( function ( window, document, mw, encode ) {
+( function ( window, document, mw, $, encode ) {
 	'use strict';
 
 	//--- TODO(ori): Use a config var.
@@ -101,12 +97,12 @@
 	function assertValid( event, model ) {
 		var field;
 		for ( field in model ) {
-			if ( event.field === undefined && !!model[ field ].optional ) {
-				throw new TypeError( 'Missing "' + field + '" field' );
-			}
-			if ( !( isInstance( event[ field ], model[ field ] ) ) ) {
-				throw new TypeError( 'Invalid value for field "' + field +
-									 '": "' + event[ field ] + '"' );
+			if ( event[ field ] === undefined ) {
+				if ( model[ field ].optional !== true ) {
+					throw new TypeError( 'Missing "' + field + '" field' );
+				}
+			} else if ( !( isInstance( event[ field ], model[ field ] ) ) ) {
+				throw new TypeError( 'Invalid value for field "' + field + '": "' + event[ field ] + '"' );
 			}
 		}
 	}
@@ -119,34 +115,45 @@
 	 * @returns {string} Query string.
 	 */
 	function serialize( event ) {
-		var keyvals = [], key, val;
+		var key, val, keyvals = [];
 		for ( key in event ) {
 			val = event[ key ];
 			keyvals.push( encode( key ) + '=' + encode( val ) );
 		}
+		keyvals.push( '_site=' + mw.config.get( 'wgSiteName' ) );
 		return keyvals.join( '&' );
 	}
 
 
-	/**
-	 * Push an event to the server.
-	 *
-	 * @param {Object} event Event to log.
-	 */
-	function dispatchEvent( event ) {
-	}
-
 	mw.eventLog = mw.eventLog || {};
 
+	/**
+	 * Sync an event with the server.
+	 *
+	 * @param {string} eventName Canonical name of event.
+	 * @param {Object} eventInstance Event instance.
+	 * @returns {jQuery.Deferred}
+	 */
 	mw.eventLog.logEvent = function ( eventName, eventInstance ) {
-		var dataModel = models.get( eventName );
+		var dataModel = mw.eventLog.dataModels[ eventName ];
+
+		if ( dataModel === undefined ) {
+			throw new Error( 'Unknown event type "' + eventName + '"' );
+		}
 		assertValid( eventInstance, dataModel );
 
 		var uri = BASE_URI + serialize( eventInstance );
+
 		if ( uri.length > URI_MAXLEN ) {
 			throw new RangeError( 'track(): request URI is too long' );
 		}
-		document.createElement( 'img' ).src = uri;
+		var beacon = document.createElement( 'img' );
+		var deferred = jQuery.Deferred();
+
+		$( beacon ).on( 'error', deferred.resolve );
+		beacon.src = uri;
+
+		return deferred.promise();
 	};
 
-} ( window, document, mediaWiki, window.encodeURIComponent ) );
+} ( window, document, mediaWiki, jQuery, window.encodeURIComponent ) );

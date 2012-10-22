@@ -3,7 +3,4 @@ host=gerrit.wikimedia.org
 port=29418
 project=mediawiki/extensions/EventLogging.git
 defaultbranch=master
-<<<<<<< HEAD
-defaultrebase=0
-=======
->>>>>>> Initial commit of prototype JS library for logging/validation
+defaultrebase=1
