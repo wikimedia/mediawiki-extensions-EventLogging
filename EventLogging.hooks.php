@@ -30,6 +30,8 @@ class EventLoggingHooks {
 	 * @return bool
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
+		global $wgEventLoggingBaseUri;
+		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		return true;
 	}
 
@@ -50,7 +52,13 @@ class EventLoggingHooks {
 	 * @param $resourceLoader object
 	 * @return bool
 	 */
-	public static function onResourceLoaderTestModules( array &$testModules, ResourceLoader &$resourceLoader ) {
+	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
+		$testModules[ 'qunit' ][ 'ext.EventLogging.tests' ] = array(
+			'scripts'       => array( 'tests/ext.EventLogging.tests.js' ),
+			'dependencies'  => array( 'ext.EventLogging' ),
+			'localBasePath' => dirname( __FILE__ ),
+			'remoteExtPath' => 'EventLogging',
+		);
 		return true;
 	}
 
