@@ -31,9 +31,23 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 );
 
+/** Italian (italiano)
+ * @author Beta16
+ */
+$messages['it'] = array(
+	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
+);
+
 /** Japanese (日本語)
  * @author Shirayuki
  */
 $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
+);
+
+/** Macedonian (македонски)
+ * @author Bjankuloski06
+ */
+$messages['mk'] = array(
+	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
 );
