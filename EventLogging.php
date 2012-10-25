@@ -48,5 +48,7 @@ $wgResourceModules[ 'ext.EventLogging' ] = array(
 // Hooks
 //
 
+$wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 $wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
 $wgHooks[ 'MakeGlobalVariablesScript' ][] = 'EventLoggingHooks::onMakeGlobalVariablesScript';
+$wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
