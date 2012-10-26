@@ -9,15 +9,22 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	// According to the HTTP specs (RFC 2616, section 3.2.1), "[s]ervers ought
-	// to be cautious about depending on URI lengths above 255 bytes, because
-	// some older client or proxy implementations might not properly support
-	// these lengths" (http://www.rfc-editor.org/rfc/rfc2616.txt). In practice,
-	// URIs of up 2000 bytes are broadly supported, but it is hoped that
-	// a stricter limit will promote thrift and simplicity.
-	var URI_MAX_BYTES = 255;
+	var baseUri = mw.config.get( 'wgEventLoggingBaseUri' ),
 
-	mw.eventLog = mw.eventLog || {};
+		// According to the HTTP specs (RFC 2616, section 3.2.1), "[s]ervers ought
+		// to be cautious about depending on URI lengths above 255 bytes, because
+		// some older client or proxy implementations might not properly support
+		// these lengths" (http://www.rfc-editor.org/rfc/rfc2616.txt). In practice,
+		// URIs of up 2000 bytes are broadly supported, but it is hoped that
+		// a stricter limit will promote thrift and simplicity.
+		uriMaxBytes = 255;
+
+	if ( typeof baseUri !== 'string' || !baseUri.length ) {
+		mw.log( 'EventLogging: wgEventLoggingBaseUri is invalid.' );
+		baseUri = '';
+	}
+
+	mw.eventLog = {};
 
 
 	/**
@@ -59,7 +66,7 @@
 		if ( instance === undefined || instance === null ) {
 			return false;
 		}
-		switch( type ) {
+		switch ( type ) {
 		case 'string':
 			return typeof instance === 'string' && instance.length;
 		case 'timestamp':
@@ -110,10 +117,11 @@
 			// 'enum' is reserved for possible future use by the ECMAScript
 			// specification, but it's legal to use it as an attribute name
 			// (and it's part of the JSON Schema draft spec). Still, JSHint
-			// complains. Currently (24-Oct-2012) the only way to turn off the
-			// warning is to use "es5:true", which would be too broad.
-			if ( desc.enum && desc.enum.indexOf( val ) === -1 ) {
-				throw new Error( [ 'Value not in enum:', val, ',', JSON.stringify( desc.enum ) ].join(' ') );
+			// complains unless the name is quoted. Currently (24-Oct-2012)
+			// the only way to turn off the warning is to use "es5:true",
+			// which would be too broad.
+			if ( desc[ 'enum' ] && desc[ 'enum' ].indexOf( val ) === -1 ) {
+				throw new Error( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
 			}
 		} );
 		return true;
@@ -123,22 +131,34 @@
 	/**
 	 * @param {string} eventName Canonical name of event.
 	 * @param {Object} eventInstance Event instance.
-	 * @returns {jQuery.Deferred}
+	 * @returns {jQuery.Deferred} Promise object.
 	 */
 	mw.eventLog.logEvent = function ( modelName, eventInstance ) {
 		mw.eventLog.assertValid( eventInstance, modelName );
 
+		// Event instances are automatically annotated with '_db' and '_id' to
+		// identify their origin and declared data model.
 		eventInstance = $.extend( {}, eventInstance, {
+			/*jshint nomen: false*/
 			_db: mw.config.get( 'wgDBname' ),
 			_id: modelName
+			/*jshint nomen: true*/
 		} );
 
-		var uri = mw.config.get( 'wgEventLoggingBaseUri' ) + $.param( eventInstance ),
+
+		var uri = baseUri + $.param( eventInstance ),
 			beacon = document.createElement( 'img' ),
 			dfd = jQuery.Deferred();
 
-		if ( uri.split( /%..|./ ).length - 1 > URI_MAX_BYTES ) {
+		if ( uri.split( /%..|./ ).length - 1 > uriMaxBytes ) {
 			throw new Error( 'Request URI is too long: ' + uri );
+		}
+
+		if ( !baseUri.length ) {
+			// We already logged the fact of wgEventLoggingBaseUri being empty,
+			// so respect the caller's expectation and return a rejected promise.
+			dfd.reject();
+			return dfd.promise();
 		}
 
 		// Browsers uniformly fire the onerror event upon receiving HTTP 204

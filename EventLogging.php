@@ -10,45 +10,45 @@
  * @version 0.2
  */
 
-$dir = dirname( __FILE__ );
 
-
-// --------
 // Credits
-//
 
 $wgExtensionCredits[ 'other' ][] = array(
-	'path'           => __FILE__,
-	'name'           => 'EventLogging',
-	'version'        => '0.1',
-	'url'            => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
-	'author'         => 'Ori Livneh',
+	'path' => __FILE__,
+	'name' => 'EventLogging',
+	'author' => array(
+		'Ori Livneh',
+	),
+	'version' => '0.1',
+	'url' => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );
+
+
+$dir = __DIR__;
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = $dir . '/EventLogging.hooks.php';
 $wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
 
+if ( !isset( $wgEventLoggingBaseUri ) ) {
+	$wgEventLoggingBaseUri = false;
+}
 
 
-// ---------
 // Modules
-//
 
 $wgResourceModules[ 'ext.EventLogging' ] = array(
-	'scripts'       => array( 'modules/dataModels.js', 'modules/ext.EventLogging.js' ),
+	'scripts'       => array(
+		'modules/ext.EventLogging.js',
+		'modules/ext.EventLogging.dataModels.js',
+	),
 	'localBasePath' => $dir,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array( 'mediawiki.util' ),
 );
 
 
-
-// -------
 // Hooks
-//
 
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
-$wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
-$wgHooks[ 'MakeGlobalVariablesScript' ][] = 'EventLoggingHooks::onMakeGlobalVariablesScript';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';

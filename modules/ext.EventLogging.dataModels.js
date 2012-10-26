@@ -1,8 +1,7 @@
-mw.eventLog = mw.eventLog || {};
-mw.eventLog.dataModels = {
+mediaWiki.eventLog.dataModels = {
 	openTask: {
 		version: {
-			type: 'number',
+			type: 'number'
 		},
 		action: {
 			type: 'string'

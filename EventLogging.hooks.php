@@ -9,20 +9,6 @@
 class EventLoggingHooks {
 
 	/**
-	 * BeforePageDisplay hook
-	 *
-	 * Adds the modules to the page
-	 *
-	 * @param $out OutputPage output page
-	 * @param $skin Skin current skin
-	 * @return bool
-	 */
-	public static function onBeforePageDisplay( $out, $skin ) {
-		$out->addModules( 'ext.EventLogging' );
-		return true;
-	}
-
-	/**
 	 * ResourceLoaderGetConfigVars hook
 	 * Sends down _static_ config vars to JavaScript
 	 *
@@ -31,18 +17,13 @@ class EventLoggingHooks {
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgEventLoggingBaseUri;
-		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
-		return true;
-	}
+		if ( is_string( $wgEventLoggingBaseUri ) ) {
+			$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
+		} else {
+			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not set' ); 
+			$vars[ 'wgEventLoggingBaseUri' ] = '';
 
-	/**
-	 * MakeGlobalVariablesScript hook
-	 * Sends down config vars to JavaScript
-	 *
-	 * @param $vars array
-	 * @return bool
-	 */
-	public static function onMakeGlobalVariablesScript( &$vars ) {
+		}
 		return true;
 	}
 
