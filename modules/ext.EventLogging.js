@@ -68,7 +68,7 @@
 		}
 		switch ( type ) {
 		case 'string':
-			return typeof instance === 'string' && instance.length;
+			return typeof instance === 'string';
 		case 'timestamp':
 			return instance instanceof Date || (
 					typeof instance === 'number' &&
@@ -76,6 +76,8 @@
 					instance % 1 === 0 );
 		case 'boolean':
 			return typeof instance === 'boolean';
+		case 'integer':
+			return typeof instance === 'number' && instance % 1 === 0;
 		case 'number':
 			return typeof instance === 'number' && isFinite( instance );
 		default:

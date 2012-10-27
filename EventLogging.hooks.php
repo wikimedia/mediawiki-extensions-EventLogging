@@ -37,7 +37,7 @@ class EventLoggingHooks {
 		$testModules[ 'qunit' ][ 'ext.EventLogging.tests' ] = array(
 			'scripts'       => array( 'tests/ext.EventLogging.tests.js' ),
 			'dependencies'  => array( 'ext.EventLogging' ),
-			'localBasePath' => dirname( __FILE__ ),
+			'localBasePath' => __DIR__,
 			'remoteExtPath' => 'EventLogging',
 		);
 		return true;
