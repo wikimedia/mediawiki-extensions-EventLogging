@@ -126,6 +126,8 @@
 
 
 	QUnit.test( 'logEvent', function () {
+		QUnit.expect( 2 );
+
 		assert.throws( function () {
 			mw.eventLog.logEvent( 'earthquake', {
 				epicenter: 'Sumatra',
@@ -134,12 +136,36 @@
 			} );
 		}, /Request URI/, 'URIs over 255 bytes are rejected' );
 
-		var promise = mw.eventLog.logEvent( 'earthquake', {
+		var e = {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
+		};
+
+		mw.eventLog.logEvent( 'earthquake', e ).always( function () {
+			assert.deepEqual( this, e, 'logEvent promise resolves with event' );
+		} );
+	} );
+
+	QUnit.test( 'setDefaults', function () {
+		QUnit.expect( 3 );
+
+		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
+			epicenter: 'Valdivia'
+		} ), { epicenter: 'Valdivia' }, 'setDefaults returns defaults' );
+
+		mw.eventLog.logEvent( 'earthquake', {
+			magnitude: 9.5
+		} ).always( function () {
+			assert.deepEqual( this, {
+				epicenter: 'Valdivia',
+				magnitude: 9.5
+			}, 'Logged event is annotated with defaults' );
 		} );
 
-		assert.ok( promise && typeof promise.then === 'function', 'logEvent() returns promise object' );
+		assert.deepEqual(
+			mw.eventLog.setDefaults( 'earthquake', null ), {},
+			'Passing null to setDefaults clears any defaults'
+		);
 	} );
 
 } ( mediaWiki, jQuery ) );

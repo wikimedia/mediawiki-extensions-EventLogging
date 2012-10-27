@@ -17,7 +17,10 @@
 		// these lengths" (http://www.rfc-editor.org/rfc/rfc2616.txt). In practice,
 		// URIs of up 2000 bytes are broadly supported, but it is hoped that
 		// a stricter limit will promote thrift and simplicity.
-		uriMaxBytes = 255;
+		uriMaxBytes = 255,
+
+		defaults = {};
+
 
 	if ( typeof baseUri !== 'string' || !baseUri.length ) {
 		mw.log( 'EventLogging: wgEventLoggingBaseUri is invalid.' );
@@ -131,26 +134,43 @@
 
 
 	/**
-	 * @param {string} eventName Canonical name of event.
+	 * Set default values to be applied to all subsequent events belonging to
+	 * a data model. Note that no validation is performed on setDefaults, but
+	 * the complete event instance (including defaults) are validated prior to
+	 * dispatch.
+	 *
+	 * @param {string} modelName Canonical model name.
+	 * @param {Object|null} modelDefaults Defaults, or null to clear.
+	 * @returns {Object} Updated defaults for model.
+	 */
+	mw.eventLog.setDefaults = function ( modelName, modelDefaults ) {
+		defaults[ modelName ] = modelDefaults === null ?
+			{} : $.extend( true, defaults[ modelName ], modelDefaults );
+		return defaults[ modelName ];
+	};
+
+
+	/**
+	 * @param {string} modelName Canonical model name.
 	 * @param {Object} eventInstance Event instance.
 	 * @returns {jQuery.Deferred} Promise object.
 	 */
 	mw.eventLog.logEvent = function ( modelName, eventInstance ) {
+
+		eventInstance = $.extend( true, {}, eventInstance, defaults[ modelName ] );
 		mw.eventLog.assertValid( eventInstance, modelName );
 
-		// Event instances are automatically annotated with '_db' and '_id' to
-		// identify their origin and declared data model.
-		eventInstance = $.extend( {}, eventInstance, {
-			/*jshint nomen: false*/
-			_db: mw.config.get( 'wgDBname' ),
-			_id: modelName
-			/*jshint nomen: true*/
-		} );
+		var beacon = document.createElement( 'img' ),
+			dfd = jQuery.Deferred(),
 
-
-		var uri = baseUri + $.param( eventInstance ),
-			beacon = document.createElement( 'img' ),
-			dfd = jQuery.Deferred();
+			// Event instances are automatically annotated with '_db' and
+			// '_id' to identify their origin and declared data model.
+			uri = baseUri + [ $.param( {
+				/*jshint nomen: false*/
+				_db: mw.config.get( 'wgDBname' ),
+				_id: modelName
+				/*jshint nomen: true*/
+			} ), $.param( eventInstance ) ].join( '&' );
 
 		if ( uri.split( /%..|./ ).length - 1 > uriMaxBytes ) {
 			throw new Error( 'Request URI is too long: ' + uri );
@@ -159,15 +179,16 @@
 		if ( !baseUri.length ) {
 			// We already logged the fact of wgEventLoggingBaseUri being empty,
 			// so respect the caller's expectation and return a rejected promise.
-			dfd.reject();
+			dfd.rejectWith( eventInstance, [ modelName, eventInstance ] );
 			return dfd.promise();
 		}
 
 		// Browsers uniformly fire the onerror event upon receiving HTTP 204
 		// ("No Content") responses to image requests. Thus, although
 		// counterintuitive, resolving the promise on error is appropriate.
-		// TODO(ori-l, 25-Oct-2012): resolve with event.
-		$( beacon ).on( 'error', dfd.resolve );
+		$( beacon ).on( 'error', function () {
+			dfd.resolveWith( eventInstance, [ modelName, eventInstance ] );
+		} );
 		beacon.src = uri;
 		return dfd.promise();
 	};
