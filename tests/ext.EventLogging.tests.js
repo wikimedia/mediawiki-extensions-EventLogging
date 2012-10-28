@@ -1,5 +1,3 @@
-/*global assert*/
-
 ( function ( mw, $ ) {
 	'use strict';
 
@@ -25,18 +23,18 @@
 	} ) );
 
 
-	QUnit.test( 'Configuration', function () {
+	QUnit.test( 'Configuration', function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
 	} );
 
 
-	QUnit.test( 'getModel', function () {
+	QUnit.test( 'getModel', function ( assert ) {
 		assert.equal( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
 		assert.equal( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
 	} );
 
 
-	QUnit.test( 'declareModel', function () {
+	QUnit.test( 'declareModel', function ( assert ) {
 		var newModel = {
 			richter: { type: 'number' }
 		};
@@ -47,7 +45,7 @@
 	} );
 
 
-	QUnit.test( 'isInstance', function () {
+	QUnit.test( 'isInstance', function ( assert ) {
 
 		$.each( {
 			boolean: {
@@ -88,7 +86,7 @@
 	} );
 
 
-	QUnit.test( 'assertValid', function () {
+	QUnit.test( 'assertValid', function ( assert ) {
 		assert.ok( mw.eventLog.assertValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
@@ -125,7 +123,7 @@
 	} );
 
 
-	QUnit.test( 'logEvent', function () {
+	QUnit.test( 'logEvent', function ( assert ) {
 		QUnit.expect( 2 );
 
 		assert.throws( function () {
@@ -146,7 +144,7 @@
 		} );
 	} );
 
-	QUnit.test( 'setDefaults', function () {
+	QUnit.test( 'setDefaults', function ( assert ) {
 		QUnit.expect( 3 );
 
 		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
