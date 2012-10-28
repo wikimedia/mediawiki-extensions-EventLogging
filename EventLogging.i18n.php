@@ -72,3 +72,17 @@ $messages['ko'] = array(
 $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
 );
+
+/** Malay (Bahasa Melayu)
+ * @author Anakmalaysia
+ */
+$messages['ms'] = array(
+	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
+);
+
+/** Dutch (Nederlands)
+ * @author Siebrand
+ */
+$messages['nl'] = array(
+	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
+);
