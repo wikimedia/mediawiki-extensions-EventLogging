@@ -38,6 +38,13 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 );
 
+/** French (français)
+ * @author Gomoko
+ */
+$messages['fr'] = array(
+	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
+);
+
 /** Upper Sorbian (hornjoserbsce)
  * @author Michawiki
  */
