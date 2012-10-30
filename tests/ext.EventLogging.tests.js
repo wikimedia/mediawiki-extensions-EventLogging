@@ -1,6 +1,4 @@
-/*global assert*/
-
-( function ( mw ) {
+( function ( mw, $ ) {
 	'use strict';
 
 	var earthquakeModel = {
@@ -25,18 +23,18 @@
 	} ) );
 
 
-	QUnit.test( 'Configuration', function () {
+	QUnit.test( 'Configuration', function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
 	} );
 
 
-	QUnit.test( 'getModel', function () {
+	QUnit.test( 'getModel', function ( assert ) {
 		assert.equal( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
 		assert.equal( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
 	} );
 
 
-	QUnit.test( 'declareModel', function () {
+	QUnit.test( 'declareModel', function ( assert ) {
 		var newModel = {
 			richter: { type: 'number' }
 		};
@@ -47,29 +45,48 @@
 	} );
 
 
-	QUnit.test( 'isInstance', function () {
+	QUnit.test( 'isInstance', function ( assert ) {
 
-		// Numbers
-		assert.ok( mw.eventLog.isInstance( 42, 'number' ), '42 is a number' );
-		assert.ok( !mw.eventLog.isInstance( '42', 'number' ), '"42" is not a number' );
-
-		// Booleans
-		assert.ok( mw.eventLog.isInstance( true, 'boolean' ), 'true is a boolean' );
-		assert.ok( !mw.eventLog.isInstance( 1, 'boolean' ), '1 is not a boolean' );
-
-		// Strings
-		assert.ok( mw.eventLog.isInstance( 'hello', 'string' ), '"hello" is a string' );
-		assert.ok( !mw.eventLog.isInstance( true, 'string' ), 'true is not a string' );
-
-		// Timestamps
-		assert.ok( mw.eventLog.isInstance( new Date(), 'timestamp' ), 'Date objects are timestamps' );
-		assert.ok( mw.eventLog.isInstance( 1351122187606, 'timestamp' ), '1351122187606 can be a timestamp' );
-		assert.ok( !mw.eventLog.isInstance( -1, 'timestamp' ), '-1 is not a timestamp' );
+		$.each( {
+			boolean: {
+				valid: [ true, false ],
+				invalid: [ undefined, null, 0, -1, 1, 'false' ]
+			},
+			integer: {
+				valid: [ -12, 42, 0, 4294967296 ],
+				invalid: [ 42.1, NaN, Infinity, '42', [ 42 ] ]
+			},
+			number: {
+				valid: [ 12, 42.1, 0, Math.PI ],
+				invalid: [ '42.1', NaN, [ 42 ], undefined ]
+			},
+			string: {
+				valid: [ 'Hello', '', '-1' ],
+				invalid: [ [], 0, true ]
+			},
+			timestamp: {
+				valid: [ new Date().getTime(), new Date() ],
+				invalid: [ -1, 'yesterday', NaN ]
+			}
+		}, function ( type, cases ) {
+			$.each( cases.valid, function () {
+				assert.ok(
+					mw.eventLog.isInstance( this, type ),
+					[ $.toJSON( this ), type ].join( ' is a ' )
+				);
+			} );
+			$.each( cases.invalid, function () {
+				assert.ok(
+					!mw.eventLog.isInstance( this, type ),
+					[ $.toJSON( this ), type ].join( ' is not a ' )
+				);
+			} );
+		} );
 
 	} );
 
 
-	QUnit.test( 'assertValid', function () {
+	QUnit.test( 'assertValid', function ( assert ) {
 		assert.ok( mw.eventLog.assertValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
@@ -106,7 +123,9 @@
 	} );
 
 
-	QUnit.test( 'logEvent', function () {
+	QUnit.test( 'logEvent', function ( assert ) {
+		QUnit.expect( 2 );
+
 		assert.throws( function () {
 			mw.eventLog.logEvent( 'earthquake', {
 				epicenter: 'Sumatra',
@@ -115,12 +134,36 @@
 			} );
 		}, /Request URI/, 'URIs over 255 bytes are rejected' );
 
-		var promise = mw.eventLog.logEvent( 'earthquake', {
+		var e = {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
-		} );
+		};
 
-		assert.ok( promise && typeof promise.then === 'function', 'logEvent() returns promise object' );
+		mw.eventLog.logEvent( 'earthquake', e ).always( function () {
+			assert.deepEqual( this, e, 'logEvent promise resolves with event' );
+		} );
 	} );
 
-} ( mediaWiki ) );
+	QUnit.test( 'setDefaults', function ( assert ) {
+		QUnit.expect( 3 );
+
+		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
+			epicenter: 'Valdivia'
+		} ), { epicenter: 'Valdivia' }, 'setDefaults returns defaults' );
+
+		mw.eventLog.logEvent( 'earthquake', {
+			magnitude: 9.5
+		} ).always( function () {
+			assert.deepEqual( this, {
+				epicenter: 'Valdivia',
+				magnitude: 9.5
+			}, 'Logged event is annotated with defaults' );
+		} );
+
+		assert.deepEqual(
+			mw.eventLog.setDefaults( 'earthquake', null ), {},
+			'Passing null to setDefaults clears any defaults'
+		);
+	} );
+
+} ( mediaWiki, jQuery ) );

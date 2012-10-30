@@ -9,35 +9,30 @@
 class EventLoggingHooks {
 
 	/**
-	 * ResourceLoaderGetConfigVars hook
-	 * Sends down _static_ config vars to JavaScript
-	 *
-	 * @param $vars array
+	 * @param array &$vars
 	 * @return bool
 	 */
-	public static function onResourceLoaderGetConfigVars( &$vars ) {
+	public static function onResourceLoaderGetConfigVars( array &$vars ) {
 		global $wgEventLoggingBaseUri;
-		if ( is_string( $wgEventLoggingBaseUri ) ) {
-			$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
-		} else {
+		if ( !is_string( $wgEventLoggingBaseUri ) ) {
 			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not set' ); 
 			$vars[ 'wgEventLoggingBaseUri' ] = '';
-
+			return true;
 		}
+		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		return true;
 	}
 
 	/**
-	 * ResourceLoaderTestModules hook handler.
-	 * @param $testModules: array of javascript testing modules. 'qunit' is fed using tests/qunit/QUnitTestResources.php.
-	 * @param $resourceLoader object
+	 * @param array $testModules
+	 * @param ResourceLoader $resourceLoader
 	 * @return bool
 	 */
-	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
+	public static function onResourceLoaderTestModules( array &$testModules, ResourceLoader &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.EventLogging.tests' ] = array(
 			'scripts'       => array( 'tests/ext.EventLogging.tests.js' ),
 			'dependencies'  => array( 'ext.EventLogging' ),
-			'localBasePath' => dirname( __FILE__ ),
+			'localBasePath' => __DIR__,
 			'remoteExtPath' => 'EventLogging',
 		);
 		return true;
