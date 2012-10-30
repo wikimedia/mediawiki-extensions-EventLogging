@@ -38,11 +38,25 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 );
 
+/** Spanish (español)
+ * @author Armando-Martin
+ */
+$messages['es'] = array(
+	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
+);
+
 /** French (français)
  * @author Gomoko
  */
 $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
+);
+
+/** Hebrew (עברית)
+ * @author Amire80
+ */
+$messages['he'] = array(
+	'eventlogging-desc' => 'מסגרת לרישום אירועים מקוד בצד הלקוח',
 );
 
 /** Upper Sorbian (hornjoserbsce)
