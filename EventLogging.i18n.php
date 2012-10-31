@@ -107,3 +107,10 @@ $messages['ms'] = array(
 $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
 );
+
+/** Vietnamese (Tiếng Việt)
+ * @author Minh Nguyen
+ */
+$messages['vi'] = array(
+	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
+);
