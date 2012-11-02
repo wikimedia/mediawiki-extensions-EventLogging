@@ -52,6 +52,13 @@ $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
 );
 
+/** Galician (galego)
+ * @author Toliño
+ */
+$messages['gl'] = array(
+	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
+);
+
 /** Hebrew (עברית)
  * @author Amire80
  */
@@ -108,9 +115,23 @@ $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
 );
 
+/** Swedish (svenska)
+ * @author Ainali
+ */
+$messages['sv'] = array(
+	'eventlogging-desc' => 'Ramverk för loggning av händelser från klientsidans kod',
+);
+
 /** Vietnamese (Tiếng Việt)
  * @author Minh Nguyen
  */
 $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
+);
+
+/** Simplified Chinese (中文（简体）‎)
+ * @author Yfdyh000
+ */
+$messages['zh-hans'] = array(
+	'eventlogging-desc' => '从客户端代码记录事件日志的框架',
 );
