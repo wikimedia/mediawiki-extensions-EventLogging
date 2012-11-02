@@ -1,32 +1,32 @@
 mediaWiki.eventLog.dataModels = {
 	openTask: {
 		version: {
-			type: 'number'
+			type: 'number',
+			required: true
 		},
 		action: {
-			type: 'string'
+			type: 'string',
+			required: true
 		},
 		article: {
-			type: 'string',
-			optional: true
-		},
-		task: {
-			type: 'string',
-			optional: true
-		},
-		referrer: {
-			type: 'string',
-			optional: true
-		},
-		token: {
 			type: 'string'
 		},
+		task: {
+			type: 'string'
+		},
+		referrer: {
+			type: 'string'
+		},
+		token: {
+			type: 'string',
+			required: true
+		},
 		editcount: {
-			type: 'number',
-			optional: true
+			type: 'number'
 		},
 		authenticated: {
-			type: 'boolean'
+			type: 'boolean',
+			required: true
 		}
 	}
 };

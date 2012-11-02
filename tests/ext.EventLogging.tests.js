@@ -4,14 +4,15 @@
 	var earthquakeModel = {
 		epicenter: {
 			type: 'string',
-			'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ]
+			'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
+			required: true
 		},
 		magnitude: {
-			type: 'number'
+			type: 'number',
+			required: true
 		},
 		article: {
-			type: 'string',
-			optional: true
+			type: 'string'
 		}
 	};
 
@@ -19,6 +20,7 @@
 	QUnit.module( 'ext.EventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			mw.eventLog.declareModel( 'earthquake', earthquakeModel, true );
+			mw.config.set( 'wgEventLoggingBaseUri', null );
 		}
 	} ) );
 
@@ -90,7 +92,7 @@
 		assert.ok( mw.eventLog.assertValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
-		}, 'earthquake' ), 'Optional fields may be omitted' );
+		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
 		assert.throws( function () {
 			mw.eventLog.assertValid( {
@@ -124,15 +126,8 @@
 
 
 	QUnit.test( 'logEvent', function ( assert ) {
-		QUnit.expect( 2 );
 
-		assert.throws( function () {
-			mw.eventLog.logEvent( 'earthquake', {
-				epicenter: 'Sumatra',
-				magnitude: 9.5,
-				article: new Array( 256 ).join('*')
-			} );
-		}, /Request URI/, 'URIs over 255 bytes are rejected' );
+		QUnit.stop();
 
 		var e = {
 			epicenter: 'Valdivia',
@@ -140,6 +135,7 @@
 		};
 
 		mw.eventLog.logEvent( 'earthquake', e ).always( function () {
+			QUnit.start();
 			assert.deepEqual( this, e, 'logEvent promise resolves with event' );
 		} );
 	} );

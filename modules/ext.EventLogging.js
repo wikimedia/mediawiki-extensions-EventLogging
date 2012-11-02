@@ -9,22 +9,10 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var baseUri = mw.config.get( 'wgEventLoggingBaseUri' ),
+	var defaults = {};
 
-		// According to the HTTP specs (RFC 2616, section 3.2.1), "[s]ervers ought
-		// to be cautious about depending on URI lengths above 255 bytes, because
-		// some older client or proxy implementations might not properly support
-		// these lengths" (http://www.rfc-editor.org/rfc/rfc2616.txt). In practice,
-		// URIs of up 2000 bytes are broadly supported, but it is hoped that
-		// a stricter limit will promote thrift and simplicity.
-		uriMaxBytes = 255,
-
-		defaults = {};
-
-
-	if ( typeof baseUri !== 'string' || !baseUri.length ) {
+	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
 		mw.log( 'EventLogging: wgEventLoggingBaseUri is invalid.' );
-		baseUri = '';
 	}
 
 	mw.eventLog = {};
@@ -111,7 +99,7 @@
 			var val = event[ field ];
 
 			if ( val === undefined ) {
-				if ( desc.optional !== true ) {
+				if ( desc.required ) {
 					throw new Error( 'Missing field: ' + field );
 				}
 				return true;
@@ -160,26 +148,23 @@
 		eventInstance = $.extend( true, {}, eventInstance, defaults[ modelName ] );
 		mw.eventLog.assertValid( eventInstance, modelName );
 
-		var beacon = document.createElement( 'img' ),
+		var baseUri = mw.config.get( 'wgEventLoggingBaseUri' ) || '',
+			beacon = document.createElement( 'img' ),
 			dfd = jQuery.Deferred(),
 
 			// Event instances are automatically annotated with '_db' and
 			// '_id' to identify their origin and declared data model.
-			uri = baseUri + [ $.param( {
+			queryString = [ $.param( {
 				/*jshint nomen: false*/
 				_db: mw.config.get( 'wgDBname' ),
 				_id: modelName
 				/*jshint nomen: true*/
 			} ), $.param( eventInstance ) ].join( '&' );
 
-		if ( uri.split( /%..|./ ).length - 1 > uriMaxBytes ) {
-			throw new Error( 'Request URI is too long: ' + uri );
-		}
-
-		if ( !baseUri.length ) {
+		if ( !baseUri ) {
 			// We already logged the fact of wgEventLoggingBaseUri being empty,
 			// so respect the caller's expectation and return a rejected promise.
-			dfd.rejectWith( eventInstance, [ modelName, eventInstance ] );
+			dfd.rejectWith( eventInstance, [ modelName, eventInstance, queryString ] );
 			return dfd.promise();
 		}
 
@@ -187,9 +172,9 @@
 		// ("No Content") responses to image requests. Thus, although
 		// counterintuitive, resolving the promise on error is appropriate.
 		$( beacon ).on( 'error', function () {
-			dfd.resolveWith( eventInstance, [ modelName, eventInstance ] );
+			dfd.resolveWith( eventInstance, [ modelName, eventInstance, queryString ] );
 		} );
-		beacon.src = uri;
+		beacon.src = baseUri + queryString;
 		return dfd.promise();
 	};
 
