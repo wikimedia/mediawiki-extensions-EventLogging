@@ -24,6 +24,13 @@ $messages['qqq'] = array(
 	'eventlogging-desc' => '{{desc}}',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
+);
+
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
  * @author Wizardist
  */
