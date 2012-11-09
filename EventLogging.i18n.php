@@ -38,6 +38,13 @@ $messages['be-tarask'] = array(
 	'eventlogging-desc' => 'Фрэймворк для даданьня падзеяў у журнал з кліенцкага коду',
 );
 
+/** Czech (česky)
+ * @author Mormegil
+ */
+$messages['cs'] = array(
+	'eventlogging-desc' => 'Framework pro protokolování událostí z kódu běžícího u klienta',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
