@@ -24,7 +24,7 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param array $testModules
+	 * @param array &$testModules
 	 * @param ResourceLoader $resourceLoader
 	 * @return bool
 	 */
