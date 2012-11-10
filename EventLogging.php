@@ -44,6 +44,10 @@ $wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
  */
 $wgEventLoggingBaseUri = false;
 
+if ( !isset( $wgEventLoggingFile ) ) {
+	$wgEventLoggingFile = false;
+}
+
 
 // Modules
 
@@ -64,5 +68,8 @@ $wgResourceModules[ 'ext.EventLogging' ] = array(
 // Hooks
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
-$wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
+
+$wgHooks[ 'APIEditBeforeSave'][] = 'EventLoggingHooks::onAPIEditBeforeSave';
+$wgHooks[ 'ArticleSaveComplete' ][] = 'EventLoggingHooks::onArticleSaveComplete';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
+$wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
