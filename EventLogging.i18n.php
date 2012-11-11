@@ -19,9 +19,10 @@ $messages['en'] = array(
 /** Message documentation (Message documentation)
  * @author Metalhead64
  * @author Ori.livneh
+ * @author Shirayuki
  */
 $messages['qqq'] = array(
-	'eventlogging-desc' => '{{desc}}',
+	'eventlogging-desc' => '{{desc|name=Event Logging|url=http://www.mediawiki.org/wiki/Extension:EventLogging}}',
 );
 
 /** Asturian (asturianu)
