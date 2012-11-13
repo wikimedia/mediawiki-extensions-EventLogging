@@ -53,5 +53,6 @@ $wgResourceModules[ 'ext.EventLogging' ] = array(
 
 // Hooks
 
+$wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';

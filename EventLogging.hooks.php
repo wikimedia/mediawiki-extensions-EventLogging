@@ -8,17 +8,20 @@
 
 class EventLoggingHooks {
 
+	public static function onSetup() {
+		global $wgEventLoggingBaseUri;
+		if ( !is_string( $wgEventLoggingBaseUri ) ) {
+			$wgEventLoggingBaseUri = false;
+			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not correctly set.' );
+		}
+	}
+
 	/**
 	 * @param array &$vars
 	 * @return bool
 	 */
 	public static function onResourceLoaderGetConfigVars( array &$vars ) {
 		global $wgEventLoggingBaseUri;
-		if ( !is_string( $wgEventLoggingBaseUri ) ) {
-			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not set' ); 
-			$vars[ 'wgEventLoggingBaseUri' ] = '';
-			return true;
-		}
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		return true;
 	}
