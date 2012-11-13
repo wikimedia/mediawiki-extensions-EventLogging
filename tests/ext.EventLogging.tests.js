@@ -16,27 +16,24 @@
 		}
 	};
 
-
 	QUnit.module( 'ext.EventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			mw.eventLog.declareModel( 'earthquake', earthquakeModel, true );
-			mw.config.set( 'wgEventLoggingBaseUri', null );
+			mw.config.set( 'wgEventLoggingBaseUri', '//log.example.org/event.gif' );
 		}
 	} ) );
 
-
-	QUnit.test( 'Configuration', function ( assert ) {
+	QUnit.test( 'Configuration', 1, function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
 	} );
 
 
-	QUnit.test( 'getModel', function ( assert ) {
+	QUnit.test( 'getModel', 2, function ( assert ) {
 		assert.equal( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
 		assert.equal( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
 	} );
 
-
-	QUnit.test( 'declareModel', function ( assert ) {
+	QUnit.test( 'declareModel', 2, function ( assert ) {
 		var newModel = {
 			richter: { type: 'number' }
 		};
@@ -46,8 +43,7 @@
 		assert.equal( mw.eventLog.declareModel( 'earthquake', newModel, true ), newModel, 'Clobbers when explicitly asked' );
 	} );
 
-
-	QUnit.test( 'isInstance', function ( assert ) {
+	QUnit.test( 'isInstance', 36, function ( assert ) {
 
 		$.each( {
 			boolean: {
@@ -87,8 +83,7 @@
 
 	} );
 
-
-	QUnit.test( 'assertValid', function ( assert ) {
+	QUnit.test( 'assertValid', 5, function ( assert ) {
 		assert.ok( mw.eventLog.assertValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
@@ -124,11 +119,7 @@
 		}, /enum/, 'Enum fields constrain possible values' );
 	} );
 
-
-	QUnit.test( 'logEvent', function ( assert ) {
-
-		QUnit.stop();
-
+	QUnit.asyncTest( 'logEvent', 1, function ( assert ) {
 		var e = {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
@@ -140,8 +131,7 @@
 		} );
 	} );
 
-	QUnit.test( 'setDefaults', function ( assert ) {
-		QUnit.expect( 3 );
+	QUnit.asyncTest( 'setDefaults', 3, function ( assert ) {
 
 		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
 			epicenter: 'Valdivia'
@@ -154,6 +144,7 @@
 				epicenter: 'Valdivia',
 				magnitude: 9.5
 			}, 'Logged event is annotated with defaults' );
+			QUnit.start();
 		} );
 
 		assert.deepEqual(

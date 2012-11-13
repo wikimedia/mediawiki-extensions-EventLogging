@@ -25,14 +25,24 @@ $wgExtensionCredits[ 'other' ][] = array(
 );
 
 
+// Files
+
 $dir = __DIR__;
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = $dir . '/EventLogging.hooks.php';
 $wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
 
-if ( !isset( $wgEventLoggingBaseUri ) ) {
-	$wgEventLoggingBaseUri = false;
-}
+
+// Configuration
+
+/**
+ * @var bool|string: Full url or boolean false if not set.
+ * Events are logged to this end point as key-value pairs in the
+ * query string. Base must not contain any query string (no ? or &)
+ * as key-value pairs can be anything.
+ * @example string: '//log.example.org/event.gif'
+ */
+$wgEventLoggingBaseUri = false;
 
 
 // Modules

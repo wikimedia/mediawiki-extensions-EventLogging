@@ -12,7 +12,7 @@
 	var defaults = {};
 
 	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
-		mw.log( 'EventLogging: wgEventLoggingBaseUri is invalid.' );
+		mw.log( 'wgEventLoggingBaseUri is not set.' );
 	}
 
 	mw.eventLog = {};
@@ -144,22 +144,23 @@
 	 * @returns {jQuery.Deferred} Promise object.
 	 */
 	mw.eventLog.logEvent = function ( modelName, eventInstance ) {
+		var baseUri, dfd, queryString, beacon;
 
 		eventInstance = $.extend( true, {}, eventInstance, defaults[ modelName ] );
+
 		mw.eventLog.assertValid( eventInstance, modelName );
 
-		var baseUri = mw.config.get( 'wgEventLoggingBaseUri' ) || '',
-			beacon = document.createElement( 'img' ),
-			dfd = jQuery.Deferred(),
+		baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
+		dfd = jQuery.Deferred();
 
-			// Event instances are automatically annotated with '_db' and
-			// '_id' to identify their origin and declared data model.
-			queryString = [ $.param( {
-				/*jshint nomen: false*/
-				_db: mw.config.get( 'wgDBname' ),
-				_id: modelName
-				/*jshint nomen: true*/
-			} ), $.param( eventInstance ) ].join( '&' );
+		// Event instances are automatically annotated with '_db' and
+		// '_id' to identify their origin and declared data model.
+		queryString = [ $.param( {
+			/*jshint nomen: false*/
+			_db: mw.config.get( 'wgDBname' ),
+			_id: modelName
+			/*jshint nomen: true*/
+		} ), $.param( eventInstance ) ].join( '&' );
 
 		if ( !baseUri ) {
 			// We already logged the fact of wgEventLoggingBaseUri being empty,
@@ -168,13 +169,15 @@
 			return dfd.promise();
 		}
 
+		beacon = document.createElement( 'img' ),
+
 		// Browsers uniformly fire the onerror event upon receiving HTTP 204
 		// ("No Content") responses to image requests. Thus, although
 		// counterintuitive, resolving the promise on error is appropriate.
 		$( beacon ).on( 'error', function () {
 			dfd.resolveWith( eventInstance, [ modelName, eventInstance, queryString ] );
 		} );
-		beacon.src = baseUri + queryString;
+		beacon.src = baseUri + '?' + queryString;
 		return dfd.promise();
 	};
 

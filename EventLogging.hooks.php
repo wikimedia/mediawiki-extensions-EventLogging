@@ -13,6 +13,10 @@ class EventLoggingHooks {
 		if ( !is_string( $wgEventLoggingBaseUri ) ) {
 			$wgEventLoggingBaseUri = false;
 			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not correctly set.' );
+		} elseif ( substr( $wgEventLoggingBaseUri, -1 ) === '?' ) {
+			// Backwards compatibility: Base uri used to have to end with "?"
+			// as the query string as appended directly.
+			$wgEventLoggingBaseUri = substr( $wgEventLoggingBaseUri, 0, -1 );
 		}
 	}
 
