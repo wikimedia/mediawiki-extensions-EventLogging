@@ -15,9 +15,6 @@
 		mw.log( 'wgEventLoggingBaseUri is not set.' );
 	}
 
-	mw.eventLog = {};
-
-
 	/**
 	 * @param {string} modelName
 	 * @return {Object|null}
@@ -44,6 +41,17 @@
 		}
 		mw.eventLog.dataModels[ modelName ] = dataModel;
 		return dataModel;
+	};
+
+
+	/**
+	 * Declare event data models.
+	 *
+	 * @param {Object} dataModels Models specified as JSON Schema
+	 * @returns {Object}
+	 */
+	mw.eventLog.setModels = function ( dataModels ) {
+		return $.extend( true, mw.eventLog.dataModels, dataModels );                                                
 	};
 
 

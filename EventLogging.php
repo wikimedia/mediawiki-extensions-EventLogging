@@ -30,13 +30,14 @@ $wgExtensionCredits[ 'other' ][] = array(
 $dir = __DIR__;
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = $dir . '/EventLogging.hooks.php';
+$wgAutoloadClasses[ 'ResourceLoaderEventDataModels' ] = $dir . '/EventLogging.module.php';
 $wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
 
 
 // Configuration
 
 /**
- * @var bool|string: Full url or boolean false if not set.
+ * @var bool|string: Full URI or boolean false if not set.
  * Events are logged to this end point as key-value pairs in the
  * query string. Base must not contain any query string (no ? or &)
  * as key-value pairs can be anything.
@@ -44,23 +45,30 @@ $wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
  */
 $wgEventLoggingBaseUri = false;
 
-if ( !isset( $wgEventLoggingFile ) ) {
-	$wgEventLoggingFile = false;
-}
+/**
+ * @var bool|string: Full URI or boolean false if not set.
+ * Canonical location of JSON data models. Will be fetched when the
+ * models are not in memcached.
+ */
+$wgEventLoggingDataModelsUri = false;
 
 
 // Modules
 
+$wgResourceModules[ 'ext.EventLogging.dataModels' ] = array(
+	'class' => 'ResourceLoaderEventDataModels',
+);
+
 $wgResourceModules[ 'ext.EventLogging' ] = array(
 	'scripts'       => array(
 		'modules/ext.EventLogging.js',
-		'modules/ext.EventLogging.dataModels.js',
 	),
 	'localBasePath' => $dir,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array(
+		'ext.EventLogging.dataModels',
+		'jquery.json',
 		'mediawiki.util',
-		'jquery.json'
 	),
 );
 
