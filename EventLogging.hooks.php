@@ -8,21 +8,29 @@
 
 class EventLoggingHooks {
 
+	// Query strings are terminated with a semicolon to help identify
+	// URIs that were truncated in transmit.
+	const QS_TERMINATOR = ';';
+
+	private static $isAPI = false;
+
+
+	/**
+	 * Emit warnings for unset or invalid configuration vars.
+	 */
 	public static function onSetup() {
 		global $wgEventLoggingBaseUri;
+
 		if ( !is_string( $wgEventLoggingBaseUri ) ) {
 			$wgEventLoggingBaseUri = false;
 			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not correctly set.' );
 		} elseif ( substr( $wgEventLoggingBaseUri, -1 ) === '?' ) {
 			// Backwards compatibility: Base uri used to have to end with "?"
-			// as the query string as appended directly.
+			// as the query string is appended directly.
 			$wgEventLoggingBaseUri = substr( $wgEventLoggingBaseUri, 0, -1 );
 		}
 	}
 
-	private static $isAPI = false;
-
-	const QUERYSTRING_TERMINATOR = '&_=_';
 
 	/**
 	 * Write an event to a file descriptor or socket.
@@ -48,7 +56,7 @@ class EventLoggingHooks {
 		$queryString = http_build_query( array(
 			'_db' => $wgDBname,
 			'_id' => $eventId
-		) + $event ) . self::QUERYSTRING_TERMINATOR;
+		) + $event ) . self::QS_TERMINATOR;
 
 		wfErrorLog( '?' . $queryString . "\n", $wgEventLoggingFile );
 		return true;
@@ -74,7 +82,7 @@ class EventLoggingHooks {
 	 * Generate and log an edit event on ArticleSaveComplete.
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ArticleSaveComplete
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function onArticleSaveComplete( WikiPage &$article, User &$user, $text, $summary,
 		$minoredit, $watchthis, $sectionanchor, &$flags, $revision, &$status, $baseRevId ) {
@@ -138,5 +146,4 @@ class EventLoggingHooks {
 		);
 		return true;
 	}
-
 }
