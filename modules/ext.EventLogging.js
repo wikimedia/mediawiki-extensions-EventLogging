@@ -177,7 +177,7 @@
 		$( beacon ).on( 'error', function () {
 			dfd.resolveWith( eventInstance, [ modelName, eventInstance, queryString ] );
 		} );
-		beacon.src = baseUri + '?' + queryString;
+		beacon.src = baseUri + '?' + queryString + ';';
 		return dfd.promise();
 	};
 
