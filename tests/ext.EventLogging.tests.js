@@ -18,8 +18,8 @@
 
 	QUnit.module( 'ext.EventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.declareModel( 'earthquake', earthquakeModel, true );
-			mw.config.set( 'wgEventLoggingBaseUri', '//log.example.org/event.gif' );
+			mw.eventLog.setModels( { earthquake: earthquakeModel } );
+			mw.config.set( 'wgEventLoggingBaseUri', '#' );
 		}
 	} ) );
 
@@ -29,18 +29,8 @@
 
 
 	QUnit.test( 'getModel', 2, function ( assert ) {
-		assert.equal( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
-		assert.equal( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
-	} );
-
-	QUnit.test( 'declareModel', 2, function ( assert ) {
-		var newModel = {
-			richter: { type: 'number' }
-		};
-		assert.throws( function () {
-			mw.eventLog.declareModel( 'earthquake', newModel );
-		}, /overwrite/, 'Does not clobber existing models' );
-		assert.equal( mw.eventLog.declareModel( 'earthquake', newModel, true ), newModel, 'Clobbers when explicitly asked' );
+		assert.deepEqual( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
+		assert.deepEqual( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
 	} );
 
 	QUnit.test( 'isInstance', 36, function ( assert ) {

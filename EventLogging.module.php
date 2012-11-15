@@ -9,15 +9,14 @@
 
 
 /**
- * Packages the global (cross-wiki) set of data models as a
- * JavaScript ResourceLoader module. The models are canonically
- * stored in a JS article on Meta. This module will attempt to
- * retrieve the set of models from memcached, defaulting to an HTTP
- * request if the key is missing.
+ * Packages the global (cross-wiki) set of data models as a JavaScript
+ * ResourceLoader module. The models are canonically stored in a JS
+ * article on Meta. This module attempts to retrieve the set of models
+ * from memcached and default to an HTTP request if the key is missing.
  *
- * To prevent a cache stampede, only one thread of execution may
- * attempt an HTTP request for the data models. Other threads will
- * simply generate an empty object.
+ * To prevent a cache stampede, only one thread of execution is
+ * permitted to attempt an HTTP request for the data models. Other
+ * threads simply generate an empty object.
  */
 class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 
@@ -33,15 +32,15 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	 * @return array|null: Decoded JSON object or null on failure.
 	 */
 	private function httpGetModels() {
-		global $wgEventLoggingDataModelsUri;
+		global $wgEventLoggingModelsUri;
 
-		if ( !$wgEventLoggingDataModelsUri ) {
+		if ( !$wgEventLoggingModelsUri ) {
 			return;
 		}
 
 		// The HTTP request timeout is set to a fraction of the lock timeout to
 		// prevent a pile-up of multiple lingering connections.
-		$res = Http::get( $wgEventLoggingDataModelsUri, self::LOCK_TIMEOUT * 0.8 );
+		$res = Http::get( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
 			wfDebugLog( 'EventLogging', 'Failed to retrieve data models via HTTP' );
 			return;

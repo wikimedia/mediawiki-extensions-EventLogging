@@ -10,7 +10,6 @@
  * @version 0.2
  */
 
-
 // Credits
 
 $wgExtensionCredits[ 'other' ][] = array(
@@ -19,54 +18,74 @@ $wgExtensionCredits[ 'other' ][] = array(
 	'author' => array(
 		'Ori Livneh',
 	),
-	'version' => '0.1',
+	'version' => '0.2',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );
 
 
-// Files
-
-$dir = __DIR__;
-
-$wgAutoloadClasses[ 'EventLoggingHooks' ] = $dir . '/EventLogging.hooks.php';
-$wgAutoloadClasses[ 'ResourceLoaderEventDataModels' ] = $dir . '/EventLogging.module.php';
-$wgExtensionMessagesFiles[ 'EventLogging' ] = $dir . '/EventLogging.i18n.php';
-
 
 // Configuration
 
 /**
- * @var bool|string: Full URI or boolean false if not set.
- * Events are logged to this end point as key-value pairs in the
- * query string. Base must not contain any query string (no ? or &)
- * as key-value pairs can be anything.
+ * @var bool|string: Full URI or false if not set.
+ * Events are logged to this end point as key-value pairs in the query
+ * string. Must not contain a query string.
+ *
  * @example string: '//log.example.org/event.gif'
  */
 $wgEventLoggingBaseUri = false;
 
 /**
- * @var bool|string: Full URI or boolean false if not set.
+ * @var bool|string: Filename, or TCP / UDP address; false if not set.
+ * Server-side events will be logged to this location.
+ *
+ * @see wfErrorLog()
+ *
+ * @example string: 'udp://127.0.0.1:9000'
+ * @example string: '/var/log/mediawiki/events.log'
+ */
+$wgEventLoggingFile = false;
+
+/**
+ * @var bool|string: Full URI or false if not set.
  * Canonical location of JSON data models. Will be fetched when the
  * models are not in memcached.
  */
-$wgEventLoggingDataModelsUri = false;
+$wgEventLoggingModelsUri = false;
+
+/**
+ * @var bool|string: Value of $wgDBname for the MediaWiki instance
+ * housing data models; false if not set.
+ */
+$wgEventLoggingModelsDB = false;
+
+
+
+// Files
+
+$wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
+$wgAutoloadClasses[ 'ResourceLoaderEventDataModels' ] = __DIR__ . '/EventLogging.module.php';
+$wgExtensionMessagesFiles[ 'EventLogging' ] = __DIR__ . '/EventLogging.i18n.php';
+
 
 
 // Modules
 
 $wgResourceModules[ 'ext.EventLogging.dataModels' ] = array(
 	'class' => 'ResourceLoaderEventDataModels',
+	'dependencies'  => array(
+		'ext.EventLogging'
+	),
 );
 
 $wgResourceModules[ 'ext.EventLogging' ] = array(
 	'scripts'       => array(
 		'modules/ext.EventLogging.js',
 	),
-	'localBasePath' => $dir,
+	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array(
-		'ext.EventLogging.dataModels',
 		'jquery.json',
 		'mediawiki.util',
 	),

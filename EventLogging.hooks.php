@@ -16,18 +16,19 @@ class EventLoggingHooks {
 
 
 	/**
-	 * Emit warnings for unset or invalid configuration vars.
+	 * Emit a debug log message for each invalid or unset
+	 * configuration variable (if any).
 	 */
 	public static function onSetup() {
-		global $wgEventLoggingBaseUri;
-
-		if ( !is_string( $wgEventLoggingBaseUri ) ) {
-			$wgEventLoggingBaseUri = false;
-			wfDebugLog( 'EventLogging', 'wgEventLoggingBaseUri is not correctly set.' );
-		} elseif ( substr( $wgEventLoggingBaseUri, -1 ) === '?' ) {
-			// Backwards compatibility: Base uri used to have to end with "?"
-			// as the query string is appended directly.
-			$wgEventLoggingBaseUri = substr( $wgEventLoggingBaseUri, 0, -1 );
+		foreach( array(
+			'wgEventLoggingBaseUri',
+			'wgEventLoggingFile',
+			'wgEventLoggingModelsDB',
+			'wgEventLoggingModelsUri'
+		) as $configVar ) {
+			if ( empty( $GLOBALS[ $configVar ] ) ) {
+				wfDebugLog( 'EventLogging', "$configVar is invalid or unset." );
+			}
 		}
 	}
 
