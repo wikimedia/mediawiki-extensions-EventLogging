@@ -169,7 +169,7 @@
 			return dfd.promise();
 		}
 
-		beacon = document.createElement( 'img' ),
+		beacon = document.createElement( 'img' );
 
 		// Browsers uniformly fire the onerror event upon receiving HTTP 204
 		// ("No Content") responses to image requests. Thus, although
