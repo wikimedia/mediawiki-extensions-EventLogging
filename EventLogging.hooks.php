@@ -85,7 +85,7 @@ class EventLoggingHooks {
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ArticleSaveComplete
 	 * @return bool
 	 */
-	public static function onArticleSaveComplete( WikiPage &$article, User &$user, $text, $summary,
+	public static function onArticleSaveComplete( &$article, &$user, $text, $summary,
 		$minoredit, $watchthis, $sectionanchor, &$flags, $revision, &$status, $baseRevId ) {
 
 		if ( $revision === NULL ) {
@@ -126,7 +126,7 @@ class EventLoggingHooks {
 	 * @param array &$vars
 	 * @return bool
 	 */
-	public static function onResourceLoaderGetConfigVars( array &$vars ) {
+	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgEventLoggingBaseUri;
 
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
@@ -138,7 +138,7 @@ class EventLoggingHooks {
 	 * @param ResourceLoader $resourceLoader
 	 * @return bool
 	 */
-	public static function onResourceLoaderTestModules( array &$testModules, ResourceLoader &$resourceLoader ) {
+	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.EventLogging.tests' ] = array(
 			'scripts'       => array( 'tests/ext.EventLogging.tests.js' ),
 			'dependencies'  => array( 'ext.EventLogging' ),
