@@ -12,8 +12,6 @@ class EventLoggingHooks {
 	// URIs that were truncated in transmit.
 	const QS_TERMINATOR = ';';
 
-	private static $isAPI = false;
-
 
 	/**
 	 * Emit a debug log message for each invalid or unset
@@ -65,21 +63,6 @@ class EventLoggingHooks {
 
 
 	/**
-	 * APIEditBeforeSave hook. Set a boolean class property marking
-	 * this edit as originating in the API.
-	 *
-	 * @param $editPage
-	 * @param $text
-	 * @param &$resultArr
-	 * @return bool
-	 */
-	public static function onAPIEditBeforeSave( $editPage, $text, &$resultArr ) {
-		self::$isAPI = true;
-		return true;
-	}
-
-
-	/**
 	 * Generate and log an edit event on ArticleSaveComplete.
 	 *
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ArticleSaveComplete
@@ -99,7 +82,7 @@ class EventLoggingHooks {
 
 		$event = array(
 			'articleId' => $title->mArticleID,
-			'api'       => self::$isAPI,
+			'api'       => defined( 'MW_API' ),
 			'title'     => $title->mTextform,
 			'namespace' => $title->getNamespace(),
 			'created'   => is_null( $revision->getParentId() ),
