@@ -101,8 +101,8 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 		if ( $models === false ) {
 			// Attempt to acquire exclusive update lock. If successful,
 			// grab models via HTTP and update the cache.
-			$res = Http::get( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
 			if ( $wgMemc->add( self::$memcKey . ':lock', 1, self::LOCK_TIMEOUT ) ) {
+				$res = Http::get( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
 				if ( $models ) {
 					$wgMemc->add( self::$memcKey, $models, self::CACHE_EXPIRY );
 				}
