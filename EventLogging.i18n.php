@@ -53,6 +53,13 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 );
 
+/** Lower Sorbian (dolnoserbski)
+ * @author Michawiki
+ */
+$messages['dsb'] = array(
+	'eventlogging-desc' => 'Framework za protokolěrowanje tšojenjow koda wót boka klienta',
+);
+
 /** Spanish (español)
  * @author Armando-Martin
  */
