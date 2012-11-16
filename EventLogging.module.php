@@ -7,7 +7,6 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-
 /**
  * Packages the global (cross-wiki) set of data models as a JavaScript
  * ResourceLoader module. The models are canonically stored in a JS
@@ -20,11 +19,8 @@
  */
 class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 
-	const CACHE_EXPIRY = 2419200; // 28 days.
+	const CACHE_KEY = 'ext.EventLogging:DataModels';
 	const LOCK_TIMEOUT = 30;
-
-	private static $memcKey = 'ext.EventLogging:DataModels';
-
 
 	/**
 	 * Attempt to retrieve models via HTTP.
@@ -72,12 +68,13 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 
 		// TODO(ori-l, 13-Nov-2012): Ensure this key is updated by a hook
 		// handler on the host wiki.
-		$key = self::$memcKey . ':mTime';
+
+		$key = self::CACHE_KEY . ':mTime';
 		$mTime = $wgMemc->get( $key );
 
 		if ( !$mTime ) {
 			$mTime = wfTimestampNow();
-			$wgMemc->add( $key, $mTime, self::CACHE_EXPIRY );
+			$wgMemc->add( $key, $mTime );
 		}
 
 		return $mTime;
@@ -96,15 +93,15 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	public function getScript( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$models = $wgMemc->get( self::$memcKey );
+		$models = $wgMemc->get( self::CACHE_KEY );
 
 		if ( $models === false ) {
 			// Attempt to acquire exclusive update lock. If successful,
 			// grab models via HTTP and update the cache.
-			if ( $wgMemc->add( self::$memcKey . ':lock', 1, self::LOCK_TIMEOUT ) ) {
-				$res = Http::get( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
+			if ( $wgMemc->add( self::CACHE_KEY . ':lock', 1, self::LOCK_TIMEOUT ) ) {
+				$models = self::httpGetModels( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
 				if ( $models ) {
-					$wgMemc->add( self::$memcKey, $models, self::CACHE_EXPIRY );
+					$wgMemc->add( self::CACHE_KEY, $models );
 				}
 			}
 		}
@@ -113,6 +110,6 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 			$models = new stdClass();  // Will be encoded as empty JS object.
 		}
 
-		return Xml::encodeJsCall( 'mediaWiki.eventLog.initModels', $models );
+		return Xml::encodeJsCall( 'mediaWiki.eventLog.setModels', array( $models ) );
 	}
 }
