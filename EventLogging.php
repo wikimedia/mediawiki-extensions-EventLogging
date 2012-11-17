@@ -96,7 +96,6 @@ $wgResourceModules[ 'ext.EventLogging' ] = array(
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 
-$wgHooks[ 'APIEditBeforeSave'][] = 'EventLoggingHooks::onAPIEditBeforeSave';
 $wgHooks[ 'ArticleSaveComplete' ][] = 'EventLoggingHooks::onArticleSaveComplete';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
