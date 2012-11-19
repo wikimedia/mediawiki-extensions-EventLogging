@@ -28,13 +28,15 @@ class EventLoggingHomeHooks {
 
 
 	/**
+	 * On EditFilterMerged, validate that the revised contents are valid JSON,
+	 * and reject the edit otherwise.
+	 *
 	 * @param $editor EditPage
-	 * @param $text string content of the revised article
+	 * @param $text string Content of the revised article
 	 * @param &$error string Error message to return
 	 * @param $summary string Edit summary provided for edit
 	 */
 	public static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
-
 		if ( !self::isModelsTitle( $editor->getTitle() ) ) {
 			return true;
 		}
@@ -50,8 +52,8 @@ class EventLoggingHomeHooks {
 
 
 	/**
-	 * On PageContentSaveComplete, check if the models article has been
-	 * updated. If so, update it in the cache.
+	 * On PageContentSaveComplete, check if the page getting saved is the
+	 * models page. If so, update it in the cache.
 	 *
 	 * @return bool
 	 */
