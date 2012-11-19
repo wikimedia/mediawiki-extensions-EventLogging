@@ -58,13 +58,14 @@ $wgEventLoggingModelsUri = false;
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
  * housing data models; false if not set.
  */
-$wgEventLoggingModelsDB = false;
+$wgEventLoggingDBname = false;
 
 
 
 // Files
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
+$wgAutoloadClasses[ 'EventLoggingHomeHooks' ] = __DIR__ . '/EventLogging.home.php';
 $wgAutoloadClasses[ 'ResourceLoaderEventDataModels' ] = __DIR__ . '/EventLogging.module.php';
 $wgExtensionMessagesFiles[ 'EventLogging' ] = __DIR__ . '/EventLogging.i18n.php';
 
@@ -99,3 +100,10 @@ $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 $wgHooks[ 'ArticleSaveComplete' ][] = 'EventLoggingHooks::onArticleSaveComplete';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
+
+
+// Home Wiki Hooks
+
+$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'EventLoggingHomeHooks::onContentHandlerDefaultModelFor';
+$wgHooks[ 'EditFilterMerged' ][] = 'EventLoggingHomeHooks::onEditFilterMerged';
+$wgHooks[ 'PageContentSaveComplete' ][] = 'EventLoggingHomeHooks::onPageContentSaveComplete';
