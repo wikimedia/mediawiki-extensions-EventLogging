@@ -18,6 +18,8 @@ class EventLoggingHooks {
 	 * configuration variable (if any).
 	 */
 	public static function onSetup() {
+		global $wgMemCachedServers;
+
 		foreach( array(
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingFile',
@@ -27,6 +29,11 @@ class EventLoggingHooks {
 			if ( empty( $GLOBALS[ $configVar ] ) ) {
 				wfDebugLog( 'EventLogging', "$configVar is invalid or unset." );
 			}
+		}
+
+		if ( empty( $wgMemCachedServers ) ) {
+			wfDebugLog( 'EventLogging', 'EventLogging requires memcached '
+				. 'and no memcached servers are defined.' );
 		}
 	}
 
