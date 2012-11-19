@@ -16,7 +16,7 @@
 		}
 	};
 
-	QUnit.module( 'ext.EventLogging', QUnit.newMwEnvironment( {
+	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			mw.eventLog.setModels( { earthquake: earthquakeModel } );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );

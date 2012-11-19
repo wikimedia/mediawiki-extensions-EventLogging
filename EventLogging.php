@@ -73,16 +73,9 @@ $wgExtensionMessagesFiles[ 'EventLogging' ] = __DIR__ . '/EventLogging.i18n.php'
 
 // Modules
 
-$wgResourceModules[ 'ext.EventLogging.dataModels' ] = array(
-	'class' => 'ResourceLoaderEventDataModels',
-	'dependencies'  => array(
-		'ext.EventLogging'
-	),
-);
-
-$wgResourceModules[ 'ext.EventLogging' ] = array(
+$wgResourceModules[ 'ext.eventLogging.core' ] = array(
 	'scripts'       => array(
-		'modules/ext.EventLogging.js',
+		'modules/ext.eventLogging.core.js',
 	),
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
@@ -91,6 +84,14 @@ $wgResourceModules[ 'ext.EventLogging' ] = array(
 		'mediawiki.util',
 	),
 );
+
+$wgResourceModules[ 'ext.eventLogging' ] = array(
+	'class' => 'ResourceLoaderEventDataModels',
+	'dependencies'  => array(
+		'ext.eventLogging.core'
+	),
+);
+
 
 
 // Hooks

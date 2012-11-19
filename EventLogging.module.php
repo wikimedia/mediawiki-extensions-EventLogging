@@ -19,8 +19,14 @@
  */
 class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 
-	const CACHE_KEY = 'ext.EventLogging:DataModels';
+	const CACHE_KEY = 'ext.eventLogging:dataModels';
 	const LOCK_TIMEOUT = 30;
+
+
+	public function getDependencies() {
+		return array( 'ext.eventLogging.core' );
+	}
+
 
 	/**
 	 * Attempt to retrieve models via HTTP.
