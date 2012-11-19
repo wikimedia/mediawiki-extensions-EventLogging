@@ -9,7 +9,7 @@
 
 class EventLoggingHomeHooks {
 
-	const CACHE_KEY = 'ext.EventLogging:DataModels';
+	const CACHE_KEY = 'ext.eventLogging:dataModels';
 	const TITLE_TEXT = 'EventDataModels.json';
 
 

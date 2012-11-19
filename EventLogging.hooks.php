@@ -129,9 +129,9 @@ class EventLoggingHooks {
 	 * @return bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
-		$testModules[ 'qunit' ][ 'ext.EventLogging.tests' ] = array(
-			'scripts'       => array( 'tests/ext.EventLogging.tests.js' ),
-			'dependencies'  => array( 'ext.EventLogging' ),
+		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = array(
+			'scripts'       => array( 'tests/ext.eventLogging.tests.js' ),
+			'dependencies'  => array( 'ext.eventLogging' ),
 			'localBasePath' => __DIR__,
 			'remoteExtPath' => 'EventLogging',
 		);
