@@ -97,7 +97,7 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	 * @return string
 	 */
 	public function getScript( ResourceLoaderContext $context ) {
-		global $wgMemc;
+		global $wgMemc, $wgEventLoggingModelsUri;
 
 		$models = $wgMemc->get( self::CACHE_KEY );
 
