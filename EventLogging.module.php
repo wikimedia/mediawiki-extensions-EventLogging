@@ -61,19 +61,16 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	/**
 	 * Get the last modified timestamp of this module.
 	 *
-	 * The last modified timestamp should be updated automatically by an
-	 * PageContentSaveComplete hook handler on the wiki that is hosting the
-	 * models. If the key is missing, we default to setting the last modified
-	 * time to now.
+	 * The last modified timestamp is be updated automatically by an
+	 * PageContentSaveComplete hook handler in EventLogging.home.php
+	 * whenever the models page is saved. If the key is missing, we
+	 * default to setting the last modified time to now.
 	 *
 	 * @param $context ResourceLoaderContext
 	 * @return integer: Unix timestamp
 	 */
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		global $wgMemc;
-
-		// TODO(ori-l, 13-Nov-2012): Ensure this key is updated by a hook
-		// handler on the host wiki.
 
 		$key = self::CACHE_KEY . ':mTime';
 		$mTime = $wgMemc->get( $key );
