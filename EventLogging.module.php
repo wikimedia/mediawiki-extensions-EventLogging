@@ -94,7 +94,7 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	 * @return string
 	 */
 	public function getScript( ResourceLoaderContext $context ) {
-		global $wgMemc, $wgEventLoggingModelsUri;
+		global $wgMemc;
 
 		$models = $wgMemc->get( self::CACHE_KEY );
 
@@ -102,7 +102,7 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 			// Attempt to acquire exclusive update lock. If successful,
 			// grab models via HTTP and update the cache.
 			if ( $wgMemc->add( self::CACHE_KEY . ':lock', 1, self::LOCK_TIMEOUT ) ) {
-				$models = self::httpGetModels( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
+				$models = self::httpGetModels();
 				if ( $models ) {
 					$wgMemc->add( self::CACHE_KEY, $models );
 				}
