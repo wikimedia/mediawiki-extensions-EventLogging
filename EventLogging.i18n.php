@@ -13,7 +13,8 @@ $messages = array();
  * @author Ori.livneh
  */
 $messages['en'] = array(
-    'eventlogging-desc' => 'Framework for logging events from client-side code',
+	'eventlogging-desc' => 'Framework for logging events from client-side code',
+	'eventlogging-json' => 'Object, $1 {{PLURAL:$1|property|properties}}',
 );
 
 /** Message documentation (Message documentation)
@@ -23,6 +24,7 @@ $messages['en'] = array(
  */
 $messages['qqq'] = array(
 	'eventlogging-desc' => '{{desc|name=Event Logging|url=http://www.mediawiki.org/wiki/Extension:EventLogging}}',
+	'eventlogging-json' => 'Identifies a JSON Object and the number of properties it has',
 );
 
 /** Asturian (asturianu)

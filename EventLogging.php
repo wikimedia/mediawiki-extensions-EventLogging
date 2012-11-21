@@ -25,6 +25,13 @@ $wgExtensionCredits[ 'other' ][] = array(
 
 
 
+// Namespaces
+
+define( 'NS_SCHEMA', 470 );
+define( 'NS_SCHEMA_TALK', 471 );
+
+
+
 // Configuration
 
 /**
@@ -48,17 +55,18 @@ $wgEventLoggingBaseUri = false;
 $wgEventLoggingFile = false;
 
 /**
- * @var bool|string: Full URI or false if not set.
- * Canonical location of JSON data models. Will be fetched when the
- * models are not in memcached.
+ * @var bool|string: Format string or false if not set.
+ * Using sprintf() syntax, this string should format an article
+ * name into a retrieval URI.
  */
-$wgEventLoggingModelsUri = false;
+$wgEventLoggingModelsUriFormat = false;
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
  * housing data models; false if not set.
  */
 $wgEventLoggingDBname = false;
+
 
 
 // Helpers
@@ -94,18 +102,56 @@ function wfLogServerSideEvent( $model, $event ) {
 }
 
 
+/**
+ * Generate a memcached key containing the extension name
+ * and a hash digest of the model name and (optionally) any
+ * other params.
+ *
+ * @param $model string
+ * @param $model,... string Additional values to hash.
+ * @return string Memcached key (45 characters long).
+ */
+function wfModelKey( $model /* , ... */ ) {
+	$digest = md5( join( func_get_args() ) );
+	return 'eventLogging:' . $digest;
+}
+
+
+/**
+ * Takes a string of JSON data and formats it for readability.
+ *
+ * @param $json string
+ * @return string|null Formatted JSON or null if input was invalid.
+ */
+function wfBeautifyJson( $json ) {
+	$decoded = FormatJson::decode( $json, true );
+	if ( !is_array( $decoded ) ) {
+		return NULL;
+	}
+	return FormatJson::encode( $decoded, true );
+}
+
 // Classes
 
-$wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
+$wgAutoloadClasses[ 'DataModelModule' ] = __DIR__ . '/EventLogging.module.php';
 $wgAutoloadClasses[ 'EventLoggingHomeHooks' ] = __DIR__ . '/EventLogging.home.php';
-$wgAutoloadClasses[ 'ResourceLoaderEventDataModels' ] = __DIR__ . '/EventLogging.module.php';
+$wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
+
+$wgAutoloadClasses[ 'JsonSchemaContent' ] = __DIR__ . '/content/JsonSchemaContent.php';
+$wgAutoloadClasses[ 'JsonSchemaContentHandler' ] = __DIR__ . '/content/JsonSchemaContentHandler.php';
+
+
+
+// Messages
+
 $wgExtensionMessagesFiles[ 'EventLogging' ] = __DIR__ . '/EventLogging.i18n.php';
+$wgExtensionMessagesFiles[ 'EventLoggingNamespaces' ] = __DIR__ . '/EventLogging.namespaces.php';
 
 
 
 // Modules
 
-$wgResourceModules[ 'ext.eventLogging.core' ] = array(
+$wgResourceModules[ 'ext.eventLogging' ] = array(
 	'scripts'       => array(
 		'modules/ext.eventLogging.core.js',
 	),
@@ -117,13 +163,8 @@ $wgResourceModules[ 'ext.eventLogging.core' ] = array(
 	),
 );
 
-$wgResourceModules[ 'ext.eventLogging' ] = array(
-	'class' => 'ResourceLoaderEventDataModels',
-	'dependencies'  => array(
-		'ext.eventLogging.core'
-	),
-);
 
+$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
 
 
 // Hooks
@@ -137,6 +178,7 @@ $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoader
 
 // Home Wiki Hooks
 
+$wgHooks[ 'CanonicalNamespaces' ][] = 'EventLoggingHomeHooks::onCanonicalNamespaces';
 $wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'EventLoggingHomeHooks::onContentHandlerDefaultModelFor';
 $wgHooks[ 'EditFilterMerged' ][] = 'EventLoggingHomeHooks::onEditFilterMerged';
 $wgHooks[ 'PageContentSaveComplete' ][] = 'EventLoggingHomeHooks::onPageContentSaveComplete';

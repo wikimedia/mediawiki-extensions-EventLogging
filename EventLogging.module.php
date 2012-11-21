@@ -8,53 +8,80 @@
  */
 
 /**
- * Packages the global (cross-wiki) set of data models as a JavaScript
- * ResourceLoader module. The models are canonically stored in a JS
- * article on Meta. This module attempts to retrieve the set of models
- * from memcached and default to an HTTP request if the key is missing.
+ * Packages a data model as a JavaScript ResourceLoader module.
+ * The models are canonically stored as JSON Schema in the
+ * Schema: namespace on Meta. This module attempts to retrieve
+ * the required model from memcached and default to an HTTP
+ * request if the key is missing.
  *
  * To prevent a cache stampede, only one thread of execution is
- * permitted to attempt an HTTP request for the data models. Other
- * threads simply generate an empty object.
+ * permitted to attempt an HTTP request for a given data
+ * model. Other threads simply generate an empty object.
  */
-class ResourceLoaderEventDataModels extends ResourceLoaderModule {
+class DataModelModule extends ResourceLoaderModule {
 
-	const CACHE_KEY = 'ext.eventLogging:dataModels';
 	const LOCK_TIMEOUT = 30;
+	protected $model;
 
 
+	/**
+	 * Constructor; invoked by ResourceLoader. Ensures that the
+	 * 'model' key has been set on the $wgResourceModules member array
+	 * representing this module.
+	 *
+	 * @example
+	 *
+	 *	$wgResourceModules[ 'dataModel.person' ] = array(
+	 *		'class' => 'DataModelModule',
+	 *		'model' => 'Person.json'
+	 *	);
+	 *
+	 * @throws MWException if the model key is missing.
+	 * @param $options array
+	 */
+	public function __construct( $options ) {
+		if ( !array_key_exists( 'model', $options ) ) {
+			throw new MWException( 'DataModelModule options must set a "model" key.' );
+		}
+		$this->model = $options[ 'model' ];
+	}
+
+	/**
+	 * Part of the ResourceLoader module interface. Declares the core
+	 * ext.eventLogging module as a dependency.
+	 *
+	 * @return array Module names.
+	 */
 	public function getDependencies() {
-		return array( 'ext.eventLogging.core' );
+		return array( 'ext.eventLogging' );
 	}
 
 
 	/**
-	 * Attempt to retrieve models via HTTP.
+	 * Attempt to retrieve a model via HTTP.
 	 *
-	 * @return array|null: Decoded JSON object or null on failure.
+	 * @return array|null Decoded JSON object or null on failure.
 	 */
-	private function httpGetModels() {
-		global $wgEventLoggingModelsUri;
+	private function httpGetModel() {
+		global $wgEventLoggingModelsUriFormat;
 
-		if ( !$wgEventLoggingModelsUri ) {
-			return;
-		}
+		$uri = sprintf( $wgEventLoggingModelsUriFormat, $this->model );
 
 		// The HTTP request timeout is set to a fraction of the lock timeout to
 		// prevent a pile-up of multiple lingering connections.
-		$res = Http::get( $wgEventLoggingModelsUri, self::LOCK_TIMEOUT * 0.8 );
+		$res = Http::get( $uri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
-			wfDebugLog( 'EventLogging', 'Failed to retrieve data models via HTTP' );
+			wfDebugLog( 'EventLogging', "Failed to retrieve data model '{$this->model}' via HTTP" );
 			return;
 		}
 
-		$models = FormatJson::decode( $res, true );
-		if ( !is_array( $models ) ) {
-			wfDebugLog( 'EventLogging', 'Failed to decode model JSON data' );
+		$model = FormatJson::decode( $res, true );
+		if ( !is_array( $model ) ) {
+			wfDebugLog( 'EventLogging', "Failed to schema of '{$this->model}' mode." );
 			return;
 		}
 
-		return $models;
+		return $model;
 	}
 
 
@@ -63,16 +90,16 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	 *
 	 * The last modified timestamp is be updated automatically by an
 	 * PageContentSaveComplete hook handler in EventLogging.home.php
-	 * whenever the models page is saved. If the key is missing, we
+	 * whenever a model's page is saved. If the key is missing, we
 	 * default to setting the last modified time to now.
 	 *
 	 * @param $context ResourceLoaderContext
-	 * @return integer: Unix timestamp
+	 * @return integer Unix timestamp
 	 */
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$key = self::CACHE_KEY . ':mTime';
+		$key = wfModelKey( $this->model, 'mTime' );
 		$mTime = $wgMemc->get( $key );
 
 		if ( !$mTime ) {
@@ -85,10 +112,10 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 
 
 	/**
-	 * Retrieves data models from cache or HTTP and generates a JavaScript
-	 * expression which assigns them to mediaWiki.eventLogging.dataModels.
-	 * If unable to retrieve data models, sets the value to an empty object
-	 * instead.
+	 * Retrieves a data model from cache or HTTP and generates a
+	 * JavaScript expression which adds it to
+	 * mediaWiki.eventLogging.dataModels. If unable to retrieve data
+	 * model, sets the value to an empty object instead.
 	 *
 	 * @param $context ResourceLoaderContext
 	 * @return string
@@ -96,23 +123,23 @@ class ResourceLoaderEventDataModels extends ResourceLoaderModule {
 	public function getScript( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$models = $wgMemc->get( self::CACHE_KEY );
+		$model = $wgMemc->get( wfModelKey( $this->model ) );
 
-		if ( $models === false ) {
+		if ( $model === false ) {
 			// Attempt to acquire exclusive update lock. If successful,
-			// grab models via HTTP and update the cache.
-			if ( $wgMemc->add( self::CACHE_KEY . ':lock', 1, self::LOCK_TIMEOUT ) ) {
-				$models = self::httpGetModels();
-				if ( $models ) {
-					$wgMemc->add( self::CACHE_KEY, $models );
+			// grab model via HTTP and update the cache.
+			if ( $wgMemc->add( wfModelKey( $this->model,  'lock' ), 1, self::LOCK_TIMEOUT ) ) {
+				$model = self::httpGetModel();
+				if ( $model ) {
+					$wgMemc->add( wfModelKey( $this->model ), $model );
 				}
 			}
 		}
 
-		if ( !$models ) {
-			$models = new stdClass();  // Will be encoded as empty JS object.
+		if ( !$model ) {
+			$model = new stdClass();  // Will be encoded to empty JS object.
 		}
 
-		return Xml::encodeJsCall( 'mediaWiki.eventLog.setModels', array( $models ) );
+		return Xml::encodeJsCall( 'mediaWiki.eventLog.setModels', array( $model ) );
 	}
 }
