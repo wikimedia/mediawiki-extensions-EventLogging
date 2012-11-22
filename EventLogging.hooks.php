@@ -39,44 +39,13 @@ class EventLoggingHooks {
 
 
 	/**
-	 * Write an event to a file descriptor or socket.
+	 * Generate and log an edit event on PageContentSaveComplete.
 	 *
-	 * Takes an event ID and an event, encodes it as query string,
-	 * and writes it to the UDP / TCP address or file specified by
-	 * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
-	 * false without logging anything.
-	 *
-	 * @see wfErrorLog()
-	 *
-	 * @param $eventId string Event schema ID.
-	 * @param $event array Map of event keys/vals.
-	 * @return bool Whether the event was logged.
-	 */
-	private static function writeEvent( $eventId, $event ) {
-		global $wgEventLoggingFile, $wgDBname;
-
-		if ( !$wgEventLoggingFile ) {
-			return false;
-		}
-
-		$queryString = http_build_query( array(
-			'_db' => $wgDBname,
-			'_id' => $eventId
-		) + $event ) . self::QS_TERMINATOR;
-
-		wfErrorLog( '?' . $queryString . "\n", $wgEventLoggingFile );
-		return true;
-	}
-
-
-	/**
-	 * Generate and log an edit event on ArticleSaveComplete.
-	 *
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/ArticleSaveComplete
 	 * @return bool
 	 */
-	public static function onArticleSaveComplete( &$article, &$user, $text, $summary,
-		$minoredit, $watchthis, $sectionanchor, &$flags, $revision, &$status, $baseRevId ) {
+	public static function onPageContentSaveComplete( $article, $user,
+		$content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status,
+		$baseRevId ) {
 
 		if ( $revision === NULL ) {
 			// When an editor saves an article without having made any
@@ -95,7 +64,7 @@ class EventLoggingHooks {
 			'created'   => is_null( $revision->getParentId() ),
 			'summary'   => $summary,
 			'timestamp' => $revision->getTimestamp(),
-			'minor'     => $minoredit,
+			'minor'     => $isMinor,
 			'loggedIn'  => $user->isLoggedIn()
 		);
 
@@ -107,7 +76,7 @@ class EventLoggingHooks {
 			);
 		}
 
-		self::writeEvent( 'edit', $event );
+		wfLogServerSideEvent( 'edit', $event );
 		return true;
 	}
 

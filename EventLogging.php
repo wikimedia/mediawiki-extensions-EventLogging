@@ -61,8 +61,40 @@ $wgEventLoggingModelsUri = false;
 $wgEventLoggingDBname = false;
 
 
+// Helpers
 
-// Files
+/**
+ * Write an event to a file descriptor or socket.
+ *
+ * Takes an event ID and an event, encodes it as query string,
+ * and writes it to the UDP / TCP address or file specified by
+ * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
+ * false without logging anything.
+ *
+ * @see wfErrorLog()
+ *
+ * @param $model string Event data model name.
+ * @param $event array Map of event keys/vals.
+ * @return bool Whether the event was logged.
+ */
+function wfLogServerSideEvent( $model, $event ) {
+	global $wgEventLoggingFile, $wgDBname;
+
+	if ( !$wgEventLoggingFile ) {
+		return false;
+	}
+
+	$queryString = http_build_query( array(
+		'_db' => $wgDBname,
+		'_id' => $model
+	) + $event ) . ';';
+
+	wfErrorLog( '?' . $queryString . "\n", $wgEventLoggingFile );
+	return true;
+}
+
+
+// Classes
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
 $wgAutoloadClasses[ 'EventLoggingHomeHooks' ] = __DIR__ . '/EventLogging.home.php';
@@ -98,7 +130,7 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 
-$wgHooks[ 'ArticleSaveComplete' ][] = 'EventLoggingHooks::onArticleSaveComplete';
+$wgHooks[ 'PageContentSaveComplete' ][] = 'EventLoggingHooks::onPageContentSaveComplete';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 

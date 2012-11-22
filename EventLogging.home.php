@@ -1,7 +1,8 @@
 <?php
 /**
- * Hooks for EventLogging extension. These run on the wiki which hosts the
- * event data models article.
+ * Hooks for EventLogging extension.
+ *
+ * These run on the wiki which hosts the event data models article.
  *
  * @file
  * @ingroup Extensions
