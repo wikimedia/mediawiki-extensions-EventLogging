@@ -134,11 +134,11 @@ function wfBeautifyJson( $json ) {
 // Classes
 
 $wgAutoloadClasses[ 'DataModelModule' ] = __DIR__ . '/EventLogging.module.php';
-$wgAutoloadClasses[ 'EventLoggingHomeHooks' ] = __DIR__ . '/EventLogging.home.php';
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
 
 $wgAutoloadClasses[ 'JsonSchemaContent' ] = __DIR__ . '/content/JsonSchemaContent.php';
 $wgAutoloadClasses[ 'JsonSchemaContentHandler' ] = __DIR__ . '/content/JsonSchemaContentHandler.php';
+$wgAutoloadClasses[ 'JsonSchemaHooks' ] = __DIR__ . '/content/JsonSchemaHooks.php';
 
 
 
@@ -183,9 +183,9 @@ $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoad
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 
 
-// Home Wiki Hooks
+// JSON Schema Hooks
 
-$wgHooks[ 'CanonicalNamespaces' ][] = 'EventLoggingHomeHooks::onCanonicalNamespaces';
-$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'EventLoggingHomeHooks::onContentHandlerDefaultModelFor';
-$wgHooks[ 'EditFilterMerged' ][] = 'EventLoggingHomeHooks::onEditFilterMerged';
-$wgHooks[ 'PageContentSaveComplete' ][] = 'EventLoggingHomeHooks::onPageContentSaveComplete';
+$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
+$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'JsonSchemaHooks::onContentHandlerDefaultModelFor';
+$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
+$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';

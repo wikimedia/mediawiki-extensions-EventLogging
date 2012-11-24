@@ -89,7 +89,7 @@ class DataModelModule extends ResourceLoaderModule {
 	 * Get the last modified timestamp of this module.
 	 *
 	 * The last modified timestamp is be updated automatically by an
-	 * PageContentSaveComplete hook handler in EventLogging.home.php
+	 * PageContentSaveComplete hook handler in JsonSchemaHooks
 	 * whenever a model's page is saved. If the key is missing, we
 	 * default to setting the last modified time to now.
 	 *

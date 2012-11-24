@@ -1,14 +1,12 @@
 <?php
 /**
- * Hooks for EventLogging extension.
- *
- * These run on the wiki which hosts the event data model article.
+ * Hooks for managing JSON Schema namespace and content model.
  *
  * @file
  * @ingroup Extensions
  */
 
-class EventLoggingHomeHooks {
+class JsonSchemaHooks {
 
 	/**
 	 * Check if this is the home wiki for data models.
