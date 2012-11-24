@@ -112,11 +112,15 @@ class EventLoggingHomeHooks {
 			return true;
 		}
 
+		global $wgOut;
+
 		if ( $title->getNamespace() !== NS_SCHEMA ) {
 			return true;
 		}
 
 		$model = 'JsonSchema';
+		$wgOut->addModules( 'ext.eventLogging.jsonSchema' );
+
 		return false;
 	}
 }

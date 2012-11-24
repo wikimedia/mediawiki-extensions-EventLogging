@@ -48,12 +48,11 @@ class JsonSchemaContent extends TextContent {
 
 		$caption = wfMessage( 'eventlogging-json' )->numParams( $count )->escaped();
 
-		return Xml::tags( 'table', array( 'class' => 'mw-data-model' ),
+		return Xml::tags( 'table', array( 'class' => 'mw-json-schema' ),
 			Xml::tags( 'caption', array(), $caption ) . "\n" .
 			Xml::tags( 'tbody', array(), join( "\n", $rows ) )
 		);
 	}
-
 
 	/**
 	 * Construct HTML representation of a single key-value pair.
