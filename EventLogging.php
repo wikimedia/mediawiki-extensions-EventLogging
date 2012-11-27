@@ -188,3 +188,11 @@ $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoader
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
 $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
+
+
+// PHP Unit
+
+$wgHooks[ 'UnitTestsList' ][] = function ( &$files ) {
+	$files += glob( __DIR__ . '/tests/*Test.php' );
+	return true;
+};

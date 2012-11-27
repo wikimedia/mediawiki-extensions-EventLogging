@@ -15,11 +15,24 @@ class JsonSchemaContentHandler extends TextContentHandler {
 		parent::__construct( $modelId, array( CONTENT_FORMAT_JSON ) );
 	}
 
+	/**
+	 * Unserializes a JsonSchemaContent object.
+	 *
+	 * @param $text string serialized form of the content
+	 * @param $format null|string the format used for serialization
+	 *
+	 * @return Content the JsonSchemaContent object wrapping $text
+	 */
 	public function unserializeContent( $text, $format = null ) {
 		$this->checkFormat( $format );
 		return new JsonSchemaContent( $text );
 	}
 
+	/**
+	 * Creates an empty JsonSchemaContent object.
+	 *
+	 * @return Content
+	 */
 	public function makeEmptyContent() {
 		return new JsonSchemaContent( '' );
 	}
