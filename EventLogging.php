@@ -17,6 +17,7 @@ $wgExtensionCredits[ 'other' ][] = array(
 	'name' => 'EventLogging',
 	'author' => array(
 		'Ori Livneh',
+		'Timo Tijhof',
 	),
 	'version' => '0.2',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
