@@ -26,13 +26,13 @@ class EventLoggingHooks {
 			'wgEventLoggingDBname',
 			'wgEventLoggingModelsUri'
 		) as $configVar ) {
-			if ( empty( $GLOBALS[ $configVar ] ) ) {
-				wfDebugLog( 'EventLogging', "$configVar is invalid or unset." );
+			if ( $GLOBALS[ $configVar ] === false ) {
+				wfDebugLog( 'EventLogging', "$configVar has not been configured." );
 			}
 		}
 
-		if ( empty( $wgMemCachedServers ) ) {
-			wfDebugLog( 'EventLogging', 'EventLogging requires memcached '
+		if ( !count( $wgMemCachedServers ) ) {
+			wfDebugLog( 'EventLogging', 'EventLogging requires memcached, '
 				. 'and no memcached servers are defined.' );
 		}
 	}
