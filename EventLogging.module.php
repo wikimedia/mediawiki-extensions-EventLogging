@@ -33,7 +33,7 @@ class DataModelModule extends ResourceLoaderModule {
 	 *
 	 *	$wgResourceModules[ 'dataModel.person' ] = array(
 	 *		'class' => 'DataModelModule',
-	 *		'model' => 'Person.json'
+	 *		'model' => 'Person'
 	 *	);
 	 *
 	 * @throws MWException if the model key is missing.

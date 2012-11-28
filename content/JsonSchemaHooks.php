@@ -9,14 +9,28 @@
 class JsonSchemaHooks {
 
 	/**
-	 * Check if this is the home wiki for data models.
+	 * Registers hook and content handlers if the JSON Schema
+	 * namespace is enabled for this site.
 	 *
-	 * @return bool
+	 * @return bool Whether hooks and handler were registered
 	 */
-	public static function isHomeWiki() {
-		global $wgEventLoggingDBname, $wgDBname;
-		return ( $wgEventLoggingDBname === $wgDBname );
+	public static function registerHandlers() {
+		global $wgHooks, $wgContentHandlers, $wgEventLoggingDBname, $wgDBname;
+
+		if ( $wgEventLoggingDBname === $wgDBname ) {
+			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
+
+			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
+			$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'JsonSchemaHooks::onContentHandlerDefaultModelFor';
+			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
+			$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';
+
+			return true;
+		}
+
+		return false;
 	}
+
 
 	/**
 	 * Register Schema namespaces.
@@ -25,10 +39,8 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	public static function onCanonicalNamespaces( array &$namespaces ) {
-		if ( self::isHomeWiki() ) {
-			$namespaces[ NS_SCHEMA ] = 'Schema';
-			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
-		}
+		$namespaces[ NS_SCHEMA ] = 'Schema';
+		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 
 		return true;
 	}
@@ -44,10 +56,6 @@ class JsonSchemaHooks {
 	 * @param $summary string Edit summary provided for edit
 	 */
 	public static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
-		if ( !self::isHomeWiki() ) {
-			return true;
-		}
-
 		if ( $editor->getTitle()->getNamespace() !== NS_SCHEMA ) {
 			return true;
 		}
@@ -73,10 +81,6 @@ class JsonSchemaHooks {
 		$baseRevId ) {
 
 		global $wgMemc, $wgResourceModules;
-
-		if ( !self::isHomeWiki() ) {
-			return true;
-		}
 
 		$title = $article->getTitle();
 
@@ -106,10 +110,6 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	public static function onContentHandlerDefaultModelFor( $title, &$model ) {
-		if ( !self::isHomeWiki() ) {
-			return true;
-		}
-
 		global $wgOut;
 
 		if ( $title->getNamespace() !== NS_SCHEMA ) {

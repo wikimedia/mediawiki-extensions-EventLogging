@@ -174,9 +174,6 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 );
 
 
-$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
-
-
 // Hooks
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
@@ -185,10 +182,6 @@ $wgHooks[ 'PageContentSaveComplete' ][] = 'EventLoggingHooks::onPageContentSaveC
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 
-
-// JSON Schema Hooks
-
-$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
-$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'JsonSchemaHooks::onContentHandlerDefaultModelFor';
-$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
-$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';
+// Registers hook and content handlers for JSON schema content iff
+// running on the MediaWiki instance housing the data models.
+$wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
