@@ -58,7 +58,9 @@ $wgEventLoggingFile = false;
 /**
  * @var bool|string: Format string or false if not set.
  * Using sprintf() syntax, this string should format an article
- * name into a retrieval URI.
+ * title into a URI that retrieves the data model.
+ *
+ * @example string: 'http://localhost/wiki/index.php?title=Schema:%s&action=raw'
  */
 $wgEventLoggingModelsUriFormat = false;
 

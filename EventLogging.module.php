@@ -58,7 +58,7 @@ class DataModelModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Attempt to retrieve a model via HTTP.
+	 * Attempts to retrieve a model via HTTP.
 	 *
 	 * @return array|null Decoded JSON object or null on failure.
 	 */
@@ -71,13 +71,15 @@ class DataModelModule extends ResourceLoaderModule {
 		// prevent a pile-up of multiple lingering connections.
 		$res = Http::get( $uri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
-			wfDebugLog( 'EventLogging', "Failed to retrieve data model '{$this->model}' via HTTP" );
+			wfDebugLog( 'EventLogging', "Failed to fetch model '{$this->model}' from $uri" );
 			return;
 		}
 
+		wfDebugLog( 'EventLogging', "Fetched model '{$this->model}' from $uri" );
+
 		$model = FormatJson::decode( $res, true );
 		if ( !is_array( $model ) ) {
-			wfDebugLog( 'EventLogging', "Failed to schema of '{$this->model}' mode." );
+			wfDebugLog( 'EventLogging', "Failed to decode model '{$this->model}' from $uri; got '$res'" );
 			return;
 		}
 
@@ -86,12 +88,11 @@ class DataModelModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Get the last modified timestamp of this module.
+	 * Gets the last modified timestamp of this module.
 	 *
-	 * The last modified timestamp is be updated automatically by an
-	 * PageContentSaveComplete hook handler in JsonSchemaHooks
-	 * whenever a model's page is saved. If the key is missing, we
-	 * default to setting the last modified time to now.
+	 * The last modified timestamp is set whenever a model's page is
+	 * saved (on PageContentSaveComplete).  If the key is missing, set
+	 * it to now.
 	 *
 	 * @param $context ResourceLoaderContext
 	 * @return integer Unix timestamp
@@ -112,10 +113,12 @@ class DataModelModule extends ResourceLoaderModule {
 
 
 	/**
+	 * Generates JavaScript module code from data model
+	 *
 	 * Retrieves a data model from cache or HTTP and generates a
-	 * JavaScript expression which adds it to
-	 * mediaWiki.eventLogging.dataModels. If unable to retrieve data
-	 * model, sets the value to an empty object instead.
+	 * JavaScript expression which, when run in the browser, adds it
+	 * to mediaWiki.eventLogging.dataModels. If unable to retrieve
+	 * data model, sets the value to an empty object instead.
 	 *
 	 * @param $context ResourceLoaderContext
 	 * @return string
