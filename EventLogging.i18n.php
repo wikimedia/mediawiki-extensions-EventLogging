@@ -53,6 +53,7 @@ $messages['cs'] = array(
  */
 $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
+	'eventlogging-json' => 'Objekt, {{PLURAL:$1|eine Eigenschaft|$1 Eigenschaften}}',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -67,6 +68,7 @@ $messages['dsb'] = array(
  */
 $messages['es'] = array(
 	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
+	'eventlogging-json' => 'Objeto, $1 {{PLURAL:$1|propiedad|propiedades}}',
 );
 
 /** French (français)
@@ -74,6 +76,7 @@ $messages['es'] = array(
  */
 $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
+	'eventlogging-json' => 'Objet, $1 {{PLURAL:$1|propriété|propriétés}}',
 );
 
 /** Galician (galego)
@@ -102,6 +105,7 @@ $messages['hsb'] = array(
  */
 $messages['it'] = array(
 	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
+	'eventlogging-json' => 'Oggetto, $1 {{PLURAL:$1|proprietà}}',
 );
 
 /** Japanese (日本語)
@@ -109,6 +113,7 @@ $messages['it'] = array(
  */
 $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
+	'eventlogging-json' => '$1 {{PLURAL:$1|件のプロパティ}}を持つオブジェクト',
 );
 
 /** Korean (한국어)
@@ -123,6 +128,7 @@ $messages['ko'] = array(
  */
 $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
+	'eventlogging-json' => 'Објект, $1 {{PLURAL:$1|својство|својства}}',
 );
 
 /** Malay (Bahasa Melayu)
@@ -151,6 +157,7 @@ $messages['sv'] = array(
  */
 $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
+	'eventlogging-json' => 'Đối tượng, $1 thuộc tính',
 );
 
 /** Simplified Chinese (中文（简体）‎)
