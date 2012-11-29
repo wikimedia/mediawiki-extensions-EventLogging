@@ -39,6 +39,7 @@ $messages['ast'] = array(
  */
 $messages['be-tarask'] = array(
 	'eventlogging-desc' => 'Фрэймворк для даданьня падзеяў у журнал з кліенцкага коду',
+	'eventlogging-json' => 'Аб’ект, $1 {{PLURAL:$1|уласьцівасьць|уласьцівасьці|уласьцівасьцяў}}',
 );
 
 /** Czech (česky)
@@ -61,6 +62,7 @@ $messages['de'] = array(
  */
 $messages['dsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolěrowanje tšojenjow koda wót boka klienta',
+	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kakosć|kakosći|kkosći|kakosćow}}',
 );
 
 /** Spanish (español)
