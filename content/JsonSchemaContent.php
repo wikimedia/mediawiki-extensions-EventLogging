@@ -2,6 +2,10 @@
 /**
  * JSON Schema Content Model
  *
+ * @file
+ * @ingroup Extensions
+ * @ingroup EventLogging
+ *
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
@@ -35,6 +39,7 @@ class JsonSchemaContent extends TextContent {
 
 	/**
 	 * Construct an HTML representation of a JSON object.
+	 *
 	 * @return string
 	 */
 	protected static function objectTable( $mapping ) {
@@ -56,6 +61,7 @@ class JsonSchemaContent extends TextContent {
 
 	/**
 	 * Construct HTML representation of a single key-value pair.
+	 *
 	 * @return string
 	 */
 	protected static function objectRow( $key, $val ) {

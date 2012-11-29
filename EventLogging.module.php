@@ -4,6 +4,10 @@
  * available as JavaScript submodules to client-side code.
  *
  * @file
+ *
+ * @ingroup Extensions
+ * @ingroup EventLogging
+ *
  * @author Ori Livneh <ori@wikimedia.org>
  */
 

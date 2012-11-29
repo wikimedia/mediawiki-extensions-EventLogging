@@ -1,6 +1,11 @@
 <?php
-
-/** Namespace name definitions **/
+/**
+ * Namespace name definitions
+ *
+ * @file
+ * @ingroup EventLogging
+ * @ingroup Extensions
+ */
 
 $namespaceNames = array();
 

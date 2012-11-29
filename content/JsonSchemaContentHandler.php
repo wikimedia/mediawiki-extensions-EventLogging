@@ -2,11 +2,12 @@
 /**
  * JSON Schema Content Handler
  *
+ * @file
+ * @ingroup Extensions
+ * @ingroup EventLogging
+ *
  * @author Ori Livneh <ori@wikimedia.org>
  */
-
-// XXX(ori-l, 19-Nov-2012):
-// - Define methods for validation, section edits, etc.
 
 class JsonSchemaContentHandler extends TextContentHandler {
 

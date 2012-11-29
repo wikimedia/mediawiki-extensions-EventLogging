@@ -4,6 +4,9 @@
  *
  * @file
  * @ingroup Extensions
+ * @ingroup EventLogging
+ *
+ * @author Ori Livneh <ori@wikimedia.org>
  */
 
 class JsonSchemaHooks {

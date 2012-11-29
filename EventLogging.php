@@ -3,11 +3,13 @@
  * EventLogging Extension for MediaWiki
  *
  * @file
+ *
+ * @ingroup EventLogging
  * @ingroup Extensions
  *
- * @author Ori Livneh <ori@wikimedia.org>
+ * @author  Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
- * @version 0.2
+ * @version 0.3
  */
 
 // Credits

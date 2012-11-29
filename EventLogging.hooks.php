@@ -3,7 +3,11 @@
  * Hooks for EventLogging extension
  *
  * @file
+ *
  * @ingroup Extensions
+ * @ingroup EventLogging
+ *
+ * @author Ori Livneh <ori@wikimedia.org>
  */
 
 class EventLoggingHooks {
