@@ -33,14 +33,19 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * Register Schema namespaces.
+	 * Register Schema namespaces and assign edit rights.
 	 *
 	 * @param &$namespaces array Mapping of numbers to namespace names.
 	 * @return bool
 	 */
 	public static function onCanonicalNamespaces( array &$namespaces ) {
+		global $wgGroupPermissions, $wgNamespaceProtection;
+
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
+
+		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'schema-edit' );
+		$wgGroupPermissions[ 'sysop' ][ 'schema-edit' ] = true;
 
 		return true;
 	}
