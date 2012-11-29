@@ -143,6 +143,9 @@ class DataModelModule extends ResourceLoaderModule {
 			$model = new stdClass();  // Will be encoded to empty JS object.
 		}
 
+		// { key1: val1, key2: val2 } => { model: { key1: val1, key2: val2 } }
+		$model = array( $this->model => $model );
+
 		return Xml::encodeJsCall( 'mediaWiki.eventLog.setModels', array( $model ) );
 	}
 }
