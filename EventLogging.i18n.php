@@ -86,6 +86,7 @@ $messages['fr'] = array(
  */
 $messages['gl'] = array(
 	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
+	'eventlogging-json' => 'Obxecto, $1 {{PLURAL:$1|propiedade|propiedades}}',
 );
 
 /** Hebrew (עברית)
