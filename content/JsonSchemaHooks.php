@@ -27,11 +27,28 @@ class JsonSchemaHooks {
 			$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'JsonSchemaHooks::onContentHandlerDefaultModelFor';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
 			$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';
+			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
 
 			return true;
 		}
 
 		return false;
+	}
+
+
+	/**
+	 * Declare JSON as the code editor language for Schema: pages. This hook
+	 * only runs if the CodeEditor extension is enabled.
+	 *
+	 * @param $title Title
+	 * @param &$lang string Page language
+	 * @return bool
+	 */
+	public static function onCodeEditorGetPageLanguage( $title, &$lang ) {
+		if ( $title->getNamespace() === NS_SCHEMA ) {
+			$lang = 'json';
+		}
+		return true;
 	}
 
 
