@@ -47,9 +47,7 @@ class JsonSchemaHooks {
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 
-		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'schema-edit' );
-		$wgGroupPermissions[ 'sysop' ][ 'schema-edit' ] = true;
-		$wgGroupPermissions[ 'staff' ][ 'schema-edit' ] = true;
+		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'editinterface' );
 
 		return true;
 	}
