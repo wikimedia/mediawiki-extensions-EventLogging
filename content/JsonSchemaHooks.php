@@ -23,8 +23,8 @@ class JsonSchemaHooks {
 		if ( $wgEventLoggingDBname === $wgDBname ) {
 			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
 
+			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
 			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
-			$wgHooks[ 'ContentHandlerDefaultModelFor' ][] = 'JsonSchemaHooks::onContentHandlerDefaultModelFor';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
 			$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';
 			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
@@ -59,12 +59,13 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	public static function onCanonicalNamespaces( array &$namespaces ) {
-		global $wgGroupPermissions, $wgNamespaceProtection;
+		global $wgGroupPermissions, $wgNamespaceContentModels, $wgNamespaceProtection;
 
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 
 		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'editinterface' );
+		$wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
 
 		return true;
 	}
@@ -126,23 +127,16 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * On ContentHandlerDefaultModelFor, specify JsonSchema as the
-	 * content model for articles in the NS_SCHEMA namespace.
+	 * On BeforePageDisplay, in-line CSS for Schema objects.
 	 *
-	 * @param $title Title Specify model for this title.
-	 * @param &$model string The desired model.
+	 * @param &$out OutputPage
+	 * @param &$skin Skin
 	 * @return bool
 	 */
-	public static function onContentHandlerDefaultModelFor( $title, &$model ) {
-		global $wgOut;
-
-		if ( $title->getNamespace() !== NS_SCHEMA ) {
-			return true;
+	public static function onBeforePageDisplay( &$out, &$skin ) {
+		if ( $out->getTitle()->getNamespace() === NS_SCHEMA ) {
+			$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
 		}
-
-		$model = 'JsonSchema';
-		$wgOut->addModules( 'ext.eventLogging.jsonSchema' );
-
-		return false;
+		return true;
 	}
 }
