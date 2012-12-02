@@ -60,15 +60,15 @@ $wgEventLoggingFile = false;
 /**
  * @var bool|string: Format string or false if not set.
  * Using sprintf() syntax, this string should format an article
- * title into a URI that retrieves the data model.
+ * title into a URI that retrieves the schema.
  *
  * @example string: 'http://localhost/wiki/index.php?title=Schema:%s&action=raw'
  */
-$wgEventLoggingModelsUriFormat = false;
+$wgEventLoggingSchemaUriFormat = false;
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
- * housing data models; false if not set.
+ * housing schemas; false if not set.
  */
 $wgEventLoggingDBname = false;
 
@@ -86,11 +86,11 @@ $wgEventLoggingDBname = false;
  *
  * @see wfErrorLog()
  *
- * @param $model string Event data model name.
+ * @param $schema string Schema name
  * @param $event array Map of event keys/vals.
  * @return bool Whether the event was logged.
  */
-function wfLogServerSideEvent( $model, $event ) {
+function wfLogServerSideEvent( $schema, $event ) {
 	global $wgEventLoggingFile, $wgDBname;
 
 	if ( !$wgEventLoggingFile ) {
@@ -99,7 +99,7 @@ function wfLogServerSideEvent( $model, $event ) {
 
 	$queryString = http_build_query( array(
 		'_db' => $wgDBname,
-		'_id' => $model
+		'_id' => $schema
 	) + $event ) . ';';
 
 	wfErrorLog( '?' . $queryString . "\n", $wgEventLoggingFile );
@@ -109,14 +109,14 @@ function wfLogServerSideEvent( $model, $event ) {
 
 /**
  * Generate a memcached key containing the extension name
- * and a hash digest of the model name and (optionally) any
+ * and a hash digest of the schema name and (optionally) any
  * other params.
  *
- * @param $model string
- * @param $model,... string Additional values to hash.
+ * @param $schema string
+ * @param $schema,... string Additional values to hash.
  * @return string Memcached key (45 characters long).
  */
-function wfModelKey( $model /* , ... */ ) {
+function wfSchemaKey( $schema /* , ... */ ) {
 	$digest = md5( join( func_get_args() ) );
 	return 'eventLogging:' . $digest;
 }
@@ -138,8 +138,8 @@ function wfBeautifyJson( $json ) {
 
 // Classes
 
-$wgAutoloadClasses[ 'DataModelModule' ] = __DIR__ . '/EventLogging.module.php';
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
+$wgAutoloadClasses[ 'SchemaModule' ] = __DIR__ . '/EventLogging.module.php';
 
 $wgAutoloadClasses[ 'JsonSchemaContent' ] = __DIR__ . '/content/JsonSchemaContent.php';
 $wgAutoloadClasses[ 'JsonSchemaContentHandler' ] = __DIR__ . '/content/JsonSchemaContentHandler.php';
@@ -185,5 +185,5 @@ $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoad
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 
 // Registers hook and content handlers for JSON schema content iff
-// running on the MediaWiki instance housing the data models.
+// running on the MediaWiki instance housing the schemas.
 $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';

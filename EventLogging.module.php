@@ -1,6 +1,6 @@
 <?php
 /**
- * ResourceLoaderModule subclass for making event data models
+ * ResourceLoaderModule subclass for making event schemas
  * available as JavaScript submodules to client-side code.
  *
  * @file
@@ -12,42 +12,48 @@
  */
 
 /**
- * Packages a data model as a JavaScript ResourceLoader module.
- * The models are canonically stored as JSON Schema in the
+ * Packages a schema as a JavaScript ResourceLoader module.
+ * The schemas are canonically stored as JSON Schema in the
  * Schema: namespace on Meta. This module attempts to retrieve
- * the required model from memcached and default to an HTTP
+ * the required schema from memcached and default to an HTTP
  * request if the key is missing.
  *
  * To prevent a cache stampede, only one thread of execution is
- * permitted to attempt an HTTP request for a given data
- * model. Other threads simply generate an empty object.
+ * permitted to attempt an HTTP request for a given schema.
+ * Other threads simply generate an empty object.
  */
-class DataModelModule extends ResourceLoaderModule {
+class SchemaModule extends ResourceLoaderModule {
 
 	const LOCK_TIMEOUT = 30;
-	protected $model;
+
+	protected $schema;
+	protected $revision;
 
 
 	/**
 	 * Constructor; invoked by ResourceLoader. Ensures that the
-	 * 'model' key has been set on the $wgResourceModules member array
+	 * 'schema' key has been set on the $wgResourceModules member array
 	 * representing this module.
 	 *
 	 * @example
 	 *
-	 *	$wgResourceModules[ 'dataModel.person' ] = array(
-	 *		'class' => 'DataModelModule',
-	 *		'model' => 'Person'
+	 *	$wgResourceModules[ 'dataSchema.person' ] = array(
+	 *		'class'    => 'SchemaModule',
+	 *		'schema'   => 'Person',
+	 *      'revision' => 4703006,
 	 *	);
 	 *
-	 * @throws MWException if the model key is missing.
+	 * @throws MWException if the schema key is missing.
 	 * @param $options array
 	 */
 	public function __construct( $options ) {
-		if ( !array_key_exists( 'model', $options ) ) {
-			throw new MWException( 'DataModelModule options must set a "model" key.' );
+		if ( !array_key_exists( 'schema', $options ) ) {
+			throw new MWException( 'SchemaModule options must set a "schema" key.' );
 		}
-		$this->model = $options[ 'model' ];
+		$this->schema = $options[ 'schema' ];
+		$this->revision = array_key_exists( 'revision', $options )
+			? $options[ 'revision' ]
+			: false;
 	}
 
 	/**
@@ -62,39 +68,39 @@ class DataModelModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Attempts to retrieve a model via HTTP.
+	 * Attempts to retrieve a schema via HTTP.
 	 *
 	 * @return array|null Decoded JSON object or null on failure.
 	 */
-	private function httpGetModel() {
-		global $wgEventLoggingModelsUriFormat;
+	private function httpGetSchema() {
+		global $wgEventLoggingSchemaUriFormat;
 
-		$uri = sprintf( $wgEventLoggingModelsUriFormat, $this->model );
+		$uri = sprintf( $wgEventLoggingSchemaUriFormat, $this->schema );
 
 		// The HTTP request timeout is set to a fraction of the lock timeout to
 		// prevent a pile-up of multiple lingering connections.
 		$res = Http::get( $uri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
-			wfDebugLog( 'EventLogging', "Failed to fetch model '{$this->model}' from $uri" );
+			wfDebugLog( 'EventLogging', "Failed to fetch schema '{$this->schema}' from $uri" );
 			return;
 		}
 
-		wfDebugLog( 'EventLogging', "Fetched model '{$this->model}' from $uri" );
+		wfDebugLog( 'EventLogging', "Fetched schema '{$this->schema}' from $uri" );
 
-		$model = FormatJson::decode( $res, true );
-		if ( !is_array( $model ) ) {
-			wfDebugLog( 'EventLogging', "Failed to decode model '{$this->model}' from $uri; got '$res'" );
+		$schema = FormatJson::decode( $res, true );
+		if ( !is_array( $schema ) ) {
+			wfDebugLog( 'EventLogging', "Failed to decode schema '{$this->schema}' from $uri; got '$res'" );
 			return;
 		}
 
-		return $model;
+		return $schema;
 	}
 
 
 	/**
 	 * Gets the last modified timestamp of this module.
 	 *
-	 * The last modified timestamp is set whenever a model's page is
+	 * The last modified timestamp is set whenever a schema's page is
 	 * saved (on PageContentSaveComplete).  If the key is missing, set
 	 * it to now.
 	 *
@@ -104,7 +110,7 @@ class DataModelModule extends ResourceLoaderModule {
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$key = wfModelKey( $this->model, 'mTime' );
+		$key = wfSchemaKey( $this->schema, 'mTime' );
 		$mTime = $wgMemc->get( $key );
 
 		if ( !$mTime ) {
@@ -117,12 +123,12 @@ class DataModelModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Generates JavaScript module code from data model
+	 * Generates JavaScript module code from schema
 	 *
-	 * Retrieves a data model from cache or HTTP and generates a
+	 * Retrieves a schema from cache or HTTP and generates a
 	 * JavaScript expression which, when run in the browser, adds it
-	 * to mediaWiki.eventLogging.dataModels. If unable to retrieve
-	 * data model, sets the value to an empty object instead.
+	 * to mediaWiki.eventLogging.dataSchemas. If unable to retrieve
+	 * schema, sets the value to an empty object instead.
 	 *
 	 * @param $context ResourceLoaderContext
 	 * @return string
@@ -130,26 +136,26 @@ class DataModelModule extends ResourceLoaderModule {
 	public function getScript( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$model = $wgMemc->get( wfModelKey( $this->model ) );
+		$schema = $wgMemc->get( wfSchemaKey( $this->schema ) );
 
-		if ( $model === false ) {
+		if ( $schema === false ) {
 			// Attempt to acquire exclusive update lock. If successful,
-			// grab model via HTTP and update the cache.
-			if ( $wgMemc->add( wfModelKey( $this->model,  'lock' ), 1, self::LOCK_TIMEOUT ) ) {
-				$model = self::httpGetModel();
-				if ( $model ) {
-					$wgMemc->add( wfModelKey( $this->model ), $model );
+			// grab schema via HTTP and update the cache.
+			if ( $wgMemc->add( wfSchemaKey( $this->schema,  'lock' ), 1, self::LOCK_TIMEOUT ) ) {
+				$schema = self::httpGetSchema();
+				if ( $schema ) {
+					$wgMemc->add( wfSchemaKey( $this->schema ), $schema );
 				}
 			}
 		}
 
-		if ( !$model ) {
-			$model = new stdClass();  // Will be encoded to empty JS object.
+		if ( !$schema ) {
+			$schema = new stdClass();  // Will be encoded to empty JS object.
 		}
 
-		// { key1: val1, key2: val2 } => { model: { key1: val1, key2: val2 } }
-		$model = array( $this->model => $model );
+		// { key1: val1, key2: val2 } => { schema: { key1: val1, key2: val2 } }
+		$schema = array( $this->schema => $schema );
 
-		return Xml::encodeJsCall( 'mediaWiki.eventLog.setModels', array( $model ) );
+		return Xml::encodeJsCall( 'mediaWiki.eventLog.setSchemas', array( $schema ) );
 	}
 }

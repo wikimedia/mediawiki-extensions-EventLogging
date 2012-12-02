@@ -95,14 +95,14 @@ class JsonSchemaHooks {
 			return true;
 		}
 
-		$model = FormatJson::decode( $content->getNativeData(), true );
-		if ( !is_array( $model ) ) {
-			wfDebugLog( 'EventLogging', 'New data model revision fails to parse.' );
+		$schema = FormatJson::decode( $content->getNativeData(), true );
+		if ( !is_array( $schema ) ) {
+			wfDebugLog( 'EventLogging', 'New schema revision fails to parse.' );
 			return true;
 		}
 
-		$wgMemc->set( wfModelKey( $title->getDBkey() ), $model );
-		$wgMemc->set( wfModelKey( $title->getDBkey(), 'mTime' ),
+		$wgMemc->set( wfSchemaKey( $title->getDBkey() ), $schema );
+		$wgMemc->set( wfSchemaKey( $title->getDBkey(), 'mTime' ),
 			wfTimestamp( TS_UNIX, $revision->getTimestamp() ) );
 		return true;
 	}

@@ -9,7 +9,7 @@
  * PRODUCTION.
  *
  *
- * TODO(ori-l, 26-Nov-2012): Validate events against models.
+ * TODO(ori-l, 26-Nov-2012): Validate events against schema.
  *
  * @author Ori Livneh <ori@wikimedia.org>
  */
