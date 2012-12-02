@@ -101,6 +101,7 @@ $messages['he'] = array(
  */
 $messages['hsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolowanje podawkow koda ze strony klienta',
+	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kajkosć|kajkosći|kajkosće|kajkosćow}}',
 );
 
 /** Italian (italiano)
@@ -146,6 +147,7 @@ $messages['ms'] = array(
  */
 $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
+	'eventlogging-json' => 'Object, {{PLURAL:$1|één eigenschap|$1 eigenschappen}}',
 );
 
 /** Swedish (svenska)
