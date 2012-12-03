@@ -12,7 +12,7 @@
 class JsonSchemaContentHandler extends TextContentHandler {
 
 	public function __construct( $modelId = 'JsonSchema' ) {
-		parent::__construct( $modelId );
+		parent::__construct( $modelId, array( CONTENT_FORMAT_JSON ) );
 	}
 
 	public function unserializeContent( $text, $format = null ) {
