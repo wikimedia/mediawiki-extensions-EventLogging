@@ -27,7 +27,7 @@ class SchemaModule extends ResourceLoaderModule {
 	const LOCK_TIMEOUT = 30;
 
 	protected $schema;
-	protected $revision;
+	protected $rev;
 
 
 	/**
@@ -37,7 +37,7 @@ class SchemaModule extends ResourceLoaderModule {
 	 *
 	 * @example
 	 *
-	 *	$wgResourceModules[ 'dataSchema.person' ] = array(
+	 *	$wgResourceModules[ 'schema.person' ] = array(
 	 *		'class'    => 'SchemaModule',
 	 *		'schema'   => 'Person',
 	 *      'revision' => 4703006,
@@ -51,10 +51,23 @@ class SchemaModule extends ResourceLoaderModule {
 			throw new MWException( 'SchemaModule options must set a "schema" key.' );
 		}
 		$this->schema = $options[ 'schema' ];
-		$this->revision = array_key_exists( 'revision', $options )
+		$this->rev = array_key_exists( 'revision', $options )
 			? $options[ 'revision' ]
-			: false;
+			: NULL;
 	}
+
+	/**
+	 * Attempt to acquire exclusive update lock.
+	 *
+	 * @return bool Whether the lock was acquired.
+	 */
+	protected function acquireLock() {
+		global $wgMemc;
+
+		$lockKey = wfSchemaKey( $this->schema, $this->rev, 'lock' );
+		return $wgMemc->add( $lockKey, 1, self::LOCK_TIMEOUT );
+	}
+
 
 	/**
 	 * Part of the ResourceLoader module interface. Declares the core
@@ -68,14 +81,25 @@ class SchemaModule extends ResourceLoaderModule {
 
 
 	/**
+	 * Constructs a URI for fetching this schema.
+	 */
+	public function getUri() {
+		global $wgEventLoggingSchemaIndexUri;
+
+		$query = array( 'title' => $this->schema, 'action' => 'raw' );
+		if ( $this->rev ) {
+			$query[ 'oldid' ] = $this->rev;
+		}
+		return wfAppendQuery( $wgEventLoggingSchemaIndexUri, $query );
+	}
+
+	/**
 	 * Attempts to retrieve a schema via HTTP.
 	 *
 	 * @return array|null Decoded JSON object or null on failure.
 	 */
 	private function httpGetSchema() {
-		global $wgEventLoggingSchemaUriFormat;
-
-		$uri = sprintf( $wgEventLoggingSchemaUriFormat, $this->schema );
+		$uri = $this->getUri();
 
 		// The HTTP request timeout is set to a fraction of the lock timeout to
 		// prevent a pile-up of multiple lingering connections.
@@ -110,7 +134,7 @@ class SchemaModule extends ResourceLoaderModule {
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$key = wfSchemaKey( $this->schema, 'mTime' );
+		$key = wfSchemaKey( $this->schema, $this->rev, 'mTime' );
 		$mTime = $wgMemc->get( $key );
 
 		if ( !$mTime ) {
@@ -127,7 +151,7 @@ class SchemaModule extends ResourceLoaderModule {
 	 *
 	 * Retrieves a schema from cache or HTTP and generates a
 	 * JavaScript expression which, when run in the browser, adds it
-	 * to mediaWiki.eventLogging.dataSchemas. If unable to retrieve
+	 * to mediaWiki.eventLogging.schemas If unable to retrieve
 	 * schema, sets the value to an empty object instead.
 	 *
 	 * @param $context ResourceLoaderContext
@@ -136,15 +160,16 @@ class SchemaModule extends ResourceLoaderModule {
 	public function getScript( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$schema = $wgMemc->get( wfSchemaKey( $this->schema ) );
+		$key = wfSchemaKey( $this->schema, $this->rev );
+		$schema = $wgMemc->get( $key );
 
 		if ( $schema === false ) {
 			// Attempt to acquire exclusive update lock. If successful,
 			// grab schema via HTTP and update the cache.
-			if ( $wgMemc->add( wfSchemaKey( $this->schema,  'lock' ), 1, self::LOCK_TIMEOUT ) ) {
-				$schema = self::httpGetSchema();
+			if ( $this->acquireLock() ) {
+				$schema = $this->httpGetSchema();
 				if ( $schema ) {
-					$wgMemc->add( wfSchemaKey( $this->schema ), $schema );
+					$wgMemc->add( $key, $schema );
 				}
 			}
 		}

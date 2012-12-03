@@ -112,11 +112,12 @@ function wfLogServerSideEvent( $schema, $event ) {
  * and a hash digest of the schema name and (optionally) any
  * other params.
  *
- * @param $schema string
- * @param $schema,... string Additional values to hash.
+ * @param $schema string Schema title
+ * @param $rev integer|null Revision number, or NULL for latest.
+ * @param $rev,... string Additional values to hash.
  * @return string Memcached key (45 characters long).
  */
-function wfSchemaKey( $schema /* , ... */ ) {
+function wfSchemaKey( $schema, $rev = NULL /* , ... */ ) {
 	$digest = md5( join( func_get_args() ) );
 	return 'eventLogging:' . $digest;
 }
