@@ -28,7 +28,7 @@ class EventLoggingHooks {
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingFile',
 			'wgEventLoggingDBname',
-			'wgEventLoggingModelsUriFormat'
+			'wgEventLoggingSchemaUriFormat'
 		) as $configVar ) {
 			if ( $GLOBALS[ $configVar ] === false ) {
 				wfDebugLog( 'EventLogging', "$configVar has not been configured." );

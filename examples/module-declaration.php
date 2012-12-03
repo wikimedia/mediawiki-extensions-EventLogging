@@ -1,12 +1,10 @@
 <?php
-/** @example **/
-
-
-// If the data model is declared at
-// meta.wikimedia.org/wiki/Schema:User, it can be packaged
-// as a ResourceLoader module like this:
-
-$wgResourceModules[ 'dataModel.person' ] = array(
-	'class' => 'DataModelModule',
-	'model' => 'Person'
+/**
+ * @example
+ * If the schema is declared at meta.wikimedia.org/wiki/Schema:User, it can be
+ * packaged as a ResourceLoader module like this:
+ */
+$wgResourceModules[ 'schema.Person' ] = array(
+	'class'  => 'SchemaModule',
+	'schema' => 'Person'
 );

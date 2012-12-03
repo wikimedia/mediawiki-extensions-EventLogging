@@ -17,29 +17,29 @@
 
 	mw.eventLog = {
 
-		dataModels: {},
+		schemas: {},
 
 		/**
-		 * @param {string} modelName
+		 * @param {string} schemaName
 		 * @return {Object|null}
 		 */
-		getModel: function ( modelName ) {
-			var model = mw.eventLog.dataModels[ modelName ];
-			if ( model === undefined ) {
+		getSchema: function ( schemaName ) {
+			var schema = mw.eventLog.schemas[ schemaName ];
+			if ( schema === undefined ) {
 				return null;
 			}
-			return model;
+			return schema;
 		},
 
 
 		/**
-		 * Declare event data models.
+		 * Declare event schemas.
 		 *
-		 * @param {Object} dataModels Models specified as JSON Schema
+		 * @param {Object} schemas Schemas specified as JSON Schema
 		 * @returns {Object}
 		 */
-		setModels: function ( dataModels ) {
-			return $.extend( true, mw.eventLog.dataModels, dataModels );
+		setSchemas: function ( schemas ) {
+			return $.extend( true, mw.eventLog.schemas, schemas );
 		},
 
 
@@ -75,23 +75,23 @@
 
 		/**
 		 * @param {Object} event Event to validate.
-		 * @param {Object} modelName Name of data model.
+		 * @param {Object} schemaName Name of schema.
 		 * @throws {Error} If event fails to validate.
 		 */
-		assertValid: function ( event, modelName ) {
-			var field, model = mw.eventLog.getModel( modelName );
+		assertValid: function ( event, schemaName ) {
+			var field, schema = mw.eventLog.getSchema( schemaName );
 
-			if ( model === null ) {
-				throw new Error( 'Unknown event data model: ' + modelName );
+			if ( schema === null ) {
+				throw new Error( 'Unknown event schema: ' + schemaName );
 			}
 
 			for ( field in event ) {
-				if ( model[ field ] === undefined ) {
+				if ( schema[ field ] === undefined ) {
 					throw new Error( 'Unrecognized field ' + field );
 				}
 			}
 
-			$.each( model, function ( field, desc ) {
+			$.each( schema, function ( field, desc ) {
 				var val = event[ field ];
 
 				if ( val === undefined ) {
@@ -119,49 +119,49 @@
 
 		/**
 		 * Set default values to be applied to all subsequent events belonging to
-		 * a data model. Note that no validation is performed on setDefaults, but
+		 * a schema. Note that no validation is performed on setDefaults, but
 		 * the complete event instance (including defaults) are validated prior to
 		 * dispatch.
 		 *
-		 * @param {string} modelName Canonical model name.
-		 * @param {Object|null} modelDefaults Defaults, or null to clear.
-		 * @returns {Object} Updated defaults for model.
+		 * @param {string} schemaName Canonical schema name.
+		 * @param {Object|null} schemaDefaults Defaults, or null to clear.
+		 * @returns {Object} Updated defaults for schema.
 		 */
-		setDefaults: function ( modelName, modelDefaults ) {
-			defaults[ modelName ] = modelDefaults === null ?
-				{} : $.extend( true, defaults[ modelName ], modelDefaults );
-			return defaults[ modelName ];
+		setDefaults: function ( schemaName, schemaDefaults ) {
+			defaults[ schemaName ] = schemaDefaults === null ?
+				{} : $.extend( true, defaults[ schemaName ], schemaDefaults );
+			return defaults[ schemaName ];
 		},
 
 
 		/**
-		 * @param {string} modelName Canonical model name.
+		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object} eventInstance Event instance.
 		 * @returns {jQuery.Deferred} Promise object.
 		 */
-		logEvent: function ( modelName, eventInstance ) {
+		logEvent: function ( schemaName, eventInstance ) {
 			var baseUri, dfd, queryString, beacon;
 
-			eventInstance = $.extend( true, {}, eventInstance, defaults[ modelName ] );
+			eventInstance = $.extend( true, {}, eventInstance, defaults[ schemaName ] );
 
-			mw.eventLog.assertValid( eventInstance, modelName );
+			mw.eventLog.assertValid( eventInstance, schemaName );
 
 			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
 			dfd = jQuery.Deferred();
 
 			// Event instances are automatically annotated with '_db' and
-			// '_id' to identify their origin and declared data model.
+			// '_id' to identify their origin and declared schema.
 			queryString = [ $.param( {
 				/*jshint nomen: false*/
 				_db: mw.config.get( 'wgDBname' ),
-				_id: modelName
+				_id: schemaName
 				/*jshint nomen: true*/
 			} ), $.param( eventInstance ) ].join( '&' );
 
 			if ( !baseUri ) {
 				// We already logged the fact of wgEventLoggingBaseUri being empty,
 				// so respect the caller's expectation and return a rejected promise.
-				dfd.rejectWith( eventInstance, [ modelName, eventInstance, queryString ] );
+				dfd.rejectWith( eventInstance, [ schemaName, eventInstance, queryString ] );
 				return dfd.promise();
 			}
 
@@ -171,7 +171,7 @@
 			// ("No Content") responses to image requests. Thus, although
 			// counterintuitive, resolving the promise on error is appropriate.
 			$( beacon ).on( 'error', function () {
-				dfd.resolveWith( eventInstance, [ modelName, eventInstance, queryString ] );
+				dfd.resolveWith( eventInstance, [ schemaName, eventInstance, queryString ] );
 			} );
 			beacon.src = baseUri + '?' + queryString + ';';
 			return dfd.promise();

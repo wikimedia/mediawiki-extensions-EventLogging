@@ -1,7 +1,7 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var earthquakeModel = {
+	var earthquakeSchema = {
 		epicenter: {
 			type: 'string',
 			'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
@@ -18,7 +18,7 @@
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.setModels( { earthquake: earthquakeModel } );
+			mw.eventLog.setSchemas( { earthquake: earthquakeSchema } );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );
 		}
 	} ) );
@@ -28,9 +28,9 @@
 	} );
 
 
-	QUnit.test( 'getModel', 2, function ( assert ) {
-		assert.deepEqual( mw.eventLog.getModel( 'earthquake' ), earthquakeModel, 'Retrieves model if exists' );
-		assert.deepEqual( mw.eventLog.getModel( 'foo' ), null, 'Returns null for missing models' );
+	QUnit.test( 'getSchema', 2, function ( assert ) {
+		assert.deepEqual( mw.eventLog.getSchema( 'earthquake' ), earthquakeSchema, 'Retrieves schema if exists' );
+		assert.deepEqual( mw.eventLog.getSchema( 'foo' ), null, 'Returns null for missing schemas' );
 	} );
 
 	QUnit.test( 'isInstance', 36, function ( assert ) {
