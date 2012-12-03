@@ -20,6 +20,7 @@ $wgExtensionCredits[ 'other' ][] = array(
 	'author' => array(
 		'Ori Livneh',
 		'Timo Tijhof',
+		'S Page',
 	),
 	'version' => '0.2',
 	'url' => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
