@@ -26,7 +26,7 @@ class SchemaModule extends ResourceLoaderModule {
 
 	const LOCK_TIMEOUT = 30;
 
-	protected $schema;
+	protected $title;
 	protected $rev;
 
 
@@ -50,10 +50,10 @@ class SchemaModule extends ResourceLoaderModule {
 		if ( !array_key_exists( 'schema', $options ) ) {
 			throw new MWException( 'SchemaModule options must set a "schema" key.' );
 		}
-		$this->schema = $options[ 'schema' ];
-		$this->rev = array_key_exists( 'revision', $options )
+		$this->title = $options[ 'schema' ];
+		$this->revision = array_key_exists( 'revision', $options )
 			? $options[ 'revision' ]
-			: NULL;
+			: 'HEAD';
 	}
 
 	/**
@@ -64,7 +64,7 @@ class SchemaModule extends ResourceLoaderModule {
 	protected function acquireLock() {
 		global $wgMemc;
 
-		$lockKey = wfSchemaKey( $this->schema, $this->rev, 'lock' );
+		$lockKey = wfSchemaKey( $this->title, $this->revision, 'lock' );
 		return $wgMemc->add( $lockKey, 1, self::LOCK_TIMEOUT );
 	}
 
@@ -86,9 +86,9 @@ class SchemaModule extends ResourceLoaderModule {
 	public function getUri() {
 		global $wgEventLoggingSchemaIndexUri;
 
-		$query = array( 'title' => $this->schema, 'action' => 'raw' );
-		if ( $this->rev ) {
-			$query[ 'oldid' ] = $this->rev;
+		$query = array( 'title' => $this->title, 'action' => 'raw' );
+		if ( $this->revision !== 'HEAD' ) {
+			$query[ 'oldid' ] = $this->revision;
 		}
 		return wfAppendQuery( $wgEventLoggingSchemaIndexUri, $query );
 	}
@@ -105,15 +105,15 @@ class SchemaModule extends ResourceLoaderModule {
 		// prevent a pile-up of multiple lingering connections.
 		$res = Http::get( $uri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
-			wfDebugLog( 'EventLogging', "Failed to fetch schema '{$this->schema}' from $uri" );
+			wfDebugLog( 'EventLogging', "Failed to fetch schema '{$this->title}' from $uri" );
 			return;
 		}
 
-		wfDebugLog( 'EventLogging', "Fetched schema '{$this->schema}' from $uri" );
+		wfDebugLog( 'EventLogging', "Fetched schema '{$this->title}' from $uri" );
 
 		$schema = FormatJson::decode( $res, true );
 		if ( !is_array( $schema ) ) {
-			wfDebugLog( 'EventLogging', "Failed to decode schema '{$this->schema}' from $uri; got '$res'" );
+			wfDebugLog( 'EventLogging', "Failed to decode schema '{$this->title}' from $uri; got '$res'" );
 			return;
 		}
 
@@ -134,7 +134,7 @@ class SchemaModule extends ResourceLoaderModule {
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		global $wgMemc;
 
-		$key = wfSchemaKey( $this->schema, $this->rev, 'mTime' );
+		$key = wfSchemaKey( $this->title, $this->revision, 'mTime' );
 		$mTime = $wgMemc->get( $key );
 
 		if ( !$mTime ) {
@@ -147,25 +147,21 @@ class SchemaModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Generates JavaScript module code from schema
+	 * Retrieves a schema object
 	 *
-	 * Retrieves a schema from cache or HTTP and generates a
-	 * JavaScript expression which, when run in the browser, adds it
-	 * to mediaWiki.eventLogging.schemas If unable to retrieve
-	 * schema, sets the value to an empty object instead.
+	 * Tries to retrieve a schema object from memcached. If missing,
+	 * tries to retrieve the schema via an API query to the remote wiki
+	 * host. If unable to retrieve model, return false.
 	 *
-	 * @param $context ResourceLoaderContext
-	 * @return string
+	 * @return array|bool
 	 */
-	public function getScript( ResourceLoaderContext $context ) {
+	public function getSchema() {
 		global $wgMemc;
 
-		$key = wfSchemaKey( $this->schema, $this->rev );
+		$key = wfSchemaKey( $this->title, $this->revision );
 		$schema = $wgMemc->get( $key );
 
 		if ( $schema === false ) {
-			// Attempt to acquire exclusive update lock. If successful,
-			// grab schema via HTTP and update the cache.
 			if ( $this->acquireLock() ) {
 				$schema = $this->httpGetSchema();
 				if ( $schema ) {
@@ -173,14 +169,24 @@ class SchemaModule extends ResourceLoaderModule {
 				}
 			}
 		}
+		return schema;
+	}
 
-		if ( !$schema ) {
-			$schema = new stdClass();  // Will be encoded to empty JS object.
-		}
-
-		// { key1: val1, key2: val2 } => { schema: { key1: val1, key2: val2 } }
-		$schema = array( $this->schema => $schema );
-
-		return Xml::encodeJsCall( 'mediaWiki.eventLog.setSchemas', array( $schema ) );
+	/**
+	 * Generates JavaScript module code from schema
+	 *
+	 * Retrieves a schema and generates a JavaScript expression which,
+	 * when run in the browser, adds it to mw.eventLogging.schemas.
+	 *
+	 * @param $context ResourceLoaderContext
+	 * @return string
+	 */
+	public function getScript( ResourceLoaderContext $context ) {
+		$meta = array(
+			'schema'   => $this->getSchema() ?: new StdClass(),
+			'revision' => $this->revision
+		);
+		return Xml::encodeJsCall( 'mediaWiki.eventLog.setSchema',
+			array( $this->title, $meta ) );
 	}
 }

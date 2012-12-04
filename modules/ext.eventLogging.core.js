@@ -6,40 +6,47 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-( function ( mw, $ ) {
+( function ( mw, $, console ) {
 	'use strict';
-
-	var defaults = {};
 
 	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
 		mw.log( 'wgEventLoggingBaseUri is not set.' );
 	}
 
-	mw.eventLog = {
+	var self = mw.eventLog = {
 
 		schemas: {},
 
+		warn: console && $.isFunction( console.warn ) ?
+			$.proxy( console.warn, console ) : mw.log,
+
 		/**
-		 * @param {string} schemaName
+		 * @param string schemaName
 		 * @return {Object|null}
 		 */
 		getSchema: function ( schemaName ) {
-			var schema = mw.eventLog.schemas[ schemaName ];
-			if ( schema === undefined ) {
-				return null;
-			}
-			return schema;
+			return self.schemas[ schemaName ] || null;
 		},
 
 
 		/**
-		 * Declare event schemas.
+		 * Declare event schema.
 		 *
-		 * @param {Object} schemas Schemas specified as JSON Schema
-		 * @returns {Object}
+		 * @param {Object} schemas Schema specified as JSON Schema
+		 * @param integer revision
+		 * @return {Object}
 		 */
-		setSchemas: function ( schemas ) {
-			return $.extend( true, mw.eventLog.schemas, schemas );
+		setSchema: function ( schemaName, meta ) {
+			if ( self.schemas.hasOwnProperty( schemaName ) ) {
+				self.warn( 'Clobbering existing "' + schemaName + '" schema' );
+			}
+			self.schemas[ schemaName ] = $.extend( true, {
+				revision : 'UNKNOWN',
+				schema   : {},
+				defaults : {},
+				logged   : []
+			}, self.schemas[ schemaName ], meta );
+			return self.schemas[ schemaName ];
 		},
 
 
@@ -78,30 +85,34 @@
 		 * @param {Object} schemaName Name of schema.
 		 * @throws {Error} If event fails to validate.
 		 */
-		assertValid: function ( event, schemaName ) {
-			var field, schema = mw.eventLog.getSchema( schemaName );
+		validate: function ( event, schemaName ) {
+			var field, schema = self.getSchema( schemaName );
 
 			if ( schema === null ) {
-				throw new Error( 'Unknown event schema: ' + schemaName );
+				self.warn( 'Unknown schema "' + schemaName + '"' );
+				return false;
 			}
 
 			for ( field in event ) {
-				if ( schema[ field ] === undefined ) {
-					throw new Error( 'Unrecognized field ' + field );
+				if ( schema.schema[ field ] === undefined ) {
+					self.warn( 'Unrecognized field "' + field + '"' );
+					return false;
 				}
 			}
 
-			$.each( schema, function ( field, desc ) {
+			$.each( schema.schema, function ( field, desc ) {
 				var val = event[ field ];
 
 				if ( val === undefined ) {
 					if ( desc.required ) {
-						throw new Error( 'Missing field: ' + field );
+						self.warn( 'Missing "' + field + '" field' );
+						return false;
 					}
 					return true;
 				}
-				if ( !( mw.eventLog.isInstance( val, desc.type ) ) ) {
-					throw new Error( [ 'Wrong type for field:', field, val ].join(' ') );
+				if ( !( self.isInstance( val, desc.type ) ) ) {
+					self.warn( [ 'Wrong type for field:', field, val ].join(' ') );
+					return false;
 				}
 				// 'enum' is reserved for possible future use by the ECMAScript
 				// specification, but it's legal to use it as an attribute name
@@ -110,7 +121,8 @@
 				// the only way to turn off the warning is to use "es5:true",
 				// which would be too broad.
 				if ( desc[ 'enum' ] && desc[ 'enum' ].indexOf( val ) === -1 ) {
-					throw new Error( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
+					self.warn( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
+					return false;
 				}
 			} );
 			return true;
@@ -128,9 +140,12 @@
 		 * @returns {Object} Updated defaults for schema.
 		 */
 		setDefaults: function ( schemaName, schemaDefaults ) {
-			defaults[ schemaName ] = schemaDefaults === null ?
-				{} : $.extend( true, defaults[ schemaName ], schemaDefaults );
-			return defaults[ schemaName ];
+			var schema = self.getSchema( schemaName );
+			if ( schema === null ) {
+				self.warn( 'Setting defaults on unknown schema "' + schemaName + '"' );
+				schema = self.setSchema( schemaName );
+			}
+			return $.extend( true, schema.defaults, schemaDefaults );
 		},
 
 
@@ -140,11 +155,14 @@
 		 * @returns {jQuery.Deferred} Promise object.
 		 */
 		logEvent: function ( schemaName, eventInstance ) {
-			var baseUri, dfd, queryString, beacon;
+			var baseUri, dfd, queryString, beacon, schema = self.getSchema( schemaName );
 
-			eventInstance = $.extend( true, {}, eventInstance, defaults[ schemaName ] );
+			if ( schema === null ) {
+				self.warn( 'Logging event with unknown schema "' + schemaName + '"' );
+				schema = self.setSchema( schemaName );
+			}
 
-			mw.eventLog.assertValid( eventInstance, schemaName );
+			eventInstance = $.extend( true, {}, eventInstance, schema.defaults );
 
 			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
 			dfd = jQuery.Deferred();
@@ -154,7 +172,9 @@
 			queryString = [ $.param( {
 				/*jshint nomen: false*/
 				_db: mw.config.get( 'wgDBname' ),
-				_id: schemaName
+				_id: schemaName,
+				_rv: schema.revision,
+				_ok: self.validate( eventInstance, schemaName )
 				/*jshint nomen: true*/
 			} ), $.param( eventInstance ) ].join( '&' );
 
@@ -171,6 +191,7 @@
 			// ("No Content") responses to image requests. Thus, although
 			// counterintuitive, resolving the promise on error is appropriate.
 			$( beacon ).on( 'error', function () {
+				schema.logged.push( eventInstance );
 				dfd.resolveWith( eventInstance, [ schemaName, eventInstance, queryString ] );
 			} );
 			beacon.src = baseUri + '?' + queryString + ';';
@@ -178,4 +199,4 @@
 		}
 	};
 
-} ( mediaWiki, jQuery ) );
+} ( mediaWiki, jQuery, window.console ) );

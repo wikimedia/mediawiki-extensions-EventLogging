@@ -1,25 +1,37 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var earthquakeSchema = {
-		epicenter: {
-			type: 'string',
-			'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
-			required: true
-		},
-		magnitude: {
-			type: 'number',
-			required: true
-		},
-		article: {
-			type: 'string'
-		}
-	};
+	var warn = mw.eventLog.warn,
+
+		earthquakeSchema = {
+			epicenter: {
+				type: 'string',
+				'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
+				required: true
+			},
+			magnitude: {
+				type: 'number',
+				required: true
+			},
+			article: {
+				type: 'string'
+			}
+		};
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.setSchemas( { earthquake: earthquakeSchema } );
+			mw.eventLog.warn = function( msg ) {
+				throw new Error( msg );
+			};
+			mw.eventLog.setSchema( 'earthquake', {
+				schema: earthquakeSchema,
+				revision: 'TEST'
+			} );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );
+		},
+		teardown: function () {
+			mw.eventLog.schemas = {};
+			mw.eventLog.warn = warn;
 		}
 	} ) );
 
@@ -29,7 +41,7 @@
 
 
 	QUnit.test( 'getSchema', 2, function ( assert ) {
-		assert.deepEqual( mw.eventLog.getSchema( 'earthquake' ), earthquakeSchema, 'Retrieves schema if exists' );
+		assert.deepEqual( mw.eventLog.getSchema( 'earthquake' ).schema, earthquakeSchema, 'Retrieves schema if exists' );
 		assert.deepEqual( mw.eventLog.getSchema( 'foo' ), null, 'Returns null for missing schemas' );
 	} );
 
@@ -73,28 +85,28 @@
 
 	} );
 
-	QUnit.test( 'assertValid', 5, function ( assert ) {
-		assert.ok( mw.eventLog.assertValid( {
+	QUnit.test( 'validate', 5, function ( assert ) {
+		assert.ok( mw.eventLog.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
 		assert.throws( function () {
-			mw.eventLog.assertValid( {
+			mw.eventLog.validate( {
 				epicenter: 'Valdivia',
 				article: '[[1960 Valdivia earthquake]]'
 			}, 'earthquake' );
 		}, /Missing/, 'Required fields must be present.' );
 
 		assert.throws( function () {
-			mw.eventLog.assertValid( {
+			mw.eventLog.validate( {
 				epicenter: 'Valdivia',
 				magnitude: '9.5'
 			}, 'earthquake' );
 		}, /Wrong/, 'Values must be instances of declared type' );
 
 		assert.throws( function () {
-			mw.eventLog.assertValid( {
+			mw.eventLog.validate( {
 				epicenter: 'Valdivia',
 				magnitude: 9.5,
 				depth: 33
@@ -102,7 +114,7 @@
 		}, /Unrecognized/, 'Unrecognized fields fail validation' );
 
 		assert.throws( function () {
-			mw.eventLog.assertValid( {
+			mw.eventLog.validate( {
 				epicenter: 'Tōhoku',
 				magnitude: 9.0
 			}, 'earthquake' );
@@ -121,7 +133,7 @@
 		} );
 	} );
 
-	QUnit.asyncTest( 'setDefaults', 3, function ( assert ) {
+	QUnit.asyncTest( 'setDefaults', 2, function ( assert ) {
 
 		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
 			epicenter: 'Valdivia'
@@ -137,10 +149,6 @@
 			QUnit.start();
 		} );
 
-		assert.deepEqual(
-			mw.eventLog.setDefaults( 'earthquake', null ), {},
-			'Passing null to setDefaults clears any defaults'
-		);
 	} );
 
 } ( mediaWiki, jQuery ) );
