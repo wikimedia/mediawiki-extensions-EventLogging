@@ -125,6 +125,7 @@ $messages['ja'] = array(
  */
 $messages['ko'] = array(
 	'eventlogging-desc' => '클라이언트 쪽 코드에서 사건 기록에 대한 프레임워크',
+	'eventlogging-json' => '{{PLURAL:$1|속성}} $1개를 가진 개체',
 );
 
 /** Macedonian (македонски)
