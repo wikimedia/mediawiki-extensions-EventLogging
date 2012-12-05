@@ -58,6 +58,7 @@ class SchemaModule extends ResourceLoaderModule {
 
 	/**
 	 * Attempt to acquire exclusive update lock.
+	 * A lock is specific to an article-revision pair.
 	 *
 	 * @return bool Whether the lock was acquired.
 	 */
@@ -86,7 +87,10 @@ class SchemaModule extends ResourceLoaderModule {
 	public function getUri() {
 		global $wgEventLoggingSchemaIndexUri;
 
-		$query = array( 'title' => $this->title, 'action' => 'raw' );
+		$query = array(
+			'title'  => "Schema:{$this->title}",
+			'action' => 'raw'
+		);
 		if ( $this->revision !== 'HEAD' ) {
 			$query[ 'oldid' ] = $this->revision;
 		}
@@ -169,7 +173,7 @@ class SchemaModule extends ResourceLoaderModule {
 				}
 			}
 		}
-		return schema;
+		return $schema;
 	}
 
 	/**

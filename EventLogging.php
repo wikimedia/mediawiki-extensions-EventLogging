@@ -59,13 +59,12 @@ $wgEventLoggingBaseUri = false;
 $wgEventLoggingFile = false;
 
 /**
- * @var bool|string: Format string or false if not set.
- * Using sprintf() syntax, this string should format an article
- * title into a URI that retrieves the schema.
+ * @var bool|string: URI or false if not set.
+ * URI of index.php on schema wiki.
  *
- * @example string: 'http://localhost/wiki/index.php?title=Schema:%s&action=raw'
+ * @example string: 'http://localhost/wiki/index.php'
  */
-$wgEventLoggingSchemaUriFormat = false;
+$wgEventLoggingSchemaIndexUri = false;
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
