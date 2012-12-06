@@ -51,17 +51,15 @@ function consoleLog( $msg ) {
 
 /**
  * Reads an HTTP request from a socket.
- * @return string
+ * Reads up to 5 kB all at once and returns the first line, containing
+ * the request URI. If unable to read request, returns false.
+ *
+ * @return string|false
  */
 function readHttpReq( &$conn ) {
-	$buf = '';
-
-	while( !preg_match( '/\n\r?\n/', $buf ) ) {
-		$buf .= socket_read( $conn, 1024 );
-	}
-	$lines = preg_split( '/[\r\n]/', $buf );
-
-	return array_shift( $lines );
+	// Read up to 5 kB in one go.
+	$req = @socket_read( $conn, 5120 );
+	return $req ? strstr( $req, "\n", true ) : false;
 }
 
 
