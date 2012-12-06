@@ -26,6 +26,7 @@ class SchemaModule extends ResourceLoaderModule {
 
 	const LOCK_TIMEOUT = 30;
 
+	protected $cache;
 	protected $title;
 	protected $revision;
 
@@ -45,11 +46,15 @@ class SchemaModule extends ResourceLoaderModule {
 	 *
 	 * @throws MWException if the schema key is missing.
 	 * @param $options array
+	 * @param &$cache ObjectCache
 	 */
-	public function __construct( $options ) {
+	public function __construct( $options, $cache = NULL, $http = NULL ) {
 		if ( !array_key_exists( 'schema', $options ) ) {
 			throw new MWException( 'SchemaModule options must set a "schema" key.' );
 		}
+
+		$this->cache = $cache ?: wfGetCache( CACHE_MEMCACHED );
+		$this->http = $http ?: new Http();
 		$this->title = $options[ 'schema' ];
 		$this->revision = array_key_exists( 'revision', $options )
 			? $options[ 'revision' ]
@@ -63,10 +68,8 @@ class SchemaModule extends ResourceLoaderModule {
 	 * @return bool Whether the lock was acquired.
 	 */
 	protected function acquireLock() {
-		global $wgMemc;
-
 		$lockKey = wfSchemaKey( $this->title, $this->revision, 'lock' );
-		return $wgMemc->add( $lockKey, 1, self::LOCK_TIMEOUT );
+		return $this->cache->add( $lockKey, 1, self::LOCK_TIMEOUT );
 	}
 
 
@@ -84,7 +87,7 @@ class SchemaModule extends ResourceLoaderModule {
 	/**
 	 * Constructs a URI for fetching this schema.
 	 */
-	public function getUri() {
+	private function getUri() {
 		global $wgEventLoggingSchemaIndexUri;
 
 		$query = array(
@@ -107,7 +110,7 @@ class SchemaModule extends ResourceLoaderModule {
 
 		// The HTTP request timeout is set to a fraction of the lock timeout to
 		// prevent a pile-up of multiple lingering connections.
-		$res = Http::get( $uri, self::LOCK_TIMEOUT * 0.8 );
+		$res = $this->http->get( $uri, self::LOCK_TIMEOUT * 0.8 );
 		if ( $res === false ) {
 			wfDebugLog( 'EventLogging', "Failed to fetch schema '{$this->title}' from $uri" );
 			return;
@@ -136,14 +139,12 @@ class SchemaModule extends ResourceLoaderModule {
 	 * @return integer Unix timestamp
 	 */
 	public function getModifiedTime( ResourceLoaderContext $context ) {
-		global $wgMemc;
-
 		$key = wfSchemaKey( $this->title, $this->revision, 'mTime' );
-		$mTime = $wgMemc->get( $key );
+		$mTime = $this->cache->get( $key );
 
 		if ( !$mTime ) {
-			$mTime = wfTimestampNow();
-			$wgMemc->add( $key, $mTime );
+			$mTime = wfTimestamp();
+			$this->cache->add( $key, $mTime );
 		}
 
 		return $mTime;
@@ -160,16 +161,14 @@ class SchemaModule extends ResourceLoaderModule {
 	 * @return array|bool
 	 */
 	public function getSchema() {
-		global $wgMemc;
-
 		$key = wfSchemaKey( $this->title, $this->revision );
-		$schema = $wgMemc->get( $key );
+		$schema = $this->cache->get( $key );
 
 		if ( $schema === false ) {
 			if ( $this->acquireLock() ) {
 				$schema = $this->httpGetSchema();
 				if ( $schema ) {
-					$wgMemc->add( $key, $schema );
+					$this->cache->add( $key, $schema );
 				}
 			}
 		}
