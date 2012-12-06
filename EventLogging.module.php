@@ -27,7 +27,7 @@ class SchemaModule extends ResourceLoaderModule {
 	const LOCK_TIMEOUT = 30;
 
 	protected $title;
-	protected $rev;
+	protected $revision;
 
 
 	/**
