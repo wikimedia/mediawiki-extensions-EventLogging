@@ -149,13 +149,15 @@ assertSocket( @socket_listen( $socket ), 'socket_listen() failed' );
 
 
 // On shutdown, close socket.
-register_shutdown_function( function () use ( $socket ) {
+function shutdown() {
 	socket_close( $socket );
-} );
+}
+
+register_shutdown_function( shutdown );
 
 // If PHP was compiled with Process Control, exit cleanly on SIGTERM.
 if ( function_exists ( 'pcntl_signal' ) ) {
-	pcntl_signal( SIGTERM, function () { exit; } );
+	pcntl_signal( SIGTERM, shutdown );
 }
 
 consoleLog( "Serving HTTP on {$opts['iface']} port {$opts['port']} ..." );
