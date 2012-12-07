@@ -61,11 +61,6 @@ class SchemaModuleTest extends MediaWikiTestCase {
 			->with( $this->equalTo( self::TEXT_KEY ) )
 			->will( $this->returnValue( $ok ) );
 
-		// ...no update lock will be acquired.
-		$this->cache
-			->expects( $this->never() )
-			->method( 'add' );
-
 		$this->assertEquals( $ok, $this->module->getSchema() );
 	}
 
@@ -78,11 +73,8 @@ class SchemaModuleTest extends MediaWikiTestCase {
 			->with( $this->equalTo( self::TEXT_KEY ) )
 			->will( $this->returnValue( false ) );
 
-		// ...we'll see two calls to cache->add:
-		// 1) An attempt to acquire update lock. We'll allow it.
-		// 2) An attempt to store the fetched revision in cache.
 		$this->cache
-			->expects( $this->exactly( 2 ) )
+			->expects( $this->any() )
 			->method( 'add' )
 			->with( $this->stringContains( 'eventLogging:' ) )
 			->will( $this->returnValue( true ) );
@@ -111,9 +103,8 @@ class SchemaModuleTest extends MediaWikiTestCase {
 
 		// ...we'll see an attempt to acquire update lock. Deny it.
 		$this->cache
-			->expects( $this->once() )
+			->expects( $this->any() )
 			->method( 'add' )
-			->with( $this->equalTo( self::LOCK_KEY ) )
 			->will( $this->returnValue( false ) );
 
 		// Without a lock, no HTTP requests.
@@ -126,46 +117,4 @@ class SchemaModuleTest extends MediaWikiTestCase {
 		$this->assertFalse( $this->module->getSchema() );
 	}
 
-	public function testModifiedTimePresent() {
-
-		$ts = wfTimestamp( 0, TS_UNIX );
-
-		// If the mTime is in memcached...
-		$this->cache
-			->expects( $this->once() )
-			->method( 'get' )
-			->with( $this->equalTo( self::MTIME_KEY ) )
-			->will( $this->returnValue( $ts ) );
-
-		// ...no attempt will be made to set it.
-		$this->cache
-			->expects( $this->never() )
-			->method( 'add' );
-
-		$this->assertEquals( $ts, $this->module->getModifiedTime( $this->context ) );
-
-	}
-	public function testModifiedTimeMissing() {
-
-		$ts = wfTimestamp( 0, TS_UNIX ) - 1;
-
-		// If the mTime is not in memcached...
-		$this->cache
-			->expects( $this->once() )
-			->method( 'get' )
-			->with( $this->equalTo( self::MTIME_KEY ) )
-			->will( $this->returnValue( false ) );
-
-		// ...will set the current time in memcached
-		$this->cache
-			->expects( $this->once() )
-			->method( 'add' )
-			->with(
-				$this->equalTo( self::MTIME_KEY ),
-				$this->greaterThan( $ts ) )
-			->will( $this->returnValue( false ) );
-
-		$this->assertGreaterThan( $ts, $this->module->getModifiedTime( $this->context ) );
-
-	}
 }

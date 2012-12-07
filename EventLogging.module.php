@@ -143,13 +143,21 @@ class SchemaModule extends ResourceLoaderModule {
 		$mTime = $this->cache->get( $key );
 
 		if ( !$mTime ) {
-			$mTime = wfTimestamp();
-			$this->cache->add( $key, $mTime );
+			$mTime = $this->touch();
 		}
 
 		return $mTime;
 	}
 
+
+	/**
+	 * Increment last modified time by one second if set; if not set,
+	 * reset to UNIX epoch.
+	 */
+	public function touch() {
+		$key = wfSchemaKey( $this->title, $this->revision, 'mTime' );
+		return $this->cache->add( $key, 1 ) ?: $this->cache->incr( $key );
+	}
 
 	/**
 	 * Retrieves a schema object
@@ -169,6 +177,7 @@ class SchemaModule extends ResourceLoaderModule {
 				$schema = $this->httpGetSchema();
 				if ( $schema ) {
 					$this->cache->add( $key, $schema );
+					$this->touch();
 				}
 			}
 		}
