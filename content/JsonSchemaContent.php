@@ -6,7 +6,7 @@
  * @ingroup Extensions
  * @ingroup EventLogging
  *
- * @author Ori Livneh <ori@wikimedia.org>
+ * @author  Ori Livneh <ori@wikimedia.org>
  */
 
 class JsonSchemaContent extends TextContent {
@@ -18,7 +18,7 @@ class JsonSchemaContent extends TextContent {
 	/**
 	 * Returns whether content is valid JSON Schema
 	 *
-	 * @return boolean
+	 * @return  boolean
 	 */
 	public function isValid() {
 		return is_array( FormatJson::decode( $this->getNativeData(), true ) );
@@ -27,10 +27,10 @@ class JsonSchemaContent extends TextContent {
 	/**
 	 * Beautifies JSON prior to save.
 	 *
-	 * @param $title Title
-	 * @param $user User
-	 * @param $popts ParserOptions
-	 * @return Content
+	 * @param   $title   Title
+	 * @param   $user    User
+	 * @param   $popts   ParserOptions
+	 * @return  Content
 	 */
 	public function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
 		return new JsonSchemaContent( wfBeautifyJson( $this->getNativeData() ) );
@@ -62,7 +62,7 @@ class JsonSchemaContent extends TextContent {
 	/**
 	 * Construct HTML representation of a single key-value pair.
 	 *
-	 * @return string
+	 * @return  string
 	 */
 	protected static function objectRow( $key, $val ) {
 		$th = Xml::elementClean( 'th', array(), $key );
@@ -76,7 +76,7 @@ class JsonSchemaContent extends TextContent {
 	/**
 	 * Generate HTML representation of content
 	 *
-	 * @return string HTML representation
+	 * @return  string  HTML representation
 	 */
 	public function getHighlightHtml() {
 		$schema = FormatJson::decode( $this->getNativeData(), true );

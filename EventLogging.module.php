@@ -135,8 +135,8 @@ class SchemaModule extends ResourceLoaderModule {
 	 * saved (on PageContentSaveComplete).  If the key is missing, set
 	 * it to now.
 	 *
-	 * @param $context ResourceLoaderContext
-	 * @return integer Unix timestamp
+	 * @param   $context  ResourceLoaderContext
+	 * @return  integer   Unix timestamp
 	 */
 	public function getModifiedTime( ResourceLoaderContext $context ) {
 		$key = wfSchemaKey( $this->title, $this->revision, 'mTime' );
@@ -158,7 +158,7 @@ class SchemaModule extends ResourceLoaderModule {
 	 * tries to retrieve the schema via an API query to the remote wiki
 	 * host. If unable to retrieve model, return false.
 	 *
-	 * @return array|bool
+	 * @return  array|bool
 	 */
 	public function getSchema() {
 		$key = wfSchemaKey( $this->title, $this->revision );
@@ -181,8 +181,8 @@ class SchemaModule extends ResourceLoaderModule {
 	 * Retrieves a schema and generates a JavaScript expression which,
 	 * when run in the browser, adds it to mw.eventLogging.schemas.
 	 *
-	 * @param $context ResourceLoaderContext
-	 * @return string
+	 * @param   $context  ResourceLoaderContext
+	 * @return  string
 	 */
 	public function getScript( ResourceLoaderContext $context ) {
 		$meta = array(

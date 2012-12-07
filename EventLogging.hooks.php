@@ -4,10 +4,10 @@
  *
  * @file
  *
- * @ingroup Extensions
- * @ingroup EventLogging
+ * @ingroup  Extensions
+ * @ingroup  EventLogging
  *
- * @author Ori Livneh <ori@wikimedia.org>
+ * @author   Ori Livneh <ori@wikimedia.org>
  */
 
 class EventLoggingHooks {
@@ -45,7 +45,7 @@ class EventLoggingHooks {
 	/**
 	 * Generate and log an edit event on PageContentSaveComplete.
 	 *
-	 * @return bool
+	 * @return  bool
 	 */
 	public static function onPageContentSaveComplete( $article, $user,
 		$content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status,
@@ -86,8 +86,8 @@ class EventLoggingHooks {
 
 
 	/**
-	 * @param array &$vars
-	 * @return bool
+	 * @param   &$vars  array
+	 * @return  bool
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgEventLoggingBaseUri;
@@ -97,9 +97,9 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param array &$testModules
-	 * @param ResourceLoader $resourceLoader
-	 * @return bool
+	 * @param   &$testModules    array
+	 * @param   $resourceLoader  ResourceLoader
+	 * @return  bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = array(
