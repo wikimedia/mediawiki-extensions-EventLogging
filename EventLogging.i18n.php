@@ -32,6 +32,7 @@ $messages['qqq'] = array(
  */
 $messages['ast'] = array(
 	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
+	'eventlogging-json' => 'Oxetu, $1 {{PLURAL:$1|propiedá|propiedaes}}',
 );
 
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
@@ -71,6 +72,13 @@ $messages['dsb'] = array(
 $messages['es'] = array(
 	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
 	'eventlogging-json' => 'Objeto, $1 {{PLURAL:$1|propiedad|propiedades}}',
+);
+
+/** Finnish (suomi)
+ * @author Nike
+ */
+$messages['fi'] = array(
+	'eventlogging-json' => 'Objekti, $1 {{PLURAL:$1|ominaisuus|ominaisuutta}}',
 );
 
 /** French (français)
@@ -141,6 +149,7 @@ $messages['mk'] = array(
  */
 $messages['ms'] = array(
 	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
+	'eventlogging-json' => 'Objek, $1 sifat',
 );
 
 /** Dutch (Nederlands)
