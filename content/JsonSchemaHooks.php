@@ -26,7 +26,6 @@ class JsonSchemaHooks {
 			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
 			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
-			$wgHooks[ 'PageContentSaveComplete' ][] = 'JsonSchemaHooks::onPageContentSaveComplete';
 			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
 
 			return true;
@@ -87,41 +86,10 @@ class JsonSchemaHooks {
 
 		$content = new JsonSchemaContent( $text );
 		if ( !$content->isValid() ) {
-			$error = '{{MediaWiki:InvalidJsonError}}'; // XXX(ori-l, 17-Nov-2012): i18n!
+			$error = wfMessage( 'eventlogging-invalid-json' )->parse();
 			return true;
 		}
 
-		return true;
-	}
-
-
-	/**
-	 * On PageContentSaveComplete, check if the page we're saving is in the
-	 * NS_SCHEMA namespace. If so, cache its content and mtime.
-	 *
-	 * @return  bool
-	 */
-	public static function onPageContentSaveComplete( $article, $user,
-		$content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status,
-		$baseRevId ) {
-
-		global $wgMemc, $wgResourceModules;
-
-		$title = $article->getTitle();
-
-		if ( $revision === NULL || $title->getNamespace() !== NS_SCHEMA ) {
-			return true;
-		}
-
-		$schema = FormatJson::decode( $content->getNativeData(), true );
-		if ( !is_array( $schema ) ) {
-			wfDebugLog( 'EventLogging', 'New schema revision fails to parse.' );
-			return true;
-		}
-
-		$wgMemc->set( wfSchemaKey( $title->getDBkey() ), $schema );
-		$wgMemc->set( wfSchemaKey( $title->getDBkey(), 'mTime' ),
-			wfTimestamp( TS_UNIX, $revision->getTimestamp() ) );
 		return true;
 	}
 

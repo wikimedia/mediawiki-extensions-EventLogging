@@ -80,7 +80,7 @@ class EventLoggingHooks {
 			);
 		}
 
-		wfLogServerSideEvent( 'edit', $event );
+		efLogServerSideEvent( 'edit', $event );
 		return true;
 	}
 

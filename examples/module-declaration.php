@@ -5,6 +5,6 @@
  * packaged as a ResourceLoader module like this:
  */
 $wgResourceModules[ 'schema.Person' ] = array(
-	'class'  => 'SchemaModule',
+	'class'  => 'ResourceLoaderSchemaModule',
 	'schema' => 'Person'
 );

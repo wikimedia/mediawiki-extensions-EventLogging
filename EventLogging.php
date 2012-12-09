@@ -86,11 +86,11 @@ $wgEventLoggingDBname = false;
  *
  * @see wfErrorLog()
  *
- * @param $schema string Schema name
- * @param $event array Map of event keys/vals.
- * @return bool Whether the event was logged.
+ * @param string $schema: Schema name
+ * @param array $event: Map of event keys/vals.
+ * @return bool: Whether the event was logged.
  */
-function wfLogServerSideEvent( $schema, $event ) {
+function efLogServerSideEvent( $schema, $event ) {
 	global $wgEventLoggingFile, $wgDBname;
 
 	if ( !$wgEventLoggingFile ) {
@@ -108,28 +108,12 @@ function wfLogServerSideEvent( $schema, $event ) {
 
 
 /**
- * Generate a memcached key containing the extension name
- * and a hash digest of the schema name and (optionally) any
- * other params.
- *
- * @param $schema string Schema title
- * @param $rev integer|null Revision number, or NULL for latest.
- * @param $rev,... string Additional values to hash.
- * @return string Memcached key (45 characters long).
- */
-function wfSchemaKey( $schema, $rev = NULL /* , ... */ ) {
-	$digest = md5( join( func_get_args() ) );
-	return 'eventLogging:' . $digest;
-}
-
-
-/**
  * Takes a string of JSON data and formats it for readability.
  *
- * @param $json string
- * @return string|null Formatted JSON or null if input was invalid.
+ * @param string $json
+ * @return string|null: Formatted JSON or null if input was invalid.
  */
-function wfBeautifyJson( $json ) {
+function efBeautifyJson( $json ) {
 	$decoded = FormatJson::decode( $json, true );
 	if ( !is_array( $decoded ) ) {
 		return NULL;
@@ -140,7 +124,8 @@ function wfBeautifyJson( $json ) {
 // Classes
 
 $wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
-$wgAutoloadClasses[ 'SchemaModule' ] = __DIR__ . '/EventLogging.module.php';
+$wgAutoloadClasses[ 'RemoteSchema' ] = __DIR__ . '/RemoteSchema.php';
+$wgAutoloadClasses[ 'ResourceLoaderSchemaModule' ] = __DIR__ . '/ResourceLoaderSchemaModule.php';
 
 $wgAutoloadClasses[ 'JsonSchemaContent' ] = __DIR__ . '/content/JsonSchemaContent.php';
 $wgAutoloadClasses[ 'JsonSchemaContentHandler' ] = __DIR__ . '/content/JsonSchemaContentHandler.php';

@@ -33,7 +33,7 @@ class JsonSchemaContent extends TextContent {
 	 * @return  Content
 	 */
 	public function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
-		return new JsonSchemaContent( wfBeautifyJson( $this->getNativeData() ) );
+		return new JsonSchemaContent( efBeautifyJson( $this->getNativeData() ) );
 	}
 
 
