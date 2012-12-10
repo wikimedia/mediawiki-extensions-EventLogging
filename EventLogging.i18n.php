@@ -58,6 +58,7 @@ $messages['cs'] = array(
 $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 	'eventlogging-json' => 'Objekt, {{PLURAL:$1|eine Eigenschaft|$1 Eigenschaften}}',
+	'eventlogging-invalid-json' => 'Ungültiges JSON',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -89,6 +90,7 @@ $messages['fi'] = array(
 $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
 	'eventlogging-json' => 'Objet, $1 {{PLURAL:$1|propriété|propriétés}}',
+	'eventlogging-invalid-json' => 'JSON non valide',
 );
 
 /** Galician (galego)
@@ -97,6 +99,7 @@ $messages['fr'] = array(
 $messages['gl'] = array(
 	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
 	'eventlogging-json' => 'Obxecto, $1 {{PLURAL:$1|propiedade|propiedades}}',
+	'eventlogging-invalid-json' => 'JSON non válido',
 );
 
 /** Hebrew (עברית)
@@ -120,6 +123,7 @@ $messages['hsb'] = array(
 $messages['it'] = array(
 	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
 	'eventlogging-json' => 'Oggetto, $1 {{PLURAL:$1|proprietà}}',
+	'eventlogging-invalid-json' => 'JSON non valido',
 );
 
 /** Japanese (日本語)
@@ -128,6 +132,7 @@ $messages['it'] = array(
 $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
 	'eventlogging-json' => '$1 {{PLURAL:$1|件のプロパティ}}を持つオブジェクト',
+	'eventlogging-invalid-json' => '無効な JSON',
 );
 
 /** Korean (한국어)
@@ -160,6 +165,7 @@ $messages['ms'] = array(
 $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
 	'eventlogging-json' => 'Object, {{PLURAL:$1|één eigenschap|$1 eigenschappen}}',
+	'eventlogging-invalid-json' => 'Ongeldige JSON',
 );
 
 /** Swedish (svenska)
@@ -167,6 +173,13 @@ $messages['nl'] = array(
  */
 $messages['sv'] = array(
 	'eventlogging-desc' => 'Ramverk för loggning av händelser från klientsidans kod',
+);
+
+/** Ukrainian (українська)
+ * @author AS
+ */
+$messages['uk'] = array(
+	'eventlogging-invalid-json' => 'Неправильний JSON',
 );
 
 /** Vietnamese (Tiếng Việt)
