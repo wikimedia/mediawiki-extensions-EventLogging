@@ -1,21 +1,16 @@
 <?php
 /**
- * Hooks for EventLogging extension
+ * Hooks for EventLogging extension.
  *
  * @file
  *
- * @ingroup  Extensions
- * @ingroup  EventLogging
+ * @ingroup Extensions
+ * @ingroup EventLogging
  *
- * @author   Ori Livneh <ori@wikimedia.org>
+ * @author Ori Livneh <ori@wikimedia.org>
  */
 
 class EventLoggingHooks {
-
-	// Query strings are terminated with a semicolon to help identify
-	// URIs that were truncated in transmit.
-	const QS_TERMINATOR = ';';
-
 
 	/**
 	 * Emit a debug log message for each invalid or unset
@@ -44,7 +39,6 @@ class EventLoggingHooks {
 
 	/**
 	 * Generate and log an edit event on PageContentSaveComplete.
-	 *
 	 * @return  bool
 	 */
 	public static function onPageContentSaveComplete( $article, $user,
@@ -86,8 +80,8 @@ class EventLoggingHooks {
 
 
 	/**
-	 * @param   &$vars  array
-	 * @return  bool
+	 * @param array &$vars
+	 * @return bool
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgEventLoggingBaseUri;
@@ -96,10 +90,11 @@ class EventLoggingHooks {
 		return true;
 	}
 
+
 	/**
-	 * @param   &$testModules    array
-	 * @param   $resourceLoader  ResourceLoader
-	 * @return  bool
+	 * @param array &$testModules
+	 * @param ResourceLoader $resourceLoader
+	 * @return bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = array(

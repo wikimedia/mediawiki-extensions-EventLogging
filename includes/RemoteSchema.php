@@ -20,8 +20,8 @@ class RemoteSchema {
 	 * Constructor.
 	 * @param string $title
 	 * @param integer $revision
-	 * @param ObjectCache $cache: (optional) cache client
-	 * @param Http $http: (optional) HTTP client
+	 * @param ObjectCache $cache: (optional) cache client.
+	 * @param Http $http: (optional) HTTP client.
 	 */
 	function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
 		$this->title = $title;
@@ -31,8 +31,9 @@ class RemoteSchema {
 		$this->key = join( ':', array( 'schema', $title, $revision ) );
 	}
 
+
 	/**
-	 * Retrieve schema content.
+	 * Retrieves schema content.
 	 * @return array|bool: Schema or false if irretrievable.
 	 */
 	function get() {
@@ -55,7 +56,7 @@ class RemoteSchema {
 
 
 	/**
-	 * Retrieve content from memcached.
+	 * Retrieves content from memcached.
 	 * @return array:bool: Schema or false if not in cache.
 	 */
 	function memcGet() {
@@ -96,8 +97,9 @@ class RemoteSchema {
 		return wfAppendQuery( $wgEventLoggingSchemaIndexUri, $q );
 	}
 
+
 	/**
-	 * Return an object containing serializable properties.
+	 * Returns an object containing serializable properties.
 	 * @implements JsonSerializable
 	 */
 	function jsonSerialize() {
@@ -106,6 +108,7 @@ class RemoteSchema {
 			'revision' => $this->revision
 		);
 	}
+
 
 	/**
 	 * Retrieves the schema using HTTP.

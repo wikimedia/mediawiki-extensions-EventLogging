@@ -7,7 +7,7 @@
  * @ingroup EventLogging
  * @ingroup Extensions
  *
- * @author  Ori Livneh <ori@wikimedia.org>
+ * @author Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
  * @version 0.3
  */
@@ -15,15 +15,15 @@
 // Credits
 
 $wgExtensionCredits[ 'other' ][] = array(
-	'path' => __FILE__,
-	'name' => 'EventLogging',
+	'path'   => __FILE__,
+	'name'   => 'EventLogging',
 	'author' => array(
 		'Ori Livneh',
 		'Timo Tijhof',
 		'S Page',
 	),
 	'version' => '0.2',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
+	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );
 
@@ -51,7 +51,7 @@ $wgEventLoggingBaseUri = false;
  * @var bool|string: Filename, or TCP / UDP address; false if not set.
  * Server-side events will be logged to this location.
  *
- * @see wfErrorLog()
+ * @see wfErrorLog
  *
  * @example string: 'udp://127.0.0.1:9000'
  * @example string: '/var/log/mediawiki/events.log'
@@ -78,15 +78,14 @@ $wgEventLoggingDBname = false;
 
 /**
  * Write an event to a file descriptor or socket.
- *
  * Takes an event ID and an event, encodes it as query string,
  * and writes it to the UDP / TCP address or file specified by
  * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
  * false without logging anything.
  *
- * @see wfErrorLog()
+ * @see wfErrorLog
  *
- * @param string $schema: Schema name
+ * @param string $schema: Schema name.
  * @param array $event: Map of event keys/vals.
  * @return bool: Whether the event was logged.
  */
@@ -109,7 +108,6 @@ function efLogServerSideEvent( $schema, $event ) {
 
 /**
  * Takes a string of JSON data and formats it for readability.
- *
  * @param string $json
  * @return string|null: Formatted JSON or null if input was invalid.
  */
@@ -121,38 +119,44 @@ function efBeautifyJson( $json ) {
 	return FormatJson::encode( $decoded, true );
 }
 
+
+
 // Classes
 
-$wgAutoloadClasses[ 'EventLoggingHooks' ] = __DIR__ . '/EventLogging.hooks.php';
-$wgAutoloadClasses[ 'RemoteSchema' ] = __DIR__ . '/RemoteSchema.php';
-$wgAutoloadClasses[ 'ResourceLoaderSchemaModule' ] = __DIR__ . '/ResourceLoaderSchemaModule.php';
+$wgAutoloadClasses += array(
+	// Hooks
+	'EventLoggingHooks' => __DIR__ . '/EventLogging.hooks.php',
+	'JsonSchemaHooks' => __DIR__ . '/includes/JsonSchemaHooks.php',
 
-$wgAutoloadClasses[ 'JsonSchemaContent' ] = __DIR__ . '/content/JsonSchemaContent.php';
-$wgAutoloadClasses[ 'JsonSchemaContentHandler' ] = __DIR__ . '/content/JsonSchemaContentHandler.php';
-$wgAutoloadClasses[ 'JsonSchemaHooks' ] = __DIR__ . '/content/JsonSchemaHooks.php';
+	// ContentHandler
+	'JsonSchemaContent' => __DIR__ . '/includes/JsonSchemaContent.php',
+	'JsonSchemaContentHandler' => __DIR__ . '/includes/JsonSchemaContentHandler.php',
+
+	// ResourceLoaderModule
+	'RemoteSchema' => __DIR__ . '/includes/RemoteSchema.php',
+	'ResourceLoaderSchemaModule' => __DIR__ . '/includes/ResourceLoaderSchemaModule.php',
+);
 
 
 
 // Messages
 
-$wgExtensionMessagesFiles[ 'EventLogging' ] = __DIR__ . '/EventLogging.i18n.php';
-$wgExtensionMessagesFiles[ 'EventLoggingNamespaces' ] = __DIR__ . '/EventLogging.namespaces.php';
+$wgExtensionMessagesFiles += array(
+	'EventLogging'           => __DIR__ . '/EventLogging.i18n.php',
+	'EventLoggingNamespaces' => __DIR__ . '/EventLogging.namespaces.php',
+);
 
 
 
 // Modules
 
 $wgResourceModules[ 'ext.eventLogging' ] = array(
-	'scripts'       => array(
-		'modules/ext.eventLogging.core.js',
-	),
+	'scripts'       => 'modules/ext.eventLogging.core.js',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
-	'dependencies'  => array(
-		'jquery.json',
-		'mediawiki.util',
-	),
+	'dependencies'  => array( 'jquery.json', 'mediawiki.util' ),
 );
+
 
 $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 	'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
@@ -160,6 +164,7 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
 );
+
 
 
 // Hooks
@@ -175,7 +180,8 @@ $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoader
 $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
 
 
-// PHP Unit
+
+// Unit Tests
 
 $wgHooks[ 'UnitTestsList' ][] = function ( &$files ) {
 	$files += glob( __DIR__ . '/tests/*Test.php' );

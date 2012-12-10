@@ -30,6 +30,11 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
 	}
 
+
+	/**
+	 * Tests behavior when content is in memcached.
+	 * This is the most common scenario.
+	 */
 	function testSchemaInCache() {
 		// If the revision was in memcached...
 		$this->cache
@@ -50,12 +55,13 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 
-		// Calling get() a second time won't trigger a fetch. If it did,
-		// $this->cache->expects( $this->once() ) above would produce a test
-		// failure.
-		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 	}
 
+
+	/**
+	 * Tests behavior when content is missing from memcached and has to
+	 * be retrieved via HTTP instead.
+	 */
 	function testSchemaNotInCacheDoUpdate() {
 		// If the revision was not in memcached...
 		$this->cache
@@ -85,6 +91,10 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	}
 
 
+	/**
+	 * Tests behavior when content is missing from memcached and an
+	 * update lock cannot be acquired.
+	 */
 	function testSchemaNotInCacheNoUpdate() {
 		// If the revision was not in memcached...
 		$this->cache
@@ -110,5 +120,4 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		// lock to retrieve via HTTP, getSchema() will return false.
 		$this->assertFalse( $this->schema->get() );
 	}
-
 }

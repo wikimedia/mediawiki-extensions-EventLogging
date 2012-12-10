@@ -6,43 +6,41 @@
  * @ingroup Extensions
  * @ingroup EventLogging
  *
- * @author  Ori Livneh <ori@wikimedia.org>
+ * @author Ori Livneh <ori@wikimedia.org>
  */
 
+/**
+ * Represents the content of a JSON Schema article.
+ */
 class JsonSchemaContent extends TextContent {
 
-	public function __construct( $text ) {
+	function __construct( $text ) {
 		parent::__construct( $text, 'JsonSchema' );
 	}
 
 	/**
-	 * Returns whether content is valid JSON Schema
-	 *
-	 * @return  boolean
+	 * @return bool: Whether content is valid JSON Schema.
 	 */
-	public function isValid() {
+	function isValid() {
 		return is_array( FormatJson::decode( $this->getNativeData(), true ) );
 	}
 
 	/**
 	 * Beautifies JSON prior to save.
-	 *
-	 * @param   $title   Title
-	 * @param   $user    User
-	 * @param   $popts   ParserOptions
-	 * @return  Content
+	 * @param Title $title Title
+	 * @param User $user User
+	 * @param ParserOptions $popts
+	 * @return JsonSchemaContent
 	 */
-	public function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
+	function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
 		return new JsonSchemaContent( efBeautifyJson( $this->getNativeData() ) );
 	}
 
-
 	/**
-	 * Construct an HTML representation of a JSON object.
-	 *
-	 * @return string
+	 * Constructs an HTML representation of a JSON object.
+	 * @return string: HTML.
 	 */
-	protected static function objectTable( $mapping ) {
+	static function objectTable( $mapping ) {
 		$rows = array();
 		$count = 0;
 
@@ -60,11 +58,10 @@ class JsonSchemaContent extends TextContent {
 	}
 
 	/**
-	 * Construct HTML representation of a single key-value pair.
-	 *
-	 * @return  string
+	 * Constructs HTML representation of a single key-value pair.
+	 * @return string: HTML.
 	 */
-	protected static function objectRow( $key, $val ) {
+	static function objectRow( $key, $val ) {
 		$th = Xml::elementClean( 'th', array(), $key );
 		$td = is_array( $val ) ?
 			Xml::tags( 'td', array(), self::objectTable( $val ) ) :
@@ -72,13 +69,11 @@ class JsonSchemaContent extends TextContent {
 		return Xml::tags( 'tr', array(), $th . $td );
 	}
 
-
 	/**
-	 * Generate HTML representation of content
-	 *
-	 * @return  string  HTML representation
+	 * Generates HTML representation of content.
+	 * @return string: HTML representation.
 	 */
-	public function getHighlightHtml() {
+	function getHighlightHtml() {
 		$schema = FormatJson::decode( $this->getNativeData(), true );
 		return is_array( $schema ) ? self::objectTable( $schema ) : '';
 	}

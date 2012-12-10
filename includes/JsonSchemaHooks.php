@@ -6,7 +6,7 @@
  * @ingroup Extensions
  * @ingroup EventLogging
  *
- * @author  Ori Livneh <ori@wikimedia.org>
+ * @author Ori Livneh <ori@wikimedia.org>
  */
 
 class JsonSchemaHooks {
@@ -14,10 +14,9 @@ class JsonSchemaHooks {
 	/**
 	 * Registers hook and content handlers if the JSON Schema
 	 * namespace is enabled for this site.
-	 *
-	 * @return  bool  Whether hooks and handler were registered
+	 * @return bool: Whether hooks and handler were registered.
 	 */
-	public static function registerHandlers() {
+	static function registerHandlers() {
 		global $wgHooks, $wgContentHandlers, $wgEventLoggingDBname, $wgDBname;
 
 		if ( $wgEventLoggingDBname === $wgDBname ) {
@@ -36,14 +35,13 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * Declare JSON as the code editor language for Schema: pages. This hook
-	 * only runs if the CodeEditor extension is enabled.
-	 *
-	 * @param   $title  Title
-	 * @param   &$lang  string  Page language
-	 * @return  bool
+	 * Declares JSON as the code editor language for Schema: pages.
+	 * This hook only runs if the CodeEditor extension is enabled.
+	 * @param Title $title
+	 * @param string &$lang: Page language.
+	 * @return bool
 	 */
-	public static function onCodeEditorGetPageLanguage( $title, &$lang ) {
+	static function onCodeEditorGetPageLanguage( $title, &$lang ) {
 		if ( $title->getNamespace() === NS_SCHEMA ) {
 			$lang = 'json';
 		}
@@ -52,12 +50,11 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * Register Schema namespaces and assign edit rights.
-	 *
-	 * @param   &$namespaces  array  Mapping of numbers to namespace names.
-	 * @return  bool
+	 * Registers Schema namespaces and assign edit rights.
+	 * @param array &$namespaces: Mapping of numbers to namespace names.
+	 * @return bool
 	 */
-	public static function onCanonicalNamespaces( array &$namespaces ) {
+	static function onCanonicalNamespaces( array &$namespaces ) {
 		global $wgGroupPermissions, $wgNamespaceContentModels, $wgNamespaceProtection;
 
 		$namespaces[ NS_SCHEMA ] = 'Schema';
@@ -71,15 +68,14 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * On EditFilterMerged, validate that the revised contents are valid JSON,
-	 * and reject the edit otherwise.
-	 *
-	 * @param  $editor   EditPage
-	 * @param  $text     string    Content of the revised article
-	 * @param  &$error   string    Error message to return
-	 * @param  $summary  string    Edit summary provided for edit
+	 * Validates that the revised contents are valid JSON.
+	 * If not valid, rejects edit with error message.
+	 * @param EditPage $editor
+	 * @param string $text: Content of the revised article.
+	 * @param string &$error: Error message to return.
+	 * @param string $summary: Edit summary provided for edit.
 	 */
-	public static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
+	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
 		if ( $editor->getTitle()->getNamespace() !== NS_SCHEMA ) {
 			return true;
 		}
@@ -95,13 +91,12 @@ class JsonSchemaHooks {
 
 
 	/**
-	 * On BeforePageDisplay, in-line CSS for Schema objects.
-	 *
-	 * @param   &$out   OutputPage
-	 * @param   &$skin  Skin
-	 * @return  bool
+	 * Adds CSS for pretty-printing schema on NS_SCHEMA pages.
+	 * @param &$out OutputPage
+	 * @param &$skin Skin
+	 * @return bool
 	 */
-	public static function onBeforePageDisplay( &$out, &$skin ) {
+	static function onBeforePageDisplay( &$out, &$skin ) {
 		if ( $out->getTitle()->getNamespace() === NS_SCHEMA ) {
 			$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
 		}

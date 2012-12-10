@@ -1,7 +1,7 @@
 /**
- * Log arbitrary events from client-side code to server. Each event must
- * validate against a predeclared data model, specified as JSON Schema (version
- * 3 of the draft).
+ * Logs arbitrary events from client-side code to server. Each event
+ * must validate against a predeclared data model, specified as JSON
+ * Schema (version 3 of the draft).
  *
  * @author Ori Livneh <ori@wikimedia.org>
  */
@@ -30,8 +30,7 @@
 
 
 		/**
-		 * Declare event schema.
-		 *
+		 * Declares event schema.
 		 * @param {Object} schemas Schema specified as JSON Schema
 		 * @param integer revision
 		 * @return {Object}
@@ -130,10 +129,10 @@
 
 
 		/**
-		 * Set default values to be applied to all subsequent events belonging to
-		 * a schema. Note that no validation is performed on setDefaults, but
-		 * the complete event instance (including defaults) are validated prior to
-		 * dispatch.
+		 * Sets default values to be applied to all subsequent events
+		 * belonging to a schema. Note that no validation is performed
+		 * on setDefaults, but the complete event instance (including
+		 * defaults) are validated prior to dispatch.
 		 *
 		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object|null} schemaDefaults Defaults, or null to clear.
@@ -167,8 +166,8 @@
 			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
 			dfd = jQuery.Deferred();
 
-			// Event instances are automatically annotated with '_db' and
-			// '_id' to identify their origin and declared schema.
+			// Event instances are automatically annotated with '_db' and '_id'
+			// to identify their origin and declared schema.
 			queryString = [ $.param( {
 				/*jshint nomen: false*/
 				_db: mw.config.get( 'wgDBname' ),
@@ -179,16 +178,17 @@
 			} ), $.param( eventInstance ) ].join( '&' );
 
 			if ( !baseUri ) {
-				// We already logged the fact of wgEventLoggingBaseUri being empty,
-				// so respect the caller's expectation and return a rejected promise.
+				// We already logged the fact of wgEventLoggingBaseUri being
+				// empty, so respect the caller's expectation and return a
+				// rejected promise.
 				dfd.rejectWith( eventInstance, [ schemaName, eventInstance, queryString ] );
 				return dfd.promise();
 			}
 
 			beacon = document.createElement( 'img' );
 
-			// Browsers uniformly fire the onerror event upon receiving HTTP 204
-			// ("No Content") responses to image requests. Thus, although
+			// Browsers uniformly fire the onerror event upon receiving HTTP
+			// 204 ("No Content") responses to image requests. Thus, although
 			// counterintuitive, resolving the promise on error is appropriate.
 			$( beacon ).on( 'error', function () {
 				schema.logged.push( eventInstance );

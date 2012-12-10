@@ -1,6 +1,6 @@
 <?php
 /**
- * PHP Unit tests for JsonSchemaContent
+ * PHP Unit tests for JsonSchemaContent.
  *
  * @file
  * @ingroup Extensions
@@ -10,6 +10,7 @@
 
 /**
  * @group EventLogging
+ * @covers JsonSchema
  */
 class JsonSchemaTest extends MediaWikiTestCase {
 
@@ -17,10 +18,12 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	const INVALID_JSON = '{"Malformed, JSON }';
 	const EVIL_JSON = '{"value":"<script>alert(document.cookie);</script>"}';
 
+
 	/**
-	 * Test JSON validation
+	 * Tests JSON validation.
+	 * @covers JsonSchemaContent::isValid
 	 */
-	public function testIsValid() {
+	function testIsValid() {
 		// Invalid JSON
 		$content = new JsonSchemaContent( self::INVALID_JSON );
 		$this->assertFalse( $content->isValid(), 'Malformed JSON should be detected.' );
@@ -30,10 +33,12 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		$this->assertTrue( $content->isValid(), 'Valid JSON should be recognized as valid.' );
 	}
 
+
 	/**
-	 * Test JSON pretty-printing
+	 * Tests JSON pretty-printing.
+	 * @covers JsonSchemaContent::preSaveTransform
 	 */
-	public function testPreSaveTransform() {
+	function testPreSaveTransform() {
 		$transformed = new JsonSchemaContent( self::VALID_JSON );
 		$prettyJson = $transformed->preSaveTransform(
 			new Title(), new User(), new ParserOptions() )->getNativeData();
@@ -46,13 +51,14 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		);
 	}
 
+
 	/**
-	 * Test JSON->HTML representation
+	 * Tests JSON->HTML representation.
+	 * @covers JsonSchemaContent::getHighlightHtml
 	 */
 	public function testGetHighlightHtml() {
 		$evil = new JsonSchemaContent( self::EVIL_JSON );
 		$html = $evil->getHighlightHtml();
 		$this->assertContains( '&lt;script&gt;', $html, 'HTML output should be escaped' );
 	}
-
 }

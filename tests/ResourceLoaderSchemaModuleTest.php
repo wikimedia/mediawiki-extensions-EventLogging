@@ -18,6 +18,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	var $module;
 	var $schema;
 
+
 	function setUp() {
 		$this->schema = $this
 			->getMockBuilder( 'RemoteSchema' )
@@ -36,6 +37,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 		$this->module->schema = $this->schema;
 	}
 
+
 	/**
 	 * When the RemoteSchema dependency cannot be loaded, the modified
 	 * time should be set to 1.
@@ -50,6 +52,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 		$mtime = $this->module->getModifiedTime( $this->context );
 		$this->assertEquals( 1, $mtime );
 	}
+
 
 	/**
 	 * When the RemoteSchema dependency can be loaded, the modified time

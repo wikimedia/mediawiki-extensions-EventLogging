@@ -65,7 +65,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * This ensures that clients will retrieve the schema when it becomes
 	 * available.
 	 * @param ResourceLoaderContext $context
-	 * @return integer: Unix timestamp
+	 * @return integer: Unix timestamp.
 	 */
 	function getModifiedTime( ResourceLoaderContext $context ) {
 		return $this->schema->get() ? $this->schema->revision : 1;
@@ -77,7 +77,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * Retrieves a schema and generates a JavaScript expression which,
 	 * when run in the browser, adds it to mw.eventLogging.schemas.
 	 * @param ResourceLoaderContext $context
-	 * @return string: JavaScript code
+	 * @return string: JavaScript code.
 	 */
 	function getScript( ResourceLoaderContext $context ) {
 		$params = array( $this->schema->title, $this->schema->jsonSerialize() );

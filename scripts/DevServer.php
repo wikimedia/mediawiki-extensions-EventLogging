@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 /**
- * EventLogging Dev Server Script
+ * EventLogging Dev Server Script.
  *
  * This command-line script will fire a crude HTTP server which will
  * listen to incoming events and log them to stdout. This server is
@@ -42,7 +42,7 @@ require_once( "$IP/maintenance/commandLine.inc" );
 // Helpers
 
 /**
- * Log message to terminal with timestamp
+ * Logs message to terminal with timestamp.
  **/
 function consoleLog( $msg ) {
 	echo "[\033[1;34m" . wfTimestamp( TS_RFC2822 ) . "\033[0m] $msg\n";
@@ -53,7 +53,6 @@ function consoleLog( $msg ) {
  * Reads an HTTP request from a socket.
  * Reads up to 5 kB all at once and returns the first line, containing
  * the request URI. If unable to read request, returns false.
- *
  * @return string|false
  */
 function readHttpReq( &$conn ) {
@@ -65,8 +64,7 @@ function readHttpReq( &$conn ) {
 
 /**
  * Extracts the request URL from a raw GET request and parses it.
- *
- * @return array|false
+ * @return array|false: URL or false if no URL could be extracted.
  */
 function parseGetReq( $req ) {
 	preg_match( '/GET (?P<url>.*) HTTP/', $req, $matches );
@@ -78,8 +76,7 @@ function parseGetReq( $req ) {
 
 
 /**
- * Send a blank HTTP response.
- *
+ * Sends a blank HTTP response.
  * @param string $status
  * @param resource $socket
  */
@@ -91,10 +88,9 @@ function sendHttpResp( &$conn, $status ) {
 
 
 /**
- * Read and parse an incoming event via HTTP
- *
- * @param resource &$socket Socket to read from
- * @return array Event map (or empty array)
+ * Reads and parses an incoming event via HTTP
+ * @param resource &$socket: Socket to read from.
+ * @return array: Event map (or empty array).
  */
 function handleEvent( &$socket ) {
 	$conn = socket_accept( $socket );
@@ -118,9 +114,8 @@ function handleEvent( &$socket ) {
 
 
 /**
- * Check the return value of a socket call and emit an error message on fail.
- *
- * @param bool $retval Return value of a socket_* call.
+ * Checks the return value of a socket call and emits an error message on fail.
+ * @param bool $retval: Return value of a socket_* call.
  * @param string $msg
  */
 function assertSocket( $retval, $msg ) {
