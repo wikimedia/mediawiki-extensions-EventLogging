@@ -54,7 +54,23 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 			->method( 'add' );
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
+	}
 
+
+	/**
+	 * Calling get() multiple times should not result in multiple
+	 * memcached calls; instead, once the content is retrieved, it
+	 * should be stored locally as an object attribute.
+	 * @covers RemoteSchema::get
+	 */
+	function testContentLocallyCached() {
+		$this->cache
+			->expects( $this->once() )  // <-- the assert
+			->method( 'get' )
+			->will( $this->returnValue( $this->statusSchema ) );
+		$this->schema->get();
+		$this->schema->get();
+		$this->schema->get();
 	}
 
 
