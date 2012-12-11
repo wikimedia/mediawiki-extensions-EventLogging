@@ -77,7 +77,7 @@ $wgEventLoggingDBname = false;
 // Helpers
 
 /**
- * Write an event to a file descriptor or socket.
+ * Writes an event to a file descriptor or socket.
  * Takes an event ID and an event, encodes it as query string,
  * and writes it to the UDP / TCP address or file specified by
  * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns

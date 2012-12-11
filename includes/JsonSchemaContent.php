@@ -25,6 +25,7 @@ class JsonSchemaContent extends TextContent {
 		return is_array( FormatJson::decode( $this->getNativeData(), true ) );
 	}
 
+
 	/**
 	 * Beautifies JSON prior to save.
 	 * @param Title $title Title
@@ -57,6 +58,7 @@ class JsonSchemaContent extends TextContent {
 		);
 	}
 
+
 	/**
 	 * Constructs HTML representation of a single key-value pair.
 	 * @return string: HTML.
@@ -68,6 +70,7 @@ class JsonSchemaContent extends TextContent {
 			Xml::elementClean( 'td', array( 'class' => 'value' ), FormatJson::encode( $val ) );
 		return Xml::tags( 'tr', array(), $th . $td );
 	}
+
 
 	/**
 	 * Generates HTML representation of content.

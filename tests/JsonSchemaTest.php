@@ -14,7 +14,7 @@
  */
 class JsonSchemaTest extends MediaWikiTestCase {
 
-	const VALID_JSON = '{"type":"json","valid":true}';
+	const VALID_JSON = '{"properties":{"valid":{"type":"boolean","required":true}}}';
 	const INVALID_JSON = '{"Malformed, JSON }';
 	const EVIL_JSON = '{"value":"<script>alert(document.cookie);</script>"}';
 
