@@ -115,6 +115,7 @@ $messages['he'] = array(
 $messages['hsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolowanje podawkow koda ze strony klienta',
 	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kajkosć|kajkosći|kajkosće|kajkosćow}}',
+	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
 );
 
 /** Italian (italiano)
@@ -141,6 +142,7 @@ $messages['ja'] = array(
 $messages['ko'] = array(
 	'eventlogging-desc' => '클라이언트 쪽 코드에서 사건 기록에 대한 프레임워크',
 	'eventlogging-json' => '{{PLURAL:$1|속성}} $1개를 가진 개체',
+	'eventlogging-invalid-json' => '잘못된 JSON',
 );
 
 /** Macedonian (македонски)
@@ -149,6 +151,7 @@ $messages['ko'] = array(
 $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
 	'eventlogging-json' => 'Објект, $1 {{PLURAL:$1|својство|својства}}',
+	'eventlogging-invalid-json' => 'Неважечки JSON',
 );
 
 /** Malay (Bahasa Melayu)
@@ -166,6 +169,13 @@ $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
 	'eventlogging-json' => 'Object, {{PLURAL:$1|één eigenschap|$1 eigenschappen}}',
 	'eventlogging-invalid-json' => 'Ongeldige JSON',
+);
+
+/** Polish (polski)
+ * @author Odie2
+ */
+$messages['pl'] = array(
+	'eventlogging-invalid-json' => 'Nieprawidłowy JSON',
 );
 
 /** Swedish (svenska)
@@ -188,6 +198,7 @@ $messages['uk'] = array(
 $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
 	'eventlogging-json' => 'Đối tượng, $1 thuộc tính',
+	'eventlogging-invalid-json' => 'JSON không hợp lệ',
 );
 
 /** Simplified Chinese (中文（简体）‎)
