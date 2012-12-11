@@ -21,6 +21,8 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	var $statusSchema = array( 'status' => array( 'type' => 'string' ) );
 
 	function setUp() {
+		parent::setUp();
+
 		$this->cache = $this
 			->getMockBuilder( 'MemcachedPhpBagOStuff' )
 			->disableOriginalConstructor()

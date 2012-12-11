@@ -20,6 +20,8 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
 
 	function setUp() {
+		parent::setUp();
+
 		$this->schema = $this
 			->getMockBuilder( 'RemoteSchema' )
 			->setConstructorArgs( array( 'TestSchema', 99 ) )
