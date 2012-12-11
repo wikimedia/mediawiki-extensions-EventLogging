@@ -26,7 +26,7 @@ class RemoteSchema {
 	function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
 		$this->title = $title;
 		$this->revision = $revision;
-		$this->cache = $cache ?: wfGetCache( CACHE_MEMCACHED );
+		$this->cache = $cache ?: wfGetCache( CACHE_ANYTHING );
 		$this->http = $http ?: new Http();
 		$this->key = join( ':', array( 'schema', $title, $revision ) );
 	}
