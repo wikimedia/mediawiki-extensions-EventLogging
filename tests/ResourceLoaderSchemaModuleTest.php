@@ -14,6 +14,9 @@
  */
 class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
+	const TITLE = 'TestSchema';
+	const REV = 99;
+
 	var $context;
 	var $module;
 	var $schema;
@@ -24,15 +27,15 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
 		$this->schema = $this
 			->getMockBuilder( 'RemoteSchema' )
-			->setConstructorArgs( array( 'TestSchema', 99 ) )
+			->setConstructorArgs( array( self::TITLE, self::REV ) )
 			->getMock();
 
 		$this->context = new ResourceLoaderContext(
 			new ResourceLoader(), new WebRequest() );
 
 		$this->module = new ResourceLoaderSchemaModule( array(
-			'schema'   => 'TestSchema',
-			'revision' => 99
+			'schema'   => self::TITLE,
+			'revision' => self::REV
 		) );
 
 		// Inject mock
@@ -70,6 +73,6 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 			->will( $this->returnValue( $schema ) );
 
 		$mtime = $this->module->getModifiedTime( $this->context );
-		$this->assertGreaterThan( 1, $mtime );
+		$this->assertEquals( self::REV, $mtime );
 	}
 }

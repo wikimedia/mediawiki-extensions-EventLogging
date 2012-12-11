@@ -27,20 +27,21 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 *
 	 * Example:
 	 * @code
-	 *	$wgResourceModules[ 'schema.person' ] = array(
-	 *		'class'    => 'ResourceLoaderSchemaModule',
-	 *		'schema'   => 'Person',
+	 *  $wgResourceModules[ 'schema.person' ] = array(
+	 *      'class'    => 'ResourceLoaderSchemaModule',
+	 *      'schema'   => 'Person',
 	 *      'revision' => 4703006,
-	 *	);
+	 *  );
 	 * @endcode
 	 *
 	 * @throws MWException if 'schema' or 'revision' keys are missing.
 	 * @param array $args
 	 */
 	function __construct( $args ) {
-		if ( !isset( $args['schema'] ) || !isset( $args['revision'] ) ) {
-			throw new MWException( 'ResourceLoaderSchemaModule declaration '
-			   . 'must set "schema" and "revision" keys.' );
+		foreach( array( 'schema', 'revision' ) as $key ) {
+			if ( !isset( $args[ $key ] ) ) {
+				throw new MWException( "ResourceLoaderSchemaModule params must set '$key' key." );
+			}
 		}
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
 	}
@@ -75,7 +76,8 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	/**
 	 * Generates JavaScript module code from schema.
 	 * Retrieves a schema and generates a JavaScript expression which,
-	 * when run in the browser, adds it to mw.eventLogging.schemas.
+	 * when run in the browser, adds it to mw.eventLog.schemas. Adds an
+	 * empty schema if the schema could not be retrieved.
 	 * @param ResourceLoaderContext $context
 	 * @return string: JavaScript code.
 	 */
