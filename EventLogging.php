@@ -120,21 +120,45 @@ function efBeautifyJson( $json ) {
 }
 
 
+/**
+ * Validates object against JSON Schema.
+ * @throws JsonSchemaException: If the object fails to validate.
+ * @param array $object: Object to be validated.
+ * @param array $schema: Schema to validate against (default: JSON Schema).
+ * @returns bool
+ */
+function efSchemaValidate( $object, $schema = NULL ) {
+	if ( $schema === NULL ) {
+		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
+		$schema = FormatJson::decode( $json, true );
+	}
+	$root = new JsonTreeRef( $object );
+	$root->attachSchema( $schema );
+	return $root->validate();
+}
+
 
 // Classes
 
 $wgAutoloadClasses += array(
 	// Hooks
 	'EventLoggingHooks' => __DIR__ . '/EventLogging.hooks.php',
-	'JsonSchemaHooks' => __DIR__ . '/includes/JsonSchemaHooks.php',
+	'JsonSchemaHooks'   => __DIR__ . '/includes/JsonSchemaHooks.php',
 
 	// ContentHandler
-	'JsonSchemaContent' => __DIR__ . '/includes/JsonSchemaContent.php',
+	'JsonSchemaContent'        => __DIR__ . '/includes/JsonSchemaContent.php',
 	'JsonSchemaContentHandler' => __DIR__ . '/includes/JsonSchemaContentHandler.php',
 
 	// ResourceLoaderModule
-	'RemoteSchema' => __DIR__ . '/includes/RemoteSchema.php',
+	'RemoteSchema'               => __DIR__ . '/includes/RemoteSchema.php',
 	'ResourceLoaderSchemaModule' => __DIR__ . '/includes/ResourceLoaderSchemaModule.php',
+
+	// JsonSchema
+	'JsonSchemaException' => __DIR__ . '/includes/JsonSchema.php',
+	'JsonUtil'            => __DIR__ . '/includes/JsonSchema.php',
+	'TreeRef'             => __DIR__ . '/includes/JsonSchema.php',
+	'JsonTreeRef'         => __DIR__ . '/includes/JsonSchema.php',
+	'JsonSchemaIndex'     => __DIR__ . '/includes/JsonSchema.php',
 );
 
 
@@ -144,6 +168,7 @@ $wgAutoloadClasses += array(
 $wgExtensionMessagesFiles += array(
 	'EventLogging'           => __DIR__ . '/EventLogging.i18n.php',
 	'EventLoggingNamespaces' => __DIR__ . '/EventLogging.namespaces.php',
+	'JsonSchema'             => __DIR__ . '/includes/JsonSchema.i18n.php',
 );
 
 

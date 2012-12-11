@@ -4,17 +4,20 @@
 	var warn = mw.eventLog.warn,
 
 		earthquakeSchema = {
-			epicenter: {
-				type: 'string',
-				'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
-				required: true
-			},
-			magnitude: {
-				type: 'number',
-				required: true
-			},
-			article: {
-				type: 'string'
+			description: 'Record of a history earthquake',
+			properties: {
+				epicenter: {
+					type: 'string',
+					'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
+					required: true
+				},
+				magnitude: {
+					type: 'number',
+					required: true
+				},
+				article: {
+					type: 'string'
+				}
 			}
 		};
 

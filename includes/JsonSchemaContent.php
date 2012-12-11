@@ -18,11 +18,29 @@ class JsonSchemaContent extends TextContent {
 		parent::__construct( $text, 'JsonSchema' );
 	}
 
+
+	/**
+	 * @throws JsonSchemaException: If invalid.
+	 * @return bool: True if valid.
+	 */
+	function validate() {
+		$schema = FormatJson::decode( $this->getNativeData(), true );
+		if ( !is_array( $schema ) ) {
+			throw new JsonSchemaException( wfMessage( 'jsondata-invalidjson' )->parse() );
+		}
+		return efSchemaValidate( $schema );
+	}
+
+
 	/**
 	 * @return bool: Whether content is valid JSON Schema.
 	 */
 	function isValid() {
-		return is_array( FormatJson::decode( $this->getNativeData(), true ) );
+		try {
+			return $this->validate();
+		} catch ( JsonSchemaException $e ) {
+			return false;
+		}
 	}
 
 
@@ -36,6 +54,7 @@ class JsonSchemaContent extends TextContent {
 	function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
 		return new JsonSchemaContent( efBeautifyJson( $this->getNativeData() ) );
 	}
+
 
 	/**
 	 * Constructs an HTML representation of a JSON object.

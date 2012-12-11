@@ -81,9 +81,11 @@ class JsonSchemaHooks {
 		}
 
 		$content = new JsonSchemaContent( $text );
-		if ( !$content->isValid() ) {
-			$error = wfMessage( 'eventlogging-invalid-json' )->parse();
-			return true;
+
+		try {
+			$content->validate();
+		} catch ( JsonSchemaException $e ) {
+			$error = $e->getMessage();
 		}
 
 		return true;

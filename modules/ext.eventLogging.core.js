@@ -41,7 +41,7 @@
 			}
 			self.schemas[ schemaName ] = $.extend( true, {
 				revision : 'UNKNOWN',
-				schema   : {},
+				schema   : { properties: {} },
 				defaults : {},
 				logged   : []
 			}, self.schemas[ schemaName ], meta );
@@ -85,32 +85,35 @@
 		 * @throws {Error} If event fails to validate.
 		 */
 		validate: function ( event, schemaName ) {
-			var field, schema = self.getSchema( schemaName );
+			var schema = self.getSchema( schemaName ),
+				properties = schema.schema.properties,
+				property;
+
 
 			if ( schema === null ) {
 				self.warn( 'Unknown schema "' + schemaName + '"' );
 				return false;
 			}
 
-			for ( field in event ) {
-				if ( schema.schema[ field ] === undefined ) {
-					self.warn( 'Unrecognized field "' + field + '"' );
+			for ( property in event ) {
+				if ( properties[ property ] === undefined ) {
+					self.warn( 'Unrecognized property "' + property + '"' );
 					return false;
 				}
 			}
 
-			$.each( schema.schema, function ( field, desc ) {
-				var val = event[ field ];
+			$.each( properties, function ( property, desc ) {
+				var val = event[ property ];
 
 				if ( val === undefined ) {
 					if ( desc.required ) {
-						self.warn( 'Missing "' + field + '" field' );
+						self.warn( 'Missing "' + property + '" property' );
 						return false;
 					}
 					return true;
 				}
 				if ( !( self.isInstance( val, desc.type ) ) ) {
-					self.warn( [ 'Wrong type for field:', field, val ].join(' ') );
+					self.warn( [ 'Wrong type for property:', property, val ].join(' ') );
 					return false;
 				}
 				// 'enum' is reserved for possible future use by the ECMAScript
