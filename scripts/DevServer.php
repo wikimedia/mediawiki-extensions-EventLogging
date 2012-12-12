@@ -139,13 +139,14 @@ if ( array_key_exists( 'help', $opts ) || array_key_exists( 'h', $opts ) ) {
 // Suppress socket_* warnings with '@' because they'll be re-raised as errors anyway.
 
 $socket = assertSocket( @socket_create( AF_INET, SOCK_STREAM, 0 ), 'Failed to create socket' );
+assertSocket( @socket_set_option( $socket, SOL_SOCKET, SO_REUSEADDR, 1 ), 'Failed to set SO_REUSEADDR' );
 assertSocket( @socket_bind( $socket, $opts[ 'iface' ], $opts[ 'port' ] ), 'Failed to bind socket' );
 assertSocket( @socket_listen( $socket ), 'socket_listen() failed' );
 
 
 // On shutdown, close socket.
 function shutdown() {
-	socket_close( $socket );
+	@socket_close( $socket );
 }
 
 register_shutdown_function( 'shutdown' );
