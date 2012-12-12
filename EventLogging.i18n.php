@@ -187,8 +187,11 @@ $messages['sv'] = array(
 
 /** Ukrainian (українська)
  * @author AS
+ * @author Base
  */
 $messages['uk'] = array(
+	'eventlogging-desc' => 'Фреймворк, для додання подій до журналу з клієнтського коду',
+	'eventlogging-json' => "Об'єкт, $1 {{PLURAL:$1|властивість|властивості|властивостей}}",
 	'eventlogging-invalid-json' => 'Неправильний JSON',
 );
 
