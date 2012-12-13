@@ -33,4 +33,31 @@ $messages['qqq'] = array(
 	'jsonschema-invalidnode' => 'JSON Schema validation error, shown when object node does not match expected type.',
 );
 
+/** German (Deutsch)
+ * @author Metalhead64
+ */
+$messages['de'] = array(
+	'jsonschema-badidref' => 'idref ungültig: „$1“',
+	'jsonschema-idconvert' => 'var konnte nicht zu id konvertiert werden: „$1“',
+	'jsonschema-invalidkey' => 'Ungültiger Schlüssel „$1“ in „$2“',
+	'jsonschema-invalidempty' => 'Leere Datenstruktur ist mit diesem Schema nicht gültig',
+	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
+);
 
+/** Italian (italiano)
+ * @author Beta16
+ */
+$messages['it'] = array(
+	'jsonschema-badidref' => 'IDref malformato: "$1"',
+	'jsonschema-idconvert' => 'Non è possibile convertire var in ID: "$1"',
+	'jsonschema-invalidkey' => 'Chiave non valida "$1" in "$2"',
+	'jsonschema-invalidempty' => 'Struttura dati vuota non valida con questo schema',
+	'jsonschema-invalidnode' => 'Nodo non valido: si aspettava "$1", ma ricevuto "$2". Percorso: "$3"',
+);
+
+/** Japanese (日本語)
+ * @author Shirayuki
+ */
+$messages['ja'] = array(
+	'jsonschema-invalidempty' => 'このスキーマでは空のデータ構造は有効ではありません',
+);

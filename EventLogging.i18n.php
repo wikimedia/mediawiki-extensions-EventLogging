@@ -35,6 +35,7 @@ $messages['qqq'] = array(
 $messages['ast'] = array(
 	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
 	'eventlogging-json' => 'Oxetu, $1 {{PLURAL:$1|propiedá|propiedaes}}',
+	'eventlogging-invalid-json' => 'JSON inválidu',
 );
 
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
@@ -160,6 +161,7 @@ $messages['mk'] = array(
 $messages['ms'] = array(
 	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
 	'eventlogging-json' => 'Objek, $1 sifat',
+	'eventlogging-invalid-json' => 'JSON tidak sah',
 );
 
 /** Dutch (Nederlands)
