@@ -61,3 +61,25 @@ $messages['it'] = array(
 $messages['ja'] = array(
 	'jsonschema-invalidempty' => 'このスキーマでは空のデータ構造は有効ではありません',
 );
+
+/** Macedonian (македонски)
+ * @author Bjankuloski06
+ */
+$messages['mk'] = array(
+	'jsonschema-badidref' => 'Погрешен idref: „$1“',
+	'jsonschema-idconvert' => 'Не можам да го претворам var во id: „$1“',
+	'jsonschema-invalidkey' => 'Неважечки клуч „$1“ во „$2“',
+	'jsonschema-invalidempty' => 'Празната податочна структура не важи за оваа шема',
+	'jsonschema-invalidnode' => 'Неважечки јазол: очекував „$1“, а добив „$2“. Патека: „$3“',
+);
+
+/** Dutch (Nederlands)
+ * @author Siebrand
+ */
+$messages['nl'] = array(
+	'jsonschema-badidref' => 'Onjuiste idref: "$1"',
+	'jsonschema-idconvert' => 'Het is niet mogelijk var naar id te converteren: "$1"',
+	'jsonschema-invalidkey' => 'Ongeldige sleutel "$1" in "$2"',
+	'jsonschema-invalidempty' => 'Een lege gegevensstructuur is niet geldig voor dit schema',
+	'jsonschema-invalidnode' => 'Ongeldige node: "$1" werd verwacht, "$2" is waargenomen. Pad: "$3"',
+);
