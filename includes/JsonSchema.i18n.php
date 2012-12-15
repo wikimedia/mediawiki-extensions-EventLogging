@@ -44,6 +44,17 @@ $messages['de'] = array(
 	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
 );
 
+/** Spanish (español)
+ * @author Armando-Martin
+ */
+$messages['es'] = array(
+	'jsonschema-badidref' => 'Idref erróneo: "$1"',
+	'jsonschema-idconvert' => 'No se puede convertir var a id: "$1"',
+	'jsonschema-invalidkey' => 'Clave no válida "$1" en "$2"',
+	'jsonschema-invalidempty' => 'No es válida la estructura de datos vacía con este esquema',
+	'jsonschema-invalidnode' => 'Nodo no válido: se esperaba "$1", se obtuvo "$2". Ruta: "$3"',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */

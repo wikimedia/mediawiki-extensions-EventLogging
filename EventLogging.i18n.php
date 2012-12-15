@@ -76,6 +76,7 @@ $messages['dsb'] = array(
 $messages['es'] = array(
 	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
 	'eventlogging-json' => 'Objeto, $1 {{PLURAL:$1|propiedad|propiedades}}',
+	'eventlogging-invalid-json' => 'JSON no válido',
 );
 
 /** Finnish (suomi)
