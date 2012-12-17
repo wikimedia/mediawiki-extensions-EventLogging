@@ -44,6 +44,7 @@ $messages['ast'] = array(
 $messages['be-tarask'] = array(
 	'eventlogging-desc' => 'Фрэймворк для даданьня падзеяў у журнал з кліенцкага коду',
 	'eventlogging-json' => 'Аб’ект, $1 {{PLURAL:$1|уласьцівасьць|уласьцівасьці|уласьцівасьцяў}}',
+	'eventlogging-invalid-json' => 'Няслушны JSON',
 );
 
 /** Czech (česky)
