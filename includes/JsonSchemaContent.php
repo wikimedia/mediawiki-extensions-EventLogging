@@ -65,9 +65,18 @@ class JsonSchemaContent extends TextContent {
 	 */
 	static function objectRow( $key, $val ) {
 		$th = Xml::elementClean( 'th', array(), $key );
-		$td = is_array( $val ) ?
-			Xml::tags( 'td', array(), self::objectTable( $val ) ) :
-			Xml::elementClean( 'td', array( 'class' => 'value' ), FormatJson::encode( $val ) );
+		if ( is_array( $val ) ) {
+			$td = Xml::tags( 'td', array(), self::objectTable( $val ) );
+		} else {
+			if ( is_string( $val ) ) {
+				$val = '"' . $val . '"';
+			} else {
+				$val = FormatJson::encode( $val );
+			}
+
+			$td = Xml::elementClean( 'td', array( 'class' => 'value' ), $val );
+		}
+
 		return Xml::tags( 'tr', array(), $th . $td );
 	}
 
