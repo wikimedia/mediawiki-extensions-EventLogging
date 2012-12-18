@@ -14,23 +14,39 @@
  */
 class JsonSchemaTest extends MediaWikiTestCase {
 
-	const VALID_JSON = '{"properties":{"valid":{"type":"boolean","required":true}}}';
-	const INVALID_JSON = '{"Malformed, JSON }';
-	const EVIL_JSON = '{"value":"<script>alert(document.cookie);</script>"}';
+	const INVALID_JSON = '"Malformed, JSON }';
+	const INVALID_JSON_SCHEMA = '{"malformed":true}';  // Valid JSON, invalid JSON Schema.
+	const VALID_JSON_SCHEMA = '{"properties":{"valid":{"type":"boolean","required":true}}}';
+	const EVIL_JSON = '{"title":"<script>alert(document.cookie);</script>"}';
 
 
 	/**
-	 * Tests JSON validation.
+	 * Tests handling of invalid JSON.
 	 * @covers JsonSchemaContent::isValid
 	 */
-	function testIsValid() {
-		// Invalid JSON
+	function testInvalidJson() {
 		$content = new JsonSchemaContent( self::INVALID_JSON );
 		$this->assertFalse( $content->isValid(), 'Malformed JSON should be detected.' );
+	}
 
-		// Valid JSON
-		$content = new JsonSchemaContent( self::VALID_JSON );
-		$this->assertTrue( $content->isValid(), 'Valid JSON should be recognized as valid.' );
+
+	/**
+	 * Tests handling of valid JSON that is not valid JSON Schema.
+	 * @covers JsonSchemaContent::isValid
+	 */
+	function testInvalidJsonSchema() {
+		$content = new JsonSchemaContent( self::INVALID_JSON_SCHEMA );
+		$this->assertFalse( $content->isValid(), 'Malformed JSON Schema should be detected.' );
+	}
+
+
+	/**
+	 * Tests successful validation of well-formed JSON Schema.
+	 * @covers JsonSchemaContent::isValid
+	 */
+	function testValidJsonSchema() {
+		$content = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
+		$this->assertTrue( $content->isValid(), 'Valid JSON Schema should be recognized as valid.' );
 	}
 
 
@@ -39,14 +55,14 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * @covers JsonSchemaContent::preSaveTransform
 	 */
 	function testPreSaveTransform() {
-		$transformed = new JsonSchemaContent( self::VALID_JSON );
+		$transformed = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$prettyJson = $transformed->preSaveTransform(
 			new Title(), new User(), new ParserOptions() )->getNativeData();
 
 		$this->assertContains( "\n", $prettyJson, 'Transformed JSON is beautified.' );
 		$this->assertEquals(
 			FormatJson::decode( $prettyJson ),
-			FormatJson::decode( self::VALID_JSON ),
+			FormatJson::decode( self::VALID_JSON_SCHEMA ),
 			'Beautification does not alter JSON value.'
 		);
 	}
@@ -56,7 +72,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests JSON->HTML representation.
 	 * @covers JsonSchemaContent::getHighlightHtml
 	 */
-	public function testGetHighlightHtml() {
+	function testGetHighlightHtml() {
 		$evil = new JsonSchemaContent( self::EVIL_JSON );
 		$html = $evil->getHighlightHtml();
 		$this->assertContains( '&lt;script&gt;', $html, 'HTML output should be escaped' );
