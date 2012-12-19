@@ -66,6 +66,17 @@ $messages['fr'] = array(
 	'jsonschema-invalidnode' => 'Nœud non valide: "$1" attendu, "$2" obtenu. Chemin: "$3"',
 );
 
+/** Galician (galego)
+ * @author Toliño
+ */
+$messages['gl'] = array(
+	'jsonschema-badidref' => 'idref incorrecto: "$1"',
+	'jsonschema-idconvert' => 'Non se pode converter var en id: "$1"',
+	'jsonschema-invalidkey' => 'Clave "$1" non válida en "$2"',
+	'jsonschema-invalidempty' => 'Estrutura de datos baleira non válida con este esquema',
+	'jsonschema-invalidnode' => 'Nodo non válido: Agardábse "$1"; recibiuse "$2". Ruta: "$3"',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
