@@ -60,7 +60,7 @@ class JsonSchemaHooks {
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 
-		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'editinterface' );
+		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'autoconfirmed' );
 		$wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
 
 		return true;
