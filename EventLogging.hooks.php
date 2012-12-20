@@ -38,48 +38,6 @@ class EventLoggingHooks {
 
 
 	/**
-	 * Generate and log an edit event on PageContentSaveComplete.
-	 * @return  bool
-	 */
-	public static function onPageContentSaveComplete( $article, $user,
-		$content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status,
-		$baseRevId ) {
-
-		if ( $revision === NULL ) {
-			// When an editor saves an article without having made any
-			// changes, no revision is created, but ArticleSaveComplete
-			// still gets called.
-			return true;
-		}
-
-		$title = $article->getTitle();
-
-		$event = array(
-			'articleId' => $title->mArticleID,
-			'api'       => defined( 'MW_API' ),
-			'title'     => $title->mTextform,
-			'namespace' => $title->getNamespace(),
-			'created'   => is_null( $revision->getParentId() ),
-			'summary'   => $summary,
-			'timestamp' => $revision->getTimestamp(),
-			'minor'     => $isMinor,
-			'loggedIn'  => $user->isLoggedIn()
-		);
-
-		if ( $user->isLoggedIn() ) {
-			$event += array(
-				'userId'     => $user->getId(),
-				'editCount'  => $user->getEditCount(),
-				'registered' => wfTimestamp( TS_UNIX, $user->getRegistration() )
-			);
-		}
-
-		efLogServerSideEvent( 'edit', $event );
-		return true;
-	}
-
-
-	/**
 	 * @param array &$vars
 	 * @return bool
 	 */
