@@ -49,9 +49,11 @@ $messages['be-tarask'] = array(
 
 /** Czech (česky)
  * @author Mormegil
+ * @author Vks
  */
 $messages['cs'] = array(
 	'eventlogging-desc' => 'Framework pro protokolování událostí z kódu běžícího u klienta',
+	'eventlogging-invalid-json' => 'Nevalidní JSON',
 );
 
 /** German (Deutsch)
@@ -121,6 +123,15 @@ $messages['hsb'] = array(
 	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
 );
 
+/** Indonesian (Bahasa Indonesia)
+ * @author Farras
+ */
+$messages['id'] = array(
+	'eventlogging-desc' => 'Kerangka kerja untuk aksi log dari kode sisi klien',
+	'eventlogging-json' => 'Objek, $1 {{PLURAL:$1|properti|properti}}',
+	'eventlogging-invalid-json' => 'JSON salah',
+);
+
 /** Italian (italiano)
  * @author Beta16
  */
@@ -180,6 +191,13 @@ $messages['nl'] = array(
  */
 $messages['pl'] = array(
 	'eventlogging-invalid-json' => 'Nieprawidłowy JSON',
+);
+
+/** Romanian (română)
+ * @author Firilacroco
+ */
+$messages['ro'] = array(
+	'eventlogging-invalid-json' => 'JSON nevalid',
 );
 
 /** Swedish (svenska)

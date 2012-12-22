@@ -44,6 +44,17 @@ $messages['de'] = array(
 	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
 );
 
+/** Lower Sorbian (dolnoserbski)
+ * @author Michawiki
+ */
+$messages['dsb'] = array(
+	'jsonschema-badidref' => 'idref njepłaśiwy: "$1"',
+	'jsonschema-idconvert' => 'var njedajo se do id konwertěrowaś: "$1"',
+	'jsonschema-invalidkey' => 'Njepłaśiwy kluc "$1" w "$2"',
+	'jsonschema-invalidempty' => 'Prozna datowa struktura z toś tym šema njejo płaśiwa',
+	'jsonschema-invalidnode' => 'Njepłaśiwy suk: "$1" jo se wótcakał, "$2" dostany.  Sćažka: "$3"',
+);
+
 /** Spanish (español)
  * @author Armando-Martin
  */
@@ -75,6 +86,26 @@ $messages['gl'] = array(
 	'jsonschema-invalidkey' => 'Clave "$1" non válida en "$2"',
 	'jsonschema-invalidempty' => 'Estrutura de datos baleira non válida con este esquema',
 	'jsonschema-invalidnode' => 'Nodo non válido: Agardábse "$1"; recibiuse "$2". Ruta: "$3"',
+);
+
+/** Upper Sorbian (hornjoserbsce)
+ * @author Michawiki
+ */
+$messages['hsb'] = array(
+	'jsonschema-badidref' => 'idref njepłaćiwy: "$1"',
+	'jsonschema-idconvert' => 'var njeda so do id konwertować: "$1"',
+	'jsonschema-invalidkey' => 'Njepłaćiwy kluč "$1" w "$2"',
+	'jsonschema-invalidempty' => 'Prózdna datowa struktura z tutym šema płaćiwa njeje',
+	'jsonschema-invalidnode' => 'Njepłaćiwy suk: "$1" je so wočakował, "$2" dóstany.  Šćežka: "$3"',
+);
+
+/** Indonesian (Bahasa Indonesia)
+ * @author Farras
+ */
+$messages['id'] = array(
+	'jsonschema-badidref' => 'Idref buruk: "$1"',
+	'jsonschema-idconvert' => 'Gagal mengubah var ke id: "$1"',
+	'jsonschema-invalidempty' => 'Struktur data kosong tidak sesuai dengan skema ini',
 );
 
 /** Italian (italiano)
