@@ -73,6 +73,13 @@ $messages['dsb'] = array(
 	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kakosć|kakosći|kkosći|kakosćow}}',
 );
 
+/** Esperanto (Esperanto)
+ * @author Yekrats
+ */
+$messages['eo'] = array(
+	'eventlogging-invalid-json' => 'Malvalida JSON',
+);
+
 /** Spanish (español)
  * @author Armando-Martin
  */
@@ -175,6 +182,13 @@ $messages['ms'] = array(
 	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
 	'eventlogging-json' => 'Objek, $1 sifat',
 	'eventlogging-invalid-json' => 'JSON tidak sah',
+);
+
+/** Maltese (Malti)
+ * @author Chrisportelli
+ */
+$messages['mt'] = array(
+	'eventlogging-invalid-json' => 'JSON invalidu',
 );
 
 /** Dutch (Nederlands)
