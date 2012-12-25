@@ -147,3 +147,25 @@ $messages['nl'] = array(
 	'jsonschema-invalidempty' => 'Een lege gegevensstructuur is niet geldig voor dit schema',
 	'jsonschema-invalidnode' => 'Ongeldige node: "$1" werd verwacht, "$2" is waargenomen. Pad: "$3"',
 );
+
+/** Piedmontese (Piemontèis)
+ * @author Dragonòt
+ */
+$messages['pms'] = array(
+	'jsonschema-badidref' => 'Idref pa bon: "$1"',
+	'jsonschema-idconvert' => 'As peul pa convertisse var a id: "$1"',
+	'jsonschema-invalidkey' => 'Ciav pa bon-a "$1" an "$2"',
+	'jsonschema-invalidempty' => 'Stutura dat veuida pa bon-a con sto schema',
+	'jsonschema-invalidnode' => 'Grop pa bon: a së speta "$1", rivà "$2". Përcors: "$3"',
+);
+
+/** Ukrainian (українська)
+ * @author Ата
+ */
+$messages['uk'] = array(
+	'jsonschema-badidref' => 'Неправильне посилання на id: "$1"',
+	'jsonschema-idconvert' => 'Не вдається конвертувати var у id: "$1"',
+	'jsonschema-invalidkey' => 'Неприпустимий ключ "$1" у "$2"',
+	'jsonschema-invalidempty' => 'Порожня структура даних не припустима у цій схемі',
+	'jsonschema-invalidnode' => 'Неприпустимий вузок: очікувано "$1", отримано "$2". Шлях: "$3"',
+);

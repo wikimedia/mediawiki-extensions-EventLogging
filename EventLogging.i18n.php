@@ -130,6 +130,13 @@ $messages['hsb'] = array(
 	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
 );
 
+/** Hungarian (magyar)
+ * @author Dj
+ */
+$messages['hu'] = array(
+	'eventlogging-invalid-json' => 'Érvénytelen JSON',
+);
+
 /** Indonesian (Bahasa Indonesia)
  * @author Farras
  */
@@ -205,6 +212,15 @@ $messages['nl'] = array(
  */
 $messages['pl'] = array(
 	'eventlogging-invalid-json' => 'Nieprawidłowy JSON',
+);
+
+/** Piedmontese (Piemontèis)
+ * @author Dragonòt
+ */
+$messages['pms'] = array(
+	'eventlogging-desc' => 'Piataforma për event ëd registr da còdes da part ëd client',
+	'eventlogging-json' => 'Oget, $1 {{PLURAL:$1|propietà}}',
+	'eventlogging-invalid-json' => 'JSON pa bon',
 );
 
 /** Romanian (română)
