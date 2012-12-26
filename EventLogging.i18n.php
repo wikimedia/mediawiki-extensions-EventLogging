@@ -230,6 +230,13 @@ $messages['ro'] = array(
 	'eventlogging-invalid-json' => 'JSON nevalid',
 );
 
+/** Sinhala (සිංහල)
+ * @author පසිඳු කාවින්ද
+ */
+$messages['si'] = array(
+	'eventlogging-invalid-json' => 'වලංගු නොවන JSON',
+);
+
 /** Swedish (svenska)
  * @author Ainali
  */

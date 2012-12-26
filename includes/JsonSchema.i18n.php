@@ -159,6 +159,14 @@ $messages['pms'] = array(
 	'jsonschema-invalidnode' => 'Grop pa bon: a së speta "$1", rivà "$2". Përcors: "$3"',
 );
 
+/** Sinhala (සිංහල)
+ * @author පසිඳු කාවින්ද
+ */
+$messages['si'] = array(
+	'jsonschema-badidref' => 'අයහපත් idref: "$1"',
+	'jsonschema-invalidkey' => '"$2" හී "$1" වලංගු නොවන යතුර',
+);
+
 /** Ukrainian (українська)
  * @author Ата
  */
