@@ -21,7 +21,6 @@
 	"trailing": true,
 	"bitwise": true,
 	"browser": true,
-	"nomen": true,
 	"onevar": true,
 
 	"plusplus": false
