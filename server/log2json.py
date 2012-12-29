@@ -42,10 +42,10 @@ salt = os.urandom(16)
 # raw URL-encoded JSON instead of key=val params, which will resolve
 # some of this.
 meta_readable = {
-    '_rv': 'revision',
-    '_id': 'schema',
-    '_ok': 'valid',
-    '_db': 'site'
+    '_rv': '_revision',
+    '_id': '_schema',
+    '_ok': '_valid',
+    '_db': '_site'
 }
 
 url = 'http://meta.wikimedia.org/w/index.php?action=raw&oldid=%d'
