@@ -9,7 +9,7 @@
  *
  * @author Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
- * @version 0.3
+ * @version 0.4
  */
 
 // Credits
@@ -22,7 +22,7 @@ $wgExtensionCredits[ 'other' ][] = array(
 		'Timo Tijhof',
 		'S Page',
 	),
-	'version' => '0.2',
+	'version' => '0.4',
 	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );
