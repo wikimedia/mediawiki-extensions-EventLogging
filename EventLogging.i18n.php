@@ -105,6 +105,13 @@ $messages['fr'] = array(
 	'eventlogging-invalid-json' => 'JSON non valide',
 );
 
+/** Franco-Provençal (arpetan)
+ * @author ChrisPtDe
+ */
+$messages['frp'] = array(
+	'eventlogging-invalid-json' => 'JSON envalido',
+);
+
 /** Galician (galego)
  * @author Toliño
  */

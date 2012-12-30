@@ -77,6 +77,16 @@ $messages['fr'] = array(
 	'jsonschema-invalidnode' => 'Nœud non valide: "$1" attendu, "$2" obtenu. Chemin: "$3"',
 );
 
+/** Franco-Provençal (arpetan)
+ * @author ChrisPtDe
+ */
+$messages['frp'] = array(
+	'jsonschema-badidref' => 'Crouyo idref : « $1 »',
+	'jsonschema-idconvert' => 'Empossiblo de convèrtir var en id : « $1 »',
+	'jsonschema-invalidkey' => 'Cllâf envalida « $1 » dedens « $2 »',
+	'jsonschema-invalidnode' => 'Nuod envalido : « $1 » atendu, « $2 » avu. Chemin : « $3 »',
+);
+
 /** Galician (galego)
  * @author Toliño
  */
