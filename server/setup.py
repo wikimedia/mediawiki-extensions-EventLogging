@@ -22,7 +22,7 @@ setup(
     license='GPL',
     author='Ori Livneh',
     author_email='ori@wikimedia.org',
-    url='www.mediawiki.org/wiki/Extension:EventLogging',
+    url='https://www.mediawiki.org/wiki/Extension:EventLogging',
     description='Server-side component of EventLogging MediaWiki extension.',
     long_description=__doc__,
     packages=(
@@ -33,10 +33,11 @@ setup(
         'bin/reflect.py',
         'bin/seqmon.py',
         'bin/udp2zmq.py',
-        'bin/zmq2log.py'
+        'bin/zmq2log.py',
     ),
     install_requires=(
+        "jsonschema >= 0.7",
         "pyzmq >= 2.1",
-        "jsonschema >= 0.7"
+        "sqlalchemy >= 0.7.9",
     ),
 )
