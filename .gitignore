@@ -4,3 +4,6 @@
 .*.swp
 Makefile
 tests/suite.php
+*.pyc
+__pycache__
+.pylintrc

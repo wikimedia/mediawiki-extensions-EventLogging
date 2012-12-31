@@ -2,38 +2,23 @@
 # -*- coding: utf8 -*-
 from __future__ import unicode_literals
 
-import calendar
-import hashlib
 import logging
 import operator
 import os
 import sys
-import time
 
 import jsonschema
 import zmq
 
-if sys.version_info[0] >= 3:
-    items = operator.methodcaller('items')
-    from urllib.parse import parse_qsl
-    from urllib.request import urlopen
-else:
-    items = operator.methodcaller('iteritems')
-    from urlparse import parse_qsl
-    from urllib2 import urlopen
-
-json = zmq.utils.jsonapi  # gets best available json lib
+from eventlogging.schema import get_schema
+from eventlogging.compat import json, items, parse_qsl
+from eventlogging.utils import ncsa_to_epoch, hash_value
 
 
 ENDPOINT = b'tcp://*:8484'
 META_SCHEMA_REV = 4891798
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
-
-# Salt value for hashing IPs. Because this value is generated at
-# runtime, IPs cannot be compared across restarts, but it spares us
-# having to secure a config file.
-salt = os.urandom(16)
 
 # Maps compressed query param name of auto fields to human-readable
 # name. I hate this because it veers off the path of explicitly modelled
@@ -47,10 +32,6 @@ meta_readable = {
     '_ok': '_valid',
     '_db': '_site'
 }
-
-url = 'http://meta.wikimedia.org/w/index.php?action=raw&oldid=%d'
-
-schemas = {}  # Local cache
 
 
 # Maps JSON schema types to a function that will convert a string to
@@ -75,10 +56,6 @@ def typecast(obj, schema):
     return {k: casters[types.get(k, 'string')](v) for k, v in items(obj)}
 
 
-def parse_meta(object):
-    metaschema = get_schema(META_SCHEMA_REV)
-    return typecast(object, metaschema)
-
 
 def decode_event(q):
     """
@@ -93,7 +70,9 @@ def decode_event(q):
             meta[k] = v
         else:
             e[k] = v
-    meta = parse_meta(meta)
+
+    metaschema = get_schema(META_SCHEMA_REV)
+    meta = typecast(object, metaschema)
 
     schema = get_schema(meta['_rv'])
     e = typecast(e, schema)
@@ -101,18 +80,6 @@ def decode_event(q):
 
     e['meta'] = {meta_readable.get(k, k): v for k, v in items(meta)}
     return e
-
-
-def parse_ncsa_ts(ts):
-    """Converts a timestamp in NCSA format to seconds since epoch."""
-    return calendar.timegm(time.strptime(ts, '%Y-%m-%dT%H:%M:%S'))
-
-
-def hash_value(s):
-    """Produce a salted SHA1 hash of any string value."""
-    hash = hashlib.sha1(s)
-    hash.update(salt)
-    return hash.hexdigest()
 
 
 def parse_bits_line(line):
@@ -128,34 +95,11 @@ def parse_bits_line(line):
         'truncated': not q.endswith(';'),
         'origin': origin.split('.', 1)[0],
         'seqId': int(seq_id),
-        'timestamp': parse_ncsa_ts(timestamp),
+        'timestamp': ncsa_to_epoch(timestamp),
         'clientIp': hash_value(client_ip)
     })
 
     return e
-
-
-def get_schema(rev_id):
-    """Get schema from memory or HTTP."""
-    schema = schemas.get(rev_id)
-    if schema is None:
-        schema = http_get_schema(rev_id)
-        if schema is not None:
-            schemas[rev_id] = schema
-    return schema
-
-
-def http_get_schema(rev_id):
-    """Retrieve schema via HTTP."""
-    req = urlopen(url % rev_id)
-    content = req.read().decode('utf8')
-    try:
-        schema = json.loads(content)
-        assert isinstance(schema, dict)
-    except:
-        logging.exception('Failed to decode HTTP response: %s', content)
-        return None
-    return schema
 
 
 def iter_loglines():

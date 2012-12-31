@@ -36,7 +36,7 @@ logging.basicConfig(
 )
 
 # Bind output socket
-ctx = zmq.Context()
+ctx = zmq.Context.instance()
 sock_out = ctx.socket(zmq.PUB)
 sock_out.bind('tcp://*:%d' % args.port)
 

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import json
 import logging
 import sys
-import zmq
-
 from datetime import datetime
+
+import zmq
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
-from log2json import get_schema
+
+from eventlogging.schema import get_schema
 
 
 ZMQ_ENDPOINT = b'tcp://localhost:8484'
@@ -19,9 +19,8 @@ table_name_format = '{name}_{rev}'
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-with open('config.json') as f:
-    config = json.load(f)
-meta = MetaData(**config.get('db'))
+db_uri = sys.argv[1]
+meta = MetaData(db_uri)
 
 # Mapping of JSON schema types to SQL types:
 sql_types = {
@@ -85,7 +84,7 @@ def store_event(event):
         table.insert(values=event).execute()
 
 
-context = zmq.Context()
+context = zmq.Context.instance()
 socket = context.socket(zmq.SUB)
 socket.connect(ZMQ_ENDPOINT)
 socket.setsockopt(zmq.SUBSCRIBE, b'')
