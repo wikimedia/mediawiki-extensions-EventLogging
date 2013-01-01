@@ -16,7 +16,8 @@
   optional arguments:
     -h, --help  show this help message and exit
 
-  Author: Ori Livneh <ori@wikimedia.org>
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
 
 """
 import argparse
@@ -25,35 +26,7 @@ import logging
 import logging.handlers
 import time
 
-import zmq
-
-
-def zmq_sub(endpoint, topic=''):
-    """Generator; yields line from ZMQ_SUB socket."""
-    context = zmq.Context.instance()
-    sock = context.socket(zmq.SUB)
-    sock.connect(endpoint)
-    sock.setsockopt(zmq.SUBSCRIBE, '')
-
-    while 1:
-        yield sock.recv()
-
-
-def tail(filename):
-    """Generator; equivalent to tail -f."""
-    with open(filename, 'r') as f:
-        f.seek(0, 2)
-        while 1:
-            line = f.readline()
-            if not line:
-                time.sleep(0.1)
-                continue
-            yield line
-
-
-def get_stream(stream):
-    """Returns a generator that will iterate over a stream."""
-    return zmq_sub(stream) if stream.startswith('tcp://') else tail(stream)
+from eventlogging.io import zmq_subscribe, tail_follow
 
 
 #
@@ -61,7 +34,7 @@ def get_stream(stream):
 #
 
 parser = argparse.ArgumentParser(description='Monitor udp2log sequence IDs.')
-parser.add_argument('stream', help='log file or stream URI', type=get_stream)
+parser.add_argument('stream', help='log file or stream URI')
 parser.add_argument('destfile', help='write log to this file')
 args = parser.parse_args()
 
@@ -84,7 +57,14 @@ log.debug('Started. Logging to %s.' % args.destfile)
 lost = collections.defaultdict(int)
 seqs = {}
 
-for line in args.stream:
+
+if stream.startswith('tcp://'):
+    stream = zmq_subscribe(stream)
+else:
+    stream = tail(stream)
+
+
+for line in stream:
     try:
         host, seq = line.split(' ', 3)[1:3]
         seq = int(seq)

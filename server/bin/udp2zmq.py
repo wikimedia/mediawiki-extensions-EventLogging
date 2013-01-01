@@ -17,10 +17,10 @@
 """
 import argparse
 import logging
-import socket
 import sys
 import zmq
 
+from eventlogging.stream import iter_udp
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device')
@@ -40,22 +40,6 @@ ctx = zmq.Context.instance()
 sock_out = ctx.socket(zmq.PUB)
 sock_out.bind('tcp://*:%d' % args.port)
 
-# Bind input socket
-sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock_in.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock_in.bind(('0.0.0.0', args.port))
-
-
-try:
-    f = sock_in.makefile('r', 1)
-    logging.info('Forwarding udp:%d => tcp:%d...' % (args.port, args.port))
-    for msg in f:
-        sock_out.send(msg)
-finally:
-    try:
-        f.close()
-        sock_in.shutdown()
-        sock_in.close()
-        sock_out.close()
-    except:
-        pass
+logging.info('Forwarding udp:%d => tcp:%d...' % (args.port, args.port))
+for msg in iter_udp(args.port):
+    sock_out.send_string(msg)

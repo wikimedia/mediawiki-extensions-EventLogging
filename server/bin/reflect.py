@@ -84,14 +84,10 @@ def store_event(event):
         table.insert(values=event).execute()
 
 
-context = zmq.Context.instance()
-socket = context.socket(zmq.SUB)
-socket.connect(ZMQ_ENDPOINT)
-socket.setsockopt(zmq.SUBSCRIBE, b'')
-
+sub = zmq_subscribe(ZMQ_ENDPOINT, json=true)
 while 1:
     try:
-        ev = socket.recv_json()
+        ev = next(sub)
         logging.info(ev)
         store_event(ev)
     except SQLAlchemyError:
