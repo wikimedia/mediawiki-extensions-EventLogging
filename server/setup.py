@@ -42,6 +42,6 @@ setup(
     install_requires=(
         "jsonschema>=0.7",
         "pyzmq>=2.1",
-        "sqlalchemy>=0.7.9",
+        "sqlalchemy>=0.7",
     ),
 )
