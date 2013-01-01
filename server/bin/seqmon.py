@@ -24,9 +24,8 @@ import argparse
 import collections
 import logging
 import logging.handlers
-import time
 
-from eventlogging.io import zmq_subscribe, tail_follow
+from eventlogging.stream import zmq_subscribe, tail_follow
 
 
 #
@@ -58,10 +57,10 @@ lost = collections.defaultdict(int)
 seqs = {}
 
 
-if stream.startswith('tcp://'):
-    stream = zmq_subscribe(stream)
+if args.stream.startswith('tcp://'):
+    stream = zmq_subscribe(args.stream)
 else:
-    stream = tail(stream)
+    stream = tail_follow(args.stream)
 
 
 for line in stream:

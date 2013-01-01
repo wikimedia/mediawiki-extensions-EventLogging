@@ -4,11 +4,11 @@ import logging
 import sys
 from datetime import datetime
 
-import zmq
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
 
 from eventlogging.schema import get_schema
+from eventlogging.stream import zmq_subscribe
 
 
 ZMQ_ENDPOINT = b'tcp://localhost:8484'
@@ -84,7 +84,7 @@ def store_event(event):
         table.insert(values=event).execute()
 
 
-sub = zmq_subscribe(ZMQ_ENDPOINT, json=true)
+sub = zmq_subscribe(ZMQ_ENDPOINT, json=True)
 while 1:
     try:
         ev = next(sub)

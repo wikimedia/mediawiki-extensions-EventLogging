@@ -14,6 +14,7 @@ from __future__ import unicode_literals
 
 import io
 import socket
+import time
 
 from .compat import iter_socket
 
@@ -25,7 +26,7 @@ def zmq_subscribe(endpoint, topic='', json=False):
     context = zmq.Context.instance()
     sock = context.socket(zmq.SUB)
     sock.connect(endpoint)
-    sock.setsockopt_string(zmq.SUBSCRIBE, '')
+    sock.setsockopt_string(zmq.SUBSCRIBE, topic)
     recv = sock.recv_json if json else sock.recv_unicode
 
     while 1:

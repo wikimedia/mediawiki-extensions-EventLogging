@@ -3,8 +3,6 @@
 from __future__ import unicode_literals
 
 import logging
-import operator
-import os
 import sys
 
 import jsonschema
@@ -12,6 +10,7 @@ import zmq
 
 from eventlogging.schema import get_schema
 from eventlogging.compat import json, items, parse_qsl
+from eventlogging.stream import zmq_subscribe
 from eventlogging.utils import ncsa_to_epoch, hash_value
 
 
@@ -108,7 +107,9 @@ if __name__ == '__main__':
 
     logging.info('Publishing JSON events on %s..', ENDPOINT.decode('utf8'))
 
-    for line in zmq_subscribe('tcp://localhost:8422'):
-        e = parse_bits_line(e)
-        if e is not None:
+    for raw_event in zmq_subscribe('tcp://localhost:8422'):
+        event = parse_bits_line(raw_event)
+        if event is not None:
+			# We can't use pyzmq's Socket.send_json because it doesn't
+			# send a trailing newline and our stream is line-oriented.
             pub.send_unicode(json.dumps(event) + '\n')
