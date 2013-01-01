@@ -89,8 +89,7 @@
 				properties = schema.schema.properties,
 				property;
 
-
-			if ( schema === null ) {
+			if ( $.isEmpty( properties ) ) {
 				self.warn( 'Unknown schema "' + schemaName + '"' );
 				return false;
 			}
