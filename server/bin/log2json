@@ -70,13 +70,13 @@ def decode_event(q):
             e[k] = v
 
     metaschema = get_schema(META_SCHEMA_REV)
-    meta = typecast(object, metaschema)
+    meta = typecast(meta, metaschema)
 
     schema = get_schema(meta['_rv'])
     e = typecast(e, schema)
     jsonschema.validate(e, schema)
 
-    e['meta'] = {meta_readable.get(k, k): v for k, v in items(meta)}
+    e.update({meta_readable.get(k, k): v for k, v in items(meta)})
     return e
 
 

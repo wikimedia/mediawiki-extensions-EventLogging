@@ -39,12 +39,15 @@ args = parser.parse_args()
 
 
 # Configure logging to file:
+formatter = logging.Formatter('%(asctime)s\t%(message)s')
+
 logfile_handler = logging.handlers.WatchedFileHandler(filename=args.destfile)
+logfile_handler.setFormatter(formatter)
 logfile_handler.setLevel(logging.INFO)
 
 # Configure logging to stderr:
 console_handler = logging.StreamHandler()
-console_handler.setFormatter(logging.Formatter('%(asctime)s\t%(message)s'))
+console_handler.setFormatter(formatter)
 console_handler.setLevel(logging.DEBUG)  # Don't pollute log files with status
 
 log = logging.getLogger(__name__)
