@@ -1,7 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+"""
+  log2json
+  --------
+  Transform raw log stream to JSON event stream
+
+  usage: log2json [-h] [--sid SID] input output
+
+  positional arguments:
+    input       URI of raw input stream
+    output      URI of output stream
+
+  optional arguments:
+    -h, --help  show this help message and exit
+    --sid SID   set input socket identity
+
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
+
+"""
 from __future__ import unicode_literals
 
+import argparse
 import logging
 import sys
 
@@ -14,10 +34,16 @@ from eventlogging.stream import zmq_subscribe
 from eventlogging.utils import ncsa_to_epoch, hash_value
 
 
-ENDPOINT = b'tcp://*:8484'
 META_SCHEMA_REV = 4891798
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+
+parser = argparse.ArgumentParser(
+    description='Transform raw log stream to JSON event stream')
+parser.add_argument('input', help='URI of raw input stream')
+parser.add_argument('output', help='URI of output stream')
+parser.add_argument('--sid', help='set input socket identity')
+args = parser.parse_args()
 
 # Maps compressed query param name of auto fields to human-readable
 # name. I hate this because it veers off the path of explicitly modelled
@@ -103,13 +129,13 @@ def parse_bits_line(line):
 if __name__ == '__main__':
     context = zmq.Context.instance()
     pub = context.socket(zmq.PUB)
-    pub.bind(ENDPOINT)
+    pub.bind(args.output)
 
-    logging.info('Publishing JSON events on %s..', ENDPOINT.decode('utf8'))
+    logging.info('Publishing JSON events on %s.', args.output)
 
-    for raw_event in zmq_subscribe('tcp://localhost:8422'):
+    for raw_event in zmq_subscribe(args.input, sid=args.sid):
         event = parse_bits_line(raw_event)
         if event is not None:
-			# We can't use pyzmq's Socket.send_json because it doesn't
-			# send a trailing newline and our stream is line-oriented.
+            # We can't use pyzmq's Socket.send_json because it doesn't
+            # send a trailing newline and our stream is line-oriented.
             pub.send_unicode(json.dumps(event) + '\n')
