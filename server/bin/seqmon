@@ -5,21 +5,27 @@
   ---------
   Monitor sequence IDs on a stream of varnishncsa udp output for gaps.
 
-  usage: seqmon.py [-h] stream destfile
+  usage: seqmon [options] stream destfile
 
   Monitor udp2log sequence IDs.
 
   positional arguments:
-    stream      log file or stream URI
-    destfile    write log to this file
+    stream       log file or stream URI
+    destfile     write log to this file
 
   optional arguments:
-    -h, --help  show this help message and exit
+    -h, --help   show this help message and exit
+    --sid SID    set socket identity
+    --sep SEP    field seperator (default: whitespace)
+    --hpos HPOS  position of host field (0-indexed; default: 1)
+    --spos SPOS  position of seq id field (0-indexed; default: 2)
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
 
 """
+from __future__ import unicode_literals
+
 import argparse
 import collections
 import logging
@@ -35,6 +41,12 @@ from eventlogging.stream import zmq_subscribe, tail_follow
 parser = argparse.ArgumentParser(description='Monitor udp2log sequence IDs.')
 parser.add_argument('stream', help='log file or stream URI')
 parser.add_argument('destfile', help='write log to this file')
+parser.add_argument('--sid', help='set socket identity')
+parser.add_argument('--sep', help='field seperator (default: whitespace)')
+parser.add_argument('--hpos', type=int, default=1,
+        help='position of host field (0-indexed; default: 1)')
+parser.add_argument('--spos', type=int, default=2,
+        help='position of seq id field (0-indexed; default: 2)')
 args = parser.parse_args()
 
 
@@ -61,15 +73,16 @@ seqs = {}
 
 
 if args.stream.startswith('tcp://'):
-    stream = zmq_subscribe(args.stream)
+    stream = zmq_subscribe(args.stream, sid=args.sid)
 else:
     stream = tail_follow(args.stream)
 
 
 for line in stream:
     try:
-        host, seq = line.split(' ', 3)[1:3]
-        seq = int(seq)
+        fields = line.split(args.sep)
+        host = fields[args.hpos]
+        seq = int(fields[args.spos])
     except (ValueError, IndexError):
         log.exception('Unable to parse log line: %s', line)
         continue
