@@ -16,6 +16,7 @@ $messages['en'] = array(
 	'eventlogging-desc' => 'Framework for logging events from client-side code',
 	'eventlogging-json' => 'Object, $1 {{PLURAL:$1|property|properties}}',
 	'eventlogging-invalid-json' => 'Invalid JSON',
+	'eventlogging-revision-id' => 'Revision $1',
 );
 
 /** Message documentation (Message documentation)
@@ -27,6 +28,7 @@ $messages['qqq'] = array(
 	'eventlogging-desc' => '{{desc|name=Event Logging|url=http://www.mediawiki.org/wiki/Extension:EventLogging}}',
 	'eventlogging-json' => 'Identifies a JSON Object and the number of properties it has',
 	'eventlogging-invalid-json' => 'Error shown when an editor attempts to save a Schema article edit that is not valid JSON',
+	'eventlogging-revision-id' => 'The numeric ID of the displayed revision, shown in the page subtitle',
 );
 
 /** Asturian (asturianu)

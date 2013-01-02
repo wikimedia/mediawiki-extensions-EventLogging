@@ -99,6 +99,9 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	static function onBeforePageDisplay( &$out, &$skin ) {
+		$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
+			->numParams( $out->getRevisionId() )
+			->escaped() );
 		if ( $out->getTitle()->getNamespace() === NS_SCHEMA ) {
 			$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
 		}
