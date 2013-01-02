@@ -19,15 +19,14 @@
     --sid SID      set socket identity (default: host name)
 
 """
+from __future__ import unicode_literals
+
 import argparse
 import logging
 import logging.handlers
 import socket
 
 import zmq
-
-
-hostname = socket.gethostname()
 
 
 #
@@ -39,8 +38,7 @@ parser.add_argument('publisher', help='publisher URI')
 parser.add_argument('destfile', help='write log to this file')
 parser.add_argument('--topic', default='',
                     help='subscribe to topic (default: "")')
-parser.add_argument('--sid', default=hostname,
-                    help='set socket identity (default: host name)')
+parser.add_argument('--sid', help='set socket identity')
 
 args = parser.parse_args()
 
@@ -71,8 +69,9 @@ log.debug('Started. Logging to %s.' % args.destfile)
 
 context = zmq.Context.instance()
 socket = context.socket(zmq.SUB)
+if args.sid is not None:
+    socket.setsockopt(zmq.IDENTITY, args.sid.encode('utf8'))
 socket.connect(args.publisher)
-socket.setsockopt(zmq.IDENTITY, args.sid.encode('utf8'))
 socket.setsockopt(zmq.SUBSCRIBE, args.topic.encode('utf8'))
 log.debug('Connected to %s/%s' % (args.publisher, args.topic))
 
