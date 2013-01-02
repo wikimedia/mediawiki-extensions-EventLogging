@@ -28,7 +28,8 @@ $messages['qqq'] = array(
 	'eventlogging-desc' => '{{desc|name=Event Logging|url=http://www.mediawiki.org/wiki/Extension:EventLogging}}',
 	'eventlogging-json' => 'Identifies a JSON Object and the number of properties it has',
 	'eventlogging-invalid-json' => 'Error shown when an editor attempts to save a Schema article edit that is not valid JSON',
-	'eventlogging-revision-id' => 'The numeric ID of the displayed revision, shown in the page subtitle',
+	'eventlogging-revision-id' => 'The numeric ID of the displayed revision, shown in the page subtitle.
+{{Identical|Revision}}',
 );
 
 /** Asturian (asturianu)
@@ -65,6 +66,7 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
 	'eventlogging-json' => 'Objekt, {{PLURAL:$1|eine Eigenschaft|$1 Eigenschaften}}',
 	'eventlogging-invalid-json' => 'Ungültiges JSON',
+	'eventlogging-revision-id' => 'Version $1',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -105,6 +107,7 @@ $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
 	'eventlogging-json' => 'Objet, $1 {{PLURAL:$1|propriété|propriétés}}',
 	'eventlogging-invalid-json' => 'JSON non valide',
+	'eventlogging-revision-id' => 'Révision $1',
 );
 
 /** Franco-Provençal (arpetan)
@@ -171,6 +174,7 @@ $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
 	'eventlogging-json' => '$1 {{PLURAL:$1|件のプロパティ}}を持つオブジェクト',
 	'eventlogging-invalid-json' => '無効な JSON',
+	'eventlogging-revision-id' => '版 $1',
 );
 
 /** Korean (한국어)
@@ -230,6 +234,7 @@ $messages['pms'] = array(
 	'eventlogging-desc' => 'Piataforma për event ëd registr da còdes da part ëd client',
 	'eventlogging-json' => 'Oget, $1 {{PLURAL:$1|propietà}}',
 	'eventlogging-invalid-json' => 'JSON pa bon',
+	'eventlogging-revision-id' => 'Revision $1',
 );
 
 /** Romanian (română)
