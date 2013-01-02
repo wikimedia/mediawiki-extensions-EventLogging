@@ -40,6 +40,6 @@ ctx = zmq.Context.instance()
 sock_out = ctx.socket(zmq.PUB)
 sock_out.bind('tcp://*:%d' % args.port)
 
-logging.info('Forwarding udp:%d => tcp:%d...' % (args.port, args.port))
+logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
 for msg in iter_udp(args.port):
     sock_out.send_string(msg)
