@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-  seqmon.py
-  ---------
+  seqmon
+  ------
   Monitor sequence IDs on a stream of varnishncsa udp output for gaps.
 
   usage: seqmon [options] stream destfile
-
-  Monitor udp2log sequence IDs.
 
   positional arguments:
     stream       log file or stream URI
@@ -44,9 +42,9 @@ parser.add_argument('destfile', help='write log to this file')
 parser.add_argument('--sid', help='set socket identity')
 parser.add_argument('--sep', help='field seperator (default: whitespace)')
 parser.add_argument('--hpos', type=int, default=1,
-        help='position of host field (0-indexed; default: 1)')
+                    help='position of host field (0-indexed; default: 1)')
 parser.add_argument('--spos', type=int, default=2,
-        help='position of seq id field (0-indexed; default: 2)')
+                    help='position of seq id field (0-indexed; default: 2)')
 args = parser.parse_args()
 
 
