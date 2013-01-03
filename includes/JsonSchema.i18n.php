@@ -159,14 +159,15 @@ $messages['nl'] = array(
 );
 
 /** Piedmontese (Piemontèis)
+ * @author Borichèt
  * @author Dragonòt
  */
 $messages['pms'] = array(
 	'jsonschema-badidref' => 'Idref pa bon: "$1"',
 	'jsonschema-idconvert' => 'As peul pa convertisse var a id: "$1"',
 	'jsonschema-invalidkey' => 'Ciav pa bon-a "$1" an "$2"',
-	'jsonschema-invalidempty' => 'Stutura dat veuida pa bon-a con sto schema',
-	'jsonschema-invalidnode' => 'Grop pa bon: a së speta "$1", rivà "$2". Përcors: "$3"',
+	'jsonschema-invalidempty' => 'Strutura ëd dat veuida nen bon-a con cost ëschema',
+	'jsonschema-invalidnode' => 'Grop pa bon: spetà «$1», rivà «$2». Përcors: «$3»',
 );
 
 /** Sinhala (සිංහල)

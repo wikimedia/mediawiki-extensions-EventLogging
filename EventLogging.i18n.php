@@ -124,6 +124,7 @@ $messages['gl'] = array(
 	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
 	'eventlogging-json' => 'Obxecto, $1 {{PLURAL:$1|propiedade|propiedades}}',
 	'eventlogging-invalid-json' => 'JSON non válido',
+	'eventlogging-revision-id' => 'Revisión $1',
 );
 
 /** Hebrew (עברית)
@@ -131,6 +132,9 @@ $messages['gl'] = array(
  */
 $messages['he'] = array(
 	'eventlogging-desc' => 'מסגרת לרישום אירועים מקוד בצד הלקוח',
+	'eventlogging-json' => 'אובייקט, {{PLURAL:$1|מאפיין אחד|$1 מאפיינים}}',
+	'eventlogging-invalid-json' => 'נתוני JSON בלתי־תקינים',
+	'eventlogging-revision-id' => 'גרסה $1',
 );
 
 /** Upper Sorbian (hornjoserbsce)
@@ -184,6 +188,7 @@ $messages['ko'] = array(
 	'eventlogging-desc' => '클라이언트 쪽 코드에서 사건 기록에 대한 프레임워크',
 	'eventlogging-json' => '{{PLURAL:$1|속성}} $1개를 가진 개체',
 	'eventlogging-invalid-json' => '잘못된 JSON',
+	'eventlogging-revision-id' => '$1 판',
 );
 
 /** Macedonian (македонски)
@@ -193,6 +198,7 @@ $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
 	'eventlogging-json' => 'Објект, $1 {{PLURAL:$1|својство|својства}}',
 	'eventlogging-invalid-json' => 'Неважечки JSON',
+	'eventlogging-revision-id' => 'Ревизија $1',
 );
 
 /** Malay (Bahasa Melayu)
@@ -228,10 +234,11 @@ $messages['pl'] = array(
 );
 
 /** Piedmontese (Piemontèis)
+ * @author Borichèt
  * @author Dragonòt
  */
 $messages['pms'] = array(
-	'eventlogging-desc' => 'Piataforma për event ëd registr da còdes da part ëd client',
+	'eventlogging-desc' => "Piataforma dj'event ëd marcage për ël còdes da la banda dël client",
 	'eventlogging-json' => 'Oget, $1 {{PLURAL:$1|propietà}}',
 	'eventlogging-invalid-json' => 'JSON pa bon',
 	'eventlogging-revision-id' => 'Revision $1',
@@ -275,6 +282,7 @@ $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
 	'eventlogging-json' => 'Đối tượng, $1 thuộc tính',
 	'eventlogging-invalid-json' => 'JSON không hợp lệ',
+	'eventlogging-revision-id' => 'Phiên bản $1',
 );
 
 /** Simplified Chinese (中文（简体）‎)
