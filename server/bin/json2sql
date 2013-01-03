@@ -27,6 +27,7 @@ from datetime import datetime
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
 
+from eventlogging.compat import items
 from eventlogging.schema import get_schema
 from eventlogging.stream import zmq_subscribe
 
@@ -86,7 +87,7 @@ def create_table(name, rev):
 
     for schema in (schema_self, schema_meta):
         properties = schema['properties']
-        columns.extend(generate_column(k, v) for k, v in properties.items())
+        columns.extend(generate_column(k, v) for k, v in items(properties))
 
     table_name = table_name_format.format(name=name, rev=rev)
     table = Table(table_name, meta, *columns)
@@ -98,6 +99,7 @@ def store_event(event):
     # Gross: we special-case keys with 'timestamp' in their name and
     # force their type to be datetime. TODO(ori-l, 28-Dec-2012): Use
     # JSON Schema's 'format'.
+    event.update({('_' + k): v for k, v in items(event.pop('meta'))})
     for key in event:
         if 'timestamp' in key:
             event[key] = datetime.fromtimestamp(int(event[key]))

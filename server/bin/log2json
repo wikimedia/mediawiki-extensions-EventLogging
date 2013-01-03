@@ -52,10 +52,10 @@ args = parser.parse_args()
 # raw URL-encoded JSON instead of key=val params, which will resolve
 # some of this.
 meta_readable = {
-    '_rv': '_revision',
-    '_id': '_schema',
-    '_ok': '_valid',
-    '_db': '_site'
+    '_rv': 'revision',
+    '_id': 'schema',
+    '_ok': 'valid',
+    '_db': 'site'
 }
 
 
@@ -102,7 +102,7 @@ def decode_event(q):
     e = typecast(e, schema)
     jsonschema.validate(e, schema)
 
-    e.update({meta_readable.get(k, k): v for k, v in items(meta)})
+    e['meta'] = {meta_readable.get(k, k): v for k, v in items(meta)}
     return e
 
 
