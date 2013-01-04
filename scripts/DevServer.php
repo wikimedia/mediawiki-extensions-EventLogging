@@ -67,7 +67,7 @@ function readHttpReq( &$conn ) {
  * @return array|false: URL or false if no URL could be extracted.
  */
 function parseGetReq( $req ) {
-	preg_match( '/GET (?P<url>.*) HTTP/', $req, $matches );
+	preg_match( '/GET (?P<url>.*); HTTP/', $req, $matches );
 
 	return array_key_exists( 'url', $matches )
 		? parse_url( $matches[ 'url' ] )
