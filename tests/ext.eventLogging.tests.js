@@ -1,9 +1,8 @@
+/*global QUnit:false */
 ( function ( mw, $ ) {
 	'use strict';
 
-	var warn = mw.eventLog.warn,
-
-		earthquakeSchema = {
+	var earthquakeSchema = {
 			description: 'Record of a history earthquake',
 			properties: {
 				epicenter: {
@@ -19,13 +18,50 @@
 					type: 'string'
 				}
 			}
-		};
+		},
+
+		validationCases = [
+			{
+				args: {
+					epicenter: 'Valdivia',
+					article: '[[1960 Valdivia earthquake]]'
+				},
+				regex: /Missing/,
+				msg: 'Required fields must be present.'
+			},
+			{
+				args: {
+					epicenter: 'Valdivia',
+					magnitude: '9.5'
+				},
+				regex: /Wrong/,
+				msg: 'Values must be instances of declared type'
+			},
+			{
+				args: {
+					epicenter: 'Valdivia',
+					magnitude: 9.5,
+					depth: 33
+				},
+				regex: /Unrecognized/,
+				msg: 'Unrecognized fields fail validation'
+			},
+			{
+				args: {
+					epicenter: 'Tōhoku',
+					magnitude: 9.0
+				},
+				regex: /enum/,
+				msg: 'Enum fields constrain possible values'
+			}
+			// TODO (2013-01-07 spage) Add test where all three are missing,
+			// and maybe another with two missing, article (which is optional)
+			// and another (which would be required) (that would leave only one
+			// required present).
+		];
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.warn = function( msg ) {
-				throw new Error( msg );
-			};
 			mw.eventLog.setSchema( 'earthquake', {
 				schema: earthquakeSchema,
 				revision: 'TEST'
@@ -34,9 +70,9 @@
 		},
 		teardown: function () {
 			mw.eventLog.schemas = {};
-			mw.eventLog.warn = warn;
 		}
 	} ) );
+
 
 	QUnit.test( 'Configuration', 1, function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
@@ -89,39 +125,34 @@
 	} );
 
 	QUnit.test( 'validate', 5, function ( assert ) {
+
 		assert.ok( mw.eventLog.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
-		assert.throws( function () {
-			mw.eventLog.validate( {
-				epicenter: 'Valdivia',
-				article: '[[1960 Valdivia earthquake]]'
-			}, 'earthquake' );
-		}, /Missing/, 'Required fields must be present.' );
+		$.each( validationCases, function() {
+			var thisCase = this;
+			assert.throws( function () {
+				mw.eventLog.validate( thisCase.args, 'earthquake' );
+			}, thisCase.regex, thisCase.msg );
+		} );
 
-		assert.throws( function () {
-			mw.eventLog.validate( {
-				epicenter: 'Valdivia',
-				magnitude: '9.5'
-			}, 'earthquake' );
-		}, /Wrong/, 'Values must be instances of declared type' );
+	} );
 
-		assert.throws( function () {
-			mw.eventLog.validate( {
-				epicenter: 'Valdivia',
-				magnitude: 9.5,
-				depth: 33
-			}, 'earthquake' );
-		}, /Unrecognized/, 'Unrecognized fields fail validation' );
+	QUnit.test( 'isValid', 5, function ( assert ) {
 
-		assert.throws( function () {
-			mw.eventLog.validate( {
-				epicenter: 'Tōhoku',
-				magnitude: 9.0
-			}, 'earthquake' );
-		}, /enum/, 'Enum fields constrain possible values' );
+		assert.ok( mw.eventLog.isValid( {
+			epicenter: 'Valdivia',
+			magnitude: 9.5
+		}, 'earthquake' ), 'Non-required fields may be omitted' );
+
+		$.each( validationCases, function() {
+			var thisCase = this;
+			assert.assertFalse(
+				mw.eventLog.isValid( thisCase.args, 'earthquake' ),
+				thisCase.msg );
+		} );
 	} );
 
 	QUnit.asyncTest( 'logEvent', 1, function ( assert ) {
