@@ -9,6 +9,15 @@
 ( function ( mw, $, console ) {
 	'use strict';
 
+	/**
+	 * @constructor
+	 * @extends Error
+	 **/
+	function ValidationError( message ) {
+		this.message = message;
+	}
+	ValidationError.prototype = new Error();
+
 	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
 		mw.log( 'wgEventLoggingBaseUri is not set.' );
 	}
@@ -80,9 +89,27 @@
 
 
 		/**
+		 * @param {Object} event Event to test for validity.
+		 * @param {Object} schemaName Name of schema.
+		 * @returns {boolean}
+		 */
+		isValid: function ( event, schemaName ) {
+			try {
+				this.validate( event, schemaName );
+				return true;
+			} catch ( e ) {
+				if ( !( e instanceof ValidationError ) ) {
+					throw e;
+				}
+				self.warn( e.message );
+				return false;
+			}
+		},
+
+		/**
 		 * @param {Object} event Event to validate.
 		 * @param {Object} schemaName Name of schema.
-		 * @throws {Error} If event fails to validate.
+		 * @throws {ValidationError} If event fails to validate.
 		 */
 		validate: function ( event, schemaName ) {
 			var schema = self.getSchema( schemaName ),
@@ -90,14 +117,12 @@
 				property;
 
 			if ( $.isEmpty( properties ) ) {
-				self.warn( 'Unknown schema "' + schemaName + '"' );
-				return false;
+				throw new ValidationError( 'Unknown schema "' + schemaName + '"' );
 			}
 
 			for ( property in event ) {
 				if ( properties[ property ] === undefined ) {
-					self.warn( 'Unrecognized property "' + property + '"' );
-					return false;
+					throw new ValidationError( 'Unrecognized property "' + property + '"' );
 				}
 			}
 
@@ -106,15 +131,15 @@
 
 				if ( val === undefined ) {
 					if ( desc.required ) {
-						self.warn( 'Missing "' + property + '" property' );
-						return false;
+						throw new ValidationError( 'Missing "' + property + '" property' );
 					}
 					return true;
 				}
+
 				if ( !( self.isInstance( val, desc.type ) ) ) {
-					self.warn( [ 'Wrong type for property:', property, val ].join(' ') );
-					return false;
+					throw new ValidationError( [ 'Wrong type for property:', property, val ].join(' ') );
 				}
+
 				// 'enum' is reserved for possible future use by the ECMAScript
 				// specification, but it's legal to use it as an attribute name
 				// (and it's part of the JSON Schema draft spec). Still, JSHint
@@ -122,10 +147,10 @@
 				// the only way to turn off the warning is to use "es5:true",
 				// which would be too broad.
 				if ( desc[ 'enum' ] && desc[ 'enum' ].indexOf( val ) === -1 ) {
-					self.warn( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
-					return false;
+					throw new ValidationError( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
 				}
 			} );
+
 			return true;
 		},
 
@@ -156,7 +181,7 @@
 		 * @returns {jQuery.Deferred} Promise object.
 		 */
 		logEvent: function ( schemaName, eventInstance ) {
-			var baseUri, dfd, queryString, beacon, schema = self.getSchema( schemaName );
+			var baseUri, dfd, beacon, schema = self.getSchema( schemaName );
 
 			if ( schema === null ) {
 				self.warn( 'Logging event with unknown schema "' + schemaName + '"' );
@@ -164,12 +189,12 @@
 			}
 
 			eventInstance = $.extend( true, {}, eventInstance, schema.defaults );
-			eventInstance[ 'meta' ] = {
+			eventInstance.meta = {
 				/*jshint nomen: false*/
 				_site     : mw.config.get( 'wgDBname' ),
 				_schema   : schemaName,
 				_revision : schema.revision,
-				_valid    : self.validate( eventInstance, schemaName )
+				_valid    : self.isValid( eventInstance, schemaName )
 				/*jshint nomen: true*/
 			};
 
