@@ -80,14 +80,18 @@
 
 
 		/**
+		 * Validates an event's fields according to its schema.
+		 * Warns on first validation error and returns.
 		 * @param {Object} event Event to validate.
 		 * @param {Object} schemaName Name of schema.
-		 * @throws {Error} If event fails to validate.
+		 * @returns {boolean} false if event fails to validate.
 		 */
 		validate: function ( event, schemaName ) {
 			var schema = self.getSchema( schemaName ),
 				properties = schema.schema.properties,
-				property;
+				property,
+				desc,
+				val;
 
 			if ( $.isEmpty( properties ) ) {
 				self.warn( 'Unknown schema "' + schemaName + '"' );
@@ -101,16 +105,20 @@
 				}
 			}
 
-			$.each( properties, function ( property, desc ) {
-				var val = event[ property ];
+			for ( property in properties ) {
+				// No hasOwnProperty test, see Object.prototype in
+				// mw:Manual:Coding_conventions/JavaScript
+				desc = properties[ property ];
+				val = event[ property ];
 
 				if ( val === undefined ) {
 					if ( desc.required ) {
 						self.warn( 'Missing "' + property + '" property' );
 						return false;
 					}
-					return true;
+					continue;
 				}
+
 				if ( !( self.isInstance( val, desc.type ) ) ) {
 					self.warn( [ 'Wrong type for property:', property, val ].join(' ') );
 					return false;
@@ -125,7 +133,8 @@
 					self.warn( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
 					return false;
 				}
-			} );
+			}
+
 			return true;
 		},
 
