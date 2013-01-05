@@ -132,6 +132,7 @@
 
 		mw.eventLog.logEvent( 'earthquake', e ).always( function () {
 			QUnit.start();
+			delete this[ 'meta' ];
 			assert.deepEqual( this, e, 'logEvent promise resolves with event' );
 		} );
 	} );
@@ -145,6 +146,7 @@
 		mw.eventLog.logEvent( 'earthquake', {
 			magnitude: 9.5
 		} ).always( function () {
+			delete this[ 'meta' ];
 			assert.deepEqual( this, {
 				epicenter: 'Valdivia',
 				magnitude: 9.5

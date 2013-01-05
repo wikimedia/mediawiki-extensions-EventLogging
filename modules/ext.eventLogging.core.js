@@ -171,26 +171,23 @@
 			}
 
 			eventInstance = $.extend( true, {}, eventInstance, schema.defaults );
+			eventInstance[ 'meta' ] = {
+				/*jshint nomen: false*/
+				_site     : mw.config.get( 'wgDBname' ),
+				_schema   : schemaName,
+				_revision : schema.revision,
+				_valid    : self.validate( eventInstance, schemaName )
+				/*jshint nomen: true*/
+			};
 
 			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
 			dfd = jQuery.Deferred();
-
-			// Event instances are automatically annotated with '_db' and '_id'
-			// to identify their origin and declared schema.
-			queryString = [ $.param( {
-				/*jshint nomen: false*/
-				_db: mw.config.get( 'wgDBname' ),
-				_id: schemaName,
-				_rv: schema.revision,
-				_ok: self.validate( eventInstance, schemaName )
-				/*jshint nomen: true*/
-			} ), $.param( eventInstance ) ].join( '&' );
 
 			if ( !baseUri ) {
 				// We already logged the fact of wgEventLoggingBaseUri being
 				// empty, so respect the caller's expectation and return a
 				// rejected promise.
-				dfd.rejectWith( eventInstance, [ schemaName, eventInstance, queryString ] );
+				dfd.rejectWith( eventInstance, [ schemaName, eventInstance ] );
 				return dfd.promise();
 			}
 
@@ -201,9 +198,9 @@
 			// counterintuitive, resolving the promise on error is appropriate.
 			$( beacon ).on( 'error', function () {
 				schema.logged.push( eventInstance );
-				dfd.resolveWith( eventInstance, [ schemaName, eventInstance, queryString ] );
+				dfd.resolveWith( eventInstance, [ schemaName, eventInstance ] );
 			} );
-			beacon.src = baseUri + '?' + queryString + ';';
+			beacon.src = baseUri + '?' + encodeURIComponent( $.toJSON( eventInstance ) ) + ';';
 			return dfd.promise();
 		}
 	};
