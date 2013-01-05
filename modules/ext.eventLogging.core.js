@@ -106,8 +106,6 @@
 			}
 
 			for ( property in properties ) {
-				// No hasOwnProperty test, see Object.prototype in
-				// mw:Manual:Coding_conventions/JavaScript
 				desc = properties[ property ];
 				val = event[ property ];
 
