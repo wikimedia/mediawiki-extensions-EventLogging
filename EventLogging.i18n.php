@@ -60,10 +60,11 @@ $messages['cs'] = array(
 );
 
 /** German (Deutsch)
+ * @author Kghbln
  * @author Metalhead64
  */
 $messages['de'] = array(
-	'eventlogging-desc' => 'Framework für das Protokollieren von Aktionen von clientseitigem Code',
+	'eventlogging-desc' => 'Ergänzt ein Framework zum Protokollieren von Aktionen von clientseitigem Code',
 	'eventlogging-json' => 'Objekt, {{PLURAL:$1|eine Eigenschaft|$1 Eigenschaften}}',
 	'eventlogging-invalid-json' => 'Ungültiges JSON',
 	'eventlogging-revision-id' => 'Version $1',
@@ -144,6 +145,7 @@ $messages['hsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolowanje podawkow koda ze strony klienta',
 	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kajkosć|kajkosći|kajkosće|kajkosćow}}',
 	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
+	'eventlogging-revision-id' => 'Wersija $1',
 );
 
 /** Hungarian (magyar)
@@ -169,6 +171,7 @@ $messages['it'] = array(
 	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
 	'eventlogging-json' => 'Oggetto, $1 {{PLURAL:$1|proprietà}}',
 	'eventlogging-invalid-json' => 'JSON non valido',
+	'eventlogging-revision-id' => 'Versione $1',
 );
 
 /** Japanese (日本語)

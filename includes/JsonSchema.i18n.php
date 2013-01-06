@@ -98,6 +98,17 @@ $messages['gl'] = array(
 	'jsonschema-invalidnode' => 'Nodo non válido: Agardábse "$1"; recibiuse "$2". Ruta: "$3"',
 );
 
+/** Hebrew (עברית)
+ * @author Amire80
+ */
+$messages['he'] = array(
+	'jsonschema-badidref' => 'ערף idref שגוי: "$1"',
+	'jsonschema-idconvert' => 'לא ניתן להמיר var למזהה: "$1"',
+	'jsonschema-invalidkey' => 'מפתח בלתי־תקין: "$1" ב־"$2"',
+	'jsonschema-invalidempty' => 'מבנה נתונים ריק אינו תקין עם הסכֵמה הזאת',
+	'jsonschema-invalidnode' => 'צומת בלתי־תקין: ציפיתי ל־"$1", קיבלתי "$2". נתיב: "$3"',
+);
+
 /** Upper Sorbian (hornjoserbsce)
  * @author Michawiki
  */
