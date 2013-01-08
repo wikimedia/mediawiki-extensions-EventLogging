@@ -1,0 +1,95 @@
+#!/usr/bin/env python -u
+# -*- coding: utf-8 -*-
+"""
+  sv-alerts
+  ---------
+
+  E-mail supervisord alerts.
+
+  usage: sv-alerts [-h] from to
+
+  positional arguments:
+    from        sender address
+    to          recipient address
+
+  optional arguments:
+    -h, --help  show this help message and exit
+
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
+
+"""
+from __future__ import print_function, unicode_literals
+
+import argparse
+import logging
+import subprocess
+import sys
+
+from email.mime.text import MIMEText
+
+from eventlogging.compat import json
+
+
+parser = argparse.ArgumentParser(description='sv-alerts')
+parser.add_argument('from', help='sender address')
+parser.add_argument('to', help='recipient address')
+args = vars(parser.parse_args())
+
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+
+event_names = {
+    'PROCESS_STATE_BACKOFF',
+    'PROCESS_STATE_FATAL',
+    'PROCESS_STATE_RUNNING',
+    'PROCESS_STATE_STOPPING',
+    'SUPERVISOR_STATE_CHANGE_RUNNING',
+    'SUPERVISOR_STATE_CHANGE_STOPPING'
+}
+
+
+def send_email(subject, text):
+    message = MIMEText(text)
+    message['From'] = args['from']
+    message['To'] = args['to']
+    message['Subject'] = subject
+    p = subprocess.Popen(('/usr/sbin/sendmail', '-t'), stdin=subprocess.PIPE)
+    p.communicate(message.as_string().encode('utf8'))
+    logging.info('sent: %s', message.as_string())
+
+
+def parse_tokens(line):
+    map = dict(kv.split(':') for kv in line.split())
+    for k in map.viewkeys() & {'serial', 'poolserial', 'len', 'pid',
+            'expected', 'tries'}:
+        map[k] = int(map[k])
+    return map
+
+
+def iter_events():
+    while 1:
+        print('READY')
+        line = sys.stdin.readline().decode('utf8')
+        event = parse_tokens(line)
+        data = sys.stdin.read(event.pop('len'))
+        try:
+            event.update(parse_tokens(data))
+        except ValueError:
+            event['data'] = data
+        yield event
+        print('RESULT 2')
+        print('OK')
+
+
+def filtered_events():
+    for event in iter_events():
+        if event.get('eventname') in event_names:
+            yield event
+
+
+for event in filtered_events():
+    eventname = event['eventname']
+    processname = event.get('processname', 'supervisord')
+    subject = '%s: %s' % (eventname, processname)
+    text = json.dumps(event, indent=2)
+    send_email(subject, text)
