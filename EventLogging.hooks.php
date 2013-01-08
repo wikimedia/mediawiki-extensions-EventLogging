@@ -59,7 +59,7 @@ class EventLoggingHooks {
 			$mobile = MobileContext::singleton()->shouldDisplayMobileView();
 		}
 
-		efLogServerSideEvent( 'account_create', array (
+		efLogServerSideEvent( 'ServerSideAccountCreation', 4999850, array (
 			'user_id'         => (int) $userId,
 			'timestamp'       => (int) wfTimestamp( TS_UNIX, 0 ),
 			'username'        => (string) $user->getName(),
