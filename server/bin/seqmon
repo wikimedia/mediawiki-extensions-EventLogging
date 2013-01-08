@@ -51,7 +51,8 @@ args = parser.parse_args()
 # Configure logging to file:
 formatter = logging.Formatter('%(asctime)s\t%(message)s')
 
-logfile_handler = logging.handlers.WatchedFileHandler(filename=args.destfile)
+logfile_handler = logging.handlers.WatchedFileHandler(
+    filename=args.destfile, encoding='utf8')
 logfile_handler.setFormatter(formatter)
 logfile_handler.setLevel(logging.INFO)
 

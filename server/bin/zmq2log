@@ -48,7 +48,8 @@ args = parser.parse_args()
 #
 
 # Configure logging to file:
-logfile_handler = logging.handlers.WatchedFileHandler(filename=args.destfile)
+logfile_handler = logging.handlers.WatchedFileHandler(
+    filename=args.destfile, encoding='utf8')
 logfile_handler.setLevel(logging.INFO)
 
 # Configure logging to stderr:
@@ -77,4 +78,4 @@ log.debug('Connected to %s/%s' % (args.publisher, args.topic))
 
 
 while 1:
-    log.info(socket.recv().rstrip())
+    log.info(socket.recv_unicode().rstrip())
