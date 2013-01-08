@@ -20,6 +20,7 @@ $messages['en'] = array(
 	'jsonschema-invalidkey' => 'Invalid key "$1" in "$2"',
 	'jsonschema-invalidempty' => 'Empty data structure not valid with this schema',
 	'jsonschema-invalidnode' => 'Invalid node: expecting "$1", got "$2". Path: "$3"',
+	'jsonschema-invalid-missingfield' => 'Missing required field "$1"',
 );
 
 /** Message documentation (Message documentation)
@@ -31,6 +32,7 @@ $messages['qqq'] = array(
 	'jsonschema-invalidkey' => 'JSON Schema validation error, shown object has a key not specified in schema.',
 	'jsonschema-invalidempty' => 'JSON Schema validation error, shown when attempting to validate empty object against a schema that does not allow empty objects.',
 	'jsonschema-invalidnode' => 'JSON Schema validation error, shown when object node does not match expected type.',
+	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
 );
 
 /** German (Deutsch)
