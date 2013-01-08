@@ -196,6 +196,7 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 
+$wgHooks[ 'AddNewAccount' ][] = 'EventLoggingHooks::onAddNewAccount';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 
