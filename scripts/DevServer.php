@@ -48,6 +48,10 @@ function consoleLog( $msg ) {
 	echo "[\033[1;34m" . wfTimestamp( TS_RFC2822 ) . "\033[0m] $msg\n";
 }
 
+function consoleError( $msg ) {
+	echo "[\033[1;31m" . wfTimestamp( TS_RFC2822 ) . "\033[0m] $msg\n";
+}
+
 
 /**
  * Reads an HTTP request from a socket.
@@ -62,18 +66,18 @@ function readHttpReq( &$conn ) {
 }
 
 
+
 /**
- * Extracts the request URL from a raw GET request and parses it.
- * @return array|false: URL or false if no URL could be extracted.
+ * Extracts the request URL from a raw GET request.
+ * @return string|false: URL or false if no URL could be extracted.
  */
-function parseGetReq( $req ) {
-	preg_match( '/GET (?P<url>.*); HTTP/', $req, $matches );
+function getUrl( &$req ) {
+	preg_match( '/GET (?P<url>.*) HTTP/', $req, $matches );
 
 	return array_key_exists( 'url', $matches )
-		? parse_url( $matches[ 'url' ] )
+		? $matches[ 'url' ]
 		: false;
 }
-
 
 /**
  * Sends a blank HTTP response.
@@ -90,24 +94,33 @@ function sendHttpResp( &$conn, $status ) {
 /**
  * Reads and parses an incoming event via HTTP
  * @param resource &$socket: Socket to read from.
- * @return array: Event map (or empty array).
+ * @return string query string contents or null.
  */
 function handleEvent( &$socket ) {
 	$conn = socket_accept( $socket );
 	$req = readHttpReq( $conn );
-	$uri = parseGetReq( $req );
-	$query = array();
+	$uri = getURL( $req );
 
-	$status = ( $req && $uri )
-		? '204 No Content'
-		: '501 Not Implemented';
+	$url = parse_url( $uri );
 
-	if ( array_key_exists( 'query', $uri ) ) {
-		parse_str( $uri[ 'query' ], $query );
-	}
+	$isBeacon = $req && $url && array_key_exists( 'path', $url ) && $url[ 'path' ] === '/event.gif';
+	$status = $isBeacon	? '204 No Content' : '501 Not Implemented';
 
 	sendHttpResp( $conn, $status );
-	consoleLog( "$req [\033[1;33m$status\033[0m]" );
+	consoleLog( "$req\n[\033[1;33m$status\033[0m]" );
+
+	if ( ! $isBeacon ) {
+		return null;
+	}
+
+	$query = null;
+
+	if ( $url && array_key_exists( 'query', $url ) ) {
+		if ( substr( $uri , -1 ) !== ';') {
+			consoleError( "query string is not terminated with ';' (length=" . strlen( $uri ) . ')' );
+		}
+		$query = urldecode ( rtrim( $url[ 'query' ], ';' ) );
+	}
 
 	return $query;
 }
@@ -160,7 +173,11 @@ consoleLog( "Serving HTTP on {$opts['iface']} port {$opts['port']} ..." );
 
 while ( true ) {
 	$event = handleEvent( $socket );
-	if ( $event ) {
-		echo FormatJson::encode( $event, true ) . "\n";
+	if ( $event !== null) {
+		if ( FormatJson::decode( $event ) ) {
+			echo "$event\n";
+		} else {
+			echo "query string not formatted as JSON\n$event";
+		}
 	}
 }
