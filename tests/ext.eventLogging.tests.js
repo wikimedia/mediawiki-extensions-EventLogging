@@ -22,6 +22,18 @@
 
 		validationCases = [
 			{
+				args: {},
+				regex: /Missing/,
+				msg: 'Empty, omitting all optional and required fields.'
+			},
+			{
+				args: {
+					epicenter: 'Valdivia'
+				},
+				regex: /Missing/,
+				msg: 'Empty, omitting one optional and one required field.'
+			},
+			{
 				args: {
 					epicenter: 'Valdivia',
 					article: '[[1960 Valdivia earthquake]]'
@@ -124,7 +136,7 @@
 
 	} );
 
-	QUnit.test( 'validate', 5, function ( assert ) {
+	QUnit.test( 'validate', 7, function ( assert ) {
 
 		assert.ok( mw.eventLog.validate( {
 			epicenter: 'Valdivia',
@@ -140,7 +152,7 @@
 
 	} );
 
-	QUnit.test( 'isValid', 5, function ( assert ) {
+	QUnit.test( 'isValid', 7, function ( assert ) {
 
 		assert.ok( mw.eventLog.isValid( {
 			epicenter: 'Valdivia',
