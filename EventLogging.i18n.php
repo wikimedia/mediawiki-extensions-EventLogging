@@ -39,6 +39,7 @@ $messages['ast'] = array(
 	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
 	'eventlogging-json' => 'Oxetu, $1 {{PLURAL:$1|propiedá|propiedaes}}',
 	'eventlogging-invalid-json' => 'JSON inválidu',
+	'eventlogging-revision-id' => 'Revisión $1',
 );
 
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)

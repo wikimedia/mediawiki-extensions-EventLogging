@@ -44,6 +44,7 @@ $messages['de'] = array(
 	'jsonschema-invalidkey' => 'Ungültiger Schlüssel „$1“ in „$2“',
 	'jsonschema-invalidempty' => 'Leere Datenstruktur ist mit diesem Schema nicht gültig',
 	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
+	'jsonschema-invalid-missingfield' => 'Es fehlt das erforderliche Feld „$1“.',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -98,6 +99,7 @@ $messages['gl'] = array(
 	'jsonschema-invalidkey' => 'Clave "$1" non válida en "$2"',
 	'jsonschema-invalidempty' => 'Estrutura de datos baleira non válida con este esquema',
 	'jsonschema-invalidnode' => 'Nodo non válido: Agardábse "$1"; recibiuse "$2". Ruta: "$3"',
+	'jsonschema-invalid-missingfield' => 'Falta o parámetro obrigatorio "$1"',
 );
 
 /** Hebrew (עברית)
@@ -140,6 +142,7 @@ $messages['it'] = array(
 	'jsonschema-invalidkey' => 'Chiave non valida "$1" in "$2"',
 	'jsonschema-invalidempty' => 'Struttura dati vuota non valida con questo schema',
 	'jsonschema-invalidnode' => 'Nodo non valido: si aspettava "$1", ma ricevuto "$2". Percorso: "$3"',
+	'jsonschema-invalid-missingfield' => 'Campo obbligatorio mancante "$1"',
 );
 
 /** Japanese (日本語)
@@ -181,6 +184,7 @@ $messages['pms'] = array(
 	'jsonschema-invalidkey' => 'Ciav pa bon-a "$1" an "$2"',
 	'jsonschema-invalidempty' => 'Strutura ëd dat veuida nen bon-a con cost ëschema',
 	'jsonschema-invalidnode' => 'Grop pa bon: spetà «$1», rivà «$2». Përcors: «$3»',
+	'jsonschema-invalid-missingfield' => 'Camp obligatòri "$1" mancant',
 );
 
 /** Sinhala (සිංහල)
