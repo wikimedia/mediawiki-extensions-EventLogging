@@ -99,7 +99,9 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	static function onBeforePageDisplay( &$out, &$skin ) {
-		if ( $out->getTitle()->getNamespace() === NS_SCHEMA ) {
+		$title = $out->getTitle();
+
+		if ( $title->inNamespace( NS_SCHEMA ) && $title->isKnown() ) {
 			$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
 				// We use 'rawParams' rather than 'numParams' to make it
 				// easy to copy/paste the value into code.
