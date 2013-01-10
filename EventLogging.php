@@ -89,19 +89,25 @@ $wgEventLoggingDBname = false;
  * @param array $event: Map of event keys/vals.
  * @return bool: Whether the event was logged.
  */
-function efLogServerSideEvent( $schema, $event ) {
+function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	global $wgEventLoggingFile, $wgDBname;
 
 	if ( !$wgEventLoggingFile ) {
 		return false;
 	}
 
-	$queryString = http_build_query( array(
-		'_db' => $wgDBname,
-		'_id' => $schema
-	) + $event ) . ';';
+	$remoteSchema = new RemoteSchema( $schemaName, $revId );
+	$schema = $remoteSchema->get();
+	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
 
-	wfErrorLog( '?' . $queryString . "\n", $wgEventLoggingFile );
+	$event[ '_meta' ] = array(
+		'_site'     => $wgDBname,
+		'_schema'   => $schemaName,
+		'_revision' => $revId,
+		'_valid'    => $isValid,
+	);
+
+	wfErrorLog( FormatJson::encode( $event ) . "\n", $wgEventLoggingFile );
 	return true;
 }
 
@@ -125,16 +131,22 @@ function efBeautifyJson( $json ) {
  * @throws JsonSchemaException: If the object fails to validate.
  * @param array $object: Object to be validated.
  * @param array $schema: Schema to validate against (default: JSON Schema).
- * @returns bool
+ * @return bool: True if valid; false if invalid.
  */
 function efSchemaValidate( $object, $schema = NULL ) {
 	if ( $schema === NULL ) {
+		// Default to JSON Schema
 		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
 		$schema = FormatJson::decode( $json, true );
 	}
-	$root = new JsonTreeRef( $object );
-	$root->attachSchema( $schema );
-	return $root->validate();
+
+	try {
+		$root = new JsonTreeRef( $object );
+		$root->attachSchema( $schema );
+		return $root->validate();
+	} catch ( JsonSchemaException $e ) {
+		return false;
+	}
 }
 
 
