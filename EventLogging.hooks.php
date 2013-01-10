@@ -49,21 +49,15 @@ class EventLoggingHooks {
 		// MediaWiki allows existing users to create accounts on behalf
 		// of others. In such cases the ID of the newly-created user and
 		// the ID of the user making this web request are different.
-		$selfMade = ( $userId && $userId === $creatorUserId );
+		$isSelfMade = ( $userId && $userId === $creatorUserId );
 
-		$mobile = class_exists( 'MobileContext' ) &&
-			MobileContext::singleton()->shouldDisplayMobileView();
-
-		efLogServerSideEvent( 'ServerSideAccountCreation', 4999919, array (
+		efLogServerSideEvent( 'ServerSideAccountCreation', 5007404, array (
 			'token'         => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
 			'userId'        => (int) $userId,
-			'username'      => (string) $user->getName(),
-			'selfMade'      => (bool) $selfMade,
-			'creatorUserId' => (int) $creatorUserId,
-			'byEmail'       => (bool) $byEmail,
-			'userbuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
+			'userName'      => (string) $user->getName(),
+			'isSelfMade'    => (bool) $isSelfMade,
+			'userBuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
 			'host'          => (string) $_SERVER[ 'HTTP_HOST' ],
-			'displayMobile' => (bool) $mobile,
 		) );
 
 		return true;
