@@ -34,6 +34,7 @@ setup(
         'eventlogging',
     ),
     scripts=(
+        'bin/sv-alerts',
         'bin/json2sql',
         'bin/log2json',
         'bin/udp2zmq',
