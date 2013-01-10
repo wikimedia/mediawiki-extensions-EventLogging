@@ -37,42 +37,34 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * Log a server-side account_create event.
-	 * @param $user object  the User object that was created.
-	 * @param $byEmail boolean  the form has a [By e-mail] button
+	 * @param $user object: The User object that was created.
+	 * @param $byEmail boolean The form has a [By e-mail] button.
 	 */
 	public static function onAddNewAccount( $user, $byEmail ) {
-		global $wgRequest;
-		// $wgUser may be different from the $user param, e.g. it can be
-		// a logged-in user creating this new account.
-		global $wgUser;
+		global $wgRequest, $wgUser, $wgAutoloadClasses;
 
 		$userId = $user->getId();
 		$creatorUserId = $wgUser->getId();
 
-		// Detect when an anonymous user creates her own account (the common
-		// operation). The implementation in SpecialUserlogin.php sets
-		// $wgUser to the new $user.
-		$selfMade = ( $userId > 0 && $userId === $creatorUserId );
+		// MediaWiki allows existing users to create accounts on behalf
+		// of others. In such cases the ID of the newly-created user and
+		// the ID of the user making this web request are different.
+		$selfMade = ( $userId && $userId === $creatorUserId );
 
-		if ( class_exists( 'MobileContext' ) ) {
-			$mobile = MobileContext::singleton()->shouldDisplayMobileView();
-		}
+		$mobile = class_exists( 'MobileContext' ) &&
+			MobileContext::singleton()->shouldDisplayMobileView();
 
-		efLogServerSideEvent( 'ServerSideAccountCreation', 4999850, array (
-			'user_id'         => (int) $userId,
-			'timestamp'       => (int) wfTimestamp( TS_UNIX, 0 ),
-			'username'        => (string) $user->getName(),
-			'self_made'       => (bool) $selfMade,
-			'creator_user_id' => (int) $creatorUserId,
-			'by_email'        => (bool) $byEmail,
-			'userbuckets'     => (string) $wgRequest->getCookie( 'userbuckets', '' ),
-			'mw_user_token'   => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
-			'host'            => (string) $_SERVER[ 'HTTP_HOST' ],
-			'displayMobile'   => (boolean) $mobile,
-			'version'         => 9	// matches VERSION in E3Experiments accountCreationUX.js
+		efLogServerSideEvent( 'ServerSideAccountCreation', 4999919, array (
+			'token'         => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
+			'userId'        => (int) $userId,
+			'username'      => (string) $user->getName(),
+			'selfMade'      => (bool) $selfMade,
+			'creatorUserId' => (int) $creatorUserId,
+			'byEmail'       => (bool) $byEmail,
+			'userbuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
+			'host'          => (string) $_SERVER[ 'HTTP_HOST' ],
+			'displayMobile' => (bool) $mobile,
 		) );
-		// Note the above specifies a blank prefix to match the JavaScript cookie.
 
 		return true;
 	}

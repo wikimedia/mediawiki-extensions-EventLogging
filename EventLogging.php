@@ -86,6 +86,7 @@ $wgEventLoggingDBname = false;
  * @see wfErrorLog
  *
  * @param string $schema: Schema name.
+ * @param integer $revId: revision ID of schema
  * @param array $event: Map of event keys/vals.
  * @return bool: Whether the event was logged.
  */
