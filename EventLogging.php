@@ -147,6 +147,9 @@ function efSchemaValidate( $object, $schema = NULL ) {
 		$root->attachSchema( $schema );
 		return $root->validate();
 	} catch ( JsonSchemaException $e ) {
+		wfDebugLog( 'EventLogging', 'Object failed validation: '
+			. FormatJson::encode( $object )
+			. ' (exception: ' . $e->getMessage() . ')' );
 		return false;
 	}
 }
