@@ -35,6 +35,18 @@ $messages['qqq'] = array(
 	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
 );
 
+/** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
+ * @author Wizardist
+ */
+$messages['be-tarask'] = array(
+	'jsonschema-badidref' => 'Благі idref: «$1»',
+	'jsonschema-idconvert' => 'Не атрымалася канвэртаваць var у id: «$1»',
+	'jsonschema-invalidkey' => 'Няслушны ключ «$1» у «$2»',
+	'jsonschema-invalidempty' => 'Пустая структура зьвестак паводле гэтай схемы недапушчальная',
+	'jsonschema-invalidnode' => 'Няслушны вузел: чакалася «$1», атрымана «$2». Шлях: «$3»',
+	'jsonschema-invalid-missingfield' => 'Ня знойдзенае абавязковае поле «$1»',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  */
@@ -78,6 +90,7 @@ $messages['fr'] = array(
 	'jsonschema-invalidkey' => 'Clé "$1" non valide dans "$2"',
 	'jsonschema-invalidempty' => 'Structure de donnée vide non valide avec ce schéma',
 	'jsonschema-invalidnode' => 'Nœud non valide: "$1" attendu, "$2" obtenu. Chemin: "$3"',
+	'jsonschema-invalid-missingfield' => 'Champ obligatoire "$1" absent',
 );
 
 /** Franco-Provençal (arpetan)
@@ -122,6 +135,7 @@ $messages['hsb'] = array(
 	'jsonschema-invalidkey' => 'Njepłaćiwy kluč "$1" w "$2"',
 	'jsonschema-invalidempty' => 'Prózdna datowa struktura z tutym šema płaćiwa njeje',
 	'jsonschema-invalidnode' => 'Njepłaćiwy suk: "$1" je so wočakował, "$2" dóstany.  Šćežka: "$3"',
+	'jsonschema-invalid-missingfield' => 'Trěbne polo "$1" faluje',
 );
 
 /** Indonesian (Bahasa Indonesia)
@@ -161,6 +175,7 @@ $messages['mk'] = array(
 	'jsonschema-invalidkey' => 'Неважечки клуч „$1“ во „$2“',
 	'jsonschema-invalidempty' => 'Празната податочна структура не важи за оваа шема',
 	'jsonschema-invalidnode' => 'Неважечки јазол: очекував „$1“, а добив „$2“. Патека: „$3“',
+	'jsonschema-invalid-missingfield' => 'Недостасува задолжителното поле „$1“',
 );
 
 /** Dutch (Nederlands)
