@@ -189,13 +189,11 @@
 			}
 
 			eventInstance = $.extend( true, {}, eventInstance, schema.defaults );
-			eventInstance.meta = {
-				/*jshint nomen: false*/
-				_site     : mw.config.get( 'wgDBname' ),
-				_schema   : schemaName,
-				_revision : schema.revision,
-				_valid    : self.isValid( eventInstance, schemaName )
-				/*jshint nomen: true*/
+			eventInstance._meta = {
+				site     : mw.config.get( 'wgDBname' ),
+				schema   : schemaName,
+				revision : schema.revision,
+				isValid  : self.isValid( eventInstance, schemaName )
 			};
 
 			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );

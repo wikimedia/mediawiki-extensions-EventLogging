@@ -9,7 +9,7 @@
   :license: GNU General Public Licence 2.0 or later
 
 """
-__all__ = ('items', 'json', 'parse_qsl', 'urlopen', 'iter_socket', 'unquote')
+__all__ = ('items', 'json', 'urlopen', 'iter_socket', 'unquote_plus')
 
 import operator
 import sys
@@ -20,12 +20,12 @@ PY3 = sys.version_info[0] == 3
 
 if PY3:
     items = operator.methodcaller('items')
-    from urllib.parse import parse_qsl, unquote
+    from urllib.parse import unquote_plus
     from urllib.request import urlopen
 else:
     items = operator.methodcaller('iteritems')
-    from urlparse import parse_qsl
-    from urllib2 import urlopen, unquote
+    from urllib2 import urlopen
+    from urllib import unquote_plus
 
 
 def iter_socket(sock, encoding='utf8', errors='replace'):
