@@ -51,13 +51,16 @@ class EventLoggingHooks {
 		// the ID of the user making this web request are different.
 		$isSelfMade = ( $userId && $userId === $creatorUserId );
 
-		efLogServerSideEvent( 'ServerSideAccountCreation', 5007404, array (
+		$mobile = class_exists( 'MobileContext' ) &&
+			MobileContext::singleton()->shouldDisplayMobileView();
+
+		efLogServerSideEvent( 'ServerSideAccountCreation', 5014296, array (
 			'token'         => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
 			'userId'        => (int) $userId,
 			'userName'      => (string) $user->getName(),
 			'isSelfMade'    => (bool) $isSelfMade,
 			'userBuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
-			'host'          => (string) $_SERVER[ 'HTTP_HOST' ],
+			'displayMobile' => (bool) $mobile,
 		) );
 
 		return true;
