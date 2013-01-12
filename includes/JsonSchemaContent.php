@@ -62,17 +62,11 @@ class JsonSchemaContent extends TextContent {
 	 */
 	static function objectTable( $mapping ) {
 		$rows = array();
-		$count = 0;
 
 		foreach ( $mapping as $key => $val ) {
 			$rows[] = self::objectRow( $key, $val );
-			$count++;
 		}
-
-		$caption = wfMessage( 'eventlogging-json' )->numParams( $count )->escaped();
-
 		return Xml::tags( 'table', array( 'class' => 'mw-json-schema' ),
-			Xml::tags( 'caption', array(), $caption ) . "\n" .
 			Xml::tags( 'tbody', array(), join( "\n", $rows ) )
 		);
 	}
