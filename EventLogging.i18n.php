@@ -35,7 +35,6 @@ $messages['qqq'] = array(
  */
 $messages['ast'] = array(
 	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
-	'eventlogging-json' => 'Oxetu, $1 {{PLURAL:$1|propiedá|propiedaes}}',
 	'eventlogging-invalid-json' => 'JSON inválidu',
 	'eventlogging-revision-id' => 'Revisión $1',
 );
@@ -45,7 +44,6 @@ $messages['ast'] = array(
  */
 $messages['be-tarask'] = array(
 	'eventlogging-desc' => 'Фрэймворк для даданьня падзеяў у журнал з кліенцкага коду',
-	'eventlogging-json' => 'Аб’ект, $1 {{PLURAL:$1|уласьцівасьць|уласьцівасьці|уласьцівасьцяў}}',
 	'eventlogging-invalid-json' => 'Няслушны JSON',
 	'eventlogging-revision-id' => 'Вэрсія $1',
 );
@@ -65,7 +63,6 @@ $messages['cs'] = array(
  */
 $messages['de'] = array(
 	'eventlogging-desc' => 'Ergänzt ein Framework zum Protokollieren von Aktionen von clientseitigem Code',
-	'eventlogging-json' => 'Objekt, {{PLURAL:$1|eine Eigenschaft|$1 Eigenschaften}}',
 	'eventlogging-invalid-json' => 'Ungültiges JSON',
 	'eventlogging-revision-id' => 'Version $1',
 );
@@ -143,7 +140,6 @@ $messages['he'] = array(
  */
 $messages['hsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolowanje podawkow koda ze strony klienta',
-	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kajkosć|kajkosći|kajkosće|kajkosćow}}',
 	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
 	'eventlogging-revision-id' => 'Wersija $1',
 );
@@ -169,7 +165,6 @@ $messages['id'] = array(
  */
 $messages['it'] = array(
 	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
-	'eventlogging-json' => 'Oggetto, $1 {{PLURAL:$1|proprietà}}',
 	'eventlogging-invalid-json' => 'JSON non valido',
 	'eventlogging-revision-id' => 'Versione $1',
 );
