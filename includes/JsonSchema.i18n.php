@@ -124,6 +124,7 @@ $messages['he'] = array(
 	'jsonschema-invalidkey' => 'מפתח בלתי־תקין: "$1" ב־"$2"',
 	'jsonschema-invalidempty' => 'מבנה נתונים ריק אינו תקין עם הסכֵמה הזאת',
 	'jsonschema-invalidnode' => 'צומת בלתי־תקין: ציפיתי ל־"$1", קיבלתי "$2". נתיב: "$3"',
+	'jsonschema-invalid-missingfield' => 'חסר השדה הנדרש "$1"',
 );
 
 /** Upper Sorbian (hornjoserbsce)

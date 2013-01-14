@@ -250,6 +250,15 @@ $messages['ro'] = array(
 	'eventlogging-invalid-json' => 'JSON nevalid',
 );
 
+/** tarandíne (tarandíne)
+ * @author Joetaras
+ */
+$messages['roa-tara'] = array(
+	'eventlogging-desc' => "Framework per traccià l'evende da 'u codece late client",
+	'eventlogging-invalid-json' => 'JSON invalide',
+	'eventlogging-revision-id' => 'Revisione $1',
+);
+
 /** Sinhala (සිංහල)
  * @author පසිඳු කාවින්ද
  */
