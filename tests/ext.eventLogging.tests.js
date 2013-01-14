@@ -66,10 +66,6 @@
 				regex: /enum/,
 				msg: 'Enum fields constrain possible values'
 			}
-			// TODO (2013-01-07 spage) Add test where all three are missing,
-			// and maybe another with two missing, article (which is optional)
-			// and another (which would be required) (that would leave only one
-			// required present).
 		];
 
 
