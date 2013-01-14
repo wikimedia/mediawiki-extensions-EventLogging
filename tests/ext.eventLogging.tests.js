@@ -72,6 +72,7 @@
 			// required present).
 		];
 
+
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			mw.eventLog.setSchema( 'earthquake', {
@@ -93,77 +94,32 @@
 
 	QUnit.test( 'getSchema', 2, function ( assert ) {
 		assert.deepEqual( mw.eventLog.getSchema( 'earthquake' ).schema, earthquakeSchema, 'Retrieves schema if exists' );
-		assert.deepEqual( mw.eventLog.getSchema( 'foo' ), null, 'Returns null for missing schemas' );
+		assert.strictEqual( mw.eventLog.getSchema( 'foo' ), null, 'Returns null for missing schemas' );
 	} );
 
-	QUnit.test( 'isInstance', 36, function ( assert ) {
 
-		$.each( {
-			boolean: {
-				valid: [ true, false ],
-				invalid: [ undefined, null, 0, -1, 1, 'false' ]
-			},
-			integer: {
-				valid: [ -12, 42, 0, 4294967296 ],
-				invalid: [ 42.1, NaN, Infinity, '42', [ 42 ] ]
-			},
-			number: {
-				valid: [ 12, 42.1, 0, Math.PI ],
-				invalid: [ '42.1', NaN, [ 42 ], undefined ]
-			},
-			string: {
-				valid: [ 'Hello', '', '-1' ],
-				invalid: [ [], 0, true ]
-			},
-			timestamp: {
-				valid: [ new Date().getTime(), new Date() ],
-				invalid: [ -1, 'yesterday', NaN ]
-			}
-		}, function ( type, cases ) {
-			$.each( cases.valid, function () {
-				assert.ok(
-					mw.eventLog.isInstance( this, type ),
-					[ $.toJSON( this ), type ].join( ' is a ' )
-				);
-			} );
-			$.each( cases.invalid, function () {
-				assert.ok(
-					!mw.eventLog.isInstance( this, type ),
-					[ $.toJSON( this ), type ].join( ' is not a ' )
-				);
-			} );
-		} );
-
-	} );
-
-	QUnit.test( 'validate', 7, function ( assert ) {
-
+	QUnit.test( 'validate', validationCases.length + 1, function ( assert ) {
 		assert.ok( mw.eventLog.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
-		$.each( validationCases, function() {
-			var thisCase = this;
+		$.each( validationCases, function ( _, vCase ) {
 			assert.throws( function () {
-				mw.eventLog.validate( thisCase.args, 'earthquake' );
-			}, thisCase.regex, thisCase.msg );
+				mw.eventLog.validate( vCase.args, 'earthquake' );
+			}, vCase.regex, vCase.msg );
 		} );
-
 	} );
 
-	QUnit.test( 'isValid', 7, function ( assert ) {
+	QUnit.test( 'isValid', validationCases.length + 1, function ( assert ) {
 
 		assert.ok( mw.eventLog.isValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
-		$.each( validationCases, function() {
-			var thisCase = this;
-			assert.assertFalse(
-				mw.eventLog.isValid( thisCase.args, 'earthquake' ),
-				thisCase.msg );
+		$.each( validationCases, function ( _, vCase ) {
+			assert.assertFalse( mw.eventLog.isValid( vCase.args, 'earthquake' ), vCase.msg );
 		} );
 	} );
 
@@ -197,6 +153,45 @@
 			QUnit.start();
 		} );
 
+	} );
+
+
+	QUnit.module( 'ext.eventLogging: isInstance()' );
+
+	$.each( {
+		boolean: {
+			valid: [ true, false ],
+			invalid: [ undefined, null, 0, -1, 1, 'false' ]
+		},
+		integer: {
+			valid: [ -12, 42, 0, 4294967296 ],
+			invalid: [ 42.1, NaN, Infinity, '42', [ 42 ] ]
+		},
+		number: {
+			valid: [ 12, 42.1, 0, Math.PI ],
+			invalid: [ '42.1', NaN, [ 42 ], undefined ]
+		},
+		string: {
+			valid: [ 'Hello', '', '-1' ],
+			invalid: [ [], 0, true ]
+		},
+		timestamp: {
+			valid: [ new Date().getTime(), new Date() ],
+			invalid: [ -1, 'yesterday', NaN ]
+		}
+	}, function ( type, cases ) {
+		var asserts = cases.valid.length + cases.invalid.length;
+
+		QUnit.test( type, asserts, function ( assert ) {
+			$.each( cases.valid, function () {
+				assert.strictEqual( mw.eventLog.isInstance( this, type ), true,
+					$.toJSON( this ) + ' is a ' + type );
+			} );
+			$.each( cases.invalid, function () {
+				assert.strictEqual( mw.eventLog.isInstance( this, type ), false,
+					$.toJSON( this ) + ' is not a ' + type );
+			} );
+		} );
 	} );
 
 } ( mediaWiki, jQuery ) );
