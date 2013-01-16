@@ -99,7 +99,7 @@ def store_event(event):
     # Gross: we special-case keys with 'timestamp' in their name and
     # force their type to be datetime. TODO(ori-l, 28-Dec-2012): Use
     # JSON Schema's 'format'.
-    event.update({('_' + k): v for k, v in items(event.pop('meta'))})
+    event.update({('_' + k): v for k, v in items(event.pop('_meta'))})
     for key in event:
         if 'timestamp' in key:
             event[key] = datetime.fromtimestamp(int(event[key]))
