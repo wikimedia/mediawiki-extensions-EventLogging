@@ -102,10 +102,11 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
 
 	$event[ '_meta' ] = array(
-		'_site'     => $wgDBname,
-		'_schema'   => $schemaName,
-		'_revision' => $revId,
-		'_valid'    => $isValid,
+		'_site'      => $wgDBname,
+		'_schema'    => $schemaName,
+		'_revision'  => $revId,
+		'_timestamp' => (int) wfTimestamp( TS_UNIX, 0 ),
+		'_valid'     => $isValid,
 	);
 
 	wfErrorLog( FormatJson::encode( $event ) . "\n", $wgEventLoggingFile );
