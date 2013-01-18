@@ -55,9 +55,8 @@ def decode_client_event(q):
     q = unquote_plus(q.strip('?;'))
     e = json.loads(q)
 
-    # Extract the nested 'meta' dict, migrate it to the latest format,
-    # validate it, and re-inject it into the event:
-
+    # Extract the nested 'meta' dict, populate additional fields, and
+    # validate it. Then re-inject it into the event.
     meta = e.pop('_meta')
     meta.update({
         'isTruncated': not q.endswith(';'),
