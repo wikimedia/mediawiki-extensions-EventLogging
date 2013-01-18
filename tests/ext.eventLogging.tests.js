@@ -120,15 +120,14 @@
 	} );
 
 	QUnit.asyncTest( 'logEvent', 1, function ( assert ) {
-		var e = {
+		var event = {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		};
 
-		mw.eventLog.logEvent( 'earthquake', e ).always( function () {
+		mw.eventLog.logEvent( 'earthquake', event ).always( function ( e ) {
 			QUnit.start();
-			delete this._meta;
-			assert.deepEqual( this, e, 'logEvent promise resolves with event' );
+			assert.deepEqual( e.event, event, 'logEvent promise resolves with event' );
 		} );
 	} );
 
@@ -140,9 +139,8 @@
 
 		mw.eventLog.logEvent( 'earthquake', {
 			magnitude: 9.5
-		} ).always( function () {
-			delete this._meta;
-			assert.deepEqual( this, {
+		} ).always( function ( e ) {
+			assert.deepEqual( e.event, {
 				epicenter: 'Valdivia',
 				magnitude: 9.5
 			}, 'Logged event is annotated with defaults' );

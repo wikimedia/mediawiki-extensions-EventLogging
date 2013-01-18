@@ -178,46 +178,63 @@
 		/**
 		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object} eventInstance Event instance.
-		 * @returns {jQuery.Deferred} Promise object.
+		 * @returns {Object} Encapsulated event.
 		 */
-		logEvent: function ( schemaName, eventInstance ) {
-			var baseUri, dfd, beacon, schema = self.getSchema( schemaName );
+		encapsulate: function ( schemaName, eventInstance ) {
+			var schema = self.getSchema( schemaName );
 
 			if ( schema === null ) {
-				self.warn( 'Logging event with unknown schema "' + schemaName + '"' );
+				self.warn( 'Got event with unknown schema "' + schemaName + '"' );
 				schema = self.setSchema( schemaName );
 			}
 
-			eventInstance = $.extend( true, {}, eventInstance, schema.defaults );
-			eventInstance._meta = {
+			return {
 				site     : mw.config.get( 'wgDBname' ),
 				schema   : schemaName,
 				revision : schema.revision,
-				isValid  : self.isValid( eventInstance, schemaName )
+				isValid  : self.isValid( eventInstance, schemaName ),
+				event    : $.extend( true, {}, eventInstance, schema.defaults )
 			};
+		},
 
-			baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
-			dfd = jQuery.Deferred();
+
+		/**
+		 * Pushes data to server as URL-encoded JSON.
+		 * @param {Object} data Payload to send.
+		 * @returns {jQuery.Deferred} Promise object.
+		 */
+		dispatch: function ( data ) {
+			var beacon = document.createElement( 'img' ),
+				baseUri = mw.config.get( 'wgEventLoggingBaseUri' ),
+				dfd = $.Deferred();
 
 			if ( !baseUri ) {
 				// We already logged the fact of wgEventLoggingBaseUri being
 				// empty, so respect the caller's expectation and return a
 				// rejected promise.
-				dfd.rejectWith( eventInstance, [ schemaName, eventInstance ] );
+				dfd.rejectWith( data, [ data ] );
 				return dfd.promise();
 			}
-
-			beacon = document.createElement( 'img' );
 
 			// Browsers uniformly fire the onerror event upon receiving HTTP
 			// 204 ("No Content") responses to image requests. Thus, although
 			// counterintuitive, resolving the promise on error is appropriate.
 			$( beacon ).on( 'error', function () {
-				schema.logged.push( eventInstance );
-				dfd.resolveWith( eventInstance, [ schemaName, eventInstance ] );
+				dfd.resolveWith( data, [ data ] );
 			} );
-			beacon.src = baseUri + '?' + encodeURIComponent( $.toJSON( eventInstance ) ) + ';';
+
+			beacon.src = '?' + encodeURIComponent( $.toJSON( data ) ) + ';';
 			return dfd.promise();
+		},
+
+
+		/**
+		 * @param {string} schemaName Canonical schema name.
+		 * @param {Object} eventInstance Event instance.
+		 * @returns {jQuery.Deferred} Promise object.
+		 */
+		logEvent: function ( schemaName, eventInstance ) {
+			return self.dispatch( self.encapsulate( schemaName, eventInstance ) );
 		}
 	};
 
