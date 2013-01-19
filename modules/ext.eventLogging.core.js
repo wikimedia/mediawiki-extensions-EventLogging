@@ -51,8 +51,7 @@
 			self.schemas[ schemaName ] = $.extend( true, {
 				revision : 'UNKNOWN',
 				schema   : { properties: {} },
-				defaults : {},
-				logged   : []
+				defaults : {}
 			}, self.schemas[ schemaName ], meta );
 			return self.schemas[ schemaName ];
 		},
@@ -156,10 +155,10 @@
 
 
 		/**
-		 * Sets default values to be applied to all subsequent events
-		 * belonging to a schema. Note that no validation is performed
-		 * on setDefaults, but the complete event instance (including
-		 * defaults) are validated prior to dispatch.
+		 * Sets default values to be applied to all subsequent events belonging
+		 * to a schema. Note that setDefaults() does not validate, but the
+		 * complete event object (including defaults) is validated prior to
+		 * dispatch.
 		 *
 		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object|null} schemaDefaults Defaults, or null to clear.
@@ -181,7 +180,8 @@
 		 * @returns {Object} Encapsulated event.
 		 */
 		encapsulate: function ( schemaName, eventInstance ) {
-			var schema = self.getSchema( schemaName );
+			var schema = self.getSchema( schemaName ),
+				fullEvent = $.extend( true, {}, eventInstance, schema.defaults );
 
 			if ( schema === null ) {
 				self.warn( 'Got event with unknown schema "' + schemaName + '"' );
@@ -192,8 +192,8 @@
 				site     : mw.config.get( 'wgDBname' ),
 				schema   : schemaName,
 				revision : schema.revision,
-				isValid  : self.isValid( eventInstance, schemaName ),
-				event    : $.extend( true, {}, eventInstance, schema.defaults )
+				isValid  : self.isValid( fullEvent, schemaName ),
+				event    : $.extend( true, {}, fullEvent, schema.defaults )
 			};
 		},
 
@@ -223,7 +223,7 @@
 				dfd.resolveWith( data, [ data ] );
 			} );
 
-			beacon.src = '?' + encodeURIComponent( $.toJSON( data ) ) + ';';
+			beacon.src = baseUri + '?' + encodeURIComponent( $.toJSON( data ) ) + ';';
 			return dfd.promise();
 		},
 
