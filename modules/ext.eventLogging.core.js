@@ -112,41 +112,35 @@
 		 */
 		validate: function ( event, schemaName ) {
 			var schema = self.getSchema( schemaName ),
-				properties = schema.schema.properties,
-				property;
+				props = schema.schema.properties,
+				prop;
 
-			if ( $.isEmpty( properties ) ) {
-				throw new ValidationError( 'Unknown schema "' + schemaName + '"' );
+			if ( $.isEmpty( props ) ) {
+				throw new ValidationError( 'Unknown schema: ' + schemaName );
 			}
 
-			for ( property in event ) {
-				if ( properties[ property ] === undefined ) {
-					throw new ValidationError( 'Unrecognized property "' + property + '"' );
+			for ( prop in event ) {
+				if ( props[ prop ] === undefined ) {
+					throw new ValidationError( 'Unrecognized property: ' + prop );
 				}
 			}
 
-			$.each( properties, function ( property, desc ) {
-				var val = event[ property ];
+			$.each( props, function ( prop, desc ) {
+				var val = event[ prop ];
 
 				if ( val === undefined ) {
 					if ( desc.required ) {
-						throw new ValidationError( 'Missing "' + property + '" property' );
+						throw new ValidationError( 'Missing property: ' + prop );
 					}
 					return true;
 				}
 
 				if ( !( self.isInstance( val, desc.type ) ) ) {
-					throw new ValidationError( [ 'Wrong type for property:', property, val ].join(' ') );
+					throw new ValidationError( 'Wrong type for property: ' + prop + ' ' +  val );
 				}
 
-				// 'enum' is reserved for possible future use by the ECMAScript
-				// specification, but it's legal to use it as an attribute name
-				// (and it's part of the JSON Schema draft spec). Still, JSHint
-				// complains unless the name is quoted. Currently (24-Oct-2012)
-				// the only way to turn off the warning is to use "es5:true",
-				// which would be too broad.
 				if ( desc[ 'enum' ] && desc[ 'enum' ].indexOf( val ) === -1 ) {
-					throw new ValidationError( [ 'Value not in enum:', val, ',', $.toJSON( desc[ 'enum' ] ) ].join(' ') );
+					throw new ValidationError( 'Value "' + val + '" not in enum ' + $.toJSON( desc[ 'enum' ] ) );
 				}
 			} );
 
@@ -176,24 +170,25 @@
 
 		/**
 		 * @param {string} schemaName Canonical schema name.
-		 * @param {Object} eventInstance Event instance.
+		 * @param {Object} event Event instance.
 		 * @returns {Object} Encapsulated event.
 		 */
-		encapsulate: function ( schemaName, eventInstance ) {
-			var schema = self.getSchema( schemaName ),
-				fullEvent = $.extend( true, {}, eventInstance, schema.defaults );
+		encapsulate: function ( schemaName, event ) {
+			var schema = self.getSchema( schemaName );
 
 			if ( schema === null ) {
 				self.warn( 'Got event with unknown schema "' + schemaName + '"' );
 				schema = self.setSchema( schemaName );
 			}
 
+			event = $.extend( true, {}, event, schema.defaults );
+
 			return {
 				site     : mw.config.get( 'wgDBname' ),
 				schema   : schemaName,
 				revision : schema.revision,
-				isValid  : self.isValid( fullEvent, schemaName ),
-				event    : $.extend( true, {}, fullEvent, schema.defaults )
+				isValid  : self.isValid( event, schemaName ),
+				event    : event
 			};
 		},
 
