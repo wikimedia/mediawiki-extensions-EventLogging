@@ -84,11 +84,12 @@ $messages['eo'] = array(
 
 /** Spanish (español)
  * @author Armando-Martin
+ * @author Vivaelcelta
  */
 $messages['es'] = array(
 	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
-	'eventlogging-json' => 'Objeto, $1 {{PLURAL:$1|propiedad|propiedades}}',
 	'eventlogging-invalid-json' => 'JSON no válido',
+	'eventlogging-revision-id' => 'Revisión $1',
 );
 
 /** Finnish (suomi)
