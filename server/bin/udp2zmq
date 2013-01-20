@@ -28,7 +28,7 @@ import logging
 import sys
 import zmq
 
-from eventlogging.stream import iter_udp
+from eventlogging import iter_udp
 
 # Parse command-line arguments
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device')

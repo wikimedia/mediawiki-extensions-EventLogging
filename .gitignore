@@ -6,6 +6,7 @@
 .*.swp
 .pylintrc
 .svn
+.tox
 Makefile
 __pycache__
 server/build

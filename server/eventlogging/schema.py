@@ -3,7 +3,7 @@
   EventLogging
   ~~~~~~~~~~~~
 
-  This module implements schema retrieval.
+  This module implements schema retrieval and validation.
 
   :copyright: (c) 2012 by Ori Livneh
   :license: GNU General Public Licence 2.0 or later
@@ -13,12 +13,13 @@ from __future__ import unicode_literals
 
 import logging
 
+import jsonschema
+
 from .compat import json, urlopen
 
 
 _schemas = {}
 _url_format = 'http://meta.wikimedia.org/w/index.php?action=raw&oldid=%d'
-_meta_schema_rev = 4891798
 
 
 def get_schema(rev_id):
@@ -41,3 +42,11 @@ def http_get_schema(rev_id):
         logging.exception('Failed to decode HTTP response: %s', content)
         return None
     return schema
+
+
+def validate(capsule):
+    """Validates an encapsulated event."""
+    meta_schema = get_schema(5017149)
+    jsonschema.validate(capsule, meta_schema)
+    event_schema = get_schema(capsule['revision'])
+    jsonschema.validate(capsule['event'], event_schema)

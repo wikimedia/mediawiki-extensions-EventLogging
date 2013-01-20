@@ -28,7 +28,7 @@ import sys
 
 from email.mime.text import MIMEText
 
-from eventlogging.compat import json
+from eventlogging import json
 
 
 parser = argparse.ArgumentParser(description='sv-alerts')

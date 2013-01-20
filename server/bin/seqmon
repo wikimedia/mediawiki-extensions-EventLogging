@@ -29,7 +29,7 @@ import collections
 import logging
 import logging.handlers
 
-from eventlogging.stream import zmq_subscribe, tail_follow
+from eventlogging import zmq_subscribe, tail_follow
 
 
 #

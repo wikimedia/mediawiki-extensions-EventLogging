@@ -42,6 +42,7 @@ setup(
         'bin/seqmon',
     ),
     zip_safe=False,
+    test_suite='tests',
     install_requires=(
         "jsonschema>=0.7",
         "pyzmq>=2.1",

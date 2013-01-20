@@ -27,9 +27,7 @@ from datetime import datetime
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
 
-from eventlogging.compat import items
-from eventlogging.schema import get_schema
-from eventlogging.stream import zmq_subscribe
+from eventlogging import items, get_schema, zmq_subscribe
 
 
 parser = argparse.ArgumentParser(
