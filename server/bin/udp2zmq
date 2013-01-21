@@ -24,30 +24,33 @@
 
 """
 import argparse
+import io
 import logging
+import socket
 import sys
 import zmq
 
-from eventlogging import iter_udp
 
-# Parse command-line arguments
+UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
+
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device')
 parser.add_argument('port', type=int, help='Port to forward')
 args = parser.parse_args()
 
 
-# Configure logging
-logging.basicConfig(
-    stream=sys.stderr,
-    level=logging.DEBUG,
-    format='%(asctime)s %(message)s'
-)
+logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
+                    format='%(asctime)s %(message)s')
 
-# Bind output socket
 ctx = zmq.Context.instance()
 sock_out = ctx.socket(zmq.PUB)
 sock_out.bind('tcp://*:%d' % args.port)
 
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
-for msg in iter_udp(args.port):
-    sock_out.send_string(msg)
+sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock_in.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+sock_in.bind(('0.0.0.0', args.port))
+
+with io.open(sock_in.fileno(), buffering=UDP_BUFSIZE, encoding='utf8',
+             errors='ignore') as f:
+    for line in f:
+        sock_out.send_string(line)

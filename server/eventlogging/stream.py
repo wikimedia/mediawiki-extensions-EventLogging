@@ -1,22 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-  EventLogging
-  ~~~~~~~~~~~~
+  eventlogging.stream
+  ~~~~~~~~~~~~~~~~~~~
 
   This module provides helpers for reading from and writing to ZeroMQ
   data streams using ZeroMQ or UDP.
-
-  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
-  :license: GNU General Public Licence 2.0 or later
 
 """
 from __future__ import unicode_literals
 
 import io
-import socket
 import time
-
-from .compat import iter_socket
 
 import zmq
 
@@ -45,12 +39,3 @@ def tail_follow(filename):
                 time.sleep(0.1)
                 continue
             yield line
-
-
-def iter_udp(port, iface='0.0.0.0'):
-    """Line-based iterator on incoming UDP stream."""
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((iface, port))
-    for line in iter_socket(sock):
-        yield line
