@@ -11,3 +11,5 @@ from .compat import *
 from .parse import *
 from .schema import *
 from .stream import *
+
+from jsonschema import ValidationError

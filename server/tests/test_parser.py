@@ -1,27 +1,24 @@
-#!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-  EventLogging
-  ~~~~~~~~~~~~
+  eventlogging unit tests
+  ~~~~~~~~~~~~~~~~~~~~~~~
 
-  This module contains unit tests.
-
-  :copyright: (c) 2012 by Ori Livneh
-  :license: GNU General Public Licence 2.0 or later
+  This module contains tests for :class:`eventlogging.LogParser`.
 
 """
 import unittest
+
 import eventlogging
 
 
-#: Control data for parser test cases.
+# Control data for parser test cases.
 parser_cases = (
     {
-        'description': 'Server-side events',
+        'description': 'server-side events',
         'format': '%n %l %j',
         'raw': ('99 enwiki {"revision":123,"timestamp":1358627115,"schema":"'
                 'FakeSchema","isValid":true,"site":"enwiki","event":{"action'
-                '":"save"}}'),
+                '":"save\u0020page"}}'),
         'parsed': {
             'origin': 'enwiki',
             'timestamp': 1358627115,
@@ -31,12 +28,12 @@ parser_cases = (
             'isValid': True,
             'revision': 123,
             'event': {
-                'action': 'save'
+                'action': 'save page'
             },
         },
     },
     {
-        'description': 'Client-side events',
+        'description': 'client-side events',
         'format': '%q %l %n %t %h',
         'raw': ('?%7B%22site%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
                 '%22%2C%22revision%22%3A13%2C%22isValid%22%3Atrue%2C%22event'
@@ -68,7 +65,7 @@ class LogParserTestCase(unittest.TestCase):
         self.assertEqual(parser.parse(self.raw), self.parsed)
 
     def shortDescription(self):
-        return self.description
+        return 'LogParser: %s (%s)' % (self.description, self.format)
 
 
 def load_tests(loader, tests, pattern):
@@ -79,7 +76,3 @@ def load_tests(loader, tests, pattern):
         testcase.__dict__.update(case)
         suite.addTest(testcase)
     return suite
-
-
-if __name__ == '__main__':
-    unittest.main()

@@ -21,6 +21,8 @@ from .compat import json, urlopen
 _schemas = {}
 _url_format = 'http://meta.wikimedia.org/w/index.php?action=raw&oldid=%d'
 
+META_REV_ID = 5098094
+
 
 def get_schema(rev_id):
     """Get schema from memory or HTTP."""
@@ -46,7 +48,7 @@ def http_get_schema(rev_id):
 
 def validate(capsule):
     """Validates an encapsulated event."""
-    meta_schema = get_schema(5017149)
+    meta_schema = get_schema(META_REV_ID)
     jsonschema.validate(capsule, meta_schema)
     event_schema = get_schema(capsule['revision'])
     jsonschema.validate(capsule['event'], event_schema)
