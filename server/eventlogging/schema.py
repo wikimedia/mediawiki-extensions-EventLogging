@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-  EventLogging
-  ~~~~~~~~~~~~
+  eventlogging.schema
+  ~~~~~~~~~~~~~~~~~~~
 
   This module implements schema retrieval and validation.
-
-  :copyright: (c) 2012 by Ori Livneh
-  :license: GNU General Public Licence 2.0 or later
 
 """
 from __future__ import unicode_literals

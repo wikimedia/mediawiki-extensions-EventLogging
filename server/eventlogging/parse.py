@@ -1,24 +1,32 @@
 # -*- coding: utf-8 -*-
 """
-  EventLogging
-  ~~~~~~~~~~~~
+  eventlogging.parse
+  ~~~~~~~~~~~~~~~~~~
 
   This module provides a scanf-like parser for raw log lines.
 
   The format specifiers hew closely to those accepted by varnishncsa.
-  See <https://www.varnish-cache.org/docs/trunk/reference/varnishncsa.html>.
+  See the `varnishncsa documentation <https://www.varnish-cache.org
+  /docs/trunk/reference/varnishncsa.html>`_ for details.
 
-  Field specifiers:
+  Field specifiers
+  ================
 
-     %h         Client IP
-     %j         JSON object
-     %l         Hostname of origin
-     %n         Sequence ID
-     %q         Query-string-encoded JSON
-     %t         Timestamp in NCSA format.
-
-  :copyright: (c) 2012 by Ori Livneh
-  :license: GNU General Public Licence 2.0 or later
+  +--------+-----------------------------+
+  | Symbol | Field                       |
+  +========+=============================+
+  |   %h   | Client IP                   |
+  +--------+-----------------------------+
+  |   %j   | JSON object                 |
+  +--------+-----------------------------+
+  |   %l   | Hostname of origin          |
+  +--------+-----------------------------+
+  |   %n   | Sequence ID                 |
+  +--------+-----------------------------+
+  |   %q   | Query-string-encoded JSON   |
+  +--------+-----------------------------+
+  |   %t   | Timestamp in NCSA format.   |
+  +--------+-----------------------------+
 
 """
 from __future__ import unicode_literals
@@ -41,16 +49,14 @@ _salt = os.urandom(16)
 
 
 def ncsa_to_epoch(ncsa_ts):
-    """
-    Converts a timestamp in NCSA format to seconds since epoch.
+    """Converts a timestamp in NCSA format to seconds since epoch.
     :param ncsa_ts: Timestamp in NCSA format.
     """
     return calendar.timegm(time.strptime(ncsa_ts, '%Y-%m-%dT%H:%M:%S'))
 
 
 def hash_value(val):
-    """
-    Produce a salted SHA1 hash of any string value.
+    """Produce a salted SHA1 hash of any string value.
     :param val: String to hash.
     """
     hval = hashlib.sha1(val.encode('utf8'))
@@ -59,8 +65,7 @@ def hash_value(val):
 
 
 def decode_qs(qs):
-    """
-    Decode a query-string-encoded JSON object.
+    """Decode a query-string-encoded JSON object.
     :param qs: Query string.
     """
     return json.loads(unquote_plus(qs.strip('?;')))
@@ -79,13 +84,11 @@ format_specifiers = {
 
 
 class LogParser(object):
-    """
-    Parses raw varnish/MediaWiki log lines into encapsulated events.
-    """
+    """Parses raw varnish/MediaWiki log lines into encapsulated events."""
 
     def __init__(self, fmt):
-        """
-        Constructor.
+        """Constructor.
+
         :param fmt: Format string.
         """
         #: Field casters, ordered by the relevant field's position in
@@ -95,17 +98,16 @@ class LogParser(object):
         self.re = re.sub(r'(?<!%)%[hjlnqt]', self._repl, fmt)
 
     def _repl(self, spec):
-        """
-        Replace a format specifier with its expanded regexp matcher and
-        append its caster to the list. Called by :func:`re.sub`.
+        """Replace a format specifier with its expanded regexp matcher
+        and append its caster to the list. Called by :func:`re.sub`.
         """
         matcher, caster = format_specifiers[spec.group()]
         self.casters.append(caster)
         return matcher
 
     def parse(self, line):
-        """
-        Parse a log line into a map of field names to field values.
+        """Parse a log line into a map of field names to field values.
+
         :param line: Log line to parse.
         """
         match = re.match(self.re, line)
