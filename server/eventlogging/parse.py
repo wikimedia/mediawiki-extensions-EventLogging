@@ -75,7 +75,7 @@ def decode_qs(qs):
 format_specifiers = {
     '%h': (r'(?P<clientIp>\S+)', hash_value),
     '%j': (r'(?P<event>\S+)', json.loads),
-    '%l': (r'(?P<origin>\S+)', str),
+    '%l': (r'(?P<recvFrom>\S+)', str),
     '%n': (r'(?P<seqId>\d+)', int),
     '%q': (r'(?P<event>\?\S+)', decode_qs),
     '%t': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',

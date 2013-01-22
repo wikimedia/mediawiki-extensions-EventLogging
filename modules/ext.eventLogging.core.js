@@ -184,11 +184,12 @@
 			event = $.extend( true, {}, event, schema.defaults );
 
 			return {
-				site     : mw.config.get( 'wgDBname' ),
-				schema   : schemaName,
-				revision : schema.revision,
+				event    : event,
 				isValid  : self.isValid( event, schemaName ),
-				event    : event
+				revision : schema.revision,
+				schema   : schemaName,
+				webHost  : window.location.hostname,
+				wiki     : mw.config.get( 'wgDBname' )
 			};
 		},
 

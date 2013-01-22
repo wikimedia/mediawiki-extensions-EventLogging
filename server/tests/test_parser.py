@@ -15,14 +15,14 @@ import eventlogging
 parser_cases = (
     {
         'description': 'server-side events',
-        'format': '%n %l %j',
-        'raw': ('99 enwiki {"revision":123,"timestamp":1358627115,"schema":"'
-                'FakeSchema","isValid":true,"site":"enwiki","event":{"action'
-                '":"save\\u0020page"}}'),
+        'format': '%n EventLogging %j',
+        'raw': ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
+                'ma":"FakeSchema","isValid":true,"wiki":"enwiki","event":{"ac'
+                'tion":"save\\u0020page"},"recvFrom":"fenari"}'),
         'parsed': {
-            'origin': 'enwiki',
+            'recvFrom': 'fenari',
             'timestamp': 1358627115,
-            'site': 'enwiki',
+            'wiki': 'enwiki',
             'seqId': 99,
             'schema': 'FakeSchema',
             'isValid': True,
@@ -35,15 +35,17 @@ parser_cases = (
     {
         'description': 'client-side events',
         'format': '%q %l %n %t %h',
-        'raw': ('?%7B%22site%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
+        'raw': ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
                 '%22%2C%22revision%22%3A13%2C%22isValid%22%3Atrue%2C%22event'
                 '%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3A%22Main'
-                '%20Page%22%7D%7D; cp3022.esams.wikimedia.org 132073 2013-01'
-                '-19T23:16:38 86.149.229.149'),
+                '%20Page%22%7D%2C%22webHost%22%3A%22test.wikipedia.org%22%7D'
+                '; cp3022.esams.wikimedia.org 132073 2013-01-19T23:16:38 86.'
+                '149.229.149'),
         'parsed': {
-            'origin': 'cp3022.esams.wikimedia.org',
+            'recvFrom': 'cp3022.esams.wikimedia.org',
             'isValid': True,
-            'site': 'testwiki',
+            'wiki': 'testwiki',
+            'webHost': 'test.wikipedia.org',
             'seqId': 132073,
             'timestamp': 1358637398,
             'clientIp': eventlogging.hash_value('86.149.229.149'),

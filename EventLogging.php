@@ -101,18 +101,20 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	$schema = $remoteSchema->get();
 	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
 
-	$event[ '_meta' ] = array(
-		'_site'      => $wgDBname,
-		'_schema'    => $schemaName,
-		'_revision'  => $revId,
-		'_timestamp' => (int) wfTimestamp( TS_UNIX, 0 ),
-		'_valid'     => $isValid,
+	$encapsulated = array(
+		'event'     => $event,
+		'schema'    => $schemaName,
+		'revision'  => $revId,
+		'isValid'   => $isValid,
+		'wiki'      => $wgDBname,
+		'recvFrom'  => gethostname(),
+		'timestamp' => $_SERVER[ 'REQUEST_TIME' ] * 1000,  // ms.
 	);
 
 	// To make the resultant JSON easily extracted from a row of
 	// space-separated values, we replace literal spaces with unicode
 	// escapes. This is permitted by the JSON specs.
-	$json = str_replace( ' ', '\u0020', FormatJson::encode( $event ) );
+	$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulated ) );
 
 	wfErrorLog( $json . "\n", $wgEventLoggingFile );
 	return true;

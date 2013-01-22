@@ -34,7 +34,11 @@ test_schemas = {
             'isValid': {
                 'type': 'boolean'
             },
-            'origin': {
+            'wiki': {
+                'type': 'string',
+                'required': True
+            },
+            'webHost': {
                 'type': 'string'
             },
             'revision': {
@@ -42,6 +46,10 @@ test_schemas = {
                 'required': True
             },
             'schema': {
+                'type': 'string',
+                'required': True
+            },
+            'recvFrom': {
                 'type': 'string',
                 'required': True
             },
@@ -73,7 +81,8 @@ test_event = {
     'clientIp': '127.0.0.1',
     'timestamp': 1358791834912,
     'isTruncated': False,
-    'origin': 'enwiki',
+    'wiki': 'enwiki',
+    'recvFrom': 'fenari',
     'isValid': True,
     'revision': -1,
     'schema': 'TestSchema'
