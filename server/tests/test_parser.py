@@ -18,7 +18,7 @@ parser_cases = (
         'format': '%n %l %j',
         'raw': ('99 enwiki {"revision":123,"timestamp":1358627115,"schema":"'
                 'FakeSchema","isValid":true,"site":"enwiki","event":{"action'
-                '":"save\u0020page"}}'),
+                '":"save\\u0020page"}}'),
         'parsed': {
             'origin': 'enwiki',
             'timestamp': 1358627115,

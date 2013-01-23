@@ -3,7 +3,9 @@
   eventlogging.schema
   ~~~~~~~~~~~~~~~~~~~
 
-  This module implements schema retrieval and validation.
+  This module implements schema retrieval and validation. Schemas are
+  retrieved via HTTP and then cached in-memory. Validation uses
+  :module:`jsonschema`.
 
 """
 from __future__ import unicode_literals
