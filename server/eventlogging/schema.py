@@ -20,7 +20,7 @@ from .compat import json, urlopen
 _schemas = {}
 _url_format = 'http://meta.wikimedia.org/w/index.php?action=raw&oldid=%d'
 
-META_REV_ID = 5098094
+META_REV_ID = 5107445
 
 
 def get_schema(rev_id):
