@@ -139,7 +139,7 @@
 					throw new ValidationError( 'Wrong type for property: ' + prop + ' ' +  val );
 				}
 
-				if ( desc[ 'enum' ] && desc[ 'enum' ].indexOf( val ) === -1 ) {
+				if ( desc[ 'enum' ] && $.inArray( val, desc[ 'enum' ] ) === -1 ) {
 					throw new ValidationError( 'Value "' + val + '" not in enum ' + $.toJSON( desc[ 'enum' ] ) );
 				}
 			} );
