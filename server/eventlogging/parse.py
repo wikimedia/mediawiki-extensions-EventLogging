@@ -111,6 +111,8 @@ class LogParser(object):
         :param line: Log line to parse.
         """
         match = re.match(self.re, line)
+        if match is None:
+            raise ValueError(self.re, line)
         keys = sorted(match.groupdict(), key=match.start)
         event = {k: f(match.group(k)) for f, k in zip(self.casters, keys)}
         event.update(event.pop('event'))
