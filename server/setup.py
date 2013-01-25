@@ -47,6 +47,7 @@ setup(
         'bin/udp2zmq',
         'bin/zmq2log',
         'bin/seqmon',
+        'bin/zmux',
     ),
     zip_safe=False,
     test_suite='tests',
