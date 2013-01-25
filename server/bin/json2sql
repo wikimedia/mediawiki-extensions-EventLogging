@@ -27,7 +27,7 @@ from datetime import datetime
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
 
-from eventlogging import items, get_schema, zmq_subscribe
+from eventlogging import items, CAPSULE_SCID, get_schema, zmq_subscribe
 
 
 parser = argparse.ArgumentParser(
@@ -38,16 +38,15 @@ parser.add_argument('--sid', help='set input socket identity')
 args = parser.parse_args()
 
 
-META_PROPERTIES_SCHEMA = 4933665
-
-table_name_format = '{name}_{rev}'
+table_name_format = '%s_%s'
+capsule_properties = get_schema(CAPSULE_SCID)['properties']
 
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 meta = MetaData(args.db)
 
-# Mapping of JSON schema types to SQL types:
+#: Mapping of JSON schema types to SQL types
 sql_types = {
     'boolean': types.Boolean,
     'integer': types.Integer,
@@ -55,55 +54,71 @@ sql_types = {
     'string': types.String(255),
 }
 
+capsule_schema = get_schema(CAPSULE_SCID)
+capsule_properties = capsule_schema['properties']
+capsule_properties.pop('event')
+
+def prefixed(d, prefix):
+    """Returns a shallow copy of a dict with some string prepended to
+    each of its keys."""
+    return {(prefix + k): v for k, v in items(d)}
+
+
+def flatten(d, maxdepth=10):
+    """Flatten a dictionary."""
+    if maxdepth <= 1:
+        return d                                                                                                                                           
+    for k, v in items(d):
+        if isinstance(v, dict):
+            inner = flatten(d.pop(k), maxdepth - 1)
+            d.update(prefixed(inner, k + '_'))
+    return d
+
 
 def generate_column(name, descriptor):
-    """Create a column from a JSON Schema property specifier."""
-    json_type = descriptor['type']
-    sql_type = sql_types.get(json_type, sql_types['string'])
+    """Creates a column from a JSON Schema property specifier."""
     if 'timestamp' in name:
         sql_type = types.DateTime
+    else:
+        sql_type = sql_types.get(descriptor['type'], sql_types['string'])
     nullable = not descriptor.get('required', False)
     return Column(name, sql_type, nullable=nullable)
 
 
-def get_table(name, rev):
-    """Loads or creates a table for a given schema name and revision."""
-    table_name = table_name_format.format(name=name, rev=rev)
+def get_table(scid):
+    """Loads or creates a table for a SCID."""
     try:
-        return Table(table_name, meta, autoload=True)
+        return Table(table_name_format % scid, meta, autoload=True)
     except NoSuchTableError:
-        return create_table(name, rev)
+        return create_table(scid)
 
 
-def create_table(name, rev):
-    """Creates a table for a given schema name and revision."""
-    schema_self = get_schema(rev)
-    schema_meta = get_schema(META_PROPERTIES_SCHEMA)
+def create_table(scid):
+    """Creates a table for a SCID."""
+    properties = prefixed(get_schema(scid)['properties'], 'event_')
+    properties.update(capsule_properties)
 
     # Every table gets an int auto-increment primary key:
     columns = [Column('id', types.Integer, primary_key=True)]
+    columns.extend(generate_column(k, v) for k, v in items(properties))
 
-    for schema in (schema_self, schema_meta):
-        properties = schema['properties']
-        columns.extend(generate_column(k, v) for k, v in items(properties))
-
-    table_name = table_name_format.format(name=name, rev=rev)
-    table = Table(table_name, meta, *columns)
+    table = Table(table_name_format % scid, meta, *columns)
     table.create()
     return table
 
 
 def store_event(event):
+    event = flatten(event)
     # Gross: we special-case keys with 'timestamp' in their name and
     # force their type to be datetime. TODO(ori-l, 28-Dec-2012): Use
     # JSON Schema's 'format'.
-    event.update({('_' + k): v for k, v in items(event.pop('_meta'))})
     for key in event:
         if 'timestamp' in key:
             event[key] = datetime.fromtimestamp(int(event[key]))
 
     try:
-        table = get_table(event['_schema'], event['_revision'])
+        scid = (event['schema'], event['revision'])
+        table = get_table(scid)
     except Exception:
         logging.exception('Unable to get or set suitable table')
     else:
@@ -111,10 +126,11 @@ def store_event(event):
 
 
 sub = zmq_subscribe(args.input, sid=args.sid, json=True)
+
 while 1:
     try:
-        ev = next(sub)
-        logging.info(ev)
-        store_event(ev)
+        for ev in sub:
+            logging.info(ev)
+            store_event(ev)
     except SQLAlchemyError:
         logging.exception('Unable to insert event: %s', ev)
