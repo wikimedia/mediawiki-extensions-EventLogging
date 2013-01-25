@@ -203,6 +203,16 @@ $messages['pms'] = array(
 	'jsonschema-invalid-missingfield' => 'Camp obligatòri "$1" mancant',
 );
 
+/** Russian (русский)
+ * @author DCamer
+ */
+$messages['ru'] = array(
+	'jsonschema-badidref' => 'Неверный idref: "$1"',
+	'jsonschema-idconvert' => 'Не удается преобразовать var в id: "$1"',
+	'jsonschema-invalidkey' => 'Недействительный ключ "$1" в "$2"',
+	'jsonschema-invalid-missingfield' => 'Отсутствует обязательное поле "$1"',
+);
+
 /** Sinhala (සිංහල)
  * @author පසිඳු කාවින්ද
  */

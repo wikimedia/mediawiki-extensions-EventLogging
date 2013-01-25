@@ -260,6 +260,14 @@ $messages['roa-tara'] = array(
 	'eventlogging-revision-id' => 'Revisione $1',
 );
 
+/** Russian (русский)
+ * @author DCamer
+ */
+$messages['ru'] = array(
+	'eventlogging-invalid-json' => 'Неверный JSON',
+	'eventlogging-revision-id' => 'Ревизия $1',
+);
+
 /** Sinhala (සිංහල)
  * @author පසිඳු කාවින්ද
  */
