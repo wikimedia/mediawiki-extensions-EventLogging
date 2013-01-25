@@ -19,7 +19,7 @@ import eventlogging
 
 
 test_schemas = {
-    eventlogging.schema.META_REV_ID: {
+    eventlogging.schema.CAPSULE_SCID: {
         'properties': {
             'clientIp': {
                 'type': 'string'
@@ -62,7 +62,7 @@ test_schemas = {
             }
         }
     },
-    -1: {
+    ('TestSchema', -1): {
         'properties': {
             'value': {
                 'type': 'string',
@@ -102,12 +102,12 @@ class HttpRequestAttempted(RuntimeError):
 orig_http_get_schema = eventlogging.schema.http_get_schema
 
 
-def mock_http_get_schema(rev_id):
+def mock_http_get_schema(scid):
     """Mock of :func:`eventlogging.schemas.http_get_schema`
     Used to detect when :func:`eventlogging.schemas.get_schema`
     delegates to HTTP retrieval.
     """
-    raise HttpRequestAttempted('Attempt to fetch schema via HTTP', rev_id)
+    raise HttpRequestAttempted('Attempt to fetch schema via HTTP: %s', (scid,))
 
 
 class SchemaTestCase(unittest.TestCase):
@@ -133,7 +133,7 @@ class SchemaTestCase(unittest.TestCase):
         self.assertIsValid(self.event)
 
     def test_missing_property(self):
-        """Missing property in meta object triggers validation failure."""
+        """Missing property in capsule object triggers validation failure."""
         self.event.pop('timestamp')
         self.assertIsInvalid(self.event)
 
@@ -144,7 +144,8 @@ class SchemaTestCase(unittest.TestCase):
 
     def test_schema_retrieval(self):
         """Schemas missing from the cache are retrieved via HTTP."""
-        eventlogging.schema._schemas.pop(-1)  # Pop the schema from the cache.
+        # Pop the schema from the cache.
+        eventlogging.schema._schemas.pop(('TestSchema', -1))
         with self.assertRaises(HttpRequestAttempted) as context:
             eventlogging.validate(self.event)
             self.assertEqual(context.exception.rev_id, -1)
