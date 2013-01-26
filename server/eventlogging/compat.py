@@ -9,11 +9,6 @@
   paths and helper functions that wrap differences between Python 2 and
   Python 3.
 
-  .. seealso::
-
-     `Python 2/3 Compatible Source`
-     <http://docs.python.org/dev/howto/pyporting.html#use-same-source>`
-
 """
 # flake8: noqa
 

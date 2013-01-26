@@ -21,6 +21,7 @@ $wgExtensionCredits[ 'other' ][] = array(
 		'Ori Livneh',
 		'Timo Tijhof',
 		'S Page',
+		'Matthew Flaschen',
 	),
 	'version' => '0.4',
 	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
@@ -48,12 +49,17 @@ define( 'NS_SCHEMA_TALK', 471 );
 $wgEventLoggingBaseUri = false;
 
 /**
- * @var bool|string: Filename, or TCP / UDP address; false if not set.
+ * @var bool|string: File name or UDP address; false if not set.
  * Server-side events will be logged to this location.
  *
- * @see wfErrorLog
+ * The syntax for UDP addresses is `udp://host:port/prefix`. The prefix
+ * (followed by a space) is included at the start of each message. By
+ * convention it specifies which log bucket the message should be routed
+ * to. It is best if the prefix is simply "EventLogging".
  *
- * @example string: 'udp://127.0.0.1:9000'
+ * @see wfErrorLog()
+ *
+ * @example string: 'udp://127.0.0.1:9000/EventLogging'
  * @example string: '/var/log/mediawiki/events.log'
  */
 $wgEventLoggingFile = false;
