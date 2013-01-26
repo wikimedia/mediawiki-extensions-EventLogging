@@ -19,6 +19,8 @@
   :license: GNU General Public Licence 2.0 or later
 
 """
+from __future__ import division
+
 import argparse
 import logging
 import sys
@@ -67,8 +69,8 @@ def prefixed(d, prefix):
 def flatten(d, maxdepth=10):
     """Flatten a dictionary."""
     if maxdepth <= 1:
-        return d                                                                                                                                           
-    for k, v in items(d):
+        return d
+    for k, v in list(items(d)):
         if isinstance(v, dict):
             inner = flatten(d.pop(k), maxdepth - 1)
             d.update(prefixed(inner, k + '_'))
@@ -95,12 +97,12 @@ def get_table(scid):
 
 def create_table(scid):
     """Creates a table for a SCID."""
-    properties = prefixed(get_schema(scid)['properties'], 'event_')
-    properties.update(capsule_properties)
+    event_properties = prefixed(get_schema(scid)['properties'], 'event_')
 
     # Every table gets an int auto-increment primary key:
     columns = [Column('id', types.Integer, primary_key=True)]
-    columns.extend(generate_column(k, v) for k, v in items(properties))
+    for properties in (event_properties, capsule_properties):
+        columns.extend(generate_column(k, v) for k, v in items(properties))
 
     table = Table(table_name_format % scid, meta, *columns)
     table.create()
@@ -114,7 +116,7 @@ def store_event(event):
     # JSON Schema's 'format'.
     for key in event:
         if 'timestamp' in key:
-            event[key] = datetime.fromtimestamp(int(event[key]))
+            event[key] = datetime.fromtimestamp(event[key] // 1000)
 
     try:
         scid = (event['schema'], event['revision'])
