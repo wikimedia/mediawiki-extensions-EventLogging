@@ -15,6 +15,8 @@
      <http://docs.python.org/dev/howto/pyporting.html#use-same-source>`
 
 """
+# flake8: noqa
+
 import operator
 import sys
 

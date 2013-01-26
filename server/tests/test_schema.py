@@ -18,6 +18,8 @@ import unittest
 import eventlogging
 
 
+TEST_SCHEMA_SCID = ('TestSchema', -1)
+
 test_schemas = {
     eventlogging.schema.CAPSULE_SCID: {
         'properties': {
@@ -62,7 +64,7 @@ test_schemas = {
             }
         }
     },
-    ('TestSchema', -1): {
+    TEST_SCHEMA_SCID: {
         'properties': {
             'value': {
                 'type': 'string',
@@ -114,11 +116,11 @@ class SchemaTestCase(unittest.TestCase):
 
     def setUp(self):
         self.event = copy.deepcopy(test_event)
-        eventlogging.schema._schemas = copy.deepcopy(test_schemas)
+        eventlogging.schema.schema_cache = copy.deepcopy(test_schemas)
         eventlogging.schema.http_get_schema = mock_http_get_schema
 
     def tearDown(self):
-        eventlogging.schema._schemas = {}
+        eventlogging.schema.schema_cache.clear()
         eventlogging.schema.http_get_schema = orig_http_get_schema
 
     def assertIsValid(self, event, msg=None):
@@ -145,7 +147,7 @@ class SchemaTestCase(unittest.TestCase):
     def test_schema_retrieval(self):
         """Schemas missing from the cache are retrieved via HTTP."""
         # Pop the schema from the cache.
-        eventlogging.schema._schemas.pop(('TestSchema', -1))
+        eventlogging.schema.schema_cache.pop(TEST_SCHEMA_SCID)
         with self.assertRaises(HttpRequestAttempted) as context:
             eventlogging.validate(self.event)
             self.assertEqual(context.exception.rev_id, -1)

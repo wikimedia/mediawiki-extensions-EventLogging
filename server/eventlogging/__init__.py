@@ -1,15 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-  EventLogging
+  eventlogging
   ~~~~~~~~~~~~
+
+  This module collects the public members of each :mod:`eventlogging`
+  submodule into a single namespace. It thus corresponds to the
+  package's public API.
+
+  .. note:: To avoid circular imports, no submodule should import
+            anything from here.
 
   :copyright: (c) 2012 by Ori Livneh
   :license: GNU General Public Licence 2.0 or later
 
 """
+# flake8: noqa
+
 from .compat import *
 from .parse import *
 from .schema import *
 from .stream import *
 
+# The fact that schema validation is entrusted to a third-party module
+# is an implementation detail that a consumer of this package's API
+# should not have to know or care about. We thus provide a local binding
+# for :exc:`jsonschema.ValidationError`.
 from jsonschema import ValidationError

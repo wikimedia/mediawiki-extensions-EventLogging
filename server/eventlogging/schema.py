@@ -17,45 +17,49 @@ import jsonschema
 
 from .compat import json, urlopen
 
+__all__ = ('CAPSULE_SCID', 'get_schema', 'validate')
 
-_schemas = {}
-_url_format = ('http://meta.wikimedia.org/w/index.php?action=raw'
-               '&title=Schema:%s&oldid=%d')
 
+#: Template for schema retrieval URLs. Interpolates SCIDs.
+url_format = ('http://meta.wikimedia.org/w/index.php?action=raw'
+              '&title=Schema:%s&oldid=%d')
+
+#: Schemas retrieved via HTTP are cached in this dictionary.
+schema_cache = {}
+
+#: SCID of the metadata object which wraps each event.
 CAPSULE_SCID = ('EventCapsule', 5125187)
 
 
 def get_schema(scid):
     """Get schema from memory or HTTP."""
-    schema = _schemas.get(scid)
+    schema = schema_cache.get(scid)
     if schema is None:
         schema = http_get_schema(scid)
         if schema is not None:
-            _schemas[scid] = schema
+            schema_cache[scid] = schema
     return schema
 
 
 def http_get_schema(scid):
     """Retrieve schema via HTTP."""
-    req = urlopen(_url_format % scid)
+    req = urlopen(url_format % scid)
     content = req.read().decode('utf-8')
     try:
         schema = json.loads(content)
         if not isinstance(schema, dict):
             raise TypeError
-    except (TypeError, ValueError) as ex:
+    except (TypeError, ValueError):
         logging.exception('Failed to decode HTTP response: %s', content)
         return None
     return schema
-
-
-capsule_schema = get_schema(CAPSULE_SCID)
 
 
 def validate(capsule):
     """Validates an encapsulated event.
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
     """
+    capsule_schema = get_schema(CAPSULE_SCID)
     jsonschema.validate(capsule, capsule_schema)
     try:
         event_schema = get_schema((capsule['schema'], capsule['revision']))

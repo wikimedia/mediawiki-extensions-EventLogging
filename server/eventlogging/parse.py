@@ -43,32 +43,41 @@ from .compat import json, unquote_plus
 __all__ = ('LogParser', 'hash_value')
 
 #: Salt value for hashing IPs. Because this value is generated at
-#: runtime, IPs cannot be compared across restarts, but it spares
-#: us having to secure a config file.
-_salt = os.urandom(16)
+#: runtime, IPs cannot be compared across restarts. This limitation is
+#: tolerated because it helps underscore the field's unsuitability for
+#: analytic purposes. Client IP is logged solely for detecting and
+#: grouping spam coming from a single origin so that it can be filtered
+#: out of the logs.
+salt = os.urandom(16)
+
+#: Format string (as would be passed to ``strftime``) for timestamps in
+#: NCSA Common Log Format.
+NCSA_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
 
 def ncsa_to_epoch(ncsa_ts):
-    """Converts a timestamp in NCSA format to seconds since epoch.
+    """Converts an NCSA Common Log Format timestamp to an integer
+    timestamp representing the number of seconds since epoch UTC.
+
     :param ncsa_ts: Timestamp in NCSA format.
     """
-    return calendar.timegm(time.strptime(ncsa_ts, '%Y-%m-%dT%H:%M:%S'))
+    return calendar.timegm(time.strptime(ncsa_ts, NCSA_FORMAT))
 
 
 def hash_value(val):
-    """Produce a salted SHA1 hash of any string value.
+    """Produces a salted SHA1 hash of any string value.
     :param val: String to hash.
     """
     hval = hashlib.sha1(val.encode('utf8'))
-    hval.update(_salt)
+    hval.update(salt)
     return hval.hexdigest()
 
 
-def decode_qs(qs):
-    """Decode a query-string-encoded JSON object.
+def decode_qson(qson):
+    """Decodes a QSON (query-string-encoded JSON) object.
     :param qs: Query string.
     """
-    return json.loads(unquote_plus(qs.strip('?;')))
+    return json.loads(unquote_plus(qson.strip('?;')))
 
 
 #: A mapping of format specifiers to a tuple of (regexp, caster).
@@ -77,7 +86,7 @@ format_specifiers = {
     '%j': (r'(?P<event>\S+)', json.loads),
     '%l': (r'(?P<recvFrom>\S+)', str),
     '%n': (r'(?P<seqId>\d+)', int),
-    '%q': (r'(?P<event>\?\S+)', decode_qs),
+    '%q': (r'(?P<event>\?\S+)', decode_qson),
     '%t': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
            ncsa_to_epoch),
 }
@@ -86,16 +95,19 @@ format_specifiers = {
 class LogParser(object):
     """Parses raw varnish/MediaWiki log lines into encapsulated events."""
 
-    def __init__(self, fmt):
+    def __init__(self, format):
         """Constructor.
 
-        :param fmt: Format string.
+        :param format: Format string.
         """
+        self.format = format
+
         #: Field casters, ordered by the relevant field's position in
         #: format string.
         self.casters = []
+
         #: Compiled regexp.
-        self.re = re.sub(r'(?<!%)%[hjlnqt]', self._repl, fmt)
+        self.re = re.compile(re.sub(r'(?<!%)%[hjlnqt]', self._repl, format))
 
     def _repl(self, spec):
         """Replace a format specifier with its expanded regexp matcher
@@ -110,10 +122,13 @@ class LogParser(object):
 
         :param line: Log line to parse.
         """
-        match = re.match(self.re, line)
+        match = self.re.match(line)
         if match is None:
             raise ValueError(self.re, line)
         keys = sorted(match.groupdict(), key=match.start)
         event = {k: f(match.group(k)) for f, k in zip(self.casters, keys)}
         event.update(event.pop('event'))
         return event
+
+    def __repr__(self):
+        return '<LogParser \'%s\'>' % self.format
