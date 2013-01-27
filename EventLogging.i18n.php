@@ -72,7 +72,6 @@ $messages['de'] = array(
  */
 $messages['dsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolěrowanje tšojenjow koda wót boka klienta',
-	'eventlogging-json' => 'Objekt, $1 {{PLURAL:$1|kakosć|kakosći|kkosći|kakosćow}}',
 );
 
 /** Esperanto (Esperanto)
@@ -104,7 +103,6 @@ $messages['fi'] = array(
  */
 $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
-	'eventlogging-json' => 'Objet, $1 {{PLURAL:$1|propriété|propriétés}}',
 	'eventlogging-invalid-json' => 'JSON non valide',
 	'eventlogging-revision-id' => 'Révision $1',
 );
@@ -121,7 +119,6 @@ $messages['frp'] = array(
  */
 $messages['gl'] = array(
 	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
-	'eventlogging-json' => 'Obxecto, $1 {{PLURAL:$1|propiedade|propiedades}}',
 	'eventlogging-invalid-json' => 'JSON non válido',
 	'eventlogging-revision-id' => 'Revisión $1',
 );
@@ -131,7 +128,6 @@ $messages['gl'] = array(
  */
 $messages['he'] = array(
 	'eventlogging-desc' => 'מסגרת לרישום אירועים מקוד בצד הלקוח',
-	'eventlogging-json' => 'אובייקט, {{PLURAL:$1|מאפיין אחד|$1 מאפיינים}}',
 	'eventlogging-invalid-json' => 'נתוני JSON בלתי־תקינים',
 	'eventlogging-revision-id' => 'גרסה $1',
 );
@@ -157,7 +153,6 @@ $messages['hu'] = array(
  */
 $messages['id'] = array(
 	'eventlogging-desc' => 'Kerangka kerja untuk aksi log dari kode sisi klien',
-	'eventlogging-json' => 'Objek, $1 {{PLURAL:$1|properti|properti}}',
 	'eventlogging-invalid-json' => 'JSON salah',
 );
 
@@ -175,7 +170,6 @@ $messages['it'] = array(
  */
 $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
-	'eventlogging-json' => '$1 {{PLURAL:$1|件のプロパティ}}を持つオブジェクト',
 	'eventlogging-invalid-json' => '無効な JSON',
 	'eventlogging-revision-id' => '版 $1',
 );
@@ -185,7 +179,6 @@ $messages['ja'] = array(
  */
 $messages['ko'] = array(
 	'eventlogging-desc' => '클라이언트 쪽 코드에서 사건 기록에 대한 프레임워크',
-	'eventlogging-json' => '{{PLURAL:$1|속성}} $1개를 가진 개체',
 	'eventlogging-invalid-json' => '잘못된 JSON',
 	'eventlogging-revision-id' => '$1 판',
 );
@@ -195,7 +188,6 @@ $messages['ko'] = array(
  */
 $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
-	'eventlogging-json' => 'Објект, $1 {{PLURAL:$1|својство|својства}}',
 	'eventlogging-invalid-json' => 'Неважечки JSON',
 	'eventlogging-revision-id' => 'Ревизија $1',
 );
@@ -205,7 +197,6 @@ $messages['mk'] = array(
  */
 $messages['ms'] = array(
 	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
-	'eventlogging-json' => 'Objek, $1 sifat',
 	'eventlogging-invalid-json' => 'JSON tidak sah',
 	'eventlogging-revision-id' => 'Semakan $1',
 );
@@ -222,8 +213,8 @@ $messages['mt'] = array(
  */
 $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
-	'eventlogging-json' => 'Object, {{PLURAL:$1|één eigenschap|$1 eigenschappen}}',
 	'eventlogging-invalid-json' => 'Ongeldige JSON',
+	'eventlogging-revision-id' => 'Versie $1',
 );
 
 /** Polish (polski)
@@ -239,7 +230,6 @@ $messages['pl'] = array(
  */
 $messages['pms'] = array(
 	'eventlogging-desc' => "Piataforma dj'event ëd marcage për ël còdes da la banda dël client",
-	'eventlogging-json' => 'Oget, $1 {{PLURAL:$1|propietà}}',
 	'eventlogging-invalid-json' => 'JSON pa bon',
 	'eventlogging-revision-id' => 'Revision $1',
 );
@@ -288,7 +278,6 @@ $messages['sv'] = array(
  */
 $messages['uk'] = array(
 	'eventlogging-desc' => 'Фреймворк, для додання подій до журналу з клієнтського коду',
-	'eventlogging-json' => "Об'єкт, $1 {{PLURAL:$1|властивість|властивості|властивостей}}",
 	'eventlogging-invalid-json' => 'Неправильний JSON',
 );
 
@@ -297,7 +286,6 @@ $messages['uk'] = array(
  */
 $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
-	'eventlogging-json' => 'Đối tượng, $1 thuộc tính',
 	'eventlogging-invalid-json' => 'JSON không hợp lệ',
 	'eventlogging-revision-id' => 'Phiên bản $1',
 );
