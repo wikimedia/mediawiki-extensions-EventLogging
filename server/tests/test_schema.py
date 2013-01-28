@@ -21,7 +21,7 @@ import eventlogging
 TEST_SCHEMA_SCID = ('TestSchema', -1)
 
 test_schemas = {
-    eventlogging.schema.CAPSULE_SCID: {
+    eventlogging.CAPSULE_SCID: {
         'properties': {
             'clientIp': {
                 'type': 'string'
@@ -151,3 +151,10 @@ class SchemaTestCase(unittest.TestCase):
         with self.assertRaises(HttpRequestAttempted) as context:
             eventlogging.validate(self.event)
             self.assertEqual(context.exception.rev_id, -1)
+
+    def test_encapsulated_schema(self):
+        """get_schema() returns encapsulated schema if requested."""
+        encapsulated = eventlogging.get_schema(eventlogging.CAPSULE_SCID)
+        encapsulated['event'] = eventlogging.get_schema(TEST_SCHEMA_SCID)
+        self.assertEqual(eventlogging.get_schema(TEST_SCHEMA_SCID, True),
+                         encapsulated)
