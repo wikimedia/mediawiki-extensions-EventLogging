@@ -29,18 +29,19 @@
   +--------+-----------------------------+
 
 """
-from __future__ import unicode_literals
+from __future__ import division, unicode_literals
 
 import calendar
 import hashlib
 import os
 import re
 import time
+import datetime
 
 from .compat import json, unquote_plus
 
 
-__all__ = ('LogParser', 'hash_value')
+__all__ = ('LogParser', 'hash_value', 'epoch_to_datetime')
 
 #: Salt value for hashing IPs. Because this value is generated at
 #: runtime, IPs cannot be compared across restarts. This limitation is
@@ -62,6 +63,16 @@ def ncsa_to_epoch(ncsa_ts):
     :param ncsa_ts: Timestamp in NCSA format.
     """
     return calendar.timegm(time.strptime(ncsa_ts, NCSA_FORMAT))
+
+
+def epoch_to_datetime(ts):
+    """Convert a UNIX timestamp (specified as an integer number of
+    seconds or milliseconds since epoch) to its datetime
+    respresentation."""
+    # Detect values specified in milliseconds
+    if ts > 1e12:
+        ts /= 1000.0
+    return datetime.datetime.fromtimestamp(ts)
 
 
 def hash_value(val):
