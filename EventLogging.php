@@ -114,7 +114,7 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 		'isValid'   => $isValid,
 		'wiki'      => $wgDBname,
 		'recvFrom'  => gethostname(),
-		'timestamp' => $_SERVER[ 'REQUEST_TIME' ] * 1000,  // ms.
+		'timestamp' => $_SERVER[ 'REQUEST_TIME' ],
 	);
 
 	// To make the resultant JSON easily extracted from a row of
