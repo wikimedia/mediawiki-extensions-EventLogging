@@ -29,7 +29,8 @@ from datetime import datetime
 from sqlalchemy import types, MetaData, Column, Table
 from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
 
-from eventlogging import items, CAPSULE_SCID, get_schema, zmq_subscribe
+from eventlogging import (items, CAPSULE_SCID, get_schema, zmq_subscribe,
+                          epoch_to_datetime)
 
 
 parser = argparse.ArgumentParser(
@@ -116,7 +117,7 @@ def store_event(event):
     # JSON Schema's 'format'.
     for key in event:
         if 'timestamp' in key:
-            event[key] = datetime.fromtimestamp(event[key] // 1000)
+            event[key] = epoch_to_datetime(event[key])
 
     try:
         scid = (event['schema'], event['revision'])
