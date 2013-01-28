@@ -31,13 +31,17 @@ schema_cache = {}
 CAPSULE_SCID = ('EventCapsule', 5125187)
 
 
-def get_schema(scid):
+def get_schema(scid, encapsulate=False):
     """Get schema from memory or HTTP."""
     schema = schema_cache.get(scid)
     if schema is None:
         schema = http_get_schema(scid)
         if schema is not None:
             schema_cache[scid] = schema
+    if encapsulate:
+        capsule = get_schema(CAPSULE_SCID)
+        capsule['event'] = schema
+        return capsule
     return schema
 
 
