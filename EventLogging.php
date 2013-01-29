@@ -143,6 +143,7 @@ function efBeautifyJson( $json ) {
 
 /**
  * Validates object against JSON Schema.
+ *
  * @throws JsonSchemaException: If the object fails to validate.
  * @param array $object: Object to be validated.
  * @param array $schema: Schema to validate against (default: JSON Schema).
@@ -153,6 +154,14 @@ function efSchemaValidate( $object, $schema = NULL ) {
 		// Default to JSON Schema
 		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
 		$schema = FormatJson::decode( $json, true );
+	}
+
+	// Per bug 44454, we depart from the JSON Schema specfications
+	// somewhat by disallowing additional properties by default.
+	// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> &
+	// <http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
+	if ( !array_key_exists( 'additionalProperties', $schema ) ) {
+		$schema[ 'additionalProperties' ] = false;
 	}
 
 	try {
