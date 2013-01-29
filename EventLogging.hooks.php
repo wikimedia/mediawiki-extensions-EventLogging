@@ -19,7 +19,7 @@ class EventLoggingHooks {
 	public static function onSetup() {
 		global $wgMemCachedServers;
 
-		foreach( array(
+		foreach ( array(
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingDBname',
 			'wgEventLoggingFile',
@@ -41,7 +41,7 @@ class EventLoggingHooks {
 	 * @param $byEmail boolean The form has a [By e-mail] button.
 	 */
 	public static function onAddNewAccount( $user, $byEmail ) {
-		global $wgRequest, $wgUser, $wgAutoloadClasses;
+		global $wgRequest, $wgUser;
 
 		$userId = $user->getId();
 		$creatorUserId = $wgUser->getId();
@@ -54,14 +54,24 @@ class EventLoggingHooks {
 		$mobile = class_exists( 'MobileContext' ) &&
 			MobileContext::singleton()->shouldDisplayMobileView();
 
-		efLogServerSideEvent( 'ServerSideAccountCreation', 5014296, array (
+		$event = array (
 			'token'         => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
 			'userId'        => (int) $userId,
 			'userName'      => (string) $user->getName(),
 			'isSelfMade'    => (bool) $isSelfMade,
 			'userBuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
 			'displayMobile' => (bool) $mobile,
-		) );
+		);
+		$returnTo = $wgRequest->getVal( 'returnto' );
+		if ( $returnTo !== null ) {
+			$event['returnTo'] = $returnTo;
+		}
+		$returnToQuery = $wgRequest->getVal( 'returntoquery' );
+		if ( $returnToQuery !== null ) {
+			$event['returnToQuery'] = $returnToQuery;
+		}
+
+		efLogServerSideEvent( 'ServerSideAccountCreation', 5150394, $event );
 
 		return true;
 	}
