@@ -62,7 +62,8 @@ test_schemas = {
                 'type': 'number',
                 'required': True
             }
-        }
+        },
+        'additionalProperties': False
     },
     TEST_SCHEMA_SCID: {
         'properties': {
@@ -142,6 +143,11 @@ class SchemaTestCase(unittest.TestCase):
     def test_missing_nested_property(self):
         """Missing property in nested event triggers validation failure."""
         self.event['event'].pop('value')
+        self.assertIsInvalid(self.event)
+
+    def test_extra_property(self):
+        """Missing property in nested event triggers validation failure."""
+        self.event['event']['season'] = 'summer'
         self.assertIsInvalid(self.event)
 
     def test_schema_retrieval(self):
