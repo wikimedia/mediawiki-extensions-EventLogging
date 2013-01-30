@@ -22,21 +22,48 @@ from .parse import epoch_to_datetime
 
 __all__ = ('store_event', 'flatten', 'schema_mapper')
 
-table_name_format = '%s_%s'
+#: Format string for :func:`datetime.datetime.strptime` for MediaWiki
+#: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
+MEDIAWIKI_TIMESTAMP = '%Y%m%d%H%M%S'
+
+#: Format string for table names. Interpolates a `SCID` -- i.e., a tuple
+#: of (schema_name, revision_id).
+TABLE_NAME_FORMAT = '%s_%s'
+
+
+class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
+    """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""
+
+    #: Timestamps are stored as VARBINARY(14) columns.
+    impl = sqlalchemy.types.VARBINARY(length=14)
+
+    def process_bind_param(self, value, dialect=None):
+        """Bind a timestamp, specified in miliseconds or seconds."""
+        if not isinstance(value, datetime.datetime):
+            if value > 1e12:
+                value /= 1000
+            value = datetime.datetime.fromtimestamp(value)
+        return value.strftime('%Y%m%d%H%M%S').encode('utf-8')
+
+    def process_result_value(self, value, dialect=None):
+        value = value.decode('utf-8')
+        return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
+
 
 #: Mapping of JSON schema types to SQL types
 sql_types = {
     'boolean': sqlalchemy.types.Boolean,
     'integer': sqlalchemy.types.Integer,
     'number': sqlalchemy.types.Float,
-    'string': sqlalchemy.types.String(255),
+    'string': sqlalchemy.types.VARBINARY(255),
 }
 
 
 def generate_column(name, descriptor):
     """Creates a column from a JSON Schema property specifier."""
     if 'timestamp' in name:
-        sql_type = sqlalchemy.types.DateTime
+        # TODO(ori-l, 30-Jan-2013): Handle in a less ad-hoc fashion.
+        sql_type = sqlalchemy.types.MediaWikiTimestamp
     else:
         sql_type = sql_types.get(descriptor['type'], sql_types['string'])
     nullable = not descriptor.get('required', False)
@@ -46,7 +73,7 @@ def generate_column(name, descriptor):
 def get_or_create_table(meta, scid):
     """Loads or creates a table for a SCID."""
     try:
-        return sqlalchemy.Table(table_name_format % scid, meta, autoload=True)
+        return sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, autoload=True)
     except sqlalchemy.exc.NoSuchTableError:
         return create_table(meta, scid)
 
@@ -59,7 +86,7 @@ def create_table(meta, scid):
     columns = [sqlalchemy.Column('id', types.Integer, primary_key=True)]
     columns.extend(schema_mapper(schema))
 
-    table = sqlalchemy.Table(table_name_format % scid, meta, *columns)
+    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns)
     table.create()
     return table
 
@@ -67,13 +94,6 @@ def create_table(meta, scid):
 def store_event(meta, event):
     """Store an event the database."""
     event = flatten(event)
-    # Gross: we special-case keys with 'timestamp' in their name and
-    # force their type to be datetime. TODO(ori-l, 28-Dec-2012): Use
-    # JSON Schema's 'format'.
-    for key in event:
-        if 'timestamp' in key:
-            event[key] = epoch_to_datetime(event[key])
-
     try:
         scid = (event['schema'], event['revision'])
         table = get_or_create_table(meta, scid)
