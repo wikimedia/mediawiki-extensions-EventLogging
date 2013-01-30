@@ -10,6 +10,7 @@
 from __future__ import division
 
 import argparse
+import datetime
 import logging
 import sys
 
@@ -61,13 +62,21 @@ sql_types = {
 
 def generate_column(name, descriptor):
     """Creates a column from a JSON Schema property specifier."""
+    column_options = {}
+
     if 'timestamp' in name:
-        # TODO(ori-l, 30-Jan-2013): Handle in a less ad-hoc fashion.
-        sql_type = sqlalchemy.types.MediaWikiTimestamp
+        # TODO(ori-l, 30-Jan-2013): Handle this in a less ad-hoc fashion,
+        # ideally using the `format` specifier in JSON Schema.
+        sql_type = MediaWikiTimestamp
+        column_options['index'] = True  # Index timestamps.
     else:
         sql_type = sql_types.get(descriptor['type'], sql_types['string'])
-    nullable = not descriptor.get('required', False)
-    return sqlalchemy.Column(sql_type, nullable=nullable)
+
+    # If the column is marked 'required', make it non-nullable.
+    if descriptor.get('required', False):
+        column_options['nullable'] = False
+
+    return sqlalchemy.Column(sql_type, **column_options)
 
 
 def get_or_create_table(meta, scid):
@@ -83,7 +92,8 @@ def create_table(meta, scid):
     schema = get_schema(scid, encapsulate=True)
 
     # Every table gets an int auto-increment primary key:
-    columns = [sqlalchemy.Column('id', types.Integer, primary_key=True)]
+    columns = [sqlalchemy.Column('id', sqlalchemy.types.Integer,
+               primary_key=True)]
     columns.extend(schema_mapper(schema))
 
     table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns)
