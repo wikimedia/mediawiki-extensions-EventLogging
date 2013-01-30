@@ -24,116 +24,28 @@ from __future__ import division
 import argparse
 import logging
 import sys
-from datetime import datetime
 
-from sqlalchemy import types, MetaData, Column, Table
-from sqlalchemy.exc import SQLAlchemyError, NoSuchTableError
-
-from eventlogging import (items, CAPSULE_SCID, get_schema, zmq_subscribe,
-                          epoch_to_datetime)
+import eventlogging
+import sqlalchemy
 
 
-parser = argparse.ArgumentParser(
-    description='Consume JSON event stream into MySQL')
+parser = argparse.ArgumentParser(description='JSON event stream -> MySQL')
 parser.add_argument('input', help='URI of JSON event stream to consume')
 parser.add_argument('db', help='URI of DB to write to')
 parser.add_argument('--sid', help='set input socket identity')
 args = parser.parse_args()
 
-
-table_name_format = '%s_%s'
-capsule_properties = get_schema(CAPSULE_SCID)['properties']
-
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
-meta = MetaData(args.db)
+meta = sqlalchemy.MetaData(args.db)
 
-#: Mapping of JSON schema types to SQL types
-sql_types = {
-    'boolean': types.Boolean,
-    'integer': types.Integer,
-    'number': types.Float,
-    'string': types.String(255),
-}
-
-capsule_schema = get_schema(CAPSULE_SCID)
-capsule_properties = capsule_schema['properties']
-capsule_properties.pop('event')
-
-def prefixed(d, prefix):
-    """Returns a shallow copy of a dict with some string prepended to
-    each of its keys."""
-    return {(prefix + k): v for k, v in items(d)}
-
-
-def flatten(d, maxdepth=10):
-    """Flatten a dictionary."""
-    if maxdepth <= 1:
-        return d
-    for k, v in list(items(d)):
-        if isinstance(v, dict):
-            inner = flatten(d.pop(k), maxdepth - 1)
-            d.update(prefixed(inner, k + '_'))
-    return d
-
-
-def generate_column(name, descriptor):
-    """Creates a column from a JSON Schema property specifier."""
-    if 'timestamp' in name:
-        sql_type = types.DateTime
-    else:
-        sql_type = sql_types.get(descriptor['type'], sql_types['string'])
-    nullable = not descriptor.get('required', False)
-    return Column(name, sql_type, nullable=nullable)
-
-
-def get_table(scid):
-    """Loads or creates a table for a SCID."""
-    try:
-        return Table(table_name_format % scid, meta, autoload=True)
-    except NoSuchTableError:
-        return create_table(scid)
-
-
-def create_table(scid):
-    """Creates a table for a SCID."""
-    event_properties = prefixed(get_schema(scid)['properties'], 'event_')
-
-    # Every table gets an int auto-increment primary key:
-    columns = [Column('id', types.Integer, primary_key=True)]
-    for properties in (event_properties, capsule_properties):
-        columns.extend(generate_column(k, v) for k, v in items(properties))
-
-    table = Table(table_name_format % scid, meta, *columns)
-    table.create()
-    return table
-
-
-def store_event(event):
-    event = flatten(event)
-    # Gross: we special-case keys with 'timestamp' in their name and
-    # force their type to be datetime. TODO(ori-l, 28-Dec-2012): Use
-    # JSON Schema's 'format'.
-    for key in event:
-        if 'timestamp' in key:
-            event[key] = epoch_to_datetime(event[key])
-
-    try:
-        scid = (event['schema'], event['revision'])
-        table = get_table(scid)
-    except Exception:
-        logging.exception('Unable to get or set suitable table')
-    else:
-        table.insert(values=event).execute()
-
-
-sub = zmq_subscribe(args.input, sid=args.sid, json=True)
+sub = eventlogging.zmq_subscribe(args.input, sid=args.sid, json=True)
 
 while 1:
     try:
         for ev in sub:
             logging.info(ev)
-            store_event(ev)
+            store_event(meta, ev)
     except SQLAlchemyError:
         logging.exception('Unable to insert event: %s', ev)

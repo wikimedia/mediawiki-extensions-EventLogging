@@ -20,6 +20,7 @@ from .compat import *
 from .parse import *
 from .schema import *
 from .stream import *
+from .jrm import *
 
 # The fact that schema validation is entrusted to a third-party module
 # is an implementation detail that a consumer of this package's API
