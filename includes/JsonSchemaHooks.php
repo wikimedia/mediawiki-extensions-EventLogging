@@ -100,15 +100,24 @@ class JsonSchemaHooks {
 	 */
 	static function onBeforePageDisplay( &$out, &$skin ) {
 		$title = $out->getTitle();
-		$revId = $out->getRevisionId();
 
-		if ( $title->inNamespace( NS_SCHEMA ) && !is_null( $revId ) ) {
-			$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
-				// We use 'rawParams' rather than 'numParams' to make it
-				// easy to copy/paste the value into code.
-				->rawParams( $revId )
-				->escaped() );
-			$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
+		if ( $title->inNamespace( NS_SCHEMA ) ) {
+			$revId = $out->getRevisionId();
+			$request = $out->getRequest();
+			$wpPreview = $request->getBool( 'wpPreview' );
+			$action = $request->getVal( 'action' );
+			$isDisplayed = ( !is_null( $revId ) || ( $wpPreview && $action === 'submit' ) );
+			if ( $isDisplayed ) {
+				$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
+			}
+
+			if ( !is_null( $revId ) ) {
+				$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
+					// We use 'rawParams' rather than 'numParams' to make it
+					// easy to copy/paste the value into code.
+					->rawParams( $revId )
+					->escaped() );
+			}
 		}
 		return true;
 	}
