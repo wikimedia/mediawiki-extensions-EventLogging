@@ -44,7 +44,7 @@ def get_schema(scid, encapsulate=False):
     schema.setdefault('additionalProperties', False)
     if encapsulate:
         capsule = get_schema(CAPSULE_SCID)
-        capsule['event'] = schema
+        capsule['properties']['event'] = schema
         return capsule
     return schema
 
@@ -76,4 +76,3 @@ def validate(capsule):
         raise jsonschema.ValidationError('Missing key: %s' % ex.message)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.validate(capsule, schema)
-    jsonschema.validate(capsule['event'], schema['event'])
