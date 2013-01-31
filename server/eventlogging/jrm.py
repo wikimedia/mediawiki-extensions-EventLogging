@@ -9,16 +9,13 @@
 """
 from __future__ import division
 
-import argparse
 import datetime
 import logging
-import sys
 
 import sqlalchemy
 
-from .schema import CAPSULE_SCID, get_schema
+from .schema import get_schema
 from .compat import items
-from .parse import epoch_to_datetime
 
 
 __all__ = ('store_event', 'flatten', 'schema_mapper')
@@ -31,6 +28,9 @@ MEDIAWIKI_TIMESTAMP = '%Y%m%d%H%M%S'
 #: of (schema_name, revision_id).
 TABLE_NAME_FORMAT = '%s_%s'
 
+#: An iterable of properties that should not be stored in the database.
+NO_DB_PROPERTIES = ('schema', 'revision', 'recvFrom', 'seqId')
+
 
 class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""
@@ -39,12 +39,15 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     impl = sqlalchemy.types.VARBINARY(length=14)
 
     def process_bind_param(self, value, dialect=None):
-        """Bind a timestamp, specified in miliseconds or seconds."""
+        """Bind a timestamp.
+        :param value: May be either number of seconds or miliseconds
+        since UNIX epoch, or a datetime object.
+        """
         if not isinstance(value, datetime.datetime):
             if value > 1e12:
                 value /= 1000
             value = datetime.datetime.fromtimestamp(value)
-        return value.strftime('%Y%m%d%H%M%S').encode('utf-8')
+        return value.strftime(MEDIAWIKI_TIMESTAMP).encode('utf-8')
 
     def process_result_value(self, value, dialect=None):
         value = value.decode('utf-8')
@@ -96,7 +99,8 @@ def create_table(meta, scid):
                primary_key=True)]
     columns.extend(schema_mapper(schema))
 
-    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns)
+    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns,
+                             mysql_engine='InnoDB')
     table.create()
     return table
 
@@ -113,14 +117,9 @@ def store_event(meta, event):
         table.insert(values=event).execute()
 
 
-def _prefix(d, prefix):
-    """Prepend a string to each key in an iterable of dict items."""
-    return ((prefix + k, v) for k, v in d)
-
-
 def _property_getter(key, val):
-    """Mapper for :func:`flatten` that extracts properties and their
-    types from schema."""
+    """Mapper function for :func:`flatten` that extracts properties
+    and their types from schema."""
     if isinstance(val, dict):
         if 'properties' in val:
             return key, val['properties']
@@ -129,29 +128,29 @@ def _property_getter(key, val):
     return key, val
 
 
-def flatten(d, sep='_', map=None):
+def flatten(d, sep='_', f=None):
     """Collapse a nested dictionary.
 
     :param sep: Key path fragment separator.
-    :param map: Optional function to apply to each value.
+    :param f: Optional function to apply to each item.
     """
-    items = []
-    for k, v in d.iteritems():
-        if map is not None:
-            k, v = map(k, v)
+    flat = []
+    for k, v in map(f, items(d)):
         if isinstance(v, dict):
-            items.extend(_prefix(flatten(v, sep, map).iteritems(), k + sep))
+            nested = items(flatten(v, sep, f))
+            flat.extend((k + sep + nk, nv) for nk, nv in nested)
         else:
-            items.append((k, v))
-    return dict(items)
+            flat.append((k, v))
+    return dict(flat)
 
 
 def schema_mapper(schema):
     """Takes a schema and map its properties to database column
     definitions."""
-    map = flatten(schema.get('properties', schema), map=_property_getter)
+    properties = {k: v for k, v in items(schema.get('properties', {}))
+                  if k not in NO_DB_PROPERTIES}
     columns = []
-    for name, column in items(map):
-        column.name = name
-        columns.append(column)
+    for name, col in flatten(properties, f=_property_getter):
+        col.name = name
+        columns.append(col)
     return columns
