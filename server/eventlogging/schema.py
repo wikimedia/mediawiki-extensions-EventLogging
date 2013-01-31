@@ -12,12 +12,13 @@
 from __future__ import unicode_literals
 
 import logging
+import uuid
 
 import jsonschema
 
-from .compat import json, urlopen
+from .compat import json, urlopen, uuid5
 
-__all__ = ('CAPSULE_SCID', 'get_schema', 'validate')
+__all__ = ('CAPSULE_SCID', 'capsule_uuid', 'get_schema', 'validate')
 
 
 #: Template for schema retrieval URLs. Interpolates SCIDs.
@@ -29,6 +30,32 @@ schema_cache = {}
 
 #: SCID of the metadata object which wraps each event.
 CAPSULE_SCID = ('EventCapsule', 5152617)
+
+
+#: Formats event capsule objects into URLs using the combination of
+#: origin hostname, sequence ID, and timestamp. This combination is
+#: guaranteed to be unique. Example::
+#:
+#:   event://vanadium.eqiad.wmnet/?seqId=438763&timestamp=1359702955
+#:
+EVENTLOGGING_URL_FORMAT = (
+    'event://%(recvFrom)s/?seqId=%(seqId)s&timestamp=%(timestamp).10s')
+
+
+def capsule_uuid(capsule):
+    """Generate a UUID for a capsule object.
+
+    Gets a unique URI for the capsule using ``EVENTLOGGING_URL_FORMAT``
+    and uses it to generate a UUID5 in the URL namespace.
+
+    ..seealso:: `RFC 4122 <http://www.ietf.org/rfc/rfc4122.txt>`_.
+
+    :param capsule: A capsule object (or any dictionary that defines
+      `recvFrom`, `seqId`, and `timestamp`).
+
+    """
+    url = EVENTLOGGING_URL_FORMAT % capsule
+    return uuid5(uuid.NAMESPACE_URL, url)
 
 
 def get_schema(scid, encapsulate=False):

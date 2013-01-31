@@ -9,7 +9,7 @@
  *
  * @author Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
- * @version 0.4
+ * @version 0.5
  */
 
 // Credits
@@ -23,7 +23,7 @@ $wgExtensionCredits[ 'other' ][] = array(
 		'S Page',
 		'Matthew Flaschen',
 	),
-	'version' => '0.4',
+	'version' => '0.5',
 	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );

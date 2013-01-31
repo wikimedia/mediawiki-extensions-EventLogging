@@ -12,8 +12,11 @@
   ('encapsulated') event objects.
 
 """
+from __future__ import unicode_literals
+
 import copy
 import unittest
+import uuid
 
 import eventlogging
 
@@ -164,3 +167,8 @@ class SchemaTestCase(unittest.TestCase):
         encapsulated['event'] = eventlogging.get_schema(TEST_SCHEMA_SCID)
         self.assertEqual(eventlogging.get_schema(TEST_SCHEMA_SCID, True),
                          encapsulated)
+
+    def test_capsule_uuid(self):
+        """capsule_uuid() generates a unique UUID for capsule objects."""
+        self.assertEqual(eventlogging.capsule_uuid(test_event),
+                         uuid.UUID(hex='babb66f34a0a5de3be0c6513088be33e'))
