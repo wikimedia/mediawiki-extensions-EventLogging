@@ -107,14 +107,23 @@ def create_table(meta, scid):
 
 def store_event(meta, event):
     """Store an event the database."""
-    event = flatten(event)
     try:
         scid = (event['schema'], event['revision'])
         table = get_or_create_table(meta, scid)
     except Exception:
         logging.exception('Unable to get or set suitable table')
     else:
+        event = flatten(event, f=_string_encoder)
+        event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
         table.insert(values=event).execute()
+
+
+def _string_encoder(k, v):
+    """Mapper function for :func:`flatten` that encodes all string
+    values to UTF-8-encoded bytes."""
+    if hasattr(v, 'encode'):
+        return k, v.encode('utf-8')
+    return k, v
 
 
 def _property_getter(key, val):
@@ -135,7 +144,9 @@ def flatten(d, sep='_', f=None):
     :param f: Optional function to apply to each item.
     """
     flat = []
-    for k, v in map(f, items(d)):
+    for k, v in items(d):
+        if f is not None:
+            k, v = f(k, v)
         if isinstance(v, dict):
             nested = items(flatten(v, sep, f))
             flat.extend((k + sep + nk, nv) for nk, nv in nested)
@@ -150,7 +161,7 @@ def schema_mapper(schema):
     properties = {k: v for k, v in items(schema.get('properties', {}))
                   if k not in NO_DB_PROPERTIES}
     columns = []
-    for name, col in flatten(properties, f=_property_getter):
+    for name, col in items(flatten(properties, f=_property_getter)):
         col.name = name
         columns.append(col)
     return columns
