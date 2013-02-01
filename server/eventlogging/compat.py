@@ -12,13 +12,17 @@
 """
 # flake8: noqa
 
+import functools
+import hashlib
 import operator
 import sys
+import uuid
+
 
 from zmq.utils import jsonapi as json
 
 
-__all__ = ('items', 'json', 'urlopen', 'unquote_plus')
+__all__ = ('items', 'json', 'unquote_plus', 'urlopen', 'uuid5')
 
 PY3 = sys.version_info[0] == 3
 
@@ -30,3 +34,11 @@ else:
     items = operator.methodcaller('iteritems')
     from urllib2 import urlopen
     from urllib import unquote_plus
+
+
+@functools.wraps(uuid.uuid5)
+def uuid5(namespace, name):
+    # Python 2 expects ``name`` to be bytes; Python 3, unicode. This
+    # variant expects unicode strings in both Python 2 and Python 3.
+    hash = hashlib.sha1(namespace.bytes + name.encode('utf-8')).digest()
+    return uuid.UUID(bytes=hash[:16], version=5)
