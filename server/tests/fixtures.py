@@ -81,6 +81,7 @@ _event = {
     'timestamp': 1358791834912,
     'isTruncated': False,
     'wiki': 'enwiki',
+    'webHost': 'en.m.wikipedia.org',
     'recvFrom': 'fenari',
     'isValid': True,
     'revision': 123,

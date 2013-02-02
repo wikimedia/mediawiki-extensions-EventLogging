@@ -18,7 +18,7 @@ from .schema import get_schema
 from .compat import items
 
 
-__all__ = ('store_event', 'flatten', 'schema_mapper')
+__all__ = ('store_event', 'flatten', 'schema_mapper', 'create_table')
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
 #: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
