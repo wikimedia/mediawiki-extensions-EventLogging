@@ -44,6 +44,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 			}
 		}
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
+		$this->targets = array( 'desktop', 'mobile' );
 	}
 
 

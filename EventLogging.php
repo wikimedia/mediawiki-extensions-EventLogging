@@ -219,6 +219,7 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array( 'jquery.json', 'mediawiki.util' ),
+	'targets'       => array( 'desktop', 'mobile' ),
 );
 
 

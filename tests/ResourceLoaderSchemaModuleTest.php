@@ -75,4 +75,16 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 		$mtime = $this->module->getModifiedTime( $this->context );
 		$this->assertEquals( self::REV, $mtime );
 	}
+
+	/**
+	 * getTargets() should return an array including both 'desktop' and
+	 * 'mobile'. This is essentially verifying that the base class
+	 * implementation correctly delegates to the 'targets' property on
+	 * ResourceLoaderSchemaModule.
+	 */
+	function testGetTargets() {
+		$targets = $this->module->getTargets();
+		$this->assertContains( 'mobile', $targets );
+		$this->assertContains( 'desktop', $targets );
+	}
 }
