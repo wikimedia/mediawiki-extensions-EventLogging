@@ -46,6 +46,6 @@ while 1:
     try:
         for ev in sub:
             logging.info(ev)
-            store_event(meta, ev)
-    except SQLAlchemyError:
+            eventlogging.store_event(meta, ev)
+    except sqlalchemy.exc.SQLAlchemyError:
         logging.exception('Unable to insert event: %s', ev)

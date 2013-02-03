@@ -44,7 +44,7 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""
 
     #: Timestamps are stored as VARBINARY(14) columns.
-    impl = sqlalchemy.types.VARBINARY(length=14)
+    impl = sqlalchemy.Unicode(14)
 
     def process_bind_param(self, value, dialect=None):
         """Bind a timestamp.
@@ -55,10 +55,9 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
             if value > 1e12:
                 value /= 1000
             value = datetime.datetime.fromtimestamp(value)
-        return value.strftime(MEDIAWIKI_TIMESTAMP).encode('utf-8')
+        return value.strftime(MEDIAWIKI_TIMESTAMP)
 
     def process_result_value(self, value, dialect=None):
-        value = value.decode('utf-8')
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
