@@ -55,5 +55,5 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         result = meta.tables['TestSchema_123'].select().execute()
         row = result.fetchone()
         self.assertEqual(row['event_value'], '☆ 彡')
+        self.assertEqual(row['timestamp'], '20130121101034')
         self.assertEqual(row['uuid'], 'babb66f34a0a5de3be0c6513088be33e')
-        self.assertEqual(row['timestamp'][0:], b'20130121101034')
