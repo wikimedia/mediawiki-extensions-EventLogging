@@ -54,6 +54,8 @@ def capsule_uuid(capsule):
       `recvFrom`, `seqId`, and `timestamp`).
 
     """
+    if not isinstance(capsule['timestamp'], int):
+        raise TypeError('capsule_uuid() requires integer timestamps.')
     url = EVENTLOGGING_URL_FORMAT % capsule
     return uuid5(uuid.NAMESPACE_URL, url)
 

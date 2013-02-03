@@ -18,7 +18,8 @@ from .schema import get_schema, capsule_uuid
 from .compat import items
 
 
-__all__ = ('store_event', 'flatten', 'schema_mapper', 'create_table')
+__all__ = ('store_event', 'flatten', 'schema_mapper', 'create_table',
+           'get_or_create_table')
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
 #: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
@@ -32,7 +33,7 @@ TABLE_NAME_FORMAT = '%s_%s'
 NO_DB_PROPERTIES = ('schema', 'revision', 'recvFrom', 'seqId')
 
 #: A dictionary mapping database engine names to table defaults.
-TABLE_OPTIONS = {
+ENGINE_TABLE_OPTIONS = {
     'mysql': {
         'mysql_charset': 'utf8',
         'mysql_engine': 'InnoDB'
@@ -92,17 +93,14 @@ def generate_column(name, descriptor):
 def get_or_create_table(meta, scid):
     """Loads or creates a table for a SCID."""
     try:
-        return sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, autoload=True)
-    except sqlalchemy.exc.NoSuchTableError:
+        return meta.tables[TABLE_NAME_FORMAT % scid]
+    except KeyError:
         return create_table(meta, scid)
 
 
 def create_table(meta, scid):
     """Creates a table for a SCID."""
     schema = get_schema(scid, encapsulate=True)
-
-    # Get any table creation kwargs specific to this engine.
-    opts = TABLE_OPTIONS.get(meta.bind.name, {})
 
     # Every table gets an integer auto-increment primary key column
     # ``id`` and a char(32) column ``uuid`` that is indexed. ``uuid``
@@ -116,23 +114,23 @@ def create_table(meta, scid):
     ]
     columns.extend(schema_mapper(schema))
 
-    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns, **opts)
-    table.create()
+    table_options = ENGINE_TABLE_OPTIONS.get(meta.bind.name, {})
+    table_name = TABLE_NAME_FORMAT % scid
+
+    table = sqlalchemy.Table(table_name, meta, *columns, **table_options)
+    table.create(checkfirst=True)
+
     return table
 
 
 def store_event(meta, event):
     """Store an event the database."""
-    try:
-        scid = (event['schema'], event['revision'])
-        table = get_or_create_table(meta, scid)
-    except Exception:
-        logging.exception('Unable to get or set suitable table')
-    else:
-        event = flatten(event)
-        event['uuid'] = capsule_uuid(event).hex
-        event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
-        table.insert(values=event).execute()
+    scid = (event['schema'], event['revision'])
+    table = get_or_create_table(meta, scid)
+    event = flatten(event)
+    event['uuid'] = capsule_uuid(event).hex
+    event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
+    return table.insert(values=event).execute()
 
 
 def _property_getter(key, val):

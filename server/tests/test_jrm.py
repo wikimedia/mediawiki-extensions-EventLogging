@@ -8,10 +8,11 @@
 """
 from __future__ import unicode_literals
 
+import datetime
 import unittest
 
-import sqlalchemy
 import eventlogging
+import sqlalchemy
 
 from .fixtures import *
 
@@ -50,10 +51,32 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
     def test_encoding(self):
         """Timestamps and unicode strings are correctly encoded."""
         eventlogging.store_event(self.meta, self.event)
-        meta = sqlalchemy.MetaData(bind=self.meta.bind)
-        meta.reflect()
-        result = meta.tables['TestSchema_123'].select().execute()
-        row = result.fetchone()
+        table = eventlogging.get_or_create_table(self.meta, TEST_SCHEMA_SCID)
+        row = table.select().execute().fetchone()
         self.assertEqual(row['event_value'], '☆ 彡')
-        self.assertEqual(row['timestamp'], '20130121101034')
         self.assertEqual(row['uuid'], 'babb66f34a0a5de3be0c6513088be33e')
+        self.assertEqual(
+            row['timestamp'],
+            datetime.datetime(2013, 1, 21, 10, 10, 34)
+        )
+
+    def test_reflection(self):
+        """Tables which exist in the database but not in the MetaData cache are
+        correctly reflected."""
+        t = eventlogging.create_table(self.meta, TEST_SCHEMA_SCID)
+
+        # Tell Python to forget everything it knows about this database
+        # by purging ``MetaData``. The actual data in the database is
+        # not altered by this operation.
+        del self.meta
+        self.meta = sqlalchemy.MetaData(bind=self.engine)
+
+        # Although ``TestSchema_123`` exists in the database, SQLAlchemy
+        # is not yet aware of its existence:
+        self.assertNotIn('TestSchema_123', self.meta.tables)
+
+        # The ``checkfirst`` arg to :func:`sqlalchemy.Table.create`
+        # will ensure that we don't attempt to CREATE TABLE on the
+        # already-existing table:
+        eventlogging.store_event(self.meta, self.event)
+        self.assertIn('TestSchema_123', self.meta.tables)

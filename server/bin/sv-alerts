@@ -60,8 +60,8 @@ def send_email(subject, text):
 
 def parse_tokens(line):
     map = dict(kv.split(':') for kv in line.split())
-    for k in map.viewkeys() & {'serial', 'poolserial', 'len', 'pid',
-            'expected', 'tries'}:
+    for k in (map.viewkeys() &
+              {'serial', 'poolserial', 'len', 'pid', 'expected', 'tries'}):
         map[k] = int(map[k])
     return map
 

@@ -43,9 +43,10 @@ meta = sqlalchemy.MetaData(args.db)
 sub = eventlogging.zmq_subscribe(args.input, sid=args.sid, json=True)
 
 while 1:
+    # Optimization: keep ``try/except`` block outside the inner loop.
     try:
         for ev in sub:
             logging.info(ev)
             eventlogging.store_event(meta, ev)
-    except sqlalchemy.exc.SQLAlchemyError:
+    except Exception:
         logging.exception('Unable to insert event: %s', ev)

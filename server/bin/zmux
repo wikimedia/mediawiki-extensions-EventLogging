@@ -30,7 +30,6 @@ import sys
 import zmq
 
 
-
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
 ap = argparse.ArgumentParser(description='Multiplex ZMQ_PUB sockets')
