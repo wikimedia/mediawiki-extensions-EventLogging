@@ -7,14 +7,14 @@
   schemas and the objects they describe (hence 'jrm').
 
 """
-from __future__ import division
+from __future__ import division, unicode_literals
 
 import datetime
 import logging
 
 import sqlalchemy
 
-from .schema import get_schema
+from .schema import get_schema, capsule_uuid
 from .compat import items
 
 
@@ -30,6 +30,14 @@ TABLE_NAME_FORMAT = '%s_%s'
 
 #: An iterable of properties that should not be stored in the database.
 NO_DB_PROPERTIES = ('schema', 'revision', 'recvFrom', 'seqId')
+
+#: A dictionary mapping database engine names to table defaults.
+TABLE_OPTIONS = {
+    'mysql': {
+        'mysql_charset': 'utf8',
+        'mysql_engine': 'InnoDB'
+    }
+}
 
 
 class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
@@ -56,10 +64,10 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
 
 #: Mapping of JSON schema types to SQL types
 sql_types = {
-    'boolean': sqlalchemy.types.Boolean,
-    'integer': sqlalchemy.types.Integer,
-    'number': sqlalchemy.types.Float,
-    'string': sqlalchemy.types.VARBINARY(255),
+    'boolean': sqlalchemy.Boolean,
+    'integer': sqlalchemy.Integer,
+    'number': sqlalchemy.Float,
+    'string': sqlalchemy.Unicode(255),
 }
 
 
@@ -94,13 +102,22 @@ def create_table(meta, scid):
     """Creates a table for a SCID."""
     schema = get_schema(scid, encapsulate=True)
 
-    # Every table gets an int auto-increment primary key:
-    columns = [sqlalchemy.Column('id', sqlalchemy.types.Integer,
-               primary_key=True)]
+    # Get any table creation kwargs specific to this engine.
+    opts = TABLE_OPTIONS.get(meta.bind.name, {})
+
+    # Every table gets an integer auto-increment primary key column
+    # ``id`` and a char(32) column ``uuid`` that is indexed. ``uuid``
+    # could be stored as binary char(16) but we optimize for
+    # readability. Although event UUIDs are presumed to be unique, we
+    # don't make the index unique, because that would kill write
+    # performance.
+    columns = [
+        sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+        sqlalchemy.Column('uuid', sqlalchemy.CHAR(32), index=True)
+    ]
     columns.extend(schema_mapper(schema))
 
-    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns,
-                             mysql_engine='InnoDB')
+    table = sqlalchemy.Table(TABLE_NAME_FORMAT % scid, meta, *columns, **opts)
     table.create()
     return table
 
@@ -113,17 +130,10 @@ def store_event(meta, event):
     except Exception:
         logging.exception('Unable to get or set suitable table')
     else:
-        event = flatten(event, f=_string_encoder)
+        event = flatten(event)
+        event['uuid'] = capsule_uuid(event).hex
         event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
         table.insert(values=event).execute()
-
-
-def _string_encoder(k, v):
-    """Mapper function for :func:`flatten` that encodes all string
-    values to UTF-8-encoded bytes."""
-    if hasattr(v, 'encode'):
-        return k, v.encode('utf-8')
-    return k, v
 
 
 def _property_getter(key, val):

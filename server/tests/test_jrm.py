@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 
 import unittest
 
+import sqlalchemy
 import eventlogging
 
 from .fixtures import *
@@ -31,7 +32,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # The columns we expect to see are..
         cols = set(eventlogging.flatten(self.event))    # all properties
         cols -= set(eventlogging.jrm.NO_DB_PROPERTIES)  # unless excluded
-        cols.add('id')                                  # plus 'id'.
+        cols |= {'id', 'uuid'}                          # plus 'id' & 'uuid'.
 
         self.assertSetEqual(set(t.columns.keys()), cols)
 
@@ -45,3 +46,14 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         """``flatten`` correctly collapses deeply nested maps."""
         flat = eventlogging.flatten(self.event)
         self.assertEqual(flat['event_nested_deeplyNested_pi'], 3.14159)
+
+    def test_encoding(self):
+        """Timestamps and unicode strings are correctly encoded."""
+        eventlogging.store_event(self.meta, self.event)
+        meta = sqlalchemy.MetaData(bind=self.meta.bind)
+        meta.reflect()
+        result = meta.tables['TestSchema_123'].select().execute()
+        row = result.fetchone()
+        self.assertEqual(row['event_value'], '☆ 彡')
+        self.assertEqual(row['uuid'], 'babb66f34a0a5de3be0c6513088be33e')
+        self.assertEqual(row['timestamp'][0:], b'20130121101034')
