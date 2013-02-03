@@ -66,6 +66,19 @@ _schemas = {
             'value': {
                 'type': 'string',
                 'required': True
+            },
+            'nested': {
+                'type': 'object',
+                'properties': {
+                    'deeplyNested': {
+                        'type': 'object',
+                        'properties': {
+                            'pi': {
+                                'type': 'number',
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -74,7 +87,12 @@ _schemas = {
 
 _event = {
     'event': {
-        'value': 'Test event',
+        'value': '☆ 彡',
+        'nested': {
+            'deeplyNested': {
+                'pi': 3.14159
+            }
+        }
     },
     'seqId': 12345,
     'clientIp': '127.0.0.1',

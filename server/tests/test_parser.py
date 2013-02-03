@@ -12,9 +12,8 @@ import eventlogging
 
 
 # Control data for parser test cases.
-parser_cases = (
-    {
-        'description': 'server-side events',
+parser_cases = {
+    'server_side_events': {
         'format': '%n EventLogging %j',
         'raw': ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
                 'ma":"FakeSchema","isValid":true,"wiki":"enwiki","event":{"ac'
@@ -32,8 +31,7 @@ parser_cases = (
             },
         },
     },
-    {
-        'description': 'client-side events',
+    'client_side_events': {
         'format': '%q %l %n %t %h',
         'raw': ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
                 '%22%2C%22revision%22%3A13%2C%22isValid%22%3Atrue%2C%22event'
@@ -56,25 +54,21 @@ parser_cases = (
                 'articleId': 1
             },
         },
-    },
-)
+    }
+}
 
 
 class LogParserTestCase(unittest.TestCase):
     """Test case for LogParser."""
-    def runTest(self):
-        parser = eventlogging.LogParser(self.format)
-        self.assertEqual(parser.parse(self.raw), self.parsed)
-
-    def shortDescription(self):
-        return 'LogParser: %s (%s)' % (self.description, self.format)
+    pass
 
 
-def load_tests(loader, tests, pattern):
-    """Called by unit test."""
-    suite = unittest.TestSuite()
-    for case in parser_cases:
-        testcase = LogParserTestCase()
-        testcase.__dict__.update(case)
-        suite.addTest(testcase)
-    return suite
+def make_runner(name, format, raw, parsed):
+    def runner(self):
+        parser = eventlogging.LogParser(format)
+        self.assertEqual(parser.parse(raw), parsed)
+    runner.__doc__ = 'Parser test: %s (%s)' % (name, format)
+    return runner
+
+for name, case in parser_cases.items():
+    setattr(LogParserTestCase, 'test_%s' % name, make_runner(name, **case))

@@ -40,3 +40,8 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         t = eventlogging.create_table(self.meta, TEST_SCHEMA_SCID)
         cols = {column.name for index in t.indexes for column in index.columns}
         self.assertIn('timestamp', cols)
+
+    def test_flatten(self):
+        """``flatten`` correctly collapses deeply nested maps."""
+        flat = eventlogging.flatten(self.event)
+        self.assertEqual(flat['event_nested_deeplyNested_pi'], 3.14159)
