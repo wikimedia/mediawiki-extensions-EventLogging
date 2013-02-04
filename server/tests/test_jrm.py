@@ -63,7 +63,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
     def test_reflection(self):
         """Tables which exist in the database but not in the MetaData cache are
         correctly reflected."""
-        t = eventlogging.create_table(self.meta, TEST_SCHEMA_SCID)
+        eventlogging.store_event(self.meta, self.event)
 
         # Tell Python to forget everything it knows about this database
         # by purging ``MetaData``. The actual data in the database is

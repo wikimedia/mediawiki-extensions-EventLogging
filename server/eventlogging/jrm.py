@@ -10,7 +10,6 @@
 from __future__ import division, unicode_literals
 
 import datetime
-import logging
 
 import sqlalchemy
 
@@ -92,6 +91,37 @@ def generate_column(name, descriptor):
 
 def get_or_create_table(meta, scid):
     """Loads or creates a table for a SCID."""
+
+    #  +---------------------------------+
+    #  | Is description of table present |
+    #  | in Python's MetaData object?    |
+    #  +----+----------------------+-----+
+    #       |                      |
+    #       no                     yes
+    #       |                      |      +---------------------+
+    #       |                      +----->| Assume table exists |
+    #       v                             | in DB               |
+    #  +--------------------------+       +-----------+---------+
+    #  | Describe table structure |                   |
+    #  | using schema.            |                   |
+    #  +------------+-------------+                   |
+    #               |                                 |
+    #               v                                 |
+    #  +---------------------------+                  |
+    #  | Does a table so described |                  |
+    #  | exist in the database?    |                  |
+    #  +----+-----------------+----+                  |
+    #       |                 |                       |
+    #       no                yes                     |
+    #       |                 |                       |
+    #       v                 |                       |
+    #   +--------------+      |                       |
+    #   | CREATE TABLE |      |                       |
+    #   +---+----------+      |                       v
+    #       |                 |         +-------------+------------+
+    #       +-----------------+-------->| Return table description |
+    #                                   +--------------------------+
+
     try:
         return meta.tables[TABLE_NAME_FORMAT % scid]
     except KeyError:
