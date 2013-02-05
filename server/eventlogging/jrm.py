@@ -42,7 +42,7 @@ ENGINE_TABLE_OPTIONS = {
 class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""
 
-    #: Timestamps are stored as VARBINARY(14) columns.
+    #: Timestamps are stored as VARCHAR(14) columns.
     impl = sqlalchemy.Unicode(14)
 
     def process_bind_param(self, value, dialect=None):
@@ -50,8 +50,11 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         miliseconds since UNIX epoch) to MediaWiki timestamp format."""
         if value > 1e12:
             value /= 1000
-        value = datetime.datetime.fromtimestamp(value)
-        return value.strftime(MEDIAWIKI_TIMESTAMP)
+        value = datetime.datetime.fromtimestamp(value).strftime(
+            MEDIAWIKI_TIMESTAMP)
+        if hasattr(value, 'decode'):
+            value = value.decode('utf-8')
+        return value
 
     def process_result_value(self, value, dialect=None):
         """Convert a MediaWiki timestamp to a :class:`datetime.datetime`
