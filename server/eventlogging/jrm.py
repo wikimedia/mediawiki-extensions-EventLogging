@@ -17,8 +17,7 @@ from .schema import get_schema, capsule_uuid
 from .compat import items
 
 
-__all__ = ('store_event', 'flatten', 'schema_mapper', 'create_table',
-           'get_or_create_table')
+__all__ = ('store_event',)
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
 #: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
@@ -29,7 +28,7 @@ MEDIAWIKI_TIMESTAMP = '%Y%m%d%H%M%S'
 TABLE_NAME_FORMAT = '%s_%s'
 
 #: An iterable of properties that should not be stored in the database.
-NO_DB_PROPERTIES = ('schema', 'revision', 'recvFrom', 'seqId')
+NO_DB_PROPERTIES = ('recvFrom', 'revision', 'schema', 'seqId')
 
 #: A dictionary mapping database engine names to table defaults.
 ENGINE_TABLE_OPTIONS = {
@@ -47,17 +46,16 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     impl = sqlalchemy.Unicode(14)
 
     def process_bind_param(self, value, dialect=None):
-        """Bind a timestamp.
-        :param value: May be either number of seconds or miliseconds
-        since UNIX epoch, or a datetime object.
-        """
-        if not isinstance(value, datetime.datetime):
-            if value > 1e12:
-                value /= 1000
-            value = datetime.datetime.fromtimestamp(value)
+        """Convert an integer timestamp (specifying number of seconds or
+        miliseconds since UNIX epoch) to MediaWiki timestamp format."""
+        if value > 1e12:
+            value /= 1000
+        value = datetime.datetime.fromtimestamp(value)
         return value.strftime(MEDIAWIKI_TIMESTAMP)
 
     def process_result_value(self, value, dialect=None):
+        """Convert a MediaWiki timestamp to a :class:`datetime.datetime`
+        object."""
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
@@ -89,9 +87,9 @@ def generate_column(name, descriptor):
     return sqlalchemy.Column(sql_type, **column_options)
 
 
-def get_or_create_table(meta, scid):
-    """Loads or creates a table for a SCID."""
-
+def get_table(meta, scid):
+    """Acquire a :class:`sqlalchemy.schema.Table` object for a JSON
+    Schema specified by `scid`."""
     #  +---------------------------------+
     #  | Is description of table present |
     #  | in Python's MetaData object?    |
@@ -121,25 +119,23 @@ def get_or_create_table(meta, scid):
     #       |                 |         +-------------+------------+
     #       +-----------------+-------->| Return table description |
     #                                   +--------------------------+
-
     try:
         return meta.tables[TABLE_NAME_FORMAT % scid]
     except KeyError:
-        return create_table(meta, scid)
+        return declare_table(meta, scid)
 
 
-def create_table(meta, scid):
-    """Creates a table for a SCID."""
+def declare_table(meta, scid):
+    """Map a JSON schema to a SQL table. If the table does not exist in
+    the database, issue ``CREATE TABLE`` statement."""
     schema = get_schema(scid, encapsulate=True)
 
-    # Every table gets an integer auto-increment primary key column
-    # ``id`` and a char(32) column ``uuid`` that is indexed. ``uuid``
-    # could be stored as binary char(16) but we optimize for
-    # readability. Although event UUIDs are presumed to be unique, we
-    # don't make the index unique, because that would kill write
-    # performance.
+    # Every table gets an integer auto-increment primary key column `id`
+    # and an indexed CHAR(32) column, `uuid`. (UUIDs could be stored as
+    # binary in a CHAR(16) column, but at the cost of readability.)
     columns = [
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
+        # To keep INSERTs fast, the index on `uuid` is not unique.
         sqlalchemy.Column('uuid', sqlalchemy.CHAR(32), index=True)
     ]
     columns.extend(schema_mapper(schema))
@@ -156,34 +152,32 @@ def create_table(meta, scid):
 def store_event(meta, event):
     """Store an event the database."""
     scid = (event['schema'], event['revision'])
-    table = get_or_create_table(meta, scid)
+    table = get_table(meta, scid)
     event = flatten(event)
     event['uuid'] = capsule_uuid(event).hex
     event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
     return table.insert(values=event).execute()
 
 
-def _property_getter(key, val):
+def _property_getter(item):
     """Mapper function for :func:`flatten` that extracts properties
     and their types from schema."""
+    (key, val) = item
     if isinstance(val, dict):
         if 'properties' in val:
             return key, val['properties']
         if 'type' in val:
             return key, generate_column(key, val)
-    return key, val
+    return (key, val)
 
 
 def flatten(d, sep='_', f=None):
-    """Collapse a nested dictionary.
-
-    :param sep: Key path fragment separator.
-    :param f: Optional function to apply to each item.
-    """
+    """Collapse a nested dictionary. `f` specifies an optional mapping
+    function to apply to each (key, value) pair."""
     flat = []
     for k, v in items(d):
         if f is not None:
-            k, v = f(k, v)
+            (k, v) = f((k, v))
         if isinstance(v, dict):
             nested = items(flatten(v, sep, f))
             flat.extend((k + sep + nk, nv) for nk, nv in nested)

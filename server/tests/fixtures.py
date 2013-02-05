@@ -17,7 +17,7 @@ import sqlalchemy
 TEST_SCHEMA_SCID = ('TestSchema', 123)
 
 _schemas = {
-    eventlogging.CAPSULE_SCID: {
+    eventlogging.schema.CAPSULE_SCID: {
         'properties': {
             'clientIp': {
                 'type': 'string'

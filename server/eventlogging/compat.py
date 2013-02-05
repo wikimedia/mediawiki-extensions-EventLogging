@@ -38,7 +38,8 @@ else:
 
 @functools.wraps(uuid.uuid5)
 def uuid5(namespace, name):
-    # Python 2 expects ``name`` to be bytes; Python 3, unicode. This
+    """Generate UUID5 for `name` in `namespace`."""
+    # Python 2 expects `name` to be bytes; Python 3, unicode. This
     # variant expects unicode strings in both Python 2 and Python 3.
     hash = hashlib.sha1(namespace.bytes + name.encode('utf-8')).digest()
     return uuid.UUID(bytes=hash[:16], version=5)

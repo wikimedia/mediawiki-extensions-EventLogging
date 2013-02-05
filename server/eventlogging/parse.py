@@ -41,7 +41,7 @@ import datetime
 from .compat import json, unquote_plus
 
 
-__all__ = ('LogParser', 'hash_value', 'epoch_to_datetime')
+__all__ = ('LogParser',)
 
 #: Salt value for hashing IPs. Because this value is generated at
 #: runtime, IPs cannot be compared across restarts. This limitation is
@@ -51,7 +51,7 @@ __all__ = ('LogParser', 'hash_value', 'epoch_to_datetime')
 #: out of the logs.
 salt = os.urandom(16)
 
-#: Format string (as would be passed to ``strftime``) for timestamps in
+#: Format string (as would be passed to `strftime`) for timestamps in
 #: NCSA Common Log Format.
 NCSA_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
@@ -129,10 +129,7 @@ class LogParser(object):
         return matcher
 
     def parse(self, line):
-        """Parse a log line into a map of field names to field values.
-
-        :param line: Log line to parse.
-        """
+        """Parse a log line into a map of field names / values."""
         match = self.re.match(line)
         if match is None:
             raise ValueError(self.re, line)

@@ -45,7 +45,7 @@ EVENTLOGGING_URL_FORMAT = (
 def capsule_uuid(capsule):
     """Generate a UUID for a capsule object.
 
-    Gets a unique URI for the capsule using ``EVENTLOGGING_URL_FORMAT``
+    Gets a unique URI for the capsule using `EVENTLOGGING_URL_FORMAT`
     and uses it to generate a UUID5 in the URL namespace.
 
     ..seealso:: `RFC 4122 <http://www.ietf.org/rfc/rfc4122.txt>`_.
