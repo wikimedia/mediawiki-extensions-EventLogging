@@ -168,9 +168,9 @@ def _property_getter(item):
     (key, val) = item
     if isinstance(val, dict):
         if 'properties' in val:
-            return key, val['properties']
-        if 'type' in val:
-            return key, generate_column(key, val)
+            val = val['properties']
+        elif 'type' in val:
+            val = generate_column(key, val)
     return (key, val)
 
 

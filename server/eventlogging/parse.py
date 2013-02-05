@@ -65,16 +65,6 @@ def ncsa_to_epoch(ncsa_ts):
     return calendar.timegm(time.strptime(ncsa_ts, NCSA_FORMAT))
 
 
-def epoch_to_datetime(ts):
-    """Convert a UNIX timestamp (specified as an integer number of
-    seconds or milliseconds since epoch) to its datetime
-    respresentation."""
-    # Detect values specified in milliseconds
-    if ts > 1e12:
-        ts /= 1000.0
-    return datetime.datetime.fromtimestamp(ts)
-
-
 def hash_value(val):
     """Produces a salted SHA1 hash of any string value.
     :param val: String to hash.
@@ -139,4 +129,4 @@ class LogParser(object):
         return event
 
     def __repr__(self):
-        return '<LogParser \'%s\'>' % self.format
+        return '<LogParser(\'%s\')>' % self.format
