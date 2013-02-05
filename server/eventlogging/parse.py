@@ -36,7 +36,6 @@ import hashlib
 import os
 import re
 import time
-import datetime
 
 from .compat import json, unquote_plus
 
@@ -69,9 +68,8 @@ def hash_value(val):
     """Produces a salted SHA1 hash of any string value.
     :param val: String to hash.
     """
-    hval = hashlib.sha1(val.encode('utf8'))
-    hval.update(salt)
-    return hval.hexdigest()
+    hash = hashlib.sha1(val.encode('utf-8') + salt)
+    return hash.hexdigest()
 
 
 def decode_qson(qson):

@@ -12,4 +12,5 @@ __pycache__
 server/build
 server/dist
 server/env
+server/.coverage
 tests/suite.php

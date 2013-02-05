@@ -11,6 +11,7 @@
 
 """
 # flake8: noqa
+# pylint: disable=E0611, F0401, E1101
 
 import functools
 import hashlib

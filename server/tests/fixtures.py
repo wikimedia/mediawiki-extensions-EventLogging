@@ -9,6 +9,7 @@
 from __future__ import unicode_literals
 
 import copy
+import io
 
 import eventlogging
 import sqlalchemy
@@ -130,18 +131,23 @@ class SchemaTestMixin(object):
     schema look-ups."""
 
     def setUp(self):
+        """Stub `http_get_schema` and pre-fill schema cache."""
+        super(SchemaTestMixin, self).setUp()
         self.event = copy.deepcopy(_event)
         eventlogging.schema.schema_cache = copy.deepcopy(_schemas)
         eventlogging.schema.http_get_schema = mock_http_get_schema
 
     def tearDown(self):
+        """Clear schema cache and restore stubbed `http_get_schema`."""
         eventlogging.schema.schema_cache.clear()
         eventlogging.schema.http_get_schema = orig_http_get_schema
 
     def assertIsValid(self, event, msg=None):
+        """Assert that capsule 'event' object validates."""
         return self.assertIsNone(eventlogging.validate(event), msg)
 
     def assertIsInvalid(self, event, msg=None):
+        """Assert that capsule 'event' object fails validation."""
         with self.assertRaises(eventlogging.ValidationError, msg):
             eventlogging.validate(event)
 
@@ -151,7 +157,29 @@ class DatabaseTestMixin(SchemaTestMixin):
     in-memory sqlite database."""
 
     def setUp(self):
+        """Configure :class:`sqlalchemy.engine.Engine` and
+        :class:`sqlalchemy.schema.MetaData` objects."""
         super(DatabaseTestMixin, self).setUp()
         # Add an ``echo=True`` kwarg to ``create_engine`` below to debug SQL:
         self.engine = sqlalchemy.create_engine('sqlite:///:memory:')
         self.meta = sqlalchemy.MetaData(bind=self.engine)
+
+
+class HttpSchemaTestMixin(object):
+    """A :class:`unittest.TestCase` mix-in for stubbing HTTP responses."""
+
+    http_resp = b''
+
+    def setUp(self):
+        """Replace `urlopen` with stub."""
+        super(HttpSchemaTestMixin, self).setUp()
+        self.orig_urlopen = eventlogging.schema.urlopen
+        eventlogging.schema.urlopen = self.urlopen_stub
+
+    def tearDown(self):
+        """Restore original `urlopen`."""
+        eventlogging.schema.urlopen = self.orig_urlopen
+
+    def urlopen_stub(self, url):
+        """Test stub for `urlopen`."""
+        return io.BytesIO(self.http_resp)

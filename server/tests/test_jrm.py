@@ -14,10 +14,11 @@ import unittest
 import eventlogging
 import sqlalchemy
 
-from .fixtures import *
+from .fixtures import DatabaseTestMixin, TEST_SCHEMA_SCID
 
 
 class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
+    """Test case for :module:`eventlogging.jrm`."""
 
     def test_lazy_table_creation(self):
         """If an attempt is made to store an event for which no table

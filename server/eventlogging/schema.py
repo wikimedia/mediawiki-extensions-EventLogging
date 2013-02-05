@@ -11,7 +11,6 @@
 """
 from __future__ import unicode_literals
 
-import logging
 import uuid
 
 import jsonschema
@@ -54,10 +53,7 @@ def capsule_uuid(capsule):
       `recvFrom`, `seqId`, and `timestamp`).
 
     """
-    if not isinstance(capsule['timestamp'], int):
-        raise TypeError('capsule_uuid() requires integer timestamps.')
-    url = EVENTLOGGING_URL_FORMAT % capsule
-    return uuid5(uuid.NAMESPACE_URL, url)
+    return uuid5(uuid.NAMESPACE_URL, EVENTLOGGING_URL_FORMAT % capsule)
 
 
 def get_schema(scid, encapsulate=False):
@@ -65,8 +61,7 @@ def get_schema(scid, encapsulate=False):
     schema = schema_cache.get(scid)
     if schema is None:
         schema = http_get_schema(scid)
-        if schema is not None:
-            schema_cache[scid] = schema
+        schema_cache[scid] = schema
     # We depart from the JSON Schema specifications by disallowing
     # additional properties by default.
     # See `<https://bugzilla.wikimedia.org/show_bug.cgi?id=44454>`_.
@@ -82,13 +77,9 @@ def http_get_schema(scid):
     """Retrieve schema via HTTP."""
     req = urlopen(url_format % scid)
     content = req.read().decode('utf-8')
-    try:
-        schema = json.loads(content)
-        if not isinstance(schema, dict):
-            raise TypeError
-    except (TypeError, ValueError):
-        logging.exception('Failed to decode HTTP response: %s', content)
-        return None
+    schema = json.loads(content)
+    if not isinstance(schema, dict):
+        raise ValueError('HTTP response did not decode into dict: %s', schema)
     return schema
 
 
