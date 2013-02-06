@@ -29,7 +29,7 @@ import collections
 import logging
 import logging.handlers
 
-from eventlogging import zmq_subscribe, tail_follow
+from eventlogging import zmq_subscribe
 
 
 #
@@ -37,7 +37,7 @@ from eventlogging import zmq_subscribe, tail_follow
 #
 
 parser = argparse.ArgumentParser(description='Monitor udp2log sequence IDs.')
-parser.add_argument('stream', help='log file or stream URI')
+parser.add_argument('input', help='URI of input stream')
 parser.add_argument('destfile', help='write log to this file')
 parser.add_argument('--sid', help='set socket identity')
 parser.add_argument('--sep', help='field seperator (default: whitespace)')
@@ -70,14 +70,7 @@ log.debug('Started. Logging to %s.' % args.destfile)
 lost = collections.defaultdict(int)
 seqs = {}
 
-
-if args.stream.startswith('tcp://'):
-    stream = zmq_subscribe(args.stream, sid=args.sid)
-else:
-    stream = tail_follow(args.stream)
-
-
-for line in stream:
+for line in zmq_subscribe(args.stream, sid=args.sid):
     try:
         fields = line.split(args.sep)
         host = fields[args.hpos]

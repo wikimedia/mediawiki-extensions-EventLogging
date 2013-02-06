@@ -24,7 +24,6 @@ from __future__ import unicode_literals
 import argparse
 import logging
 import logging.handlers
-import socket
 
 import zmq
 
