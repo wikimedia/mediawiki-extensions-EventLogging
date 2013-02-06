@@ -9,9 +9,6 @@
 """
 from __future__ import unicode_literals
 
-import io
-import time
-
 import zmq
 
 
@@ -27,15 +24,3 @@ def zmq_subscribe(endpoint, topic='', sid=None, json=False):
 
     while 1:
         yield recv()
-
-
-def tail_follow(filename):
-    """Generator; equivalent to tail -f."""
-    with io.open(filename, encoding='utf8', errors='replace') as f:
-        f.seek(0, 2)
-        while 1:
-            line = f.readline()
-            if not line:
-                time.sleep(0.1)
-                continue
-            yield line
