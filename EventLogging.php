@@ -83,6 +83,35 @@ $wgEventLoggingDBname = false;
 // Helpers
 
 /**
+ * Gets the SHA1 of HEAD for the Git repository at a given path.
+ * If path does not contain a Git repository, moves up the directory
+ * tree searching for one, stopping at $IP. Returns false if no Git
+ * repository found of if unable to determine SHA1 of HEAD.
+ *
+ * @param string $path: Starts search at this path. Must be a sub-path
+ *                      of $IP (or equal to $IP).
+ * @return string|bool: SHA1 of HEAD if repository discovery is
+ *                      successful. False otherwise.
+ */
+function efPathGitHeadSHA1( $path ) {
+	global $IP;
+
+	if ( is_file( $path ) ) {
+		$path = pathinfo( $path, PATHINFO_DIRNAME );
+	}
+
+	while ( strpos( $path, $IP ) === 0 ) {
+		if ( file_exists( $path . '/.git' ) ) {
+			$gitInfo = new GitInfo( $path );
+			return $gitInfo->getHeadSHA1();
+		}
+		$path = dirname( $path );
+	}
+	return false;
+}
+
+
+/**
  * Writes an event to a file descriptor or socket.
  * Takes an event ID and an event, encodes it as query string,
  * and writes it to the UDP / TCP address or file specified by
@@ -103,11 +132,24 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 		return false;
 	}
 
+	wfProfileIn( __FUNCTION__ );
 	$remoteSchema = new RemoteSchema( $schemaName, $revId );
 	$schema = $remoteSchema->get();
 	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
 
+	// Attempt to get the SHA1 of HEAD of caller.
+	if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
+		// PHP 5.4.0 added a second parameter to debug_backtrace, 'limit',
+		// which specifies the number of stack frames to return.
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 );
+	} else {
+		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+	}
+	$caller = array_shift( $backtrace );
+	$sha1 = substr( efPathGitHeadSHA1( $caller[ 'file' ] ), 0, 6 );
+
 	$encapsulated = array(
+		'HEAD'      => $sha1,
 		'event'     => $event,
 		'schema'    => $schemaName,
 		'revision'  => $revId,
@@ -123,6 +165,7 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulated ) );
 
 	wfErrorLog( $json . "\n", $wgEventLoggingFile );
+	wfProfileOut( __FUNCTION__ );
 	return true;
 }
 
