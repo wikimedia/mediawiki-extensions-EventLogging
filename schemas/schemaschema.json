@@ -32,6 +32,12 @@
       "type":"string",
       "description":"The datatype of the property (e.g. number, boolean, etc), used for determining the semantics of the variable described"
     },
+    "format":
+    {
+      "description":"Defines the type of data, content type, or microformat to be expected in the instance property values",
+      "type":"string",
+      "title":"Format (format)"
+    },
     "title":
     {
       "description":"A user-friendly title for the property",
