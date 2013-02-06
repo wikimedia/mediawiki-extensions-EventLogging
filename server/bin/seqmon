@@ -70,7 +70,7 @@ log.debug('Started. Logging to %s.' % args.destfile)
 lost = collections.defaultdict(int)
 seqs = {}
 
-for line in zmq_subscribe(args.stream, sid=args.sid):
+for line in zmq_subscribe(args.input, sid=args.sid):
     try:
         fields = line.split(args.sep)
         host = fields[args.hpos]

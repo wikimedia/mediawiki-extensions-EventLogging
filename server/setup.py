@@ -8,7 +8,10 @@ by `EventLogging`_, a MediaWiki extension for logging structured data.
 .. _EventLogging: http://www.mediawiki.org/wiki/Extension:EventLogging
 
 """
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 # Workaround for <http://bugs.python.org/issue15881#msg170215>:
 import multiprocessing
