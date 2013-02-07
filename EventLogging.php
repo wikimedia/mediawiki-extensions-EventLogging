@@ -193,6 +193,7 @@ function efBeautifyJson( $json ) {
  * @return bool: True if valid; false if invalid.
  */
 function efSchemaValidate( $object, $schema = NULL ) {
+	wfProfileIn( __FUNCTION__ );
 	if ( $schema === NULL ) {
 		// Default to JSON Schema
 		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
@@ -210,11 +211,14 @@ function efSchemaValidate( $object, $schema = NULL ) {
 	try {
 		$root = new JsonTreeRef( $object );
 		$root->attachSchema( $schema );
-		return $root->validate();
+		$root->validate();
+		wfProfileOut( __FUNCTION__ );
+		return true;
 	} catch ( JsonSchemaException $e ) {
 		wfDebugLog( 'EventLogging', 'Object failed validation: '
 			. FormatJson::encode( $object )
 			. ' (exception: ' . $e->getMessage() . ')' );
+		wfProfileOut( __FUNCTION__ );
 		return false;
 	}
 }
