@@ -78,6 +78,10 @@ $wgEventLoggingSchemaIndexUri = false;
  */
 $wgEventLoggingDBname = false;
 
+/**
+ * @var bool: Whether to log SHA1 of Git HEAD of caller.
+ */
+$wgEventLoggingLogSHA1 = false;
 
 
 // Helpers
@@ -137,19 +141,7 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	$schema = $remoteSchema->get();
 	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
 
-	// Attempt to get the SHA1 of HEAD of caller.
-	if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
-		// PHP 5.4.0 added a second parameter to debug_backtrace, 'limit',
-		// which specifies the number of stack frames to return.
-		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 );
-	} else {
-		$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
-	}
-	$caller = array_shift( $backtrace );
-	$sha1 = substr( efPathGitHeadSHA1( $caller[ 'file' ] ), 0, 6 );
-
 	$encapsulated = array(
-		'HEAD'      => $sha1,
 		'event'     => $event,
 		'schema'    => $schemaName,
 		'revision'  => $revId,
@@ -158,6 +150,20 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 		'recvFrom'  => gethostname(),
 		'timestamp' => $_SERVER[ 'REQUEST_TIME' ],
 	);
+
+	if ( $wgEventLoggingLogSHA1 ) {
+		// Attempt to get the SHA1 of HEAD of caller.
+		if ( version_compare( PHP_VERSION, '5.4.0', '>=' ) ) {
+			// PHP 5.4.0 added a second parameter to debug_backtrace, 'limit',
+			// which specifies the number of stack frames to return.
+			$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 1 );
+		} else {
+			$backtrace = debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS );
+		}
+		$caller = array_shift( $backtrace );
+		$sha1 = substr( efPathGitHeadSHA1( $caller[ 'file' ] ), 0, 6 );
+		$encapsulated[ 'HEAD' ] = $sha1 ?: NULL;
+	}
 
 	// To make the resultant JSON easily extracted from a row of
 	// space-separated values, we replace literal spaces with unicode
