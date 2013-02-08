@@ -47,11 +47,20 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	function testSchemaValidate() {
 		$this->assertTrue( efSchemaValidate( self::$validObject, self::$validSchema ),
 			'efSchemaValidate() returns true when object validates successfully.' );
-		$this->assertFalse( efSchemaValidate( self::$invalidObject, self::$validSchema ),
-			'efSchemaValidate() returns false when object fails validation.' );
 		$this->assertTrue( efSchemaValidate( self::$validSchema ),
 			'efSchemaValidate() defaults to validating against the schema schema.' );
 	}
+
+
+	/**
+	 * Tests invalidation of objects that deviate from schema.
+	 * @covers efSchemaValidate
+	 */
+	function testSchemaInvalidate() {
+		$this->setExpectedException( 'JsonSchemaException' );
+		efSchemaValidate( self::$invalidObject, self::$validSchema );
+	}
+
 
 	/**
 	 * Tests beautification of JSON.

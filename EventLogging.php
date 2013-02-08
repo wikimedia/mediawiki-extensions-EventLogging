@@ -139,7 +139,12 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	wfProfileIn( __FUNCTION__ );
 	$remoteSchema = new RemoteSchema( $schemaName, $revId );
 	$schema = $remoteSchema->get();
-	$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
+
+	try {
+		$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
+	} catch ( JsonSchemaException $e ) {
+		$isValid = false;
+	}
 
 	$encapsulated = array(
 		'event'     => $event,
@@ -196,10 +201,9 @@ function efBeautifyJson( $json ) {
  * @throws JsonSchemaException: If the object fails to validate.
  * @param array $object: Object to be validated.
  * @param array $schema: Schema to validate against (default: JSON Schema).
- * @return bool: True if valid; false if invalid.
+ * @return bool: True.
  */
 function efSchemaValidate( $object, $schema = NULL ) {
-	wfProfileIn( __FUNCTION__ );
 	if ( $schema === NULL ) {
 		// Default to JSON Schema
 		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
@@ -214,19 +218,9 @@ function efSchemaValidate( $object, $schema = NULL ) {
 		$schema[ 'additionalProperties' ] = false;
 	}
 
-	try {
-		$root = new JsonTreeRef( $object );
-		$root->attachSchema( $schema );
-		$root->validate();
-		wfProfileOut( __FUNCTION__ );
-		return true;
-	} catch ( JsonSchemaException $e ) {
-		wfDebugLog( 'EventLogging', 'Object failed validation: '
-			. FormatJson::encode( $object )
-			. ' (exception: ' . $e->getMessage() . ')' );
-		wfProfileOut( __FUNCTION__ );
-		return false;
-	}
+	$root = new JsonTreeRef( $object );
+	$root->attachSchema( $schema );
+	return $root->validate();
 }
 
 
