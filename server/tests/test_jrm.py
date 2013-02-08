@@ -32,9 +32,9 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         t = eventlogging.jrm.declare_table(self.meta, TEST_SCHEMA_SCID)
 
         # The columns we expect to see are..
-        cols = set(eventlogging.jrm.flatten(self.event))    # all properties
-        cols -= set(eventlogging.jrm.NO_DB_PROPERTIES)  # unless excluded
-        cols |= {'id', 'uuid'}                          # plus 'id' & 'uuid'.
+        cols = set(eventlogging.jrm.flatten(self.event))  # all properties
+        cols -= set(eventlogging.jrm.NO_DB_PROPERTIES)    # unless excluded
+        cols |= {'id', 'uuid'}                            # plus 'id' & 'uuid'
 
         self.assertSetEqual(set(t.columns.keys()), cols)
 

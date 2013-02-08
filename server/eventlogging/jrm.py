@@ -198,4 +198,9 @@ def schema_mapper(schema):
     for name, col in items(flatten(properties, f=_property_getter)):
         col.name = name
         columns.append(col)
+
+    # Sort the mapped columns lexicographically by name, with 'nested'
+    # columns (identifiable by the presence of an underscore in the
+    # name) appearing last.
+    columns.sort(key=lambda col: ('_' in col.name, col.name))
     return columns

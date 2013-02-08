@@ -28,7 +28,7 @@ url_format = ('http://meta.wikimedia.org/w/index.php?action=raw'
 schema_cache = {}
 
 #: SCID of the metadata object which wraps each event.
-CAPSULE_SCID = ('EventCapsule', 5152617)
+CAPSULE_SCID = ('EventCapsule', 5222982)
 
 
 #: Formats event capsule objects into URLs using the combination of

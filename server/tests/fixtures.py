@@ -160,8 +160,7 @@ class DatabaseTestMixin(SchemaTestMixin):
         """Configure :class:`sqlalchemy.engine.Engine` and
         :class:`sqlalchemy.schema.MetaData` objects."""
         super(DatabaseTestMixin, self).setUp()
-        # Add an ``echo=True`` kwarg to ``create_engine`` below to debug SQL:
-        self.engine = sqlalchemy.create_engine('sqlite:///:memory:')
+        self.engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
         self.meta = sqlalchemy.MetaData(bind=self.engine)
 
 
