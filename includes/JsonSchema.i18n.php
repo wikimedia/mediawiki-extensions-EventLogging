@@ -204,6 +204,13 @@ $messages['pms'] = array(
 	'jsonschema-invalid-missingfield' => 'Camp obligatòri "$1" mancant',
 );
 
+/** tarandíne (tarandíne)
+ * @author Joetaras
+ */
+$messages['roa-tara'] = array(
+	'jsonschema-badidref' => 'Idref cattive: "$1"',
+);
+
 /** Russian (русский)
  * @author DCamer
  */
