@@ -62,32 +62,30 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
-#: Mapping of JSON schema types to SQL types
+#: Mapping of JSON schema types and formats to SQL types. The value dict
+#: is used as kwargs for the :class:`sqlalchema.schema.Column`
+#: constructor.
 sql_types = {
-    'boolean': sqlalchemy.Boolean,
-    'integer': sqlalchemy.Integer,
-    'number': sqlalchemy.Float,
-    'string': sqlalchemy.Unicode(255),
+    'boolean': {'type_': sqlalchemy.Boolean},
+    'integer': {'type_': sqlalchemy.Integer},
+    'number': {'type_': sqlalchemy.Float},
+    'string': {'type_': sqlalchemy.Unicode(255)},
+    'utc-millisec': {'type_': MediaWikiTimestamp, 'index': True},
 }
 
 
-def generate_column(name, descriptor):
-    """Creates a column from a JSON Schema property specifier."""
-    column_options = {}
-
-    if 'timestamp' in name:
-        # TODO(ori-l, 30-Jan-2013): Handle this in a less ad-hoc fashion,
-        # ideally using the `format` specifier in JSON Schema.
-        sql_type = MediaWikiTimestamp
-        column_options['index'] = True  # Index timestamps.
+def typecast(property, default='string'):
+    """Generates a SQL column definition from a JSON Schema property
+    specifier."""
+    for key in 'format', 'type':
+        specifier = property.get(key)
+        if specifier in sql_types:
+            opts = sql_types[specifier]
+            break
     else:
-        sql_type = sql_types.get(descriptor['type'], sql_types['string'])
-
-    # If the column is marked 'required', make it non-nullable.
-    if descriptor.get('required', False):
-        column_options['nullable'] = False
-
-    return sqlalchemy.Column(sql_type, **column_options)
+        opts = sql_types[default]
+    opts['nullable'] = not property.get('required', False)
+    return sqlalchemy.Column(**opts)
 
 
 def get_table(meta, scid):
@@ -170,7 +168,7 @@ def _property_getter(item):
         if 'properties' in val:
             val = val['properties']
         elif 'type' in val:
-            val = generate_column(key, val)
+            val = typecast(val)
     return (key, val)
 
 

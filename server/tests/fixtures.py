@@ -57,7 +57,8 @@ _schemas = {
             },
             'timestamp': {
                 'type': 'number',
-                'required': True
+                'required': True,
+                'format': 'utc-millisec'
             }
         },
         'additionalProperties': False
