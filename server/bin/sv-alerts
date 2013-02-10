@@ -24,10 +24,12 @@ from __future__ import print_function, unicode_literals
 import argparse
 import ast
 import datetime
-import email.mime
+import json
 import logging
 import subprocess
 import sys
+
+from email.mime.text import MIMEText
 
 
 parser = argparse.ArgumentParser(description='sv-alerts')
@@ -37,7 +39,7 @@ parser.add_argument('recipient', help="recipient's e-mail address")
 
 def send_email(sender, recipient, subject, text):
     """Send an e-mail by shelling out to 'sendmail'."""
-    message = email.mime.text.MIMEText(text)
+    message = MIMEText(text)
     message['From'] = sender
     message['To'] = recipient
     message['Subject'] = subject
@@ -79,12 +81,12 @@ def iter_events():
 
 def send_alerts(sender, recipient):
     """Listen to Supervisor events and emit e-mail alerts."""
-    for event in iter_events:
+    for event in iter_events():
         eventname = event['eventname'].replace('PROCESS_STATE_', '')
         processname = event.get('processname', 'supervisord')
         subject = '%s: %s' % (eventname, processname)
-        text = ('This is an automatic alert, generated at %s.' %
-                datetime.datetime.utcnow())
+        text = 'This is an automatic alert, generated at %s.\n\n%s' % (
+            datetime.datetime.utcnow(), json.dumps(event, indent=4))
         send_email(sender, recipient, subject, text)
 
 
