@@ -9,8 +9,8 @@
   usage: sv-alerts [-h] from to
 
   positional arguments:
-    from        sender address
-    to          recipient address
+    sender      sender's e-mail address
+    recipient   recipient's e-mail address
 
   optional arguments:
     -h, --help  show this help message and exit
@@ -22,74 +22,73 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
+import ast
+import datetime
+import email.mime
 import logging
 import subprocess
 import sys
 
-from email.mime.text import MIMEText
-
-from eventlogging import json
-
 
 parser = argparse.ArgumentParser(description='sv-alerts')
-parser.add_argument('from', help='sender address')
-parser.add_argument('to', help='recipient address')
-args = vars(parser.parse_args())
-
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-
-event_names = {
-    'PROCESS_STATE_BACKOFF',
-    'PROCESS_STATE_FATAL',
-    'PROCESS_STATE_RUNNING',
-    'PROCESS_STATE_STOPPING',
-    'SUPERVISOR_STATE_CHANGE_RUNNING',
-    'SUPERVISOR_STATE_CHANGE_STOPPING'
-}
+parser.add_argument('sender', help="sender's e-mail address")
+parser.add_argument('recipient', help="recipient's e-mail address")
 
 
-def send_email(subject, text):
-    message = MIMEText(text)
-    message['From'] = args['from']
-    message['To'] = args['to']
+def send_email(sender, recipient, subject, text):
+    """Send an e-mail by shelling out to 'sendmail'."""
+    message = email.mime.text.MIMEText(text)
+    message['From'] = sender
+    message['To'] = recipient
     message['Subject'] = subject
     p = subprocess.Popen(('/usr/sbin/sendmail', '-t'), stdin=subprocess.PIPE)
     p.communicate(message.as_string().encode('utf8'))
     logging.info('sent: %s', message.as_string())
 
 
-def parse_tokens(line):
-    map = dict(kv.split(':') for kv in line.split())
-    for k in (map.viewkeys() &
-              {'serial', 'poolserial', 'len', 'pid', 'expected', 'tries'}):
-        map[k] = int(map[k])
+def parse_tokens(raw):
+    """Parse a raw Supervisor event."""
+    map = {}
+    raw = raw.strip()
+    for kv in raw.split():
+        try:
+            k, v = kv.split(':')
+        except ValueError:
+            continue
+        try:
+            map[k] = ast.literal_eval(v)
+        except ValueError:
+            map[k] = v
     return map
 
 
 def iter_events():
+    """Reads and yields Supervisor events."""
     while 1:
         print('READY')
-        line = sys.stdin.readline().decode('utf8')
-        event = parse_tokens(line)
-        data = sys.stdin.read(event.pop('len'))
-        try:
-            event.update(parse_tokens(data))
-        except ValueError:
-            event['data'] = data
+        sys.stdout.flush()
+        event = parse_tokens(sys.stdin.readline())
+        length = event.get('len', 0)
+        if length:
+            raw = sys.stdin.read(length)
+            event.update(parse_tokens(raw))
+        print('RESULT 2', 'OK', sep='\n', end='')
+        sys.stdout.flush()
         yield event
-        print('RESULT 2')
-        print('OK')
 
 
-def filtered_events():
-    for event in iter_events():
-        if event.get('eventname') in event_names:
-            yield event
+def send_alerts(sender, recipient):
+    """Listen to Supervisor events and emit e-mail alerts."""
+    for event in iter_events:
+        eventname = event['eventname'].replace('PROCESS_STATE_', '')
+        processname = event.get('processname', 'supervisord')
+        subject = '%s: %s' % (eventname, processname)
+        text = ('This is an automatic alert, generated at %s.' %
+                datetime.datetime.utcnow())
+        send_email(sender, recipient, subject, text)
 
 
-for event in filtered_events():
-    eventname = event['eventname']
-    processname = event.get('processname', 'supervisord')
-    subject = '%s: %s' % (eventname, processname)
-    text = json.dumps(event, indent=2)
-    send_email(subject, text)
+if __name__ == '__main__':
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    args = parser.parse_args()
+    send_alerts(sender=args.sender, recipient=args.recipient)
