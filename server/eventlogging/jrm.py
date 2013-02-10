@@ -9,6 +9,7 @@
 """
 from __future__ import division, unicode_literals
 
+import collections
 import datetime
 
 import sqlalchemy
@@ -62,30 +63,44 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
-#: Mapping of JSON schema types and formats to SQL types. The value dict
-#: is used as kwargs for the :class:`sqlalchema.schema.Column`
-#: constructor.
-sql_types = {
-    'boolean': {'type_': sqlalchemy.Boolean},
-    'integer': {'type_': sqlalchemy.Integer},
-    'number': {'type_': sqlalchemy.Float},
-    'string': {'type_': sqlalchemy.Unicode(255)},
-    'utc-millisec': {'type_': MediaWikiTimestamp, 'index': True},
-}
+#: Default table column definition, to be overridden by mappers below.
+COLUMN_DEFAULTS = {'type_': sqlalchemy.Unicode(255)}
+
+#: Mapping of JSON Schema attributes to valid values. Each value maps to
+#: a dictionary of options. The options are compounded into a single
+#: dict, which is then used as kwargs for :class:`sqlalchemy.Column`.
+#:
+#: ..note::
+#:
+#:   The mapping is keyed in order of increasing specificity. Thus a
+#:   JSON property {"type": "number", "format": "utc-millisec"} will
+#:   map onto a :class:`MediaWikiTimestamp` type, and not
+#:   :class:`sqlalchemy.Float`.
+mappers = collections.OrderedDict((
+    ('type', {
+        'boolean': {'type_': sqlalchemy.Boolean},
+        'integer': {'type_': sqlalchemy.Integer},
+        'number': {'type_': sqlalchemy.Float},
+        'string': {'type_': sqlalchemy.Unicode(255)},
+    }),
+    ('format', {
+        'utc-millisec': {'type_': MediaWikiTimestamp, 'index': True},
+    }),
+    ('required', {
+        True: {'nullable': True},
+        False: {'nullable': False}
+    })
+))
 
 
-def typecast(property, default='string'):
+def typecast(property):
     """Generates a SQL column definition from a JSON Schema property
     specifier."""
-    for key in 'format', 'type':
-        specifier = property.get(key)
-        if specifier in sql_types:
-            opts = sql_types[specifier]
-            break
-    else:
-        opts = sql_types[default]
-    opts['nullable'] = not property.get('required', False)
-    return sqlalchemy.Column(**opts)
+    options = COLUMN_DEFAULTS.copy()
+    for attribute, mapping in items(mappers):
+        value = property.get(attribute)
+        options.update(mapping.get(value, ()))
+    return sqlalchemy.Column(**options)
 
 
 def get_table(meta, scid):
