@@ -238,4 +238,5 @@ $messages['uk'] = array(
 	'jsonschema-invalidkey' => 'Неприпустимий ключ "$1" у "$2"',
 	'jsonschema-invalidempty' => 'Порожня структура даних не припустима у цій схемі',
 	'jsonschema-invalidnode' => 'Неприпустимий вузок: очікувано "$1", отримано "$2". Шлях: "$3"',
+	'jsonschema-invalid-missingfield' => 'Відсутнє обов\'язкове поле "$1"',
 );

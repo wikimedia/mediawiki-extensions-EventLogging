@@ -275,10 +275,12 @@ $messages['sv'] = array(
 /** Ukrainian (українська)
  * @author AS
  * @author Base
+ * @author Ата
  */
 $messages['uk'] = array(
 	'eventlogging-desc' => 'Фреймворк, для додання подій до журналу з клієнтського коду',
 	'eventlogging-invalid-json' => 'Неправильний JSON',
+	'eventlogging-revision-id' => 'Версія $1',
 );
 
 /** Vietnamese (Tiếng Việt)
