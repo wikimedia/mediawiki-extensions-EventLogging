@@ -272,6 +272,7 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 
 
 $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
+	'scripts'       => 'modules/ext.eventLogging.jsonSchema.js',
 	'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',

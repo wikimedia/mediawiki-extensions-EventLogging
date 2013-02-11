@@ -103,7 +103,7 @@ class JsonSchemaHooks {
 		$revId = $out->getRevisionId();
 
 		if ( $title->inNamespace( NS_SCHEMA ) ) {
-			$out->addModuleStyles( 'ext.eventLogging.jsonSchema' );
+			$out->addModules( 'ext.eventLogging.jsonSchema' );
 
 			if ( $revId !== null ) {
 				$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
