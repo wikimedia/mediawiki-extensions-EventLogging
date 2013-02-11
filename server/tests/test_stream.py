@@ -15,6 +15,8 @@ import unittest
 import eventlogging
 import zmq
 
+from .fixtures import TimeoutTestMixin
+
 
 def publish(pipe, interface='tcp://127.0.0.1'):
     """Listen on a :class:`multiprocessing.Pipe` and publish incoming
@@ -33,7 +35,7 @@ def publish(pipe, interface='tcp://127.0.0.1'):
         pub.send_unicode(message)
 
 
-class ZmqTestCase(unittest.TestCase):
+class ZmqTestCase(TimeoutTestMixin, unittest.TestCase):
     """Test case for ZeroMQ-related functionality."""
 
     def setUp(self):
@@ -45,10 +47,12 @@ class ZmqTestCase(unittest.TestCase):
         publisher.start()
         self.addCleanup(publisher.terminate)
         self.endpoint = self.pipe.recv()
+        super(ZmqTestCase, self).setUp()
 
     def tearDown(self):
         """Send kill sentinel to worker subprocess."""
         self.pipe.send('')
+        super(ZmqTestCase, self).tearDown()
 
     def test_zmq_subscribe(self):
         """zmq_subscribe(...) receives string objects."""

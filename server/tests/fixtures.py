@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 
 import copy
 import io
+import signal
 
 import eventlogging
 import sqlalchemy
@@ -183,3 +184,25 @@ class HttpSchemaTestMixin(object):
     def urlopen_stub(self, url):
         """Test stub for `urlopen`."""
         return io.BytesIO(self.http_resp)
+
+
+class TimeoutTestMixin(object):
+    """A :class:`unittest.TestCase` mix-in that imposes a time-limit on
+    tests. Tests exceeding the limit are failed."""
+
+    #: Max time (in seconds) to allow tests to run before failing.
+    max_time = 2
+
+    def setUp(self):
+        """Set the alarm."""
+        super(TimeoutTestMixin, self).setUp()
+        signal.signal(signal.SIGALRM, self.timeOut)
+        signal.alarm(self.max_time)
+
+    def tearDown(self):
+        """Disable the alarm."""
+        signal.alarm(0)
+
+    def timeOut(self, signum, frame):
+        """SIGALRM handler. Fails test if triggered."""
+        self.fail('Timed out.')
