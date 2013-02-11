@@ -130,7 +130,7 @@ function efPathGitHeadSHA1( $path ) {
  * @return bool: Whether the event was logged.
  */
 function efLogServerSideEvent( $schemaName, $revId, $event ) {
-	global $wgEventLoggingFile, $wgDBname;
+	global $wgDBname, $wgEventLoggingFile, $wgEventLoggingLogSHA1;
 
 	if ( !$wgEventLoggingFile ) {
 		return false;
