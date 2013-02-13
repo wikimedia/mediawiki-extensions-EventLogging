@@ -22,7 +22,7 @@ __all__ = ('CAPSULE_SCID', 'capsule_uuid', 'get_schema', 'validate')
 
 #: Template for schema retrieval URLs. Interpolates SCIDs.
 url_format = ('http://meta.wikimedia.org/w/index.php?action=raw'
-              '&title=Schema:%s&oldid=%d')
+              '&title=Schema:%s&oldid=%s')
 
 #: Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}

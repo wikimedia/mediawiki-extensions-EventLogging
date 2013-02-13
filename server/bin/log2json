@@ -61,7 +61,7 @@ for raw_event in zmq_subscribe(args.input, sid=args.sid):
     try:
         event = parser.parse(raw_event)
         validate(event)
-    except (ValueError, KeyError, jsonschema.ValidationError):
+    except Exception:
         logging.exception('Unable to decode: %s', raw_event)
     else:
         pub.send_unicode(json.dumps(event) + '\n')
