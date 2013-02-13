@@ -51,28 +51,29 @@ class EventLoggingHooks {
 		// the ID of the user making this web request are different.
 		$isSelfMade = ( $userId && $userId === $creatorUserId );
 
-		$mobile = class_exists( 'MobileContext' ) &&
+		$displayMobile = class_exists( 'MobileContext' ) &&
 			MobileContext::singleton()->shouldDisplayMobileView();
 
-		$event = array (
-			'token'         => (string) $wgRequest->getCookie( 'mediaWiki.user.id', '' ),
-			'userId'        => (int) $userId,
-			'userName'      => (string) $user->getName(),
-			'isSelfMade'    => (bool) $isSelfMade,
-			'userBuckets'   => (string) $wgRequest->getCookie( 'userbuckets', '' ),
-			'displayMobile' => (bool) $mobile,
+		$event = array(
+			'token' => $wgRequest->getCookie( 'mediaWiki.user.id', '', '' ),
+			'userId' => $userId,
+			'userName' => $user->getName(),
+			'isSelfMade' => $isSelfMade,
+			'userBuckets' => $wgRequest->getCookie( 'userbuckets', '', '' ),
+			'displayMobile' => $displayMobile,
 		);
+
 		$returnTo = $wgRequest->getVal( 'returnto' );
 		if ( $returnTo !== null ) {
 			$event['returnTo'] = $returnTo;
 		}
+
 		$returnToQuery = $wgRequest->getVal( 'returntoquery' );
 		if ( $returnToQuery !== null ) {
 			$event['returnToQuery'] = $returnToQuery;
 		}
 
-		efLogServerSideEvent( 'ServerSideAccountCreation', 5150394, $event );
-
+		efLogServerSideEvent( 'ServerSideAccountCreation', 5233795, $event );
 		return true;
 	}
 
