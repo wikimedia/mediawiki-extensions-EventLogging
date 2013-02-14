@@ -24,11 +24,13 @@ class RemoteSchema {
 	 * @param Http $http: (optional) HTTP client.
 	 */
 	function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
+		global $wgEventLoggingDBname;
+
 		$this->title = $title;
 		$this->revision = $revision;
 		$this->cache = $cache ?: wfGetCache( CACHE_ANYTHING );
 		$this->http = $http ?: new Http();
-		$this->key = join( ':', array( 'schema', $title, $revision ) );
+		$this->key = "schema:{$wgEventLoggingDBname}:{$title}:{$revision}";
 	}
 
 

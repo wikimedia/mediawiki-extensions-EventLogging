@@ -38,11 +38,13 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * This is the most common scenario.
 	 */
 	function testSchemaInCache() {
+		global $wgEventLoggingDBname;
+
 		// If the revision was in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( 'schema:Test:99' ) )
+			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
 			->will( $this->returnValue( $this->statusSchema ) );
 
 		// ...no HTTP call will need to be made
@@ -81,18 +83,20 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * be retrieved via HTTP instead.
 	 */
 	function testSchemaNotInCacheDoUpdate() {
+		global $wgEventLoggingDBname;
+
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( 'schema:Test:99' ) )
+			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
 			->will( $this->returnValue( false ) );
 
 		// ...RemoteSchema will attempt to acquire an update lock:
 		$this->cache
 			->expects( $this->any() )
 			->method( 'add' )
-			->with( $this->stringContains( 'schema:Test:99' ) )
+			->with( $this->stringContains( "schema:{$wgEventLoggingDBname}:Test:99" ) )
 			->will( $this->returnValue( true ) );
 
 		// With the lock acquired, we'll see an HTTP request
@@ -114,11 +118,13 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * update lock cannot be acquired.
 	 */
 	function testSchemaNotInCacheNoUpdate() {
+		global $wgEventLoggingDBname;
+
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( 'schema:Test:99' ) )
+			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
 			->will( $this->returnValue( false ) );
 
 		// ...we'll see an attempt to acquire update lock,
@@ -126,7 +132,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->cache
 			->expects( $this->once() )
 			->method( 'add' )
-			->with( 'schema:Test:99:lock' )
+			->with( "schema:{$wgEventLoggingDBname}:Test:99:lock" )
 			->will( $this->returnValue( false ) );
 
 		// Without a lock, no HTTP requests will be made:
