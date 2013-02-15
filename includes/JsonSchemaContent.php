@@ -27,7 +27,7 @@ class JsonSchemaContent extends TextContent {
 	function validate() {
 		$schema = FormatJson::decode( $this->getNativeData(), true );
 		if ( !is_array( $schema ) ) {
-			throw new JsonSchemaException( wfMessage( 'jsondata-invalidjson' )->parse() );
+			throw new JsonSchemaException( wfMessage( 'eventlogging-invalid-json' )->parse() );
 		}
 		return efSchemaValidate( $schema );
 	}
