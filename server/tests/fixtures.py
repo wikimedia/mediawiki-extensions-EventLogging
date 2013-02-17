@@ -176,6 +176,7 @@ class HttpSchemaTestMixin(object):
         super(HttpSchemaTestMixin, self).setUp()
         self.orig_urlopen = eventlogging.schema.urlopen
         eventlogging.schema.urlopen = self.urlopen_stub
+        eventlogging.schema.schema_cache.clear()
 
     def tearDown(self):
         """Restore original `urlopen`."""

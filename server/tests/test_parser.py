@@ -6,9 +6,21 @@
   This module contains tests for :class:`eventlogging.LogParser`.
 
 """
+import calendar
+import datetime
 import unittest
 
 import eventlogging
+
+
+class NcsaTimestampTestCase(unittest.TestCase):
+    """Test case for converting to or from NCSA Common Log format."""
+
+    def test_ncsa_timestamp_handling(self):
+        epoch_ts = calendar.timegm(datetime.datetime.utcnow().utctimetuple())
+        ncsa_ts = eventlogging.ncsa_utcnow()
+        self.assertAlmostEqual(eventlogging.ncsa_to_epoch(ncsa_ts),
+                               epoch_ts, delta=100)
 
 
 class LogParserTestCase(unittest.TestCase):

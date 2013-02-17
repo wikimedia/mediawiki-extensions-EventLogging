@@ -1,15 +1,30 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-  el-devserver
-  ------------
+  eventlogging-devserver
+  ----------------------
+
+  Invoking this command-line tool will spawn a web server that can serve
+  as a test logging endpoint. Events logged against this server will be
+  validated verbosely and pretty-printed to the terminal.
+
+  To use this, you probably want to set '$wgEventLoggingBaseUri' on your
+  test wiki to point at the host and port of this web server. The value
+  '//localhost:8080/event.gif' should work.
+
+  usage: eventlogging-devserver [-h] [--host HOST] [--port PORT]
+
+  optional arguments:
+    -h, --help    show this help message and exit
+    --host HOST   server host (default: 'localhost')
+    --port PORT   server port (default: 8080)
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
 
 """
 # pylint: disable=E0611
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import argparse
 import itertools
@@ -26,8 +41,10 @@ from pygments.lexers import JSONLexer
 
 
 argparser = argparse.ArgumentParser()
-argparser.add_argument('--host', default='0.0.0.0')
-argparser.add_argument('--port', default=8080, type=int)
+argparser.add_argument('--host', default='localhost',
+                       help='server host (default: localhost)')
+argparser.add_argument('--port', default=8080, type=int,
+                       help='server port (default: 8080)')
 args = argparser.parse_args()
 
 lexer = JSONLexer()
@@ -39,6 +56,12 @@ seq_ids = itertools.count()
 parser = eventlogging.LogParser('%q %l %n %t %h')
 log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
            '%(TIME)s %(REMOTE_ADDR)s')
+
+
+def make_headers(map):
+    """Encode a dictionary of HTTP headers to a list of tuples
+    containing bytes."""
+    return [(k.encode('utf-8'), v.encode('utf-8')) for k, v in map.items()]
 
 
 class EventLoggingHandler(WSGIRequestHandler):
@@ -82,14 +105,16 @@ def handle_event(environ, start_response):
     requests."""
     log_line = log_fmt % environ
     event, errors = validate(log_line)
-    valid = not errors
 
-    headers = [
-        ('Server', server_software),
-        ('EventLogging-Valid', str(int(valid)))
-    ]
-    headers.extend(('EventLogging-Error', str(err)) for err in errors)
-    start_response('204 No Content', headers)
+    headers = {
+        'Server': server_software,
+        'Requested-Event-Valid': str(int(not errors))
+    }
+
+    for i, error in enumerate(errors):
+        headers['Validation-Error-%d' % i] = str(error)
+
+    start_response(b'204 No Content', make_headers(headers))
 
     print('── request ────────────')
     print(log_line)
@@ -101,7 +126,8 @@ def handle_event(environ, start_response):
     print('── validation ──────────')
     for error in errors:
         print(ansiformat('red', '✘ Error:'), error)
-    if valid:
+
+    if not errors:
         print(ansiformat('green', '✔ Valid.'))
 
     print('────────────────────────')
@@ -111,7 +137,8 @@ def handle_event(environ, start_response):
 httpd = make_server(args.host, args.port, handle_event,
                     handler_class=EventLoggingHandler)
 
-print('EventLogging DevServer running on %s:%s...' % (args.host, args.port))
+print(ansiformat('*blue*', '⚒ EventLogging DevServer'))
+print('Receiving events at http://%s:%s/event.gif...' % (args.host, args.port))
 
 try:
     httpd.serve_forever()

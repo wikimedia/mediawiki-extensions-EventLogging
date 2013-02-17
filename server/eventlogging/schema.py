@@ -86,10 +86,8 @@ def http_get_schema(scid):
     try:
         content = urlopen(url).read().decode('utf-8')
         schema = json.loads(content)
-    except EnvironmentError as ex:
-        raise jsonschema.SchemaError('Failed to retrieve schema: %s' % ex)
-    except ValueError:
-        raise jsonschema.SchemaError('Could not decode JSON Schema at ' + url)
+    except (ValueError, EnvironmentError) as ex:
+        raise jsonschema.SchemaError('Schema fetch failure: %s' % ex)
     jsonschema.Draft3Validator.check_schema(schema)
     return schema
 
@@ -104,6 +102,6 @@ def validate(capsule):
         # If `schema`, `revision` or `event` keys are missing, a
         # KeyError exception will be raised. We re-raise it as a
         # :exc:`ValidationError` to provide a simpler API for callers.
-        raise jsonschema.ValidationError('Missing key: %s' % ex.message)
+        raise jsonschema.ValidationError('Missing key: %s' % ex)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.validate(capsule, schema)

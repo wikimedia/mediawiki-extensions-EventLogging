@@ -42,6 +42,12 @@ class HttpSchemaTestCase(HttpSchemaTestMixin, unittest.TestCase):
         with self.assertRaises(eventlogging.SchemaError):
             eventlogging.schema.http_get_schema(TEST_SCHEMA_SCID)
 
+    def test_caching(self):
+        """Valid HTTP responses containing JSON Schema are cached."""
+        self.http_resp = b'{"properties":{"value":{"type":"number"}}}'
+        eventlogging.get_schema(TEST_SCHEMA_SCID)
+        self.assertIn(TEST_SCHEMA_SCID, eventlogging.schema.schema_cache)
+
 
 class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     """Tests for :module:`eventlogging.schema`."""
@@ -49,6 +55,11 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     def test_valid_event(self):
         """Valid events validate."""
         self.assertIsValid(self.event)
+
+    def test_incomplete_scid(self):
+        """Missing SCID in capsule object triggers validation failure."""
+        self.event.pop('schema')
+        self.assertIsInvalid(self.event)
 
     def test_missing_property(self):
         """Missing property in capsule object triggers validation failure."""

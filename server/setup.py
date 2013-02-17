@@ -55,8 +55,8 @@ setup(
     zip_safe=False,
     test_suite='tests',
     install_requires=(
-        "pygments>=1.5",
         "jsonschema>=0.7",
+        "pygments>=1.5",
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
     ),
