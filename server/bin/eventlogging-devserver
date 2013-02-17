@@ -34,10 +34,9 @@ from wsgiref.simple_server import make_server, WSGIRequestHandler
 import eventlogging
 import jsonschema
 
-from pygments import highlight
+from pygments import highlight, lexers
 from pygments.console import ansiformat
 from pygments.formatters import TerminalFormatter
-from pygments.lexers import JSONLexer
 
 
 argparser = argparse.ArgumentParser()
@@ -47,7 +46,7 @@ argparser.add_argument('--port', default=8080, type=int,
                        help='server port (default: 8080)')
 args = argparser.parse_args()
 
-lexer = JSONLexer()
+lexer = lexers.get_lexer_by_name('json')
 formatter = TerminalFormatter()
 
 server_software = 'EventLogging/%s' % eventlogging.__version__
@@ -58,10 +57,15 @@ log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
            '%(TIME)s %(REMOTE_ADDR)s')
 
 
-def make_headers(map):
+def prepare_response(status, headers):
     """Encode a dictionary of HTTP headers to a list of tuples
     containing bytes."""
-    return [(k.encode('utf-8'), v.encode('utf-8')) for k, v in map.items()]
+    if eventlogging.compat.PY3:
+        return status, list(headers.items())
+    status = status.encode('utf-8')
+    headers = [(k.encode('utf-8'), v.encode('utf-8')) for k, v in
+               headers.iteritems()]
+    return status, headers
 
 
 class EventLoggingHandler(WSGIRequestHandler):
@@ -113,8 +117,8 @@ def handle_event(environ, start_response):
 
     for i, error in enumerate(errors):
         headers['Validation-Error-%d' % i] = str(error)
-
-    start_response(b'204 No Content', make_headers(headers))
+    status, headers = prepare_response('204 No Content', headers)
+    start_response(status, headers)
 
     print('── request ────────────')
     print(log_line)
