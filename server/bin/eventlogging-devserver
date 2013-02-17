@@ -1,0 +1,119 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+"""
+  el-devserver
+  ------------
+
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
+
+"""
+# pylint: disable=E0611
+from __future__ import print_function
+
+import argparse
+import itertools
+
+from wsgiref.simple_server import make_server, WSGIRequestHandler
+
+import eventlogging
+import jsonschema
+
+from pygments import highlight
+from pygments.console import ansiformat
+from pygments.formatters import TerminalFormatter
+from pygments.lexers import JSONLexer
+
+
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--host', default='0.0.0.0')
+argparser.add_argument('--port', default=8080, type=int)
+args = argparser.parse_args()
+
+lexer = JSONLexer()
+formatter = TerminalFormatter()
+
+server_software = 'EventLogging/%s' % eventlogging.__version__
+
+seq_ids = itertools.count()
+parser = eventlogging.LogParser('%q %l %n %t %h')
+log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
+           '%(TIME)s %(REMOTE_ADDR)s')
+
+
+class EventLoggingHandler(WSGIRequestHandler):
+    """WSGI request handler; annotates environ dict with seq ID and
+    timestamp in NCSA Common Log Format."""
+
+    def get_environ(self):
+        environ = WSGIRequestHandler.get_environ(self)
+        environ.update(SEQ_ID=next(seq_ids), TIME=eventlogging.ncsa_utcnow())
+        return environ
+
+    def log_message(self, format, *args):  # pylint: disable=W0621
+        pass  # We'll handle logging in the WSGI app.
+
+
+def validate(log_line):
+    """Parse and validate a log line containing an encapsulated event.
+    Returns a tuple of (event, errors). If no object was decoded,
+    'event' will be None."""
+    try:
+        event = parser.parse(log_line)
+    except ValueError as err:
+        return None, [err]
+
+    try:
+        scid = event['schema'], event['revision']
+    except KeyError as err:
+        return event, [err]
+
+    try:
+        schema = eventlogging.get_schema(scid, encapsulate=True)
+    except jsonschema.SchemaError as err:
+        return event, [err]
+
+    validator = jsonschema.Draft3Validator(schema)
+    return event, list(validator.iter_errors(event))
+
+
+def handle_event(environ, start_response):
+    """WSGI app; parses, validates and pretty-prints incoming event
+    requests."""
+    log_line = log_fmt % environ
+    event, errors = validate(log_line)
+    valid = not errors
+
+    headers = [
+        ('Server', server_software),
+        ('EventLogging-Valid', str(int(valid)))
+    ]
+    headers.extend(('EventLogging-Error', str(err)) for err in errors)
+    start_response('204 No Content', headers)
+
+    print('── request ────────────')
+    print(log_line)
+
+    print('── event ──────────────')
+    json = eventlogging.json.dumps(event, indent=2, sort_keys=True)
+    print(highlight(json, lexer, formatter), end='')
+
+    print('── validation ──────────')
+    for error in errors:
+        print(ansiformat('red', '✘ Error:'), error)
+    if valid:
+        print(ansiformat('green', '✔ Valid.'))
+
+    print('────────────────────────')
+    return []
+
+
+httpd = make_server(args.host, args.port, handle_event,
+                    handler_class=EventLoggingHandler)
+
+print('EventLogging DevServer running on %s:%s...' % (args.host, args.port))
+
+try:
+    httpd.serve_forever()
+except KeyboardInterrupt:
+    pass
