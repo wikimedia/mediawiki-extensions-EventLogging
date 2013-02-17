@@ -39,7 +39,7 @@ class HttpSchemaTestCase(HttpSchemaTestMixin, unittest.TestCase):
     def test_invalid_resp(self):
         """Test handling of HTTP response not containing valid schema."""
         self.http_resp = b'"foo"'
-        with self.assertRaises(ValueError):
+        with self.assertRaises(eventlogging.SchemaError):
             eventlogging.schema.http_get_schema(TEST_SCHEMA_SCID)
 
 

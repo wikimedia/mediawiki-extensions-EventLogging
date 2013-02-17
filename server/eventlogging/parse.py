@@ -37,10 +37,10 @@ import os
 import re
 import time
 
-from .compat import json, unquote_plus
+from .compat import json, unquote
 
 
-__all__ = ('LogParser',)
+__all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow')
 
 #: Salt value for hashing IPs. Because this value is generated at
 #: runtime, IPs cannot be compared across restarts. This limitation is
@@ -64,6 +64,11 @@ def ncsa_to_epoch(ncsa_ts):
     return calendar.timegm(time.strptime(ncsa_ts, NCSA_FORMAT))
 
 
+def ncsa_utcnow():
+    """Gets the current UTC date and time in NCSA Common Log Format"""
+    return time.strftime(NCSA_FORMAT, time.gmtime())
+
+
 def hash_value(val):
     """Produces a salted SHA1 hash of any string value.
     :param val: String to hash.
@@ -76,7 +81,7 @@ def decode_qson(qson):
     """Decodes a QSON (query-string-encoded JSON) object.
     :param qs: Query string.
     """
-    return json.loads(unquote_plus(qson.strip('?;')))
+    return json.loads(unquote(qson.strip('?;')))
 
 
 #: A mapping of format specifiers to a tuple of (regexp, caster).

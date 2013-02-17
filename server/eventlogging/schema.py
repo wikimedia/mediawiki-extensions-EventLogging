@@ -17,12 +17,19 @@ import jsonschema
 
 from .compat import json, urlopen, uuid5
 
-__all__ = ('CAPSULE_SCID', 'capsule_uuid', 'get_schema', 'validate')
+__all__ = ('CAPSULE_SCID', 'capsule_uuid', 'get_schema', 'SCHEMA_URL_FORMAT',
+           'validate')
 
 
-#: Template for schema retrieval URLs. Interpolates SCIDs.
-url_format = ('http://meta.wikimedia.org/w/index.php?action=raw'
-              '&title=Schema:%s&oldid=%s')
+#: URL of index.php on the schema wiki (same as
+#: '$wgEventLoggingSchemaIndexUri').
+SCHEMA_WIKI_INDEX_PHP = 'http://meta.wikimedia.org/w/index.php'
+
+#: Template for schema article URLs. Interpolates SCIDs.
+SCHEMA_URL_FORMAT = SCHEMA_WIKI_INDEX_PHP + '?title=Schema:%s&oldid=%s'
+
+#: Template for raw schema URLs. Interpolates SCIDs.
+RAW_SCHEMA_URL_FORMAT = SCHEMA_URL_FORMAT + '&action=raw'
 
 #: Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}
@@ -75,11 +82,15 @@ def get_schema(scid, encapsulate=False):
 
 def http_get_schema(scid):
     """Retrieve schema via HTTP."""
-    req = urlopen(url_format % scid)
-    content = req.read().decode('utf-8')
-    schema = json.loads(content)
-    if not isinstance(schema, dict):
-        raise ValueError('HTTP response did not decode into dict: %s', schema)
+    url = RAW_SCHEMA_URL_FORMAT % scid
+    try:
+        content = urlopen(url).read().decode('utf-8')
+        schema = json.loads(content)
+    except EnvironmentError as ex:
+        raise jsonschema.SchemaError('Failed to retrieve schema: %s' % ex)
+    except ValueError:
+        raise jsonschema.SchemaError('Could not decode JSON Schema at ' + url)
+    jsonschema.Draft3Validator.check_schema(schema)
     return schema
 
 
@@ -88,7 +99,7 @@ def validate(capsule):
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
     """
     try:
-        scid = (capsule['schema'], capsule['revision'])
+        scid = capsule['schema'], capsule['revision']
     except KeyError as ex:
         # If `schema`, `revision` or `event` keys are missing, a
         # KeyError exception will be raised. We re-raise it as a

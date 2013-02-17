@@ -24,6 +24,9 @@ from .jrm import *
 
 # The fact that schema validation is entrusted to a third-party module
 # is an implementation detail that a consumer of this package's API
-# should not have to know or care about. We thus provide a local binding
-# for :exc:`jsonschema.ValidationError`.
-from jsonschema import ValidationError
+# should not have to know or care about. We thus provide package-local
+# bindings for :exc:`jsonschema.ValidationError` and
+# :exc:`jsonschema.SchemaError`.
+from jsonschema import ValidationError, SchemaError
+
+__version__ = '0.5'
