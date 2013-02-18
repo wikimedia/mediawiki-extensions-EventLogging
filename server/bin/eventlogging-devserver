@@ -116,32 +116,32 @@ def handle_event(environ, start_response):
     }
 
     for i, error in enumerate(errors):
-        headers['Validation-Error-%d' % i] = str(error)
+        headers['Validation-Error-%d' % (i + 1)] = str(error)
     status, headers = prepare_response('204 No Content', headers)
     start_response(status, headers)
 
-    print('── request ────────────')
+    print('-- request ------------')
     print(log_line)
 
-    print('── event ──────────────')
+    print('-- event --------------')
     json = eventlogging.json.dumps(event, indent=2, sort_keys=True)
     print(highlight(json, lexer, formatter), end='')
 
-    print('── validation ──────────')
+    print('-- validation ----------')
     for error in errors:
-        print(ansiformat('red', '✘ Error:'), error)
+        print(ansiformat('_red_', 'Error:'), error)
 
     if not errors:
-        print(ansiformat('green', '✔ Valid.'))
+        print(ansiformat('_green_', 'Valid.'))
 
-    print('────────────────────────')
+    print('------------------------')
     return []
 
 
 httpd = make_server(args.host, args.port, handle_event,
                     handler_class=EventLoggingHandler)
 
-print(ansiformat('*blue*', '⚒ EventLogging DevServer'))
+print(ansiformat('*blue*', '== EventLogging DevServer =='))
 print('Receiving events at http://%s:%s/event.gif...' % (args.host, args.port))
 
 try:
