@@ -49,7 +49,7 @@
 				self.warn( 'Clobbering existing "' + schemaName + '" schema' );
 			}
 			self.schemas[ schemaName ] = $.extend( true, {
-				revision : 'UNKNOWN',
+				revision : -1,
 				schema   : { properties: {} },
 				defaults : {}
 			}, self.schemas[ schemaName ], meta );
