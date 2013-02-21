@@ -31,7 +31,7 @@ _schemas = {
             'isTruncated': {
                 'type': 'boolean'
             },
-            'isValid': {
+            'clientValidated': {
                 'type': 'boolean'
             },
             'wiki': {
@@ -104,7 +104,7 @@ _event = {
     'wiki': 'enwiki',
     'webHost': 'en.m.wikipedia.org',
     'recvFrom': 'fenari',
-    'isValid': True,
+    'clientValidated': True,
     'revision': 123,
     'schema': 'TestSchema'
 }

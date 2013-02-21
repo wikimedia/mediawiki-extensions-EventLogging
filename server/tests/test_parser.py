@@ -30,14 +30,14 @@ class LogParserTestCase(unittest.TestCase):
         """Parser test: client-side events (%q %l %n %t %h)."""
         parser = eventlogging.LogParser('%q %l %n %t %h')
         raw = ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
-               '%22%2C%22revision%22%3A13%2C%22isValid%22%3Atrue%2C%22event'
-               '%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3A%22Main'
-               '%20Page%22%7D%2C%22webHost%22%3A%22test.wikipedia.org%22%7D'
-               '; cp3022.esams.wikimedia.org 132073 2013-01-19T23:16:38 86.'
-               '149.229.149')
+               '%22%2C%22revision%22%3A13%2C%22clientValidated%22%3Atrue%2C'
+               '%22event%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3'
+               'A%22Main%20Page%22%7D%2C%22webHost%22%3A%22test.wikipedia.o'
+               'rg%22%7D; cp3022.esams.wikimedia.org 132073 2013-01-19T23:1'
+               '6:38 86.149.229.149')
         parsed = {
             'recvFrom': 'cp3022.esams.wikimedia.org',
-            'isValid': True,
+            'clientValidated': True,
             'wiki': 'testwiki',
             'webHost': 'test.wikipedia.org',
             'seqId': 132073,
@@ -56,15 +56,15 @@ class LogParserTestCase(unittest.TestCase):
         """Parser test: server-side events (%n EventLogging %j)."""
         parser = eventlogging.LogParser('%n EventLogging %j')
         raw = ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
-               'ma":"FakeSchema","isValid":true,"wiki":"enwiki","event":{"ac'
-               'tion":"save\\u0020page"},"recvFrom":"fenari"}')
+               'ma":"FakeSchema","clientValidated":true,"wiki":"enwiki","eve'
+               'nt":{"action":"save\\u0020page"},"recvFrom":"fenari"}')
         parsed = {
             'recvFrom': 'fenari',
             'timestamp': 1358627115,
             'wiki': 'enwiki',
             'seqId': 99,
             'schema': 'FakeSchema',
-            'isValid': True,
+            'clientValidated': True,
             'revision': 123,
             'event': {
                 'action': 'save page'

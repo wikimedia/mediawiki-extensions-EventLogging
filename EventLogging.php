@@ -147,13 +147,13 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	}
 
 	$encapsulated = array(
-		'event'     => $event,
-		'schema'    => $schemaName,
-		'revision'  => $revId,
-		'isValid'   => $isValid,
-		'wiki'      => $wgDBname,
-		'recvFrom'  => gethostname(),
-		'timestamp' => $_SERVER[ 'REQUEST_TIME' ],
+		'event'            => $event,
+		'schema'           => $schemaName,
+		'revision'         => $revId,
+		'clientValidated'  => $isValid,
+		'wiki'             => $wgDBname,
+		'recvFrom'         => gethostname(),
+		'timestamp'        => $_SERVER[ 'REQUEST_TIME' ],
 	);
 
 	if ( $wgEventLoggingLogSHA1 ) {

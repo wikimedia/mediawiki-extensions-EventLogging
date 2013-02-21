@@ -35,7 +35,7 @@ RAW_SCHEMA_URL_FORMAT = SCHEMA_URL_FORMAT + '&action=raw'
 schema_cache = {}
 
 #: SCID of the metadata object which wraps each event.
-CAPSULE_SCID = ('EventCapsule', 5222982)
+CAPSULE_SCID = ('EventCapsule', 5262883)
 
 
 #: Formats event capsule objects into URLs using the combination of
