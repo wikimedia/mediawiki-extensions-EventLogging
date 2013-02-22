@@ -12,6 +12,7 @@
 """
 # flake8: noqa
 # pylint: disable=E0611, F0401, E1101
+from __future__ import unicode_literals
 
 import functools
 import hashlib
@@ -37,7 +38,12 @@ if PY3:
 else:
     items = operator.methodcaller('iteritems')
     from urllib2 import urlopen
-    from urllib import unquote
+    from urllib import unquote as _unquote
+
+    @functools.wraps(_unquote)
+    def unquote(string):
+        string = string.decode('string_escape')
+        return _unquote(string).decode('utf-8')
 
 
 @functools.wraps(uuid.uuid5)

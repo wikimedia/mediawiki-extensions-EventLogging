@@ -6,6 +6,8 @@
   This module contains tests for :class:`eventlogging.LogParser`.
 
 """
+from __future__ import unicode_literals
+
 import calendar
 import datetime
 import unittest
@@ -26,15 +28,17 @@ class NcsaTimestampTestCase(unittest.TestCase):
 class LogParserTestCase(unittest.TestCase):
     """Test case for LogParser."""
 
+    maxDiff = None
+
     def test_parse_client_side_events(self):
         """Parser test: client-side events (%q %l %n %t %h)."""
         parser = eventlogging.LogParser('%q %l %n %t %h')
         raw = ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
                '%22%2C%22revision%22%3A13%2C%22clientValidated%22%3Atrue%2C'
                '%22event%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3'
-               'A%22Main%20Page%22%7D%2C%22webHost%22%3A%22test.wikipedia.o'
-               'rg%22%7D; cp3022.esams.wikimedia.org 132073 2013-01-19T23:1'
-               '6:38 86.149.229.149')
+               'A%22H%C3%A9ctor%20Elizondo%22%7D%2C%22webHost%22%3A%22test.'
+               'wikipedia.org%22%7D; cp3022.esams.wikimedia.org 132073 2013'
+               '-01-19T23:16:38 86.149.229.149')
         parsed = {
             'recvFrom': 'cp3022.esams.wikimedia.org',
             'clientValidated': True,
@@ -46,7 +50,7 @@ class LogParserTestCase(unittest.TestCase):
             'schema': 'Generic',
             'revision': 13,
             'event': {
-                'articleTitle': 'Main Page',
+                'articleTitle': 'Héctor Elizondo',
                 'articleId': 1
             }
         }
