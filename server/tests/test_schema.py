@@ -94,4 +94,4 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     def test_capsule_uuid(self):
         """capsule_uuid() generates a unique UUID for capsule objects."""
         self.assertEqual(eventlogging.capsule_uuid(self.event),
-                         uuid.UUID(hex='babb66f34a0a5de3be0c6513088be33e'))
+                         'babb66f34a0a5de3be0c6513088be33e')

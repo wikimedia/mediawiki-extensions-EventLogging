@@ -170,7 +170,7 @@ def store_event(meta, event):
     scid = (event['schema'], event['revision'])
     table = get_table(meta, scid)
     event = flatten(event)
-    event['uuid'] = capsule_uuid(event).hex
+    event['uuid'] = capsule_uuid(event)
     event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
     return table.insert(values=event).execute()
 

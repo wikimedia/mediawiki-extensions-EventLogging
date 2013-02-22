@@ -60,7 +60,8 @@ def capsule_uuid(capsule):
       `recvFrom`, `seqId`, and `timestamp`).
 
     """
-    return uuid5(uuid.NAMESPACE_URL, EVENTLOGGING_URL_FORMAT % capsule)
+    id = uuid5(uuid.NAMESPACE_URL, EVENTLOGGING_URL_FORMAT % capsule)
+    return '%032x' % id.int
 
 
 def get_schema(scid, encapsulate=False):
