@@ -167,6 +167,18 @@ $messages['ja'] = array(
 	'jsonschema-invalidempty' => 'このスキーマでは空のデータ構造は有効ではありません',
 );
 
+/** Korean (한국어)
+ * @author 아라
+ */
+$messages['ko'] = array(
+	'jsonschema-badidref' => '잘못된 idref: "$1"',
+	'jsonschema-idconvert' => 'var를 id로 변환할 수 없습니다: "$1"',
+	'jsonschema-invalidkey' => '"$2"에서 "$1" 키가 잘못되었습니다',
+	'jsonschema-invalidempty' => '빈 데이터 구조는 이 스키마로는 올바르지 않습니다',
+	'jsonschema-invalidnode' => '잘못된 노드: "$1"(을)를 기대했지만 "$2\'(을)을 얻었습니다. 경로: "$3"',
+	'jsonschema-invalid-missingfield' => '"$1" 필수 필드가 없습니다',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */

@@ -91,6 +91,13 @@ $messages['es'] = array(
 	'eventlogging-revision-id' => 'Revisión $1',
 );
 
+/** Estonian (eesti)
+ * @author Pikne
+ */
+$messages['et'] = array(
+	'eventlogging-revision-id' => 'Redaktsioon $1',
+);
+
 /** Finnish (suomi)
  * @author Nike
  */
