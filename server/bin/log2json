@@ -37,7 +37,7 @@ import sys
 import jsonschema
 import zmq
 
-from eventlogging import json, LogParser, validate, zmq_subscribe
+from eventlogging import capsule_uuid, json, LogParser, validate, zmq_subscribe
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
@@ -61,6 +61,7 @@ for raw_event in zmq_subscribe(args.input, sid=args.sid):
     try:
         event = parser.parse(raw_event)
         validate(event)
+        event['uuid'] = capsule_uuid(event)
     except Exception:
         logging.exception('Unable to decode: %s', raw_event)
     else:

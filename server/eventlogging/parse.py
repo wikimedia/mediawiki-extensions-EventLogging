@@ -87,10 +87,10 @@ def decode_qson(qson):
 #: A mapping of format specifiers to a tuple of (regexp, caster).
 format_specifiers = {
     '%h': (r'(?P<clientIp>\S+)', hash_value),
-    '%j': (r'(?P<event>\S+)', json.loads),
+    '%j': (r'(?P<capsule>\S+)', json.loads),
     '%l': (r'(?P<recvFrom>\S+)', str),
     '%n': (r'(?P<seqId>\d+)', int),
-    '%q': (r'(?P<event>\?\S+)', decode_qson),
+    '%q': (r'(?P<capsule>\?\S+)', decode_qson),
     '%t': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
            ncsa_to_epoch),
 }
@@ -128,7 +128,7 @@ class LogParser(object):
             raise ValueError(self.re, line)
         keys = sorted(match.groupdict(), key=match.start)
         event = {k: f(match.group(k)) for f, k in zip(self.casters, keys)}
-        event.update(event.pop('event'))
+        event.update(event.pop('capsule'))
         return event
 
     def __repr__(self):

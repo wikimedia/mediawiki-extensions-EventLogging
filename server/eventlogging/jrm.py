@@ -14,7 +14,7 @@ import datetime
 
 import sqlalchemy
 
-from .schema import get_schema, capsule_uuid
+from .schema import get_schema
 from .compat import items
 
 
@@ -166,11 +166,10 @@ def declare_table(meta, scid):
 
 
 def store_event(meta, event):
-    """Store an event the database."""
+    """Store an event in the database."""
     scid = (event['schema'], event['revision'])
     table = get_table(meta, scid)
     event = flatten(event)
-    event['uuid'] = capsule_uuid(event)
     event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
     return table.insert(values=event).execute()
 

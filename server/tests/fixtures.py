@@ -60,6 +60,9 @@ _schemas = {
                 'type': 'number',
                 'required': True,
                 'format': 'utc-millisec'
+            },
+            'uuid': {
+                'type': 'string'
             }
         },
         'additionalProperties': False
@@ -106,7 +109,8 @@ _event = {
     'recvFrom': 'fenari',
     'clientValidated': True,
     'revision': 123,
-    'schema': 'TestSchema'
+    'schema': 'TestSchema',
+    'uuid': 'babb66f34a0a5de3be0c6513088be33e'
 }
 
 
