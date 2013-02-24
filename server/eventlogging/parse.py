@@ -37,7 +37,7 @@ import os
 import re
 import time
 
-from .compat import json, unquote
+from .compat import json, unquote_plus
 
 
 __all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow')
@@ -81,7 +81,7 @@ def decode_qson(qson):
     """Decodes a QSON (query-string-encoded JSON) object.
     :param qs: Query string.
     """
-    return json.loads(unquote(qson.strip('?;')))
+    return json.loads(unquote_plus(qson.strip('?;')))
 
 
 #: A mapping of format specifiers to a tuple of (regexp, caster).
