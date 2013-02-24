@@ -1,6 +1,7 @@
 /**
  * JavaScript enhancements of JSON Schema article pages.
  *
+ * @module ext.eventLogging.jsonSchema
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function ( mw, $ ) {

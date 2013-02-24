@@ -71,7 +71,7 @@
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.setSchema( 'earthquake', {
+			mw.eventLog.declareSchema( 'earthquake', {
 				schema: earthquakeSchema,
 				revision: 'TEST'
 			} );
@@ -88,21 +88,15 @@
 	} );
 
 
-	QUnit.test( 'getSchema', 2, function ( assert ) {
-		assert.deepEqual( mw.eventLog.getSchema( 'earthquake' ).schema, earthquakeSchema, 'Retrieves schema if exists' );
-		assert.strictEqual( mw.eventLog.getSchema( 'foo' ), null, 'Returns null for missing schemas' );
-	} );
-
-
-	QUnit.test( 'validate', validationCases.length + 1, function ( assert ) {
-		assert.ok( mw.eventLog.validate( {
+	QUnit.test( 'assertValid', validationCases.length + 1, function ( assert ) {
+		assert.ok( mw.eventLog.assertValid( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, 'earthquake' ), 'Non-required fields may be omitted' );
 
 		$.each( validationCases, function ( _, vCase ) {
 			assert.throws( function () {
-				mw.eventLog.validate( vCase.args, 'earthquake' );
+				mw.eventLog.assertValid( vCase.args, 'earthquake' );
 			}, vCase.regex, vCase.msg );
 		} );
 	} );
@@ -150,7 +144,7 @@
 	} );
 
 
-	QUnit.module( 'ext.eventLogging: isInstance()' );
+	QUnit.module( 'ext.eventLogging: isInstanceOf()' );
 
 	$.each( {
 		boolean: {
@@ -178,11 +172,11 @@
 
 		QUnit.test( type, asserts, function ( assert ) {
 			$.each( cases.valid, function () {
-				assert.strictEqual( mw.eventLog.isInstance( this, type ), true,
+				assert.strictEqual( mw.eventLog.isInstanceOf( this, type ), true,
 					$.toJSON( this ) + ' is a ' + type );
 			} );
 			$.each( cases.invalid, function () {
-				assert.strictEqual( mw.eventLog.isInstance( this, type ), false,
+				assert.strictEqual( mw.eventLog.isInstanceOf( this, type ), false,
 					$.toJSON( this ) + ' is not a ' + type );
 			} );
 		} );
