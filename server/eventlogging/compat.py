@@ -27,23 +27,25 @@ except ImportError:
     import json
 
 
-__all__ = ('items', 'json', 'unquote', 'urlopen', 'uuid5')
+__all__ = ('items', 'json', 'unquote_plus', 'urlopen', 'uuid5')
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
     items = operator.methodcaller('items')
-    from urllib.parse import unquote
+    from urllib.parse import unquote_to_bytes as unquote
     from urllib.request import urlopen
 else:
     items = operator.methodcaller('iteritems')
     from urllib2 import urlopen
-    from urllib import unquote as _unquote
+    from urllib import unquote
 
-    @functools.wraps(_unquote)
-    def unquote(string):
-        string = string.decode('string_escape')
-        return _unquote(string).decode('utf-8')
+
+def unquote_plus(unicode):
+    """Replace %xx escapes by their single-character equivalent."""
+    unicode = unicode.replace('+', ' ')
+    bytes = unicode.encode('utf-8')
+    return unquote(bytes).decode('utf-8')
 
 
 @functools.wraps(uuid.uuid5)
