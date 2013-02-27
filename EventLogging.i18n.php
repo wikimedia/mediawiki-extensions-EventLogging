@@ -190,6 +190,14 @@ $messages['ko'] = array(
 	'eventlogging-revision-id' => '$1 판',
 );
 
+/** Luxembourgish (Lëtzebuergesch)
+ * @author Robby
+ */
+$messages['lb'] = array(
+	'eventlogging-invalid-json' => 'JSON net valabel',
+	'eventlogging-revision-id' => 'Versioun $1',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
