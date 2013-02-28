@@ -58,7 +58,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         self.assertEqual(row['uuid'], 'babb66f34a0a5de3be0c6513088be33e')
         self.assertEqual(
             row['timestamp'],
-            datetime.datetime(2013, 1, 21, 10, 10, 34)
+            datetime.datetime(2013, 1, 21, 18, 10, 34)
         )
 
     def test_reflection(self):

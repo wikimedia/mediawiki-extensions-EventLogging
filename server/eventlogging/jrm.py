@@ -51,7 +51,7 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         miliseconds since UNIX epoch) to MediaWiki timestamp format."""
         if value > 1e12:
             value /= 1000
-        value = datetime.datetime.fromtimestamp(value).strftime(
+        value = datetime.datetime.utcfromtimestamp(value).strftime(
             MEDIAWIKI_TIMESTAMP)
         if hasattr(value, 'decode'):
             value = value.decode('utf-8')
