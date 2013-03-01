@@ -17,7 +17,11 @@ class EventLoggingHooks {
 	 * configuration variable (if any).
 	 */
 	public static function onSetup() {
-		global $wgMemCachedServers;
+		global $wgMemc;
+
+		if ( get_class( $wgMemc ) === 'EmptyBagOStuff' ) {
+			wfDebugLog( 'EventLogging', 'No suitable memcached driver found.' );
+		}
 
 		foreach ( array(
 			'wgEventLoggingBaseUri',
@@ -28,11 +32,6 @@ class EventLoggingHooks {
 			if ( $GLOBALS[ $configVar ] === false ) {
 				wfDebugLog( 'EventLogging', "$configVar has not been configured." );
 			}
-		}
-
-		if ( !count( $wgMemCachedServers ) ) {
-			wfDebugLog( 'EventLogging', 'EventLogging requires memcached, '
-				. 'and no memcached servers are defined.' );
 		}
 	}
 
