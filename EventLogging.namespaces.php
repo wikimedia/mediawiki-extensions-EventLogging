@@ -10,6 +10,6 @@
 $namespaceNames = array();
 
 $namespaceNames['en'] = array(
-    470 => 'Schema',
-    471 => 'Schema_talk',
+	470 => 'Schema',
+	471 => 'Schema_talk',
 );
