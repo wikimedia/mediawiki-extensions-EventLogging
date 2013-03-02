@@ -18,6 +18,7 @@
     -h, --help    show this help message and exit
     --host HOST   server host (default: 'localhost')
     --port PORT   server port (default: 8080)
+    --nocolor     turn off all syntax highlighting
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
@@ -34,9 +35,8 @@ from wsgiref.simple_server import make_server, WSGIRequestHandler
 import eventlogging
 import jsonschema
 
-from pygments import highlight, lexers
+from pygments import formatters, highlight, lexers
 from pygments.console import ansiformat
-from pygments.formatters import TerminalFormatter
 
 
 argparser = argparse.ArgumentParser()
@@ -44,10 +44,19 @@ argparser.add_argument('--host', default='localhost',
                        help='server host (default: localhost)')
 argparser.add_argument('--port', default=8080, type=int,
                        help='server port (default: 8080)')
+argparser.add_argument('--nocolor', action='store_true',
+                       help='turn off all syntax highlighting')
 args = argparser.parse_args()
 
-lexer = lexers.get_lexer_by_name('json')
-formatter = TerminalFormatter()
+if args.nocolor:
+    formatter = formatters.get_formatter_by_name('null')
+    colorize = lambda color, string: string
+else:
+    formatter = formatters.get_formatter_by_name('256', style='rrt')
+    colorize = ansiformat
+
+json_lexer = lexers.get_lexer_by_name('json')
+php_lexer = lexers.get_lexer_by_name('php', startinline=True)
 
 server_software = 'EventLogging/%s' % eventlogging.__version__
 
@@ -56,6 +65,16 @@ parser = eventlogging.LogParser('%q %l %n %t %h')
 log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
            '%(TIME)s %(REMOTE_ADDR)s')
 
+
+def format_config(vars):
+    code = '\n'.join('$%s = %r;' % item for item in items(vars))
+    return highlight(code, php_lexer, formatter).strip()
+
+
+def heading(caption=None):
+    if caption is None:
+        return 74 * '-'
+    return '-- {:-<95}'.format(colorize('*yellow*', caption) + ' ')
 
 def prepare_response(status, headers):
     """Encode a dictionary of HTTP headers to a list of tuples
@@ -120,29 +139,43 @@ def handle_event(environ, start_response):
     status, headers = prepare_response('204 No Content', headers)
     start_response(status, headers)
 
-    print('-- request ------------')
+    print(heading('request'))
     print(log_line)
 
-    print('-- event --------------')
+    print(heading('event'))
     json = eventlogging.json.dumps(event, indent=2, sort_keys=True)
-    print(highlight(json, lexer, formatter), end='')
+    print(highlight(json, json_lexer, formatter), end='')
 
-    print('-- validation ----------')
+    print(heading('validation'))
     for error in errors:
-        print(ansiformat('_red_', 'Error:'), error)
+        print(colorize('_red_', 'Error:'), error)
 
     if not errors:
-        print(ansiformat('_green_', 'Valid.'))
+        print(colorize('_green_', 'Valid.'))
 
-    print('------------------------')
+    print(heading())
     return []
 
 
 httpd = make_server(args.host, args.port, handle_event,
                     handler_class=EventLoggingHandler)
 
-print(ansiformat('*blue*', '== EventLogging DevServer =='))
-print('Receiving events at http://%s:%s/event.gif...' % (args.host, args.port))
+print('''
+   ___                        _
+  / (_)                    \_|_)                 o
+  \__        _   _  _  _|_   |     __   __,  __,     _  _    __,
+  /    |  |_|/  / |/ |  |   _|    /  \_/  | /  | |  / |/ |  /  |
+  \___/ \/  |__/  |  |_/|_/(/\___/\__/ \_/|/\_/|/|_/  |  |_/\_/|/
+-----------------------------------------/|---/|--------------/|----------
+  (C) Wikimedia Foundation, 2013         \|   \|              \|
+
+''' + highlight('''
+# Ensure the following values are set in LocalSettings.php:
+require_once( "$IP/extensions/EventLogging/EventLogging.php" );
+$wgEventLoggingBaseUri = 'http://%s:%s/event.gif';
+$wgEventLoggingSchemaIndexUri = 'http://meta.wikimedia.org/w/index.php';
+
+# Listening to events.''' % (args.host, args.port), php_lexer, formatter))
 
 try:
     httpd.serve_forever()
