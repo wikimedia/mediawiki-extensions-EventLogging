@@ -1,13 +1,15 @@
 {
 	"predef": [
+		"mediaWiki",
 		"jQuery",
-		"QUnit",
-		"mediaWiki"
+		"QUnit"
 	],
 
+	"bitwise": true,
 	"camelcase": true,
 	"curly": true,
 	"eqeqeq": true,
+	"forin": false,
 	"immed": true,
 	"latedef": true,
 	"newcap": true,
@@ -15,13 +17,18 @@
 	"noempty": true,
 	"nonew": true,
 	"quotmark": "single",
+	"regexp": false,
 	"undef": true,
 	"unused": true,
-	"strict": true,
+	"strict": false,
 	"trailing": true,
-	"bitwise": true,
-	"browser": true,
-	"onevar": true,
 
-	"plusplus": false
+	"laxbreak": true,
+	"smarttabs": true,
+	"multistr": true,
+
+	"browser": true,
+
+	"nomen": true,
+	"onevar": true
 }
