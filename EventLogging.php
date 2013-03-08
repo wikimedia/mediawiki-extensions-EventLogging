@@ -97,7 +97,7 @@ $wgEventLoggingDBname = false;
  * @return bool: Whether the event was logged.
  */
 function efLogServerSideEvent( $schemaName, $revId, $event ) {
-	global $wgDBname, $wgEventLoggingFile, $wgEventLoggingLogSHA1;
+	global $wgDBname, $wgEventLoggingFile;
 
 	if ( !$wgEventLoggingFile ) {
 		return false;

@@ -33,7 +33,6 @@ class JsonSchemaHooks {
 		return false;
 	}
 
-
 	/**
 	 * Declares JSON as the code editor language for Schema: pages.
 	 * This hook only runs if the CodeEditor extension is enabled.
@@ -48,14 +47,13 @@ class JsonSchemaHooks {
 		return true;
 	}
 
-
 	/**
 	 * Registers Schema namespaces and assign edit rights.
 	 * @param array &$namespaces: Mapping of numbers to namespace names.
 	 * @return bool
 	 */
 	static function onCanonicalNamespaces( array &$namespaces ) {
-		global $wgGroupPermissions, $wgNamespaceContentModels, $wgNamespaceProtection;
+		global $wgNamespaceContentModels, $wgNamespaceProtection;
 
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
@@ -66,7 +64,6 @@ class JsonSchemaHooks {
 		return true;
 	}
 
-
 	/**
 	 * Validates that the revised contents are valid JSON.
 	 * If not valid, rejects edit with error message.
@@ -74,6 +71,7 @@ class JsonSchemaHooks {
 	 * @param string $text: Content of the revised article.
 	 * @param string &$error: Error message to return.
 	 * @param string $summary: Edit summary provided for edit.
+	 * @return True
 	 */
 	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
 		if ( $editor->getTitle()->getNamespace() !== NS_SCHEMA ) {
@@ -90,7 +88,6 @@ class JsonSchemaHooks {
 
 		return true;
 	}
-
 
 	/**
 	 * Adds CSS for pretty-printing schema on NS_SCHEMA pages.

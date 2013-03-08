@@ -19,7 +19,6 @@ class JsonSchemaContent extends TextContent {
 		parent::__construct( $text, 'JsonSchema' );
 	}
 
-
 	/**
 	 * @throws JsonSchemaException: If invalid.
 	 * @return bool: True if valid.
@@ -32,7 +31,6 @@ class JsonSchemaContent extends TextContent {
 		return efSchemaValidate( $schema );
 	}
 
-
 	/**
 	 * @return bool: Whether content is valid JSON Schema.
 	 */
@@ -44,7 +42,6 @@ class JsonSchemaContent extends TextContent {
 		}
 	}
 
-
 	/**
 	 * Beautifies JSON prior to save.
 	 * @param Title $title Title
@@ -55,7 +52,6 @@ class JsonSchemaContent extends TextContent {
 	function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
 		return new JsonSchemaContent( efBeautifyJson( $this->getNativeData() ) );
 	}
-
 
 	/**
 	 * Constructs an HTML representation of a JSON object.
@@ -71,7 +67,6 @@ class JsonSchemaContent extends TextContent {
 			Xml::tags( 'tbody', array(), join( "\n", $rows ) )
 		);
 	}
-
 
 	/**
 	 * Constructs HTML representation of a single key-value pair.
@@ -94,7 +89,6 @@ class JsonSchemaContent extends TextContent {
 		return Xml::tags( 'tr', array(), $th . $td );
 	}
 
-
 	/**
 	 * Generate generic PHP and JavaScript code strings showing how to
 	 * use a schema.
@@ -114,7 +108,6 @@ class JsonSchemaContent extends TextContent {
 				"mw.eventLog.logEvent( '{$dbKey}', { /* ... */ } );"
 		);
 	}
-
 
 	/**
 	 * Wraps HTML representation of content.
@@ -151,7 +144,6 @@ class JsonSchemaContent extends TextContent {
 
 		return $out;
 	}
-
 
 	/**
 	 * Generates HTML representation of content.
