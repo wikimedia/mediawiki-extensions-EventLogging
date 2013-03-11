@@ -48,6 +48,13 @@ $messages['be-tarask'] = array(
 	'eventlogging-revision-id' => 'Вэрсія $1',
 );
 
+/** Breton (brezhoneg)
+ * @author Fohanno
+ */
+$messages['br'] = array(
+	'eventlogging-revision-id' => 'Adweladenn $1',
+);
+
 /** Czech (česky)
  * @author Mormegil
  * @author Vks
