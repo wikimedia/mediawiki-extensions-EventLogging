@@ -38,6 +38,7 @@ class EventLoggingHooks {
 	/**
 	 * @param $user object: The User object that was created.
 	 * @param $byEmail boolean The form has a [By e-mail] button.
+	 * @return bool True
 	 */
 	public static function onAddNewAccount( $user, $byEmail ) {
 		global $wgRequest, $wgUser;
@@ -76,7 +77,6 @@ class EventLoggingHooks {
 		return true;
 	}
 
-
 	/**
 	 * Log server-side event on successful page edit.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
@@ -95,7 +95,6 @@ class EventLoggingHooks {
 		return true;
 	}
 
-
 	/**
 	 * @param array &$vars
 	 * @return bool
@@ -106,7 +105,6 @@ class EventLoggingHooks {
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		return true;
 	}
-
 
 	/**
 	 * @param array &$testModules

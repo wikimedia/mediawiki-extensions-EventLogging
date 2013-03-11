@@ -499,7 +499,7 @@ class JsonSchemaIndex {
 		$nodetype = $schemanode['type'];
 		switch( $nodetype ) {
 			case 'object':
-				foreach ( $schemanode['properties'] as $key => $value ) {
+				foreach ( $schemanode['properties'] as $value ) {
 					$this->indexSubtree( $value );
 				}
 
