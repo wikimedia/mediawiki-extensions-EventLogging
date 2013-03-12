@@ -123,6 +123,10 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 		'timestamp'        => $_SERVER[ 'REQUEST_TIME' ],
 	);
 
+	if ( isset( $_SERVER[ 'HTTP_HOST' ] ) ) {
+		$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
+	}
+
 	// To make the resultant JSON easily extracted from a row of
 	// space-separated values, we replace literal spaces with unicode
 	// escapes. This is permitted by the JSON specs.
