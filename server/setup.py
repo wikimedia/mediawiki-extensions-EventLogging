@@ -45,6 +45,7 @@ setup(
     scripts=(
         'bin/eventlogging-devserver',
         'bin/json2sql',
+        'bin/json2mongo',
         'bin/log2json',
         'bin/seqmon',
         'bin/sv-alerts',
@@ -60,4 +61,7 @@ setup(
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
     ),
+    extras_require={
+        'MongoDB': ['pymongo>=2.1'],
+    }
 )

@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+  json2mongo
+  ----------
+
+  usage: json2mongo [-h] [--sid SID] input db
+
+  MongoDB event consumer
+
+  positional arguments:
+    input       URI of JSON event stream to consume
+    db          MongoDB connection string URI
+
+  optional arguments:
+    -h, --help  show this help message and exit
+    --sid SID   set input socket identity
+
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
+
+"""
+import argparse
+import logging
+import sys
+
+from datetime import datetime
+
+try:
+    import pymongo
+except ImportError:
+    sys.stderr.write(
+        'Error: json2mongo requires pymongo. '
+        'See <http://api.mongodb.org/python/current/>.\n'
+    )
+    sys.exit(1)
+
+import eventlogging
+
+
+logging.basicConfig(stream=sys.stderr, level=logging.INFO)
+
+parser = argparse.ArgumentParser(description='MongoDB event consumer')
+parser.add_argument('input', help='URI of JSON event stream to consume')
+parser.add_argument('db', help='MongoDB URI', type=pymongo.Connection)
+parser.add_argument('--sid', help='set input socket identity')
+args = parser.parse_args()
+
+events = args.db.events
+event_stream = eventlogging.zmq_subscribe(args.input, sid=args.sid, json=True)
+
+
+while 1:  # Keep ``try/except`` outside the inner loop.
+    try:
+        for count, event in enumerate(event_stream):
+
+            if count % 100 == 0:
+                logging.info('Logged %d events', count)
+
+            # Convert the integer timestamp into a Python `datetime`
+            # object, which pymongo serializes into a BSON `date` type.
+            event['timestamp'] = datetime.fromtimestamp(event['timestamp'])
+
+            # Specify the event's UUID as the ObjectID to use for the
+            # event. See `<http://docs.mongodb.org/manual/core/object-id/>`.
+            event['_id'] = event['uuid']
+
+            # Unlike MySQL tables, which are specific to a schema
+            # revision, MongoDB collections encompass all revisions of a
+            # schema. This means users of the data should inspect the
+            # `revId` property to know against which revision of the
+            # schema the event was declared and validated.
+            events[event['schema']].insert(event)
+    except Exception:
+        logging.exception('Failed to insert event: %s', event)
