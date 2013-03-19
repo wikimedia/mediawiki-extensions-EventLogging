@@ -14,3 +14,4 @@ server/dist
 server/env
 server/.coverage
 tests/suite.php
+.deploy
