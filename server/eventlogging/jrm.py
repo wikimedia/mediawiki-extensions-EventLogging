@@ -171,7 +171,12 @@ def store_event(meta, event):
     table = get_table(meta, scid)
     event = flatten(event)
     event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
-    return table.insert(values=event).execute()
+    insert = table.insert(values=event)
+    try:
+        insert.execute()
+    except sqlalchemy.exc.ProgrammingError:
+        table.create()
+        insert.execute()
 
 
 def _property_getter(item):
