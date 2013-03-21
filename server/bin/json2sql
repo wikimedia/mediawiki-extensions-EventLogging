@@ -14,6 +14,7 @@
   optional arguments:
     -h, --help  show this help message and exit
     --sid SID   set input socket identity
+    --debug     output all generated SQL to stderr
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
@@ -33,10 +34,13 @@ parser = argparse.ArgumentParser(description='JSON event stream -> MySQL')
 parser.add_argument('input', help='URI of JSON event stream to consume')
 parser.add_argument('db', help='URI of DB to write to')
 parser.add_argument('--sid', help='set input socket identity')
+parser.add_argument('--debug', action='store_const', dest='loglevel',
+                    const=logging.INFO, default=logging.WARNING,
+                    help='output all generated SQL to stderr')
 args = parser.parse_args()
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
-logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+logging.basicConfig(stream=sys.stderr, level=args.loglevel)
+logging.getLogger('sqlalchemy.engine').setLevel(args.loglevel)
 
 meta = sqlalchemy.MetaData(args.db)
 
