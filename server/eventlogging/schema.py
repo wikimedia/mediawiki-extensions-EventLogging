@@ -105,4 +105,5 @@ def validate(capsule):
         # :exc:`ValidationError` to provide a simpler API for callers.
         raise jsonschema.ValidationError('Missing key: %s' % ex)
     schema = get_schema(scid, encapsulate=True)
-    jsonschema.validate(capsule, schema)
+    jsonschema.Draft3Validator.check_schema(schema)
+    jsonschema.Draft3Validator(schema).validate(capsule)
