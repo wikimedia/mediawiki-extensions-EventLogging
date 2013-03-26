@@ -4,7 +4,8 @@ python:
     - "2.7"
     - "3.3"
 install:
-    - pip install server/ --use-mirrors
+    - pip install -q pyzmq --install-option="--zmq=bundled" --use-mirrors
+    - pip install -q server/ --use-mirrors
 script:
     - cd server
     - python setup.py test
