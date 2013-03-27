@@ -256,6 +256,15 @@ $messages['pms'] = array(
 	'eventlogging-revision-id' => 'Revision $1',
 );
 
+/** Portuguese (português)
+ * @author Alchimista
+ */
+$messages['pt'] = array(
+	'eventlogging-desc' => 'Estrutura para registo de eventos no código Client Side',
+	'eventlogging-invalid-json' => 'JSON inválido',
+	'eventlogging-revision-id' => 'Revisão: $1',
+);
+
 /** Romanian (română)
  * @author Firilacroco
  */
