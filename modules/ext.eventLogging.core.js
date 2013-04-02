@@ -86,7 +86,7 @@
 		 * number types. Arrays are not currently supported.
 		 *
 		 * @method isInstanceOf
-		 * @param {Object} instance Object to test.
+		 * @param {Object} value Object to test.
 		 * @param {String} type JSON Schema type.
 		 * @return {Boolean} Whether value is instance of type.
 		 */
