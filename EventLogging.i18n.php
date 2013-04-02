@@ -197,6 +197,15 @@ $messages['ko'] = array(
 	'eventlogging-revision-id' => '$1 판',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'eventlogging-desc' => 'Vörjäng us enem Projramm om Rääschener vom Metmaacher uß en e Logbooch schriive.',
+	'eventlogging-invalid-json' => 'Onjöltesch <i lang="en">JSON</i>-ẞööver',
+	'eventlogging-revision-id' => 'Väsjohn $1',
+);
+
 /** Luxembourgish (Lëtzebuergesch)
  * @author Robby
  */

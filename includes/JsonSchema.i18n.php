@@ -252,3 +252,15 @@ $messages['uk'] = array(
 	'jsonschema-invalidnode' => 'Неприпустимий вузок: очікувано "$1", отримано "$2". Шлях: "$3"',
 	'jsonschema-invalid-missingfield' => 'Відсутнє обов\'язкове поле "$1"',
 );
+
+/** Simplified Chinese (中文（简体）‎)
+ * @author Yfdyh000
+ */
+$messages['zh-hans'] = array(
+	'jsonschema-badidref' => '坏的ref id：“$1”',
+	'jsonschema-idconvert' => '无法转换var到id：“$1”',
+	'jsonschema-invalidkey' => '无效的键“$1”在“$2”',
+	'jsonschema-invalidempty' => '空数据结构对此schema无效',
+	'jsonschema-invalidnode' => '无效的节点：预期为“$1”，但得到“$2”。路径：“$3”',
+	'jsonschema-invalid-missingfield' => '缺少必要的字段“$1”',
+);
