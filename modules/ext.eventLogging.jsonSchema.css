@@ -79,7 +79,6 @@
 	right: 0;
 	top: -.9em;
 	padding: 0.1em;
-	cursor: hand;
 	cursor: pointer;
 	transition: background-color .5s;
 }

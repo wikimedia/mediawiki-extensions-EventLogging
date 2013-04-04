@@ -55,6 +55,7 @@ class JsonSchemaContent extends TextContent {
 
 	/**
 	 * Constructs an HTML representation of a JSON object.
+	 * @param Array $mapping
 	 * @return string: HTML.
 	 */
 	static function objectTable( $mapping ) {
@@ -70,6 +71,8 @@ class JsonSchemaContent extends TextContent {
 
 	/**
 	 * Constructs HTML representation of a single key-value pair.
+	 * @param string $key
+	 * @param mixed $val
 	 * @return string: HTML.
 	 */
 	static function objectRow( $key, $val ) {
