@@ -20,8 +20,8 @@ class RemoteSchema {
 	 * Constructor.
 	 * @param string $title
 	 * @param integer $revision
-	 * @param ObjectCache $cache: (optional) cache client.
-	 * @param Http $http: (optional) HTTP client.
+	 * @param ObjectCache $cache (optional) cache client.
+	 * @param Http $http (optional) HTTP client.
 	 */
 	function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
 		global $wgEventLoggingDBname;

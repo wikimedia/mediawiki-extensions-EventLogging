@@ -36,8 +36,8 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param $user object: The User object that was created.
-	 * @param $byEmail boolean The form has a [By e-mail] button.
+	 * @param User $user The User object that was created.
+	 * @param boolean $byEmail The form has a [By e-mail] button.
 	 * @return bool True
 	 */
 	public static function onAddNewAccount( $user, $byEmail ) {

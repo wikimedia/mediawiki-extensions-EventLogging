@@ -95,8 +95,8 @@ class JsonSchemaContent extends TextContent {
 	/**
 	 * Generate generic PHP and JavaScript code strings showing how to
 	 * use a schema.
-	 * @param $dbKey string DB key of schema article
-	 * @param $revId int Revision ID of schema article
+	 * @param string $dbKey DB key of schema article
+	 * @param int $revId Revision ID of schema article
 	 * @return array: Array mapping language names to source code
 	 */
 	public function getCodeSamples( $dbKey, $revId ) {
@@ -121,10 +121,10 @@ class JsonSchemaContent extends TextContent {
 	 *
 	 * @see https://mediawiki.org/wiki/Extension:SyntaxHighlight_GeSHi
 	 *
-	 * @param $title Title
-	 * @param $revId int|null Revision ID
-	 * @param $options ParserOptions|null
-	 * @param $generateHtml bool Whether or not to generate HTML
+	 * @param Title $title
+	 * @param int|null $revId Revision ID
+	 * @param ParserOptions|null $options
+	 * @param boolean $generateHtml Whether or not to generate HTML
 	 * @return ParserOutput
 	 */
 	public function getParserOutput( Title $title, $revId = null,

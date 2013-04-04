@@ -91,9 +91,9 @@ $wgEventLoggingDBname = false;
  *
  * @see wfErrorLog
  *
- * @param string $schemaName: Schema name.
- * @param integer $revId: revision ID of schema
- * @param array $event: Map of event keys/vals.
+ * @param string $schemaName Schema name.
+ * @param int $revId revision ID of schema
+ * @param array $event Map of event keys/vals.
  * @return bool: Whether the event was logged.
  */
 function efLogServerSideEvent( $schemaName, $revId, $event ) {
@@ -156,8 +156,8 @@ function efBeautifyJson( $json ) {
  * Validates object against JSON Schema.
  *
  * @throws JsonSchemaException: If the object fails to validate.
- * @param array $object: Object to be validated.
- * @param array $schema: Schema to validate against (default: JSON Schema).
+ * @param array $object Object to be validated.
+ * @param array $schema Schema to validate against (default: JSON Schema).
  * @return bool: True.
  */
 function efSchemaValidate( $object, $schema = NULL ) {

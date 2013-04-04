@@ -37,7 +37,7 @@ class JsonSchemaHooks {
 	 * Declares JSON as the code editor language for Schema: pages.
 	 * This hook only runs if the CodeEditor extension is enabled.
 	 * @param Title $title
-	 * @param string &$lang: Page language.
+	 * @param string &$lang Page language.
 	 * @return bool
 	 */
 	static function onCodeEditorGetPageLanguage( $title, &$lang ) {
@@ -49,7 +49,7 @@ class JsonSchemaHooks {
 
 	/**
 	 * Registers Schema namespaces and assign edit rights.
-	 * @param array &$namespaces: Mapping of numbers to namespace names.
+	 * @param array &$namespaces Mapping of numbers to namespace names.
 	 * @return bool
 	 */
 	static function onCanonicalNamespaces( array &$namespaces ) {
@@ -68,9 +68,9 @@ class JsonSchemaHooks {
 	 * Validates that the revised contents are valid JSON.
 	 * If not valid, rejects edit with error message.
 	 * @param EditPage $editor
-	 * @param string $text: Content of the revised article.
-	 * @param string &$error: Error message to return.
-	 * @param string $summary: Edit summary provided for edit.
+	 * @param string $text Content of the revised article.
+	 * @param string &$error Error message to return.
+	 * @param string $summary Edit summary provided for edit.
 	 * @return True
 	 */
 	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
@@ -91,8 +91,8 @@ class JsonSchemaHooks {
 
 	/**
 	 * Adds CSS for pretty-printing schema on NS_SCHEMA pages.
-	 * @param &$out OutputPage
-	 * @param &$skin Skin
+	 * @param OutputPage &$out
+	 * @param Skin &$skin
 	 * @return bool
 	 */
 	static function onBeforePageDisplay( &$out, &$skin ) {
