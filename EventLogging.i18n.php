@@ -239,6 +239,14 @@ $messages['mt'] = array(
 	'eventlogging-invalid-json' => 'JSON invalidu',
 );
 
+/** Neapolitan (Nnapulitano)
+ * @author Chelin
+ */
+$messages['nap'] = array(
+	'eventlogging-invalid-json' => 'JSON nun valido',
+	'eventlogging-revision-id' => 'Vversione $1',
+);
+
 /** Dutch (Nederlands)
  * @author Siebrand
  */
