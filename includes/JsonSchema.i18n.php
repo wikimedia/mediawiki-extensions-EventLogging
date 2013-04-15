@@ -83,14 +83,15 @@ $messages['es'] = array(
 
 /** French (français)
  * @author Gomoko
+ * @author Urhixidur
  */
 $messages['fr'] = array(
-	'jsonschema-badidref' => 'Mauvais idref: "$1"',
-	'jsonschema-idconvert' => 'Impossible de convertir var en id: "$1"',
-	'jsonschema-invalidkey' => 'Clé "$1" non valide dans "$2"',
+	'jsonschema-badidref' => 'Mauvais idref : « $1 »',
+	'jsonschema-idconvert' => 'Impossible de convertir var en id : « $1 »',
+	'jsonschema-invalidkey' => 'Clé « $1 » non valide dans « $2 »',
 	'jsonschema-invalidempty' => 'Structure de donnée vide non valide avec ce schéma',
-	'jsonschema-invalidnode' => 'Nœud non valide: "$1" attendu, "$2" obtenu. Chemin: "$3"',
-	'jsonschema-invalid-missingfield' => 'Champ obligatoire "$1" absent',
+	'jsonschema-invalidnode' => 'Nœud non valide : « $1 » attendu, « $2 » obtenu. Chemin : « $3 »',
+	'jsonschema-invalid-missingfield' => 'Champ obligatoire « $1 » absent',
 );
 
 /** Franco-Provençal (arpetan)
