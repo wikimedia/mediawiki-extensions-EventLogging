@@ -12,6 +12,28 @@
 class JsonSchemaHooks {
 
 	/**
+	 * Registers hook and content handlers if the JSON Schema
+	 * namespace is enabled for this site.
+	 * @return bool: Whether hooks and handler were registered.
+	 */
+	static function registerHandlers() {
+		global $wgHooks, $wgContentHandlers, $wgEventLoggingDBname, $wgDBname;
+
+		if ( $wgEventLoggingDBname === $wgDBname ) {
+			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
+
+			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
+			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
+			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
+			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Declares JSON as the code editor language for Schema: pages.
 	 * This hook only runs if the CodeEditor extension is enabled.
 	 * @param Title $title
