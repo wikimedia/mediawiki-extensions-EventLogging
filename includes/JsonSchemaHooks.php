@@ -41,7 +41,7 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	static function onCodeEditorGetPageLanguage( $title, &$lang ) {
-		if ( $title->getNamespace() === NS_SCHEMA ) {
+		if ( $title->inNamespace( NS_SCHEMA ) ) {
 			$lang = 'json';
 		}
 		return true;
