@@ -186,7 +186,6 @@ function efSchemaValidate( $object, $schema = NULL ) {
 $wgAutoloadClasses += array(
 	// Hooks
 	'EventLoggingHooks' => __DIR__ . '/EventLogging.hooks.php',
-	'JsonSchemaHooks'   => __DIR__ . '/includes/JsonSchemaHooks.php',
 
 	// ContentHandler
 	'JsonSchemaContent'        => __DIR__ . '/includes/JsonSchemaContent.php',
@@ -249,7 +248,20 @@ $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoader
 
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
-$wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
+$wgExtensionFunctions[] = function () {
+		global $wgAutoloadClasses, $wgContentHandlers, $wgDBname, $wgEventLoggingDBname, $wgHooks;
+
+		if ( $wgEventLoggingDBname === $wgDBname ) {
+			$wgAutoloadClasses['JsonSchemaHooks'] = __DIR__ . '/includes/JsonSchemaHooks.php',
+
+			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
+
+			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
+			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
+			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
+			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
+		}
+}
 
 
 
