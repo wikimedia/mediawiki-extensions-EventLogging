@@ -49,12 +49,13 @@ $messages['be-tarask'] = array(
 
 /** German (Deutsch)
  * @author Metalhead64
+ * @author Purodha
  */
 $messages['de'] = array(
 	'jsonschema-badidref' => 'idref ungültig: „$1“',
 	'jsonschema-idconvert' => 'var konnte nicht zu id konvertiert werden: „$1“',
 	'jsonschema-invalidkey' => 'Ungültiger Schlüssel „$1“ in „$2“',
-	'jsonschema-invalidempty' => 'Leere Datenstruktur ist mit diesem Schema nicht gültig',
+	'jsonschema-invalidempty' => 'Eine leere Datenstruktur ist mit diesem Schema nicht gültig',
 	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
 	'jsonschema-invalid-missingfield' => 'Es fehlt das erforderliche Feld „$1“.',
 );
@@ -180,6 +181,15 @@ $messages['ko'] = array(
 	'jsonschema-invalid-missingfield' => '"$1" 필수 필드가 없습니다',
 );
 
+/** Colognian (Ripoarisch)
+ * @author Purodha
+ */
+$messages['ksh'] = array(
+	'jsonschema-invalidkey' => 'Dä Schlößel „$1“ en „$2“ es nit jöltesch.',
+	'jsonschema-invalidempty' => 'En läddeje Schtroktor vun Daate en met heh dämm Scheema nit zohjelohße.',
+	'jsonschema-invalid-missingfield' => 'Dat nüüdeje Fäld „$1“ fäählt.',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
@@ -190,6 +200,18 @@ $messages['mk'] = array(
 	'jsonschema-invalidempty' => 'Празната податочна структура не важи за оваа шема',
 	'jsonschema-invalidnode' => 'Неважечки јазол: очекував „$1“, а добив „$2“. Патека: „$3“',
 	'jsonschema-invalid-missingfield' => 'Недостасува задолжителното поле „$1“',
+);
+
+/** Malay (Bahasa Melayu)
+ * @author Anakmalaysia
+ */
+$messages['ms'] = array(
+	'jsonschema-badidref' => 'Idref tak elok: "$1"',
+	'jsonschema-idconvert' => 'Var tidak boleh ditukar ke id: "$1"',
+	'jsonschema-invalidkey' => 'Kunci tidak sah "$1" dalam "$2"',
+	'jsonschema-invalidempty' => 'Struktur data kosong tidak sah dengan skema ini',
+	'jsonschema-invalidnode' => 'Nod tidak sah: "$1" diharap, "$2" diperoleh. Laluan: "$3"',
+	'jsonschema-invalid-missingfield' => 'Medan wajib "$1" tertinggal',
 );
 
 /** Dutch (Nederlands)
