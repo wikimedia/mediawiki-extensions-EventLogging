@@ -28,6 +28,7 @@
 .mw-json-schema .value {
 	background-color: #dcfae3;
 	font-family: 'Bitstream Vera Sans Mono', 'DejaVu Sans Mono', Monaco, Courier, monospace;
+	white-space: pre-wrap;
 }
 
 .mw-json-schema tr {
