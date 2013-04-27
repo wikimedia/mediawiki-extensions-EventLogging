@@ -240,7 +240,7 @@
 		 *
 		 * @method dispatch
 		 * @param {Object} data Payload to send.
-		 * @return {jQuery.Deferred} Promise object.
+		 * @return {jQuery.Promise} jQuery Promise object for the logging call
 		 */
 		dispatch: function ( data ) {
 			var beacon = document.createElement( 'img' ),
@@ -273,7 +273,7 @@
 		 * @method logEvent
 		 * @param {String} schemaName Canonical schema name.
 		 * @param {Object} eventInstance Event instance.
-		 * @return {jQuery.Deferred} Promise object.
+		 * @return {jQuery.Promise} jQuery Promise object for the logging call
 		 */
 		logEvent: function ( schemaName, eventInstance ) {
 			return self.dispatch( self.encapsulate( schemaName, eventInstance ) );
