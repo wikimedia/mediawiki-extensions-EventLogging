@@ -34,7 +34,7 @@ NO_DB_PROPERTIES = ('recvFrom', 'revision', 'schema', 'seqId')
 #: A dictionary mapping database engine names to table defaults.
 ENGINE_TABLE_OPTIONS = {
     'mysql': {
-        'mysql_charset': 'utf8',
+        'mysql_charset': 'utf8mb4',
         'mysql_engine': 'InnoDB'
     }
 }
@@ -63,8 +63,13 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
+#: Maximum length for string and string-like types. Because InnoDB limits index
+#: columns to 767 bytes, the maximum length for a utf8mb4 column (which
+#: reserves up to four bytes per character) is 191 (191 * 4 = 764).
+STRING_MAX_LEN = 191
+
 #: Default table column definition, to be overridden by mappers below.
-COLUMN_DEFAULTS = {'type_': sqlalchemy.Unicode(255)}
+COLUMN_DEFAULTS = {'type_': sqlalchemy.Unicode(STRING_MAX_LEN)}
 
 #: Mapping of JSON Schema attributes to valid values. Each value maps to
 #: a dictionary of options. The options are compounded into a single
@@ -81,7 +86,7 @@ mappers = collections.OrderedDict((
         'boolean': {'type_': sqlalchemy.Boolean},
         'integer': {'type_': sqlalchemy.Integer},
         'number': {'type_': sqlalchemy.Float},
-        'string': {'type_': sqlalchemy.Unicode(255)},
+        'string': {'type_': sqlalchemy.Unicode(STRING_MAX_LEN)},
     }),
     ('format', {
         'utc-millisec': {'type_': MediaWikiTimestamp, 'index': True},

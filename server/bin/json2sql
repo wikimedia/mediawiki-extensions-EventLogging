@@ -42,6 +42,10 @@ args = parser.parse_args()
 logging.basicConfig(stream=sys.stderr, level=args.loglevel)
 logging.getLogger('sqlalchemy.engine').setLevel(args.loglevel)
 
+# XXX(ori, 28-Apr-2013): this coerces 'utf8' client encoding to 'utf8mb4';
+# required only until change XXX is merged.
+if db.endswith('utf8'):
+    db = db + 'mb4'
 meta = sqlalchemy.MetaData(args.db)
 
 sub = eventlogging.zmq_subscribe(args.input, sid=args.sid, json=True)
