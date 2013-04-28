@@ -34,7 +34,7 @@ NO_DB_PROPERTIES = ('recvFrom', 'revision', 'schema', 'seqId')
 #: A dictionary mapping database engine names to table defaults.
 ENGINE_TABLE_OPTIONS = {
     'mysql': {
-        'mysql_charset': 'utf8mb4',
+        'mysql_charset': 'utf8',
         'mysql_engine': 'InnoDB'
     }
 }
