@@ -247,6 +247,15 @@ $messages['nap'] = array(
 	'eventlogging-revision-id' => 'Vversione $1',
 );
 
+/** Norwegian Bokmål (norsk bokmål)
+ * @author Danmichaelo
+ */
+$messages['nb'] = array(
+	'eventlogging-desc' => 'Rammeverk for å logge hendelser fra klientside-kode',
+	'eventlogging-invalid-json' => 'Ugyldig JSON',
+	'eventlogging-revision-id' => 'Revisjon $1',
+);
+
 /** Dutch (Nederlands)
  * @author Siebrand
  */
