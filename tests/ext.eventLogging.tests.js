@@ -128,19 +128,24 @@
 	QUnit.asyncTest( 'setDefaults', 2, function ( assert ) {
 
 		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
+			article: '[[1960 Valdivia earthquake]]',
 			epicenter: 'Valdivia'
-		} ), { epicenter: 'Valdivia' }, 'setDefaults returns defaults' );
+		} ), {
+			article: '[[1960 Valdivia earthquake]]',
+			epicenter: 'Valdivia'
+		}, 'setDefaults returns defaults' );
 
 		mw.eventLog.logEvent( 'earthquake', {
+			article: '[[1575 Valdivia earthquake]]',
 			magnitude: 9.5
 		} ).always( function ( e ) {
 			assert.deepEqual( e.event, {
+				article: '[[1575 Valdivia earthquake]]',
 				epicenter: 'Valdivia',
 				magnitude: 9.5
 			}, 'Logged event is annotated with defaults' );
 			QUnit.start();
 		} );
-
 	} );
 
 

@@ -191,7 +191,7 @@
 		 *
 		 * @method setDefaults
 		 * @param {String} schemaName Canonical schema name.
-		 * @param {Object|null} schemaDefaults Defaults, or null to clear.
+		 * @param {Object} schemaDefaults Default values for schema's events.
 		 * @return {Object} Updated defaults for schema.
 		 */
 		setDefaults: function ( schemaName, schemaDefaults ) {
@@ -221,7 +221,7 @@
 				schema = self.declareSchema( schemaName );
 			}
 
-			event = $.extend( true, {}, event, schema.defaults );
+			event = $.extend( true, {}, schema.defaults, event );
 
 			return {
 				event            : event,
