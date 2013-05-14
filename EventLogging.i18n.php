@@ -16,6 +16,9 @@ $messages['en'] = array(
 	'eventlogging-desc' => 'Framework for logging events from client-side code',
 	'eventlogging-invalid-json' => 'Invalid JSON',
 	'eventlogging-revision-id' => 'Revision $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP logging',
+	'eventlogging-code-sample-module-setup' => 'PHP setup for JavaScript logging',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript logging',
 );
 
 /** Message documentation (Message documentation)
@@ -28,6 +31,9 @@ $messages['qqq'] = array(
 	'eventlogging-invalid-json' => 'Error shown when an editor attempts to save a Schema article edit that is not valid JSON',
 	'eventlogging-revision-id' => 'The numeric ID of the displayed revision, shown in the page subtitle.
 {{Identical|Revision}}',
+	'eventlogging-code-sample-logging-on-server-side' => 'Code sample for logging a server-side event',
+	'eventlogging-code-sample-module-setup' => 'Code sample for setting up a ResourceLoader module',
+	'eventlogging-code-sample-logging-on-client-side' => 'Code sample for logging a client-side event',
 );
 
 /** Asturian (asturianu)

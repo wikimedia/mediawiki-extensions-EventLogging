@@ -97,18 +97,30 @@ class JsonSchemaContent extends TextContent {
 	 * use a schema.
 	 * @param string $dbKey DB key of schema article
 	 * @param int $revId Revision ID of schema article
-	 * @return array: Array mapping language names to source code
+	 * @return array: Nested array with each sub-array having a language, header
+	 *  (message key), and code
 	 */
 	public function getCodeSamples( $dbKey, $revId ) {
 		return array(
-			'PHP' =>
-				"\$wgResourceModules[ 'schema.{$dbKey}' ] = array(\n" .
+			array(
+				'language' => 'php',
+				'header' => 'eventlogging-code-sample-logging-on-server-side',
+				'code' => "efLogServerSideEvent( '$dbKey', $revId, \$event );",
+			),
+			array(
+				'language' => 'php',
+				'header' => 'eventlogging-code-sample-module-setup',
+				'code' => "\$wgResourceModules[ 'schema.{$dbKey}' ] = array(\n" .
 				"	'class'  => 'ResourceLoaderSchemaModule',\n" .
 				"	'schema' => '{$dbKey}',\n" .
 				"	'revision' => {$revId},\n" .
 				");",
-			'JavaScript' =>
-				"mw.eventLog.logEvent( '{$dbKey}', { /* ... */ } );"
+			),
+			array(
+				'language' => 'javascript',
+				'header' => 'eventlogging-code-sample-logging-on-client-side',
+				'code' => "mw.eventLog.logEvent( '{$dbKey}', { /* ... */ } );",
+			),
 		);
 	}
 
@@ -134,10 +146,15 @@ class JsonSchemaContent extends TextContent {
 		if ( $revId !== null && class_exists( 'SyntaxHighlight_GeSHi' ) ) {
 			$html = '';
 			$highlighter = new SyntaxHighlight_GeSHi();
-			foreach( self::getCodeSamples( $title->getDBkey(), $revId ) as $lang => $code ) {
+			foreach( self::getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
+				$lang = $sample['language'];
+				$code = $sample['code'];
 				$geshi = $highlighter->prepare( $code, $lang );
 				$out->addHeadItem( $highlighter::buildHeadItem( $geshi ), "source-$lang" );
-				$html .= Xml::tags( 'h2', array(), $lang ) . $geshi->parse_code();
+				$html .= Html::element( 'h2',
+					array(),
+					wfMessage( $sample['header'] )->text()
+				) . $geshi->parse_code();
 			}
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
 			$html = Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-glyph' ), '&#xe714;' ) .
