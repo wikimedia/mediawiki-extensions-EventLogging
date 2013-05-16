@@ -78,6 +78,9 @@ $messages['de'] = array(
 	'eventlogging-desc' => 'Ergänzt ein Framework zum Protokollieren von Aktionen von clientseitigem Code',
 	'eventlogging-invalid-json' => 'Ungültiges JSON',
 	'eventlogging-revision-id' => 'Version $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP-Protokollierung',
+	'eventlogging-code-sample-module-setup' => 'PHP-Setup für JavaScript-Protokollierung',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript-Protokollierung',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -125,6 +128,9 @@ $messages['fr'] = array(
 	'eventlogging-desc' => 'Structure des événements de trace pour le code côté client',
 	'eventlogging-invalid-json' => 'JSON non valide',
 	'eventlogging-revision-id' => 'Révision $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Journalisation PHP',
+	'eventlogging-code-sample-module-setup' => 'Paramétrage de PHP pour la journalisation JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Journalisation JavaScript',
 );
 
 /** Franco-Provençal (arpetan)
@@ -183,6 +189,9 @@ $messages['it'] = array(
 	'eventlogging-desc' => 'Framework per la registrazione degli eventi lato client',
 	'eventlogging-invalid-json' => 'JSON non valido',
 	'eventlogging-revision-id' => 'Versione $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Registrazione PHP',
+	'eventlogging-code-sample-module-setup' => 'Installazione PHP per la registrazione JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Registrazione JavaScript',
 );
 
 /** Japanese (日本語)
@@ -311,6 +320,9 @@ $messages['roa-tara'] = array(
 	'eventlogging-desc' => "Framework per traccià l'evende da 'u codece late client",
 	'eventlogging-invalid-json' => 'JSON invalide',
 	'eventlogging-revision-id' => 'Revisione $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Tracciature de PHP',
+	'eventlogging-code-sample-module-setup' => "'Mbostaziune de PHP pu tracciamende JavaScript",
+	'eventlogging-code-sample-logging-on-client-side' => 'Tracciamende JavaScript',
 );
 
 /** Russian (русский)
