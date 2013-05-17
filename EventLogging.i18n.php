@@ -236,6 +236,9 @@ $messages['mk'] = array(
 	'eventlogging-desc' => 'Рамки за видење евиденција на настани од кодот на клиентска страна',
 	'eventlogging-invalid-json' => 'Неважечки JSON',
 	'eventlogging-revision-id' => 'Ревизија $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP-заведување',
+	'eventlogging-code-sample-module-setup' => 'PHP-поставки за JavaScript-заведување',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript-заведување',
 );
 
 /** Malay (Bahasa Melayu)
