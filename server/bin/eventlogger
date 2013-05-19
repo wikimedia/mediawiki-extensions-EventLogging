@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+"""
+  eventlogger
+  -----------
+  Consumes an event stream and writes it to a data store. Input stream and
+  target data store are specified using URIs.
+
+  usage: eventlogger [-h] input output
+
+  positional arguments:
+    input       URI of raw input stream
+    output      URI of output stream
+
+  optional arguments:
+    -h, --help  show this help message and exit
+
+  :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
+  :license: GNU General Public Licence 2.0 or later
+
+"""
+from __future__ import unicode_literals
+
+import argparse
+import logging
+import sys
+
+import eventlogging
+
+
+log = logging.getLogger('EventLogging')
+log.setLevel(logging.DEBUG)
+log.addHandler(logging.StreamHandler(sys.stderr))
+
+ap = argparse.ArgumentParser(description='EventLogger')
+ap.add_argument('input', help='URI of raw input stream')
+ap.add_argument('output', help='URI of output stream')
+args = ap.parse_args()
+
+log.info('Driving %s -> %s..', args.input, args.output)
+eventlogging.drive(args.input, args.output)

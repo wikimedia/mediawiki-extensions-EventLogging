@@ -76,6 +76,7 @@ def heading(caption=None):
         return 74 * '-'
     return '-- {:-<95}'.format(colorize('*yellow*', caption) + ' ')
 
+
 def prepare_response(status, headers):
     """Encode a dictionary of HTTP headers to a list of tuples
     containing bytes."""

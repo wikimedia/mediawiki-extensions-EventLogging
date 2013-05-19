@@ -18,7 +18,7 @@ from .schema import get_schema
 from .compat import items
 
 
-__all__ = ('store_event',)
+__all__ = ('store_sql_event',)
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
 #: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
@@ -170,7 +170,7 @@ def declare_table(meta, scid):
     return table
 
 
-def store_event(meta, event):
+def store_sql_event(meta, event):
     """Store an event in the database."""
     scid = (event['schema'], event['revision'])
     table = get_table(meta, scid)

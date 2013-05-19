@@ -24,7 +24,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         """If an attempt is made to store an event for which no table
         exists, the schema is automatically retrieved and a suitable
         table generated."""
-        eventlogging.store_event(self.meta, self.event)
+        eventlogging.store_sql_event(self.meta, self.event)
         self.assertIn('TestSchema_123', self.meta.tables)
 
     def test_column_names(self):
@@ -51,7 +51,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
     def test_encoding(self):
         """Timestamps and unicode strings are correctly encoded."""
-        eventlogging.jrm.store_event(self.meta, self.event)
+        eventlogging.jrm.store_sql_event(self.meta, self.event)
         table = eventlogging.jrm.get_table(self.meta, TEST_SCHEMA_SCID)
         row = table.select().execute().fetchone()
         self.assertEqual(row['event_value'], '☆ 彡')
@@ -64,7 +64,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
     def test_reflection(self):
         """Tables which exist in the database but not in the MetaData cache are
         correctly reflected."""
-        eventlogging.store_event(self.meta, self.event)
+        eventlogging.store_sql_event(self.meta, self.event)
 
         # Tell Python to forget everything it knows about this database
         # by purging ``MetaData``. The actual data in the database is
@@ -79,5 +79,5 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # The ``checkfirst`` arg to :func:`sqlalchemy.Table.create`
         # will ensure that we don't attempt to CREATE TABLE on the
         # already-existing table:
-        eventlogging.store_event(self.meta, self.event)
+        eventlogging.store_sql_event(self.meta, self.event)
         self.assertIn('TestSchema_123', self.meta.tables)

@@ -36,11 +36,12 @@ import hashlib
 import os
 import re
 import time
+import uuid
 
-from .compat import json, unquote_plus
+from .compat import json, unquote_plus, uuid5
 
 
-__all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow')
+__all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow', 'capsule_uuid')
 
 #: Salt value for hashing IPs. Because this value is generated at
 #: runtime, IPs cannot be compared across restarts. This limitation is
@@ -53,6 +54,31 @@ salt = os.urandom(16)
 #: Format string (as would be passed to `strftime`) for timestamps in
 #: NCSA Common Log Format.
 NCSA_FORMAT = '%Y-%m-%dT%H:%M:%S'
+
+#: Formats event capsule objects into URLs using the combination of
+#: origin hostname, sequence ID, and timestamp. This combination is
+#: guaranteed to be unique. Example::
+#:
+#:   event://vanadium.eqiad.wmnet/?seqId=438763&timestamp=1359702955
+#:
+EVENTLOGGING_URL_FORMAT = (
+    'event://%(recvFrom)s/?seqId=%(seqId)s&timestamp=%(timestamp).10s')
+
+
+def capsule_uuid(capsule):
+    """Generate a UUID for a capsule object.
+
+    Gets a unique URI for the capsule using `EVENTLOGGING_URL_FORMAT`
+    and uses it to generate a UUID5 in the URL namespace.
+
+    ..seealso:: `RFC 4122 <http://www.ietf.org/rfc/rfc4122.txt>`_.
+
+    :param capsule: A capsule object (or any dictionary that defines
+      `recvFrom`, `seqId`, and `timestamp`).
+
+    """
+    id = uuid5(uuid.NAMESPACE_URL, EVENTLOGGING_URL_FORMAT % capsule)
+    return '%032x' % id.int
 
 
 def ncsa_to_epoch(ncsa_ts):
@@ -129,6 +155,7 @@ class LogParser(object):
         keys = sorted(match.groupdict(), key=match.start)
         event = {k: f(match.group(k)) for f, k in zip(self.casters, keys)}
         event.update(event.pop('capsule'))
+        event['uuid'] = capsule_uuid(event)
         return event
 
     def __repr__(self):
