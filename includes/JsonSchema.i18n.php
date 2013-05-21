@@ -185,6 +185,7 @@ $messages['ko'] = array(
  * @author Purodha
  */
 $messages['ksh'] = array(
+	'jsonschema-idconvert' => 'Mer künne kein <code lang="en">var</code> en en Kännong wandelle: „$1“',
 	'jsonschema-invalidkey' => 'Dä Schlößel „$1“ en „$2“ es nit jöltesch.',
 	'jsonschema-invalidempty' => 'En läddeje Schtroktor vun Daate en met heh dämm Scheema nit zohjelohße.',
 	'jsonschema-invalid-missingfield' => 'Dat nüüdeje Fäld „$1“ fäählt.',

@@ -54,6 +54,14 @@ $messages['be-tarask'] = array(
 	'eventlogging-revision-id' => 'Вэрсія $1',
 );
 
+/** Bengali (বাংলা)
+ * @author Aftab1995
+ */
+$messages['bn'] = array(
+	'eventlogging-code-sample-logging-on-server-side' => 'পিএইচপি লগিং',
+	'eventlogging-code-sample-logging-on-client-side' => 'জাভাস্ক্রিপ্ট লগিং',
+);
+
 /** Breton (brezhoneg)
  * @author Fohanno
  */
@@ -75,7 +83,7 @@ $messages['cs'] = array(
  * @author Metalhead64
  */
 $messages['de'] = array(
-	'eventlogging-desc' => 'Ergänzt ein Framework zum Protokollieren von Aktionen von clientseitigem Code',
+	'eventlogging-desc' => 'Ergänzt ein Framework zum Protokollieren von Aktionen clientseitigen Codes',
 	'eventlogging-invalid-json' => 'Ungültiges JSON',
 	'eventlogging-revision-id' => 'Version $1',
 	'eventlogging-code-sample-logging-on-server-side' => 'PHP-Protokollierung',
@@ -147,6 +155,9 @@ $messages['gl'] = array(
 	'eventlogging-desc' => 'Estrutura para rexistrar os eventos do código do lado do cliente',
 	'eventlogging-invalid-json' => 'JSON non válido',
 	'eventlogging-revision-id' => 'Revisión $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Rexistro PHP',
+	'eventlogging-code-sample-module-setup' => 'Configuración PHP para o rexistro de JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Rexistro de JavaScript',
 );
 
 /** Hebrew (עברית)
@@ -156,6 +167,9 @@ $messages['he'] = array(
 	'eventlogging-desc' => 'מסגרת לרישום אירועים מקוד בצד הלקוח',
 	'eventlogging-invalid-json' => 'נתוני JSON בלתי־תקינים',
 	'eventlogging-revision-id' => 'גרסה $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'רישום אירועי PHP',
+	'eventlogging-code-sample-module-setup' => 'הגדרות PHP לרישום אירועי JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'רישום אירועי JavaScript',
 );
 
 /** Upper Sorbian (hornjoserbsce)
@@ -281,6 +295,9 @@ $messages['nl'] = array(
 	'eventlogging-desc' => 'Framework voor het vastleggen van gebeurtenissen aan de clientkant',
 	'eventlogging-invalid-json' => 'Ongeldige JSON',
 	'eventlogging-revision-id' => 'Versie $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Logboekregistratie voor PHP',
+	'eventlogging-code-sample-module-setup' => 'PHP-instellingen voor logboekregistratie voor JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Logboekregistratie voor JavaScript',
 );
 
 /** Polish (polski)
@@ -368,6 +385,9 @@ $messages['vi'] = array(
 	'eventlogging-desc' => 'Khuôn khổ ghi các sự kiện trong mã nguồn trình khách',
 	'eventlogging-invalid-json' => 'JSON không hợp lệ',
 	'eventlogging-revision-id' => 'Phiên bản $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Ghi nhật trình trong PHP',
+	'eventlogging-code-sample-module-setup' => 'Thiết lập PHP để ghi nhật trình trong JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Ghi nhật trình trong JavaScript',
 );
 
 /** Simplified Chinese (中文（简体）‎)
