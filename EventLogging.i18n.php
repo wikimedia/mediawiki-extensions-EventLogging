@@ -376,6 +376,9 @@ $messages['uk'] = array(
 	'eventlogging-desc' => 'Фреймворк, для додання подій до журналу з клієнтського коду',
 	'eventlogging-invalid-json' => 'Неправильний JSON',
 	'eventlogging-revision-id' => 'Версія $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Запис журналу PHP',
+	'eventlogging-code-sample-module-setup' => 'Установка PHP для запису журналу JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Запис журналу JavaScript',
 );
 
 /** Vietnamese (Tiếng Việt)
