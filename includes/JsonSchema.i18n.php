@@ -245,6 +245,7 @@ $messages['pms'] = array(
  */
 $messages['roa-tara'] = array(
 	'jsonschema-badidref' => 'Idref cattive: "$1"',
+	'jsonschema-invalidkey' => 'Chiaev invalide "$1" jndr\'à "$2"',
 );
 
 /** Russian (русский)
