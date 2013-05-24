@@ -400,4 +400,6 @@ $messages['zh-hans'] = array(
 	'eventlogging-desc' => '从客户端代码记录事件日志的框架',
 	'eventlogging-invalid-json' => '无效的JSON',
 	'eventlogging-revision-id' => '修订$1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP 日志',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript 日志',
 );
