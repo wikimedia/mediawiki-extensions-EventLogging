@@ -43,6 +43,9 @@ $messages['ast'] = array(
 	'eventlogging-desc' => 'Estructura para rexistrar socesos del códigu del llau del cliente',
 	'eventlogging-invalid-json' => 'JSON inválidu',
 	'eventlogging-revision-id' => 'Revisión $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Rexistru PHP',
+	'eventlogging-code-sample-module-setup' => 'Configuración PHP pal rexistru de JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Rexistru de JavaScript',
 );
 
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
