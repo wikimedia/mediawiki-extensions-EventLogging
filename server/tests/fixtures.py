@@ -13,6 +13,7 @@ import io
 import signal
 
 import eventlogging
+import eventlogging.base
 import sqlalchemy
 
 
@@ -189,6 +190,14 @@ class HttpSchemaTestMixin(object):
     def urlopen_stub(self, url):
         """Test stub for `urlopen`."""
         return io.BytesIO(self.http_resp)
+
+
+class HandlerTestMixin(object):
+    def setUp(self):
+        self.orig_writers = eventlogging.base._writers.copy()
+        eventlogging.base._writers.clear()
+        self.orig_readers = eventlogging.base._readers.copy()
+        eventlogging.base._readers.clear()
 
 
 class TimeoutTestMixin(object):

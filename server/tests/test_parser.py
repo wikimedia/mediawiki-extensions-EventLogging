@@ -40,6 +40,7 @@ class LogParserTestCase(unittest.TestCase):
                'wikipedia.org%22%7D; cp3022.esams.wikimedia.org 132073 2013'
                '-01-19T23:16:38 86.149.229.149')
         parsed = {
+            'uuid': '799341a01ba957c79b15dc4d2d950864',
             'recvFrom': 'cp3022.esams.wikimedia.org',
             'clientValidated': True,
             'wiki': 'testwiki',
@@ -63,6 +64,7 @@ class LogParserTestCase(unittest.TestCase):
                'ma":"FakeSchema","clientValidated":true,"wiki":"enwiki","eve'
                'nt":{"action":"save\\u0020page"},"recvFrom":"fenari"}')
         parsed = {
+            'uuid': '67cc2c1afa5752ba80bbbd7c5fc41f28',
             'recvFrom': 'fenari',
             'timestamp': 1358627115,
             'wiki': 'enwiki',

@@ -33,12 +33,13 @@ PY3 = sys.version_info[0] == 3
 
 if PY3:
     items = operator.methodcaller('items')
-    from urllib.parse import unquote_to_bytes as unquote
+    from urllib.parse import unquote_to_bytes as unquote, urlparse, parse_qsl
     from urllib.request import urlopen
 else:
     items = operator.methodcaller('iteritems')
     from urllib2 import urlopen
     from urllib import unquote
+    from urlparse import urlparse, parse_qsl
 
 
 def unquote_plus(unicode):

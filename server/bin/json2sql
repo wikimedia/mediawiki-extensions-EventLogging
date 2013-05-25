@@ -51,6 +51,6 @@ while 1:
     try:
         for ev in sub:
             logging.info(ev)
-            eventlogging.store_event(meta, ev)
+            eventlogging.store_sql_event(meta, ev)
     except Exception:
         logging.exception('Unable to insert event: %s', ev)
