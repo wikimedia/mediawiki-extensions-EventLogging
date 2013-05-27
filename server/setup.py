@@ -45,13 +45,9 @@ setup(
     scripts=(
         'bin/eventlogger',
         'bin/eventlogging-devserver',
-        'bin/json2sql',
-        'bin/json2mongo',
         'bin/log2json',
         'bin/seqmon',
-        'bin/sv-alerts',
         'bin/udp2zmq',
-        'bin/zmq2log',
         'bin/zmux',
     ),
     zip_safe=False,

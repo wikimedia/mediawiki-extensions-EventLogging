@@ -9,10 +9,6 @@
 """
 from __future__ import unicode_literals
 
-import logging
-
-from .base import get_reader, get_writer
-
 import zmq
 
 
@@ -28,10 +24,3 @@ def zmq_subscribe(endpoint, topic='', sid=None, json=False):
 
     while 1:
         yield recv()
-
-
-def drive(in_url, out_url):
-    reader = get_reader(in_url)
-    writer = get_writer(out_url)
-    for event in reader:
-        writer.send(event)

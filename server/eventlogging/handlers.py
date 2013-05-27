@@ -1,19 +1,48 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+  eventlogging.handlers
+  ~~~~~~~~~~~~~~~~~~~~~
+
+  This class contains the set of event readers and event writers that ship with
+  EventLogging. Event readers are generators that yield successive events from
+  a stream. Event writers are coroutines that receive events and handle them
+  somehow. Both readers and writers are designed to be configurable using URIs.
+  :func:`eventlogging.drive` pumps data through a reader-writer pair.
+
+"""
 import datetime
+import io
 import json
 import logging
 import logging.handlers
+import socket
+import sys
 
-# import pymongo
+import pymongo
 import sqlalchemy
 import zmq
 
-from .jrm import store_sql_event
-from .base import writes, reads
-from .util import strip_qs
+from .factory import writes, reads, mapper
 from .compat import urlparse
+from .jrm import store_sql_event
+from .util import strip_qs
 
+
+# Mappers
+
+@mapper
+def decode_json(stream):
+    return (json.loads(val) for val in stream)
+
+
+@mapper
+def count(stream):
+    return (str(id) + '\t' + val for id, val in enumerate(stream))
+
+
+#
+# Writers
+#
 
 @writes('mongodb')
 def mongodb_writer(uri, **kwargs):
@@ -40,7 +69,7 @@ def sql_writer(uri, **kwargs):
 
 
 @writes('file')
-def log_writer(uri, **kwargs):
+def log_writer(uri):
     parsed = urlparse(uri)
     filename = parsed.path
     handler = logging.handlers.WatchedFileHandler(filename)
@@ -54,7 +83,7 @@ def log_writer(uri, **kwargs):
 
 
 @writes('tcp')
-def zmq_publisher(uri, **kwargs):
+def zmq_publisher(uri):
     context = zmq.Context.instance()
     pub = context.socket(zmq.PUB)
     pub.bind(uri)
@@ -65,14 +94,21 @@ def zmq_publisher(uri, **kwargs):
 
 
 @writes('stdout')
-def stdout_writer(uri, **kwargs):
+def stdout_writer():
     while 1:
         event = (yield)
         print(json.dumps(event, sort_keys=True, indent=4))
 
 
+@reads('stdin')
+def stdin_reader(encoding='utf8', errors='ignore'):
+    return io.open(sys.stdin.fileno(), encoding=encoding, errors=errors)
+
+
+# Readers
+
 @reads('tcp')
-def zmq_subscriber(uri, socket_id=None, topic='', **kwargs):
+def zmq_subscriber(uri, socket_id=None, topic=''):
     context = zmq.Context.instance()
     sub = context.socket(zmq.SUB)
     if socket_id is not None:
@@ -81,4 +117,16 @@ def zmq_subscriber(uri, socket_id=None, topic='', **kwargs):
     sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
 
     while 1:
-        yield sub.recv_json()
+        yield sub.recv_unicode()
+
+
+UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
+
+
+@reads('udp')
+def udp_reader(uri):
+    parsed = urlparse(uri)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(parsed.netloc.split(':'))
+    return io.open(sock.fileno(), buffering=UDP_BUFSIZE, encoding='utf8')

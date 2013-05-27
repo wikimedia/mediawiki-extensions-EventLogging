@@ -11,7 +11,7 @@ from __future__ import unicode_literals
 import unittest
 
 import eventlogging
-import eventlogging.base
+import eventlogging.factory
 
 
 def echo_writer(uri, **kwargs):
@@ -36,8 +36,8 @@ class HandlerFactoryTestCase(unittest.TestCase):
 
     def tearDown(self):
         """Unregister test handlers."""
-        eventlogging.base._writers.pop('test')
-        eventlogging.base._readers.pop('test')
+        eventlogging.factory._writers.pop('test')
+        eventlogging.factory._readers.pop('test')
 
     def test_get_writer(self):
         """``get_writer`` returns a scheme-appropriate primed coroutine."""

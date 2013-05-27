@@ -6,8 +6,6 @@
   This module provides a set of discrete and generic helper functions.
 
 """
-import re
-
 from .compat import parse_qsl
 
 

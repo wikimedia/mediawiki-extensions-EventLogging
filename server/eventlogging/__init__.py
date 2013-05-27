@@ -16,8 +16,8 @@
 """
 # flake8: noqa
 
-from .base import *
 from .compat import *
+from .factory import *
 from .handlers import *
 from .jrm import *
 from .parse import *
