@@ -265,6 +265,9 @@ $messages['ms'] = array(
 	'eventlogging-desc' => 'Kerangka untuk mergelog peristiwa dari kod pihak pelanggan',
 	'eventlogging-invalid-json' => 'JSON tidak sah',
 	'eventlogging-revision-id' => 'Semakan $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Log PHP',
+	'eventlogging-code-sample-module-setup' => 'Persediaan PHP untuk log JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Log JavaScript',
 );
 
 /** Maltese (Malti)
