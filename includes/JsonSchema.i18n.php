@@ -35,6 +35,18 @@ $messages['qqq'] = array(
 	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
 );
 
+/** Asturian (asturianu)
+ * @author Xuacu
+ */
+$messages['ast'] = array(
+	'jsonschema-badidref' => 'idref incorreuta: "$1"',
+	'jsonschema-idconvert' => 'Nun pue convertise var a id: "$1"',
+	'jsonschema-invalidkey' => 'Clave "$1" inválida en "$2"',
+	'jsonschema-invalidempty' => 'Estructura de datos balera inválida con esti esquema',
+	'jsonschema-invalidnode' => 'Nodu inválidu: Esperabase "$1"; recibióse "$2". Camín: "$3"',
+	'jsonschema-invalid-missingfield' => 'Falta\'l campu obligatoriu "$1"',
+);
+
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
  * @author Wizardist
  */
