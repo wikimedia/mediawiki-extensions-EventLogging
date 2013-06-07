@@ -175,7 +175,8 @@
 				}
 
 				if ( desc[ 'enum' ] && $.inArray( val, desc[ 'enum' ] ) === -1 ) {
-					throw new ValidationError( 'Value "' + val + '" not in enum ' + $.toJSON( desc[ 'enum' ] ) );
+					throw new ValidationError( 'Value "' + val + '" for property: ' + prop +
+						' not in enum ' + $.toJSON( desc[ 'enum' ] ) );
 				}
 			} );
 
