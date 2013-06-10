@@ -311,9 +311,15 @@ $messages['nl'] = array(
 
 /** Polish (polski)
  * @author Odie2
+ * @author Woytecr
  */
 $messages['pl'] = array(
+	'eventlogging-desc' => 'Framework logowania akcji z kodu po stronie klienta',
 	'eventlogging-invalid-json' => 'Nieprawidłowy JSON',
+	'eventlogging-revision-id' => 'Wersja $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Logowanie PHP',
+	'eventlogging-code-sample-module-setup' => 'Ustawienia PHP dla logowania JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Logowanie JavaScript',
 );
 
 /** Piedmontese (Piemontèis)
@@ -411,4 +417,16 @@ $messages['zh-hans'] = array(
 	'eventlogging-revision-id' => '修订$1',
 	'eventlogging-code-sample-logging-on-server-side' => 'PHP 日志',
 	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript 日志',
+);
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
+ */
+$messages['zh-hant'] = array(
+	'eventlogging-desc' => '從用戶端代碼記錄事件日誌的框架',
+	'eventlogging-invalid-json' => '無效的JSON',
+	'eventlogging-revision-id' => '修訂版本：$1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP日誌',
+	'eventlogging-code-sample-module-setup' => 'PHP設定以作JavaScript日誌',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript日誌',
 );
