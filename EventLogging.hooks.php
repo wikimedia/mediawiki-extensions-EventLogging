@@ -36,48 +36,6 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param User $user The User object that was created.
-	 * @param boolean $byEmail The form has a [By e-mail] button.
-	 * @return bool True
-	 */
-	public static function onAddNewAccount( $user, $byEmail ) {
-		global $wgRequest, $wgUser;
-
-		$userId = $user->getId();
-		$creatorUserId = $wgUser->getId();
-
-		// MediaWiki allows existing users to create accounts on behalf
-		// of others. In such cases the ID of the newly-created user and
-		// the ID of the user making this web request are different.
-		$isSelfMade = ( $userId && $userId === $creatorUserId );
-
-		$displayMobile = class_exists( 'MobileContext' ) &&
-			MobileContext::singleton()->shouldDisplayMobileView();
-
-		$event = array(
-			'token' => $wgRequest->getCookie( 'mediaWiki.user.id', '', '' ),
-			'userId' => $userId,
-			'userName' => $user->getName(),
-			'isSelfMade' => $isSelfMade,
-			'userBuckets' => $wgRequest->getCookie( 'userbuckets', '', '' ),
-			'displayMobile' => $displayMobile,
-		);
-
-		$returnTo = $wgRequest->getVal( 'returnto' );
-		if ( $returnTo !== null ) {
-			$event[ 'returnTo' ] = $returnTo;
-		}
-
-		$returnToQuery = $wgRequest->getVal( 'returntoquery' );
-		if ( $returnToQuery !== null ) {
-			$event[ 'returnToQuery' ] = $returnToQuery;
-		}
-
-		efLogServerSideEvent( 'ServerSideAccountCreation', 5233795, $event );
-		return true;
-	}
-
-	/**
 	 * Log server-side event on successful page edit.
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/PageContentSaveComplete
 	 * @see https://meta.wikimedia.org/wiki/Schema:PageContentSaveComplete
