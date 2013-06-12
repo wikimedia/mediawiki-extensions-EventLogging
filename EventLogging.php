@@ -70,13 +70,13 @@ $wgEventLoggingFile = false;
  *
  * @example string: 'http://localhost/wiki/index.php'
  */
-$wgEventLoggingSchemaIndexUri = false;
+$wgEventLoggingSchemaIndexUri = 'http://meta.wikimedia.org/w/index.php';
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
  * housing schemas; false if not set.
  */
-$wgEventLoggingDBname = false;
+$wgEventLoggingDBname = 'metawiki';
 
 
 
