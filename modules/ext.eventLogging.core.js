@@ -206,16 +206,18 @@
 
 
 		/**
-		 * Takes an event object and puts it inside a generic wrapper
-		 * object that contains generic metadata about the event.
+		 * Prepares an event for dispatch by filling-in defaults for any
+		 * missing properties, evaluating any computed properties, and
+		 * then encapsulating the result in a generic wrapper object
+		 * that contains metadata about the event.
 		 *
-		 * @method encapsulate
+		 * @method prepare
 		 * @param {String} schemaName Canonical schema name.
 		 * @param {Object} event Event instance.
 		 * @return {Object} Encapsulated event.
 		 */
-		encapsulate: function ( schemaName, event ) {
-			var schema = self.schemas[ schemaName ];
+		prepare: function ( schemaName, event ) {
+			var prop, schema = self.schemas[ schemaName ];
 
 			if ( schema === undefined ) {
 				self.warn( 'Got event with unknown schema "' + schemaName + '"' );
@@ -223,6 +225,11 @@
 			}
 
 			event = $.extend( true, {}, schema.defaults, event );
+			for ( prop in event ) {
+				if ( typeof event[ prop ] === 'function' ) {
+					event[ prop ] = event[ prop ].call( event );
+				}
+			}
 
 			return {
 				event            : event,
@@ -277,7 +284,7 @@
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call
 		 */
 		logEvent: function ( schemaName, eventInstance ) {
-			return self.dispatch( self.encapsulate( schemaName, eventInstance ) );
+			return self.dispatch( self.prepare( schemaName, eventInstance ) );
 		}
 	};
 
