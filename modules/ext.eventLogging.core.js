@@ -206,10 +206,10 @@
 
 
 		/**
-		 * Prepares an event for dispatch by filling-in defaults for any
-		 * missing properties, evaluating any computed properties, and
-		 * then encapsulating the result in a generic wrapper object
-		 * that contains metadata about the event.
+		 * Prepares an event for dispatch by filling defaults for any
+		 * missing properties, invoking any properties that are
+		 * functions, and finally encapsulating the result in a generic
+		 * wrapper object that contains metadata about the event.
 		 *
 		 * @method prepare
 		 * @param {String} schemaName Canonical schema name.
