@@ -301,3 +301,15 @@ $messages['zh-hans'] = array(
 	'jsonschema-invalidnode' => '无效的节点：预期为“$1”，但得到“$2”。路径：“$3”',
 	'jsonschema-invalid-missingfield' => '缺少必要的字段“$1”',
 );
+
+/** Traditional Chinese (中文（繁體）‎)
+ * @author Justincheng12345
+ */
+$messages['zh-hant'] = array(
+	'jsonschema-badidref' => '錯誤idref：「$1」',
+	'jsonschema-idconvert' => '無法轉換var到id：「$1」',
+	'jsonschema-invalidkey' => '無效鍵「$1」位於「$2」',
+	'jsonschema-invalidempty' => '空資料結構對此架構無效',
+	'jsonschema-invalidnode' => '無效節點：預期「$1」，卻得到「$2」。路徑：「$3」',
+	'jsonschema-invalid-missingfield' => '缺少所需的欄位「$1」',
+);
