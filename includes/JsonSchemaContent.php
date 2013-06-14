@@ -20,11 +20,19 @@ class JsonSchemaContent extends TextContent {
 	}
 
 	/**
+	 * Decodes the JSON schema into a PHP associative array.
+	 * @return array: Schema array.
+	 */
+	function getJsonData() {
+		return FormatJson::decode( $this->getNativeData(), true );
+	}
+
+	/**
 	 * @throws JsonSchemaException: If invalid.
 	 * @return bool: True if valid.
 	 */
 	function validate() {
-		$schema = FormatJson::decode( $this->getNativeData(), true );
+		$schema = $this->getJsonData();
 		if ( !is_array( $schema ) ) {
 			throw new JsonSchemaException( wfMessage( 'eventlogging-invalid-json' )->parse() );
 		}
@@ -170,7 +178,7 @@ class JsonSchemaContent extends TextContent {
 	 * @return string: HTML representation.
 	 */
 	function getHighlightHtml() {
-		$schema = FormatJson::decode( $this->getNativeData(), true );
+		$schema = $this->getJsonData();
 		return is_array( $schema ) ? self::objectTable( $schema ) : '';
 	}
 }
