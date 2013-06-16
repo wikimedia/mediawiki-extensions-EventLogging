@@ -290,6 +290,18 @@ $messages['uk'] = array(
 	'jsonschema-invalid-missingfield' => 'Відсутнє обов\'язкове поле "$1"',
 );
 
+/** Vietnamese (Tiếng Việt)
+ * @author Minh Nguyen
+ */
+$messages['vi'] = array(
+	'jsonschema-badidref' => 'idref hỏng: “$1”',
+	'jsonschema-idconvert' => 'Không thể biến đổi var thành id: “$1”',
+	'jsonschema-invalidkey' => 'Khóa “$1” trong “$2” không hợp lệ',
+	'jsonschema-invalidempty' => 'Cấu trúc dữ liệu trống không hợp lệ đối với giản đồ này',
+	'jsonschema-invalidnode' => 'Nốt không hợp lệ: cần “$1” nhưng gặp “$2”. Đường dẫn: “$3”',
+	'jsonschema-invalid-missingfield' => 'Thiếu trường bắt buộc: “$1”',
+);
+
 /** Simplified Chinese (中文（简体）‎)
  * @author Yfdyh000
  */
