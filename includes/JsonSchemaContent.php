@@ -15,8 +15,39 @@
  */
 class JsonSchemaContent extends TextContent {
 
+	const DEFAULT_RECURSION_LIMIT = 3;
+
 	function __construct( $text ) {
 		parent::__construct( $text, 'JsonSchema' );
+	}
+
+	/**
+	 * Resolve a JSON reference to a schema.
+	 * @param string $ref Schema reference with format 'Title/Revision'.
+	 */
+	static function resolve( $ref ) {
+		list( $title, $revId ) = explode( '/', $ref );
+		$rs = new RemoteSchema( $title, $revId );
+		return $rs->get();
+	}
+
+	/**
+	 * Recursively resolve references in a schema.
+	 * @param array $schema Schema object to expand.
+	 * @param int $recursionLimit Maximum recursion limit.
+	 * @return array: Expanded schema object.
+	 */
+	static function expand( $schema, $recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
+		return array_map( function ( $value ) {
+			if ( is_array( $value ) && $recursionLimit > 0 ) {
+				if ( isset( $value['$ref'] ) ) {
+					$value = JsonSchemaContent::resolve( $value['$ref'] );
+				}
+				return JsonSchemaContent::expand( $value, $recursionLimit - 1 );
+			} else {
+				return $value;
+			}
+		}, $schema );
 	}
 
 	/**
@@ -87,6 +118,12 @@ class JsonSchemaContent extends TextContent {
 		$th = Xml::elementClean( 'th', array(), $key );
 		if ( is_array( $val ) ) {
 			$td = Xml::tags( 'td', array(), self::objectTable( $val ) );
+		} elseif ( $key === '$ref' ) {
+			list( , $revId ) = explode( '/', $val );
+			$title = Revision::newFromId( $revId )->getTitle();
+			$link = Linker::link( $title, htmlspecialchars( $val ), array(),
+				array( 'oldid' => $revId ) );
+			$td = Xml::tags( 'td', array( 'class' => 'value' ), $link );
 		} else {
 			if ( is_string( $val ) ) {
 				$val = '"' . $val . '"';
