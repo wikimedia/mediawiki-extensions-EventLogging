@@ -187,13 +187,13 @@ def store_sql_event(meta, event):
 def _property_getter(item):
     """Mapper function for :func:`flatten` that extracts properties
     and their types from schema."""
-    (key, val) = item
+    key, val = item
     if isinstance(val, dict):
         if 'properties' in val:
             val = val['properties']
         elif 'type' in val:
             val = typecast(val)
-    return (key, val)
+    return key, val
 
 
 def flatten(d, sep='_', f=None):
