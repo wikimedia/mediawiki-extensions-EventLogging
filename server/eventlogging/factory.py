@@ -9,8 +9,7 @@
 import inspect
 import json
 
-from .util import get_uri_scheme, get_uri_params
-from .compat import items
+from .compat import items, parse_qsl
 
 __all__ = ('writes', 'reads', 'get_writer', 'get_reader')
 
@@ -18,6 +17,12 @@ __all__ = ('writes', 'reads', 'get_writer', 'get_reader')
 _writers = {}
 _readers = {}
 _mappers = {}
+
+
+def deparam(uri):
+    """Parse query string from URI into a dict."""
+    qs = uri.rsplit('?', 1)[-1]
+    return dict(parse_qsl(qs))
 
 
 def call(f, kwargs):
@@ -56,8 +61,9 @@ def reads(*schemes):
 def get_writer(uri):
     """Given a writer URI (representing, for example, a database
     connection), invoke and initialize the appropriate handler."""
-    writer = _writers[get_uri_scheme(uri)]
-    params = dict(get_uri_params(uri), uri=uri)
+    uri_scheme = uri.split('://', 1)[0]
+    writer = _writers[uri_scheme]
+    params = dict(deparam(uri), uri=uri)
     coroutine = call(writer, params)
     next(coroutine)
     return coroutine
@@ -67,8 +73,9 @@ def get_reader(uri):
     """Given a reader URI (representing the address of an input stream),
     invoke and initialize a generator that will yield values from that
     stream."""
-    reader = _readers[get_uri_scheme(uri)]
-    params = dict(get_uri_params(uri), uri=uri)
+    uri_scheme = uri.split('://', 1)[0]
+    reader = _readers[uri_scheme]
+    params = dict(deparam(uri), uri=uri)
     mappers = params.pop('mappers', None)
     iterator = call(reader, params)
     if mappers is not None:
