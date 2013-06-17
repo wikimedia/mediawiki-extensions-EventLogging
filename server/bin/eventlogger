@@ -34,7 +34,7 @@ log.addHandler(logging.StreamHandler(sys.stderr))
 
 ap = argparse.ArgumentParser(description='EventLogger')
 ap.add_argument('input', help='URI of raw input stream')
-ap.add_argument('output', help='URI of output stream')
+ap.add_argument('output', help='URI of output stream', default='stdout://')
 args = ap.parse_args()
 
 log.info('Driving %s -> %s..', args.input, args.output)
