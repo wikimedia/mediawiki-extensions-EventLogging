@@ -25,7 +25,6 @@ import zmq
 from .factory import writes, reads, mapper
 from .compat import urlparse
 from .jrm import store_sql_event
-from .util import strip_qs
 
 
 # Mappers
@@ -95,9 +94,11 @@ def zmq_publisher(uri):
 
 @writes('stdout')
 def stdout_writer():
+    kwargs = {}
+    if sys.stdout.isatty():
+        kwargs.update(sort_keys=True, indent=2)
     while 1:
-        event = (yield)
-        print(json.dumps(event, sort_keys=True, indent=4))
+        print(json.dumps((yield), **kwargs))
 
 
 @reads('stdin')
@@ -113,7 +114,7 @@ def zmq_subscriber(uri, socket_id=None, topic=''):
     sub = context.socket(zmq.SUB)
     if socket_id is not None:
         sub.setsockopt(zmq.IDENTITY, socket_id.encode('utf8'))
-    sub.connect(strip_qs(uri))
+    sub.connect(url[:url.find('?')])
     sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
 
     while 1:
