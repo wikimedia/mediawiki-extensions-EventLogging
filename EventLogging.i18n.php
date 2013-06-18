@@ -379,9 +379,12 @@ $messages['si'] = array(
 
 /** Swedish (svenska)
  * @author Ainali
+ * @author Jopparn
  */
 $messages['sv'] = array(
 	'eventlogging-desc' => 'Ramverk för loggning av händelser från klientsidans kod',
+	'eventlogging-invalid-json' => 'Felaktig JSON',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP-loggning',
 );
 
 /** Ukrainian (українська)
