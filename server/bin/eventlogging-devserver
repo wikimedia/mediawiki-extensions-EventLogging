@@ -174,7 +174,7 @@ print('''
 # Ensure the following values are set in LocalSettings.php:
 require_once( "$IP/extensions/EventLogging/EventLogging.php" );
 $wgEventLoggingBaseUri = 'http://%s:%s/event.gif';
-$wgEventLoggingSchemaIndexUri = 'http://meta.wikimedia.org/w/index.php';
+$wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
 
 # Listening to events.''' % (args.host, args.port), php_lexer, formatter))
 

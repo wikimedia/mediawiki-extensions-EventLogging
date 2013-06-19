@@ -66,11 +66,11 @@ $wgEventLoggingFile = false;
 
 /**
  * @var bool|string: URI or false if not set.
- * URI of index.php on schema wiki.
+ * URI of api.php on schema wiki.
  *
- * @example string: 'http://localhost/wiki/index.php'
+ * @example string: 'http://meta.wikimedia.org/w/api.php'
  */
-$wgEventLoggingSchemaIndexUri = 'http://meta.wikimedia.org/w/index.php';
+$wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
@@ -202,6 +202,9 @@ $wgAutoloadClasses += array(
 	'TreeRef'             => __DIR__ . '/includes/JsonSchema.php',
 	'JsonTreeRef'         => __DIR__ . '/includes/JsonSchema.php',
 	'JsonSchemaIndex'     => __DIR__ . '/includes/JsonSchema.php',
+
+	// API
+	'ApiJsonSchema' => __DIR__ . '/includes/ApiJsonSchema.php',
 );
 
 

@@ -17,7 +17,8 @@ class JsonSchemaHooks {
 	 * @return bool: Whether hooks and handler were registered.
 	 */
 	static function registerHandlers() {
-		global $wgHooks, $wgContentHandlers, $wgEventLoggingDBname, $wgDBname;
+		global $wgAPIModules, $wgHooks, $wgContentHandlers,
+			$wgEventLoggingDBname, $wgDBname;
 
 		if ( $wgEventLoggingDBname === $wgDBname ) {
 			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
@@ -26,6 +27,8 @@ class JsonSchemaHooks {
 			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
 			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
+
+			$wgAPIModules[ 'jsonschema' ] = 'ApiJsonSchema';
 
 			return true;
 		}

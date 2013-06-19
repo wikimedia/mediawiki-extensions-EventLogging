@@ -88,15 +88,23 @@ class RemoteSchema {
 	 * @return string: URI.
 	 */
 	function getUri() {
-		global $wgEventLoggingSchemaIndexUri;
+		global $wgEventLoggingSchemaApiUri;
 
-		$q = array(
-			'title'  =>  'Schema:' . $this->title,
-			'action' =>  'raw',
-			'oldid'  =>  $this->revision
-		);
+		if ( substr( $wgEventLoggingSchemaApiUri, -10 ) === '/index.php' ) {
+			// Old-style request (index.php)
+			$q = array(
+				'action' =>  'raw',
+				'oldid'  =>  $this->revision,
+			);
+		} else {
+			// New-style request (api.php)
+			$q = array(
+				'action' =>  'jsonschema',
+				'revid'  =>  $this->revision
+			);
+		}
 
-		return wfAppendQuery( $wgEventLoggingSchemaIndexUri, $q );
+		return wfAppendQuery( $wgEventLoggingSchemaApiUri, $q );
 	}
 
 
