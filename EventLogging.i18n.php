@@ -79,6 +79,10 @@ $messages['br'] = array(
 $messages['cs'] = array(
 	'eventlogging-desc' => 'Framework pro protokolování událostí z kódu běžícího u klienta',
 	'eventlogging-invalid-json' => 'Nevalidní JSON',
+	'eventlogging-revision-id' => 'Revize $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Logování v PHP',
+	'eventlogging-code-sample-module-setup' => 'Nastavení PHP pro logování v JavaScriptu',
+	'eventlogging-code-sample-logging-on-client-side' => 'Logování v JavaScriptu',
 );
 
 /** German (Deutsch)

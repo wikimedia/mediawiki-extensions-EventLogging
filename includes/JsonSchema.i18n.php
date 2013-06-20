@@ -257,7 +257,11 @@ $messages['pms'] = array(
  */
 $messages['roa-tara'] = array(
 	'jsonschema-badidref' => 'Idref cattive: "$1"',
+	'jsonschema-idconvert' => 'Non ge pozze convertì \'a variabbile jndr\'à l\'id: "$1"',
 	'jsonschema-invalidkey' => 'Chiaev invalide "$1" jndr\'à "$2"',
+	'jsonschema-invalidempty' => 'Strutture de date vacande non valide cu stu scheme',
+	'jsonschema-invalidnode' => 'Node invalide: m\'aspettave "$1", agghie pigghiate "$2". Percorse: "$3"',
+	'jsonschema-invalid-missingfield' => 'Cambe richieste mangande "$1"',
 );
 
 /** Russian (русский)
