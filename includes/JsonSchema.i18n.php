@@ -203,6 +203,13 @@ $messages['ksh'] = array(
 	'jsonschema-invalid-missingfield' => 'Dat nüüdeje Fäld „$1“ fäählt.',
 );
 
+/** Luxembourgish (Lëtzebuergesch)
+ * @author Robby
+ */
+$messages['lb'] = array(
+	'jsonschema-invalid-missingfield' => 'Dat obligatorescht Feld "$1" feelt',
+);
+
 /** Macedonian (македонски)
  * @author Bjankuloski06
  */
