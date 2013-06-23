@@ -21,15 +21,27 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 			'valid' => array(
 				'type' => 'boolean',
 				'required' => true,
-			)
+			),
+			'action' => array(
+				'type' => 'string',
+				'enum' => array(
+					'delete',
+					'edit',
+					'history',
+					'protect',
+					'purge',
+					'submit',
+					'view',
+				),
+			),
 		)
 	);
 
 	/** @var array: conforms to $validSchema. **/
-	static $validObject = array( 'valid' => true );
+	static $validObject = array( 'valid' => true, 'action' => 'history' );
 
 	/** @var array: does not conform to $validSchema. **/
-	static $invalidObject = array( 'invalid' => 'yes' );
+	static $invalidObject = array( 'valid' => true, 'action' => 'cache' );
 
 	const UGLY_JSON = '{"nested":{"value":"{}"}}';
 

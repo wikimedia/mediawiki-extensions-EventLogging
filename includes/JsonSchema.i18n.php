@@ -21,6 +21,7 @@ $messages['en'] = array(
 	'jsonschema-invalidempty' => 'Empty data structure not valid with this schema',
 	'jsonschema-invalidnode' => 'Invalid node: expecting "$1", got "$2". Path: "$3"',
 	'jsonschema-invalid-missingfield' => 'Missing required field "$1"',
+	'jsonschema-invalid-notinenum' => 'Value "$1" not in enum for property $2',
 );
 
 /** Message documentation (Message documentation)
@@ -33,6 +34,7 @@ $messages['qqq'] = array(
 	'jsonschema-invalidempty' => 'JSON Schema validation error, shown when attempting to validate empty object against a schema that does not allow empty objects.',
 	'jsonschema-invalidnode' => 'JSON Schema validation error, shown when object node does not match expected type.',
 	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
+	'jsonschema-invalid-notinenum' => 'JSON Schema validation error, shown when a value is not in the set of permitted values for a field.',
 );
 
 /** Asturian (asturianu)

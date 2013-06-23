@@ -397,6 +397,13 @@ class JsonTreeRef {
 	 * Return true on success, and throw a JsonSchemaException on failure.
 	 */
 	public function validate() {
+		if( array_key_exists( 'enum', $this->schemaref->node ) &&
+			!in_array( $this->node, $this->schemaref->node['enum']  ) ) {
+				$msg = JsonUtil::uiMessage( 'jsonschema-invalid-notinenum', $this->node, $this->getDataPathTitles() );
+				$e = new JsonSchemaException( $msg );
+				$e->subtype = "validate-fail";
+				throw( $e );
+		}
 		$datatype = JsonUtil::getType( $this->node );
 		$schematype = $this->getType();
 		if ( $datatype == 'array' && $schematype == 'object' ) {
