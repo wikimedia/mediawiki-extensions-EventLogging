@@ -293,6 +293,7 @@ $messages['si'] = array(
  * @author Jopparn
  */
 $messages['sv'] = array(
+	'jsonschema-badidref' => 'Fel idref: "$1"',
 	'jsonschema-invalidkey' => 'Ogiltig nyckel "$1" i "$2"',
 	'jsonschema-invalidempty' => 'Tom datastruktur är inte giltig med detta schema',
 	'jsonschema-invalidnode' => 'Ogiltig nod: förväntar sig "$1", fick "$2". Sökväg: "$3"',
