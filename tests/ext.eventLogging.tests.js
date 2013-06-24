@@ -169,20 +169,20 @@
 			invalid: [ [], 0, true ]
 		},
 		timestamp: {
-			valid: [ new Date().getTime(), new Date() ],
+			valid: [ +new Date(), new Date() ],
 			invalid: [ -1, 'yesterday', NaN ]
 		}
 	}, function ( type, cases ) {
 		var asserts = cases.valid.length + cases.invalid.length;
 
 		QUnit.test( type, asserts, function ( assert ) {
-			$.each( cases.valid, function () {
-				assert.strictEqual( mw.eventLog.isInstanceOf( this, type ), true,
-					$.toJSON( this ) + ' is a ' + type );
+			$.each( cases.valid, function ( index, value ) {
+				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), true,
+					$.toJSON( value ) + ' is a ' + type );
 			} );
-			$.each( cases.invalid, function () {
-				assert.strictEqual( mw.eventLog.isInstanceOf( this, type ), false,
-					$.toJSON( this ) + ' is not a ' + type );
+			$.each( cases.invalid, function ( index, value ) {
+				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), false,
+					$.toJSON( value ) + ' is not a ' + type );
 			} );
 		} );
 	} );
