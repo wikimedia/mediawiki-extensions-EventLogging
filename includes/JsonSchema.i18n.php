@@ -59,6 +59,7 @@ $messages['be-tarask'] = array(
 	'jsonschema-invalidempty' => 'Пустая структура зьвестак паводле гэтай схемы недапушчальная',
 	'jsonschema-invalidnode' => 'Няслушны вузел: чакалася «$1», атрымана «$2». Шлях: «$3»',
 	'jsonschema-invalid-missingfield' => 'Ня знойдзенае абавязковае поле «$1»',
+	'jsonschema-invalid-notinenum' => 'Значэньне «$1» не належыць да enum уласьцівасьці $2',
 );
 
 /** German (Deutsch)
@@ -72,6 +73,7 @@ $messages['de'] = array(
 	'jsonschema-invalidempty' => 'Eine leere Datenstruktur ist mit diesem Schema nicht gültig',
 	'jsonschema-invalidnode' => 'Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“',
 	'jsonschema-invalid-missingfield' => 'Es fehlt das erforderliche Feld „$1“.',
+	'jsonschema-invalid-notinenum' => 'Der Wert „$1“ ist nicht in der Aufzählung für die Eigenschaft $2',
 );
 
 /** Lower Sorbian (dolnoserbski)
@@ -107,6 +109,7 @@ $messages['fr'] = array(
 	'jsonschema-invalidempty' => 'Structure de donnée vide non valide avec ce schéma',
 	'jsonschema-invalidnode' => 'Nœud non valide : « $1 » attendu, « $2 » obtenu. Chemin : « $3 »',
 	'jsonschema-invalid-missingfield' => 'Champ obligatoire « $1 » absent',
+	'jsonschema-invalid-notinenum' => 'La valeur « $1 » ne fait pas partie de l’énumération pour la propriété $2',
 );
 
 /** Franco-Provençal (arpetan)
@@ -129,6 +132,7 @@ $messages['gl'] = array(
 	'jsonschema-invalidempty' => 'Estrutura de datos baleira non válida con este esquema',
 	'jsonschema-invalidnode' => 'Nodo non válido: Agardábse "$1"; recibiuse "$2". Ruta: "$3"',
 	'jsonschema-invalid-missingfield' => 'Falta o parámetro obrigatorio "$1"',
+	'jsonschema-invalid-notinenum' => 'O valor "$1" non é parte da enumeración da propiedade $2',
 );
 
 /** Hebrew (עברית)
@@ -174,6 +178,7 @@ $messages['it'] = array(
 	'jsonschema-invalidempty' => 'Struttura dati vuota non valida con questo schema',
 	'jsonschema-invalidnode' => 'Nodo non valido: si aspettava "$1", ma ricevuto "$2". Percorso: "$3"',
 	'jsonschema-invalid-missingfield' => 'Campo obbligatorio mancante "$1"',
+	'jsonschema-invalid-notinenum' => 'Il valore "$1" non è fra i valori consentiti per la proprietà $2',
 );
 
 /** Japanese (日本語)
@@ -271,6 +276,7 @@ $messages['roa-tara'] = array(
 	'jsonschema-invalidempty' => 'Strutture de date vacande non valide cu stu scheme',
 	'jsonschema-invalidnode' => 'Node invalide: m\'aspettave "$1", agghie pigghiate "$2". Percorse: "$3"',
 	'jsonschema-invalid-missingfield' => 'Cambe richieste mangande "$1"',
+	'jsonschema-invalid-notinenum' => '\'U valore "$1" non g\'è \'n\'enumerative pa probbietà $2',
 );
 
 /** Russian (русский)

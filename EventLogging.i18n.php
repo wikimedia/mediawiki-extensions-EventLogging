@@ -55,6 +55,9 @@ $messages['be-tarask'] = array(
 	'eventlogging-desc' => 'Фрэймворк для даданьня падзеяў у журнал з кліенцкага коду',
 	'eventlogging-invalid-json' => 'Няслушны JSON',
 	'eventlogging-revision-id' => 'Вэрсія $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Журналяваньне PHP',
+	'eventlogging-code-sample-module-setup' => 'Наладжваньне PHP для журналяваньня PHP',
+	'eventlogging-code-sample-logging-on-client-side' => 'Журналяваньне JavaScript',
 );
 
 /** Bengali (বাংলা)
