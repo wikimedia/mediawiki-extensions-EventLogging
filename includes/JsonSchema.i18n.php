@@ -182,9 +182,13 @@ $messages['it'] = array(
 );
 
 /** Japanese (日本語)
+ * @author Fryed-peach
  * @author Shirayuki
  */
 $messages['ja'] = array(
+	'jsonschema-badidref' => 'idref の誤り:「$1」',
+	'jsonschema-idconvert' => 'var を id に変換できません:「$1」',
+	'jsonschema-invalidkey' => '「$2」に無効なキー「$1」',
 	'jsonschema-invalidempty' => 'このスキーマでは空のデータ構造は有効ではありません',
 );
 
@@ -227,6 +231,7 @@ $messages['mk'] = array(
 	'jsonschema-invalidempty' => 'Празната податочна структура не важи за оваа шема',
 	'jsonschema-invalidnode' => 'Неважечки јазол: очекував „$1“, а добив „$2“. Патека: „$3“',
 	'jsonschema-invalid-missingfield' => 'Недостасува задолжителното поле „$1“',
+	'jsonschema-invalid-notinenum' => 'Вредноста „$1“ не се содржи во набројувањето за ствојството $2',
 );
 
 /** Malay (Bahasa Melayu)
