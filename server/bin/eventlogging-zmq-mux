@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-  zmux
-  ----
+  eventlogging-zmq-mux
+  --------------------
   Multiplexes ZMQ_PUB sockets.
 
   Reads messages from one or more ZMQ_SUBs and publishes a muxed stream
   containing all messages from all inputs.
 
-  usage: zmux [-h] [--sid SID] output input [input ...]
+  usage: eventlogging-zmq-mux [-h] [--sid SID] output input [input ...]
 
   Multiplex ZMQ_PUB sockets
 

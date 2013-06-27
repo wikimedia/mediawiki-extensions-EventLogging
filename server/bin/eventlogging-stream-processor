@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-  log2json
-  --------
+  eventlogging-stream-processor
+  -----------------------------
   Transform raw log stream to JSON event stream
 
-  usage: log2json [-h] [--sid SID] format input output
+  usage: eventlogging-stream-processor [-h] [--sid SID] format input output
 
   positional arguments:
     format      Format string

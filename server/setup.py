@@ -19,7 +19,7 @@ import multiprocessing
 
 setup(
     name='eventlogging',
-    version='0.5',
+    version='0.6',
     license='GPL',
     author='Ori Livneh',
     author_email='ori@wikimedia.org',
@@ -43,12 +43,12 @@ setup(
         'eventlogging',
     ),
     scripts=(
-        'bin/eventlogger',
+        'bin/eventlogging-consumer',
         'bin/eventlogging-devserver',
-        'bin/log2json',
-        'bin/seqmon',
-        'bin/udp2zmq',
-        'bin/zmux',
+        'bin/eventlogging-stream-processor',
+        'bin/eventlogging-udp-seqid-mon',
+        'bin/eventlogging-udp-zmq-forwarder',
+        'bin/eventlogging-zmq-mux',
     ),
     zip_safe=False,
     test_suite='tests',
