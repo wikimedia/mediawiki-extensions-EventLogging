@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-  seqmon
-  ------
+  eventlogging-udp-seqid-mon
+  --------------------------
   Monitor sequence IDs on a stream of varnishncsa udp output for gaps.
 
-  usage: seqmon [options] stream destfile
+  usage: eventlogging-udp-seqid-mon [options] stream destfile
 
   positional arguments:
     stream       log file or stream URI

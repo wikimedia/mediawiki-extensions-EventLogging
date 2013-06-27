@@ -3,7 +3,6 @@
 """
   eventlogging-devserver
   ----------------------
-
   Invoking this command-line tool will spawn a web server that can serve
   as a test logging endpoint. Events logged against this server will be
   validated verbosely and pretty-printed to the terminal.

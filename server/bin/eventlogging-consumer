@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 """
-  eventlogger
-  -----------
+  eventlogging-consumer
+  ---------------------
   Consumes an event stream and writes it to a data store. Input stream and
   target data store are specified using URIs.
 
-  usage: eventlogger [-h] input output
+  usage: eventlogging-consumer [-h] input-uri output-uri
 
   positional arguments:
-    input       URI of raw input stream
-    output      URI of output stream
+    input-uri      URI of raw input stream
+    output-uri     URI of output stream
 
   optional arguments:
     -h, --help  show this help message and exit
