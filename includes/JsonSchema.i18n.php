@@ -62,6 +62,13 @@ $messages['be-tarask'] = array(
 	'jsonschema-invalid-notinenum' => 'Значэньне «$1» не належыць да enum уласьцівасьці $2',
 );
 
+/** Czech (česky)
+ * @author Mormegil
+ */
+$messages['cs'] = array(
+	'jsonschema-invalid-notinenum' => 'Výčtový typ pro vlastnost $2 neobsahuje hodnotu „$1“',
+);
+
 /** German (Deutsch)
  * @author Metalhead64
  * @author Purodha
