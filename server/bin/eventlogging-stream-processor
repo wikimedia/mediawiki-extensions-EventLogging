@@ -42,7 +42,8 @@ from eventlogging import capsule_uuid, json, LogParser, validate, zmq_subscribe
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
-ap = argparse.ArgumentParser(description='Raw log -> JSON stream')
+ap = argparse.ArgumentParser(description='Raw log -> JSON stream',
+                             fromfile_prefix_chars='@')
 ap.add_argument('format', help='Format string')
 ap.add_argument('input', help='URI of raw input stream')
 ap.add_argument('output', help='URI of output stream')

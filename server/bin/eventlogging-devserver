@@ -38,7 +38,7 @@ from pygments import formatters, highlight, lexers
 from pygments.console import ansiformat
 
 
-argparser = argparse.ArgumentParser()
+argparser = argparse.ArgumentParser(fromfile_prefix_chars='@')
 argparser.add_argument('--host', default='localhost',
                        help='server host (default: localhost)')
 argparser.add_argument('--port', default=8080, type=int,

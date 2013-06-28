@@ -33,7 +33,8 @@ import zmq
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
-ap = argparse.ArgumentParser(description='Multiplex ZMQ_PUB sockets')
+ap = argparse.ArgumentParser(description='Multiplex ZMQ_PUB sockets',
+                             fromfile_prefix_chars='@')
 ap.add_argument('output', help='URI of output stream')
 ap.add_argument('input', nargs='+', help='URIs of raw input streams')
 ap.add_argument('--sid', help='set input socket identity')

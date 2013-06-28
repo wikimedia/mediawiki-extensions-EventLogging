@@ -55,8 +55,8 @@ setup(
     install_requires=(
         "jsonschema>=0.7",
         "pygments>=1.5",
+        "pymongo>=2.1",
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
-        "pymongo>=2.1",
     )
 )
