@@ -32,7 +32,8 @@ import zmq
 
 UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
 
-parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device')
+parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
+                                 fromfile_prefix_chars='@')
 parser.add_argument('port', type=int, help='Port to forward')
 parser.add_argument('--count', action='store_true',
                     help='Prepend an autoincrementing ID to each message')

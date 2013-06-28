@@ -36,7 +36,8 @@ from eventlogging import zmq_subscribe
 # Parse command-line args
 #
 
-parser = argparse.ArgumentParser(description='Monitor udp2log sequence IDs.')
+parser = argparse.ArgumentParser(description='Monitor udp2log sequence IDs.',
+                                 fromfile_prefix_chars='@')
 parser.add_argument('input', help='URI of input stream')
 parser.add_argument('destfile', help='write log to this file')
 parser.add_argument('--sid', help='set socket identity')
