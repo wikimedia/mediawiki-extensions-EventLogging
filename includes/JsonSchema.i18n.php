@@ -47,6 +47,7 @@ $messages['ast'] = array(
 	'jsonschema-invalidempty' => 'Estructura de datos balera inválida con esti esquema',
 	'jsonschema-invalidnode' => 'Nodu inválidu: Esperabase "$1"; recibióse "$2". Camín: "$3"',
 	'jsonschema-invalid-missingfield' => 'Falta\'l campu obligatoriu "$1"',
+	'jsonschema-invalid-notinenum' => 'El valor "$1" nun ta na enumeración de la propiedá $2',
 );
 
 /** Belarusian (Taraškievica orthography) (беларуская (тарашкевіца)‎)
