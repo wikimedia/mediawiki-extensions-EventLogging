@@ -252,6 +252,7 @@ $messages['ms'] = array(
 	'jsonschema-invalidempty' => 'Struktur data kosong tidak sah dengan skema ini',
 	'jsonschema-invalidnode' => 'Nod tidak sah: "$1" diharap, "$2" diperoleh. Laluan: "$3"',
 	'jsonschema-invalid-missingfield' => 'Medan wajib "$1" tertinggal',
+	'jsonschema-invalid-notinenum' => 'Nilai "$1" tiada dalam enum untuk sifat $2',
 );
 
 /** Dutch (Nederlands)
