@@ -132,6 +132,18 @@ $messages['et'] = array(
 	'eventlogging-revision-id' => 'Redaktsioon $1',
 );
 
+/** Persian (فارسی)
+ * @author Reza1615
+ */
+$messages['fa'] = array(
+	'eventlogging-desc' => 'چارچوب برای ثبت سیاههٔ وقایع از سمت کد سرویس‌گیرنده',
+	'eventlogging-invalid-json' => 'JSON نامعتبر',
+	'eventlogging-revision-id' => 'نسخه  $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'سیاههٔ پی‌اچ‌پی',
+	'eventlogging-code-sample-module-setup' => 'پی‌اچ‌پی را برای نمایش سیاهه جاوااسکریپت تصب کنید',
+	'eventlogging-code-sample-logging-on-client-side' => 'سیاهه جاوااسکریپت',
+);
+
 /** Finnish (suomi)
  * @author Nike
  */
