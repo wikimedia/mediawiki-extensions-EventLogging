@@ -28,7 +28,8 @@ $messages['en'] = array(
  */
 $messages['qqq'] = array(
 	'eventlogging-desc' => '{{desc|name=Event Logging|url=http://www.mediawiki.org/wiki/Extension:EventLogging}}',
-	'eventlogging-invalid-json' => 'Error shown when an editor attempts to save a Schema article edit that is not valid JSON',
+	'eventlogging-invalid-json' => 'Error shown when an editor attempts to save a Schema article edit that is not valid JSON.
+{{Identical|Invalid JSON}}',
 	'eventlogging-revision-id' => 'The numeric ID of the displayed revision, shown in the page subtitle.
 {{Identical|Revision}}',
 	'eventlogging-code-sample-logging-on-server-side' => 'Code sample for logging a server-side event',
