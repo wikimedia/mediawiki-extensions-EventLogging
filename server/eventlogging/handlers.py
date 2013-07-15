@@ -60,7 +60,7 @@ def mongodb_writer(uri, **kwargs):
 
 @writes('mysql', 'sqlite')
 def sql_writer(uri, **kwargs):
-    engine = sqlalchemy.create_engine(uri, **kwargs)
+    engine = sqlalchemy.create_engine(uri)
     meta = sqlalchemy.MetaData(bind=engine)
 
     while 1:
@@ -114,11 +114,11 @@ def zmq_subscriber(uri, socket_id=None, topic=''):
     sub = context.socket(zmq.SUB)
     if socket_id is not None:
         sub.setsockopt(zmq.IDENTITY, socket_id.encode('utf8'))
-    sub.connect(url[:url.find('?')])
+    sub.connect(uri[:uri.find('?')])
     sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
 
     while 1:
-        yield sub.recv_unicode()
+        yield json.loads(sub.recv_unicode())
 
 
 UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
