@@ -265,6 +265,7 @@ $messages['nl'] = array(
 	'jsonschema-invalidempty' => 'Een lege gegevensstructuur is niet geldig voor dit schema',
 	'jsonschema-invalidnode' => 'Ongeldige node: "$1" werd verwacht, "$2" is waargenomen. Pad: "$3"',
 	'jsonschema-invalid-missingfield' => 'Het verplichte veld "$1" ontbreekt',
+	'jsonschema-invalid-notinenum' => 'Waarde "$1" staat niet in de lijst voor eigenschap "$2"',
 );
 
 /** Piedmontese (Piemontèis)
