@@ -137,6 +137,7 @@ class LogParser(object):
         self.casters = []
 
         #: Compiled regexp.
+        format = re.sub(' ', r'\s+', format)
         self.re = re.compile(re.sub(r'(?<!%)%[hjlnqt]', self._repl, format))
 
     def _repl(self, spec):
