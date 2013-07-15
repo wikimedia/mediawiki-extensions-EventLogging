@@ -39,4 +39,8 @@ ap.add_argument('output', help='URI of output stream', default='stdout://')
 args = ap.parse_args()
 
 log.info('Driving %s -> %s..', args.input, args.output)
-eventlogging.drive(args.input, args.output)
+while 1:
+    try:
+        eventlogging.drive(args.input, args.output)
+    except:
+        log.exception()

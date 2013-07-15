@@ -11,7 +11,7 @@ import json
 
 from .compat import items, parse_qsl
 
-__all__ = ('writes', 'reads', 'get_writer', 'get_reader')
+__all__ = ('drive', 'writes', 'reads', 'get_writer', 'get_reader')
 
 
 _writers = {}
