@@ -20,13 +20,10 @@ __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 
 #: URL of index.php on the schema wiki (same as
 #: '$wgEventLoggingSchemaIndexUri').
-SCHEMA_WIKI_INDEX_PHP = 'http://meta.wikimedia.org/w/index.php'
+SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
 
 #: Template for schema article URLs. Interpolates SCIDs.
-SCHEMA_URL_FORMAT = SCHEMA_WIKI_INDEX_PHP + '?title=Schema:%s&oldid=%s'
-
-#: Template for raw schema URLs. Interpolates SCIDs.
-RAW_SCHEMA_URL_FORMAT = SCHEMA_URL_FORMAT + '&action=raw'
+SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s'
 
 #: Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}
@@ -54,7 +51,7 @@ def get_schema(scid, encapsulate=False):
 
 def http_get_schema(scid):
     """Retrieve schema via HTTP."""
-    url = RAW_SCHEMA_URL_FORMAT % scid
+    url = SCHEMA_URL_FORMAT % scid
     try:
         content = urlopen(url).read().decode('utf-8')
         schema = json.loads(content)
