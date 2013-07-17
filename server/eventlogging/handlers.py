@@ -11,10 +11,13 @@
 
 """
 import datetime
+import glob
+import imp
 import io
 import json
 import logging
 import logging.handlers
+import os
 import socket
 import sys
 
@@ -25,6 +28,23 @@ import zmq
 from .factory import writes, reads, mapper
 from .compat import urlparse
 from .jrm import store_sql_event
+
+
+__all__ = ('load_plugins',)
+
+#: EventLogging will attempt to load the configuration file specified in the
+#: 'EVENTLOGGING_PLUGIN_DIR' environment variable if it is defined. If it is
+#: not defined, EventLogging will default to the value specified below.
+DEFAULT_PLUGIN_DIR = '/usr/lib/eventlogging'
+
+
+def load_plugins(path=None):
+    """Load EventLogging plug-ins from `path`. Plug-in module names are mangled
+    to prevent clobbering modules in the Python module search path."""
+    if path is None:
+        path = os.environ.get('EVENTLOGGING_PLUGIN_DIR', DEFAULT_PLUGIN_DIR)
+    for plugin in glob.glob(os.path.join(path, '*.py')):
+        imp.load_source('__eventlogging_plugin_%x__' % hash(plugin), plugin)
 
 
 # Mappers

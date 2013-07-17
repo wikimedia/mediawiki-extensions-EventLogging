@@ -13,7 +13,8 @@
     output-uri     URI of output stream
 
   optional arguments:
-    -h, --help  show this help message and exit
+    -h, --help     show this help message and exit
+    --no-plugins   run without loading plug-ins
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
@@ -36,7 +37,13 @@ ap = argparse.ArgumentParser(description='EventLogger',
                              fromfile_prefix_chars='@')
 ap.add_argument('input', help='URI of raw input stream')
 ap.add_argument('output', help='URI of output stream', default='stdout://')
+ap.add_argument('--no-plugins', help='run without loading plug-ins',
+                action='store_false', dest='load_plugins')
+ap.set_defaults(load_plugins=True)
 args = ap.parse_args()
+
+if args.load_plugins:
+    eventlogging.load_plugins()
 
 log.info('Driving %s -> %s..', args.input, args.output)
 while 1:
