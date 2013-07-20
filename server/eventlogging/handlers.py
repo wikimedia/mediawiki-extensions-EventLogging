@@ -37,6 +37,14 @@ __all__ = ('load_plugins',)
 #: not defined, EventLogging will default to the value specified below.
 DEFAULT_PLUGIN_DIR = '/usr/local/lib/eventlogging'
 
+UDP_BLOCK_SIZE = 65536  # Corresponds to Udp2LogConfig::BLOCK_SIZE
+
+
+def iter_text(f, encoding='utf8', errors='replace', **kwargs):
+    """Returns an iterator that decodes data from a file-like object opened in
+    binary mode into lines of unicode text."""
+    return io.open(f.fileno(), encoding=encoding, errors=errors, **kwargs)
+
 
 def load_plugins(path=None):
     """Load EventLogging plug-ins from `path`. Plug-in module names are mangled
@@ -47,7 +55,9 @@ def load_plugins(path=None):
         imp.load_source('__eventlogging_plugin_%x__' % hash(plugin), plugin)
 
 
+#
 # Mappers
+#
 
 @mapper
 def decode_json(stream):
@@ -89,6 +99,7 @@ def sql_writer(uri, **kwargs):
 
 @writes('file')
 def log_writer(uri):
+    """Write events to a file on disk."""
     parsed = urlparse(uri)
     filename = parsed.path
     handler = logging.handlers.WatchedFileHandler(filename)
@@ -103,6 +114,7 @@ def log_writer(uri):
 
 @writes('tcp')
 def zmq_publisher(uri):
+    """Publish events on a ZeroMQ publisher socket."""
     context = zmq.Context.instance()
     pub = context.socket(zmq.PUB)
     pub.bind(uri)
@@ -113,41 +125,46 @@ def zmq_publisher(uri):
 
 
 @writes('stdout')
-def stdout_writer():
-    kwargs = {}
+def stdout_writer(uri, **kwargs):
+    """Writes events to stdout. Pretty-prints if stdout is a terminal."""
     if sys.stdout.isatty():
-        kwargs.update(sort_keys=True, indent=2)
+        kwargs.setdefault('indent', 2)
     while 1:
-        print(json.dumps((yield), **kwargs))
+        print(json.dumps((yield), sort_keys=True, **kwargs))
+
+
+#
+# Readers
+#
 
 
 @reads('stdin')
-def stdin_reader(encoding='utf8', errors='ignore'):
-    return io.open(sys.stdin.fileno(), encoding=encoding, errors=errors)
+def stdin_reader(uri, **kwargs):
+    """Reads data from standard input."""
+    return iter_text(sys.stdin, **kwargs)
 
-
-# Readers
 
 @reads('tcp')
 def zmq_subscriber(uri, socket_id=None, topic=''):
+    """Reads data from a ZeroMQ publisher."""
+    if '?' in uri:
+        uri = uri[:uri.index('?')]
     context = zmq.Context.instance()
     sub = context.socket(zmq.SUB)
     if socket_id is not None:
         sub.setsockopt(zmq.IDENTITY, socket_id.encode('utf8'))
-    sub.connect(uri[:uri.find('?')])
+    sub.connect(uri)
     sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
 
     while 1:
         yield json.loads(sub.recv_unicode())
 
 
-UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
-
-
 @reads('udp')
 def udp_reader(uri):
-    parsed = urlparse(uri)
+    """Reads data from a UDP socket."""
+    ip, port = urlparse(uri).netloc.split(':')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind(parsed.netloc.split(':'))
-    return io.open(sock.fileno(), buffering=UDP_BUFSIZE, encoding='utf8')
+    sock.bind((ip, int(port)))
+    return iter_text(sock, buffering=UDP_BLOCK_SIZE)
