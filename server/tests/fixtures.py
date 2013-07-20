@@ -174,22 +174,22 @@ class DatabaseTestMixin(SchemaTestMixin):
 class HttpSchemaTestMixin(object):
     """A :class:`unittest.TestCase` mix-in for stubbing HTTP responses."""
 
-    http_resp = b''
+    http_resp = ''
 
     def setUp(self):
-        """Replace `urlopen` with stub."""
+        """Replace `http_get` with stub."""
         super(HttpSchemaTestMixin, self).setUp()
-        self.orig_urlopen = eventlogging.schema.urlopen
-        eventlogging.schema.urlopen = self.urlopen_stub
+        self.orig_http_get = eventlogging.schema.http_get
+        eventlogging.schema.http_get = self.http_get_stub
         eventlogging.schema.schema_cache.clear()
 
     def tearDown(self):
-        """Restore original `urlopen`."""
-        eventlogging.schema.urlopen = self.orig_urlopen
+        """Restore original `http_get`."""
+        eventlogging.schema.http_get = self.orig_http_get
 
-    def urlopen_stub(self, url):
-        """Test stub for `urlopen`."""
-        return io.BytesIO(self.http_resp)
+    def http_get_stub(self, url):
+        """Test stub for `http_get`."""
+        return self.http_resp
 
 
 class HandlerTestMixin(object):

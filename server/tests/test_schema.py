@@ -31,19 +31,19 @@ class HttpSchemaTestCase(HttpSchemaTestMixin, unittest.TestCase):
 
     def test_valid_resp(self):
         """Test handling of HTTP response containing valid schema."""
-        self.http_resp = b'{"properties":{"value":{"type":"number"}}}'
+        self.http_resp = '{"properties":{"value":{"type":"number"}}}'
         schema = eventlogging.schema.http_get_schema(TEST_SCHEMA_SCID)
         self.assertEqual(schema, {'properties': {'value': {'type': 'number'}}})
 
     def test_invalid_resp(self):
         """Test handling of HTTP response not containing valid schema."""
-        self.http_resp = b'"foo"'
+        self.http_resp = '"foo"'
         with self.assertRaises(eventlogging.SchemaError):
             eventlogging.schema.http_get_schema(TEST_SCHEMA_SCID)
 
     def test_caching(self):
         """Valid HTTP responses containing JSON Schema are cached."""
-        self.http_resp = b'{"properties":{"value":{"type":"number"}}}'
+        self.http_resp = '{"properties":{"value":{"type":"number"}}}'
         eventlogging.get_schema(TEST_SCHEMA_SCID)
         self.assertIn(TEST_SCHEMA_SCID, eventlogging.schema.schema_cache)
 

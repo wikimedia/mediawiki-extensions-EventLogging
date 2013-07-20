@@ -46,8 +46,4 @@ if args.load_plugins:
     eventlogging.load_plugins()
 
 log.info('Driving %s -> %s..', args.input, args.output)
-while 1:
-    try:
-        eventlogging.drive(args.input, args.output)
-    except:
-        log.exception('drive() failure')
+eventlogging.drive(args.input, args.output)
