@@ -13,7 +13,7 @@ from __future__ import unicode_literals
 
 import jsonschema
 
-from .compat import json, urlopen
+from .compat import json, http_get
 
 __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 
@@ -53,8 +53,7 @@ def http_get_schema(scid):
     """Retrieve schema via HTTP."""
     url = SCHEMA_URL_FORMAT % scid
     try:
-        content = urlopen(url).read().decode('utf-8')
-        schema = json.loads(content)
+        schema = json.loads(http_get(url))
     except (ValueError, EnvironmentError) as ex:
         raise jsonschema.SchemaError('Schema fetch failure: %s' % ex)
     jsonschema.Draft3Validator.check_schema(schema)

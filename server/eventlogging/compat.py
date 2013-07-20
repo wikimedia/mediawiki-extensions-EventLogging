@@ -49,6 +49,21 @@ def unquote_plus(unicode):
     return unquote(bytes).decode('utf-8')
 
 
+def http_get(url):
+    """Simple wrapper around the standard library's `urlopen` function which
+    works around a circular ref. See <http://bugs.python.org/issue1208304>.
+    """
+    req = None
+    try:
+        req = urlopen(url)
+        return req.read().decode('utf-8')
+    finally:
+        if req is not None:
+            if hasattr(req, 'fp') and hasattr(req.fp, '_sock'):
+                req.fp._sock.recv = None
+            req.close()
+
+
 @functools.wraps(uuid.uuid5)
 def uuid5(namespace, name):
     """Generate UUID5 for `name` in `namespace`."""
