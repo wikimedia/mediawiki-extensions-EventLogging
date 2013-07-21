@@ -55,10 +55,10 @@ def sub_socket(endpoint, identity='', subscribe=''):
     socket.linger = ZMQ_LINGER
     socket.rcvbuf = SOCKET_BUFFER_SIZE
     if identity:
-        socket.setsockopt_string(zmq.IDENTITY, identity)
+        socket.identity = identity.encode('utf-8')
     canonical_endpoint = make_canonical(endpoint)
     socket.connect(canonical_endpoint)
-    socket.setsockopt_string(zmq.SUBSCRIBE, subscribe)
+    socket.subscribe = subscribe.encode('utf-8')
     return socket
 
 
