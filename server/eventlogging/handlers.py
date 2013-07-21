@@ -27,7 +27,7 @@ import zmq
 
 from .factory import writes, reads, mapper
 from .compat import urlparse
-from .stream import BLOCK_SIZE, HWM, LINGER
+from .stream import pub_socket, sub_socket, iter_socket_json
 from .jrm import store_sql_event
 
 
@@ -114,13 +114,7 @@ def log_writer(uri):
 @writes('tcp')
 def zmq_publisher(uri):
     """Publish events on a ZeroMQ publisher socket."""
-    context = zmq.Context.instance()
-    pub = context.socket(zmq.PUB)
-    pub.hwm = HWM
-    pub.linger = LINGER
-    pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
-    pub.bind(uri)
-
+    pub = pub_socket(uri)
     while 1:
         json_event = json.dumps((yield), check_circular=False)
         pub.send_unicode(json_event + '\n')
@@ -147,22 +141,11 @@ def stdin_reader(uri, **kwargs):
 
 
 @reads('tcp')
-def zmq_subscriber(uri, socket_id=None, topic=''):
+def zeromq_subscriber(uri, socket_id=None, subscribe=''):
     """Reads data from a ZeroMQ publisher."""
-    if '?' in uri:
-        uri = uri[:uri.index('?')]
-    context = zmq.Context.instance()
-    sub = context.socket(zmq.SUB)
-    if socket_id is not None:
-        sub.identity = socket_id.encode('utf8')
-    sub.hwm = HWM
-    sub.linger = LINGER
-    sub.setsockopt(zmq.RCVBUF, BLOCK_SIZE)
-    sub.connect(uri)
-    sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
-
-    while 1:
-        yield json.loads(sub.recv_unicode())
+    sub = sub_socket(uri, identity=socket_id, subscribe=subscribe)
+    for event in iter_socket_json(sub):
+        yield event
 
 
 @reads('udp')

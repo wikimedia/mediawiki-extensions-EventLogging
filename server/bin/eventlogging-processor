@@ -37,8 +37,8 @@ import sys
 import jsonschema
 import zmq
 
-from eventlogging import capsule_uuid, json, LogParser, validate, zmq_subscribe
-from eventlogging.stream import HWM, LINGER, BLOCK_SIZE
+from eventlogging import (capsule_uuid, json, LogParser, pub_socket,
+                          sub_socket, validate)
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
@@ -52,17 +52,10 @@ ap.add_argument('--sid', help='set input socket identity')
 args = ap.parse_args()
 
 parser = LogParser(args.format)
-
-context = zmq.Context.instance()
-pub = context.socket(zmq.PUB)
-pub.hwm = HWM
-pub.linger = LINGER
-pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
-pub.bind(args.output)
-
+pub = pub_socket(args.output)
 logging.info('Publishing JSON events on %s.', args.output)
 
-for raw_event in zmq_subscribe(args.input, sid=args.sid):
+for raw_event in iter_socket(sub_socket(args.input, identity=args.sid)):
     try:
         event = parser.parse(raw_event)
         validate(event)

@@ -30,7 +30,7 @@ import sys
 
 import zmq
 
-from eventlogging.stream import BLOCK_SIZE, HWM, LINGER
+from eventlogging import pub_socket, sub_socket, iter_socket
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
@@ -42,28 +42,16 @@ ap.add_argument('input', nargs='+', help='URIs of raw input streams')
 ap.add_argument('--sid', help='set input socket identity')
 args = ap.parse_args()
 
-ctx = zmq.Context.instance()
 poller = zmq.Poller()
-
-pub = ctx.socket(zmq.PUB)
-pub.hwm = HWM
-pub.linger = LINGER
-pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
+pub = pub_socket(args.output)
 pub.bind(args.output)
 logging.info('Writing to %s..', args.output)
 
 
 for uri in args.input:
     logging.info('Polling %s..', uri)
-    sock = ctx.socket(zmq.SUB)
-    if args.sid is not None:
-        sock.identity = args.sid.encode('utf8')
-    sock.hwm = HWM
-    sock.linger = LINGER
-    sock.setsockopt(zmq.RCVBUF, BLOCK_SIZE)
-    sock.connect(uri)
-    sock.setsockopt(zmq.SUBSCRIBE, b'')
-    poller.register(sock, zmq.POLLIN)
+    sub = sub_socket(args.input, identity=args.sid)
+    poller.register(sub, zmq.POLLIN)
 
 
 while 1:

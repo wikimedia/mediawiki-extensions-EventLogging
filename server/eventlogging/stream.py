@@ -9,36 +9,75 @@
 """
 from __future__ import unicode_literals
 
+import re
+
 import zmq
+from eventlogging.compat import items
 
 
-#: Default socket buffer size. Corresponds to Udp2LogConfig::BLOCK_SIZE.
-BLOCK_SIZE = 65536
+__all__ = ('pub_socket', 'sub_socket', 'iter_socket', 'iter_socket_json',
+           'make_canonical')
 
-#: Default value for ZeroMQ's 'high-water mark' socket option, which
-#: caps the number of messages which a socket will buffer before
-#: dropping data or blocking.
-HWM = 1000
+#: High water mark. The maximum number of outstanding messages to queue in
+#: memory for any single peer that the socket is communicating with.
+ZMQ_HIGH_WATER_MARK = 3000
 
-#: Default value for zmq.LINGER, in ms.
-LINGER = 1000
+#: If a socket is closed before all its messages has been sent, ØMQ will
+#: wait up to this many miliseconds before discarding the messages.
+#: We'd rather fail fast, even at the cost of dropping a few events.
+ZMQ_LINGER = 0
+
+#: The maximum socket buffer size in bytes. This is used to set either
+#: SO_SNDBUF or SO_RCVBUF for the underlying socket, depending on its
+#: type. We set it to 64 kB to match Udp2LogConfig::BLOCK_SIZE.
+SOCKET_BUFFER_SIZE = 64 * 1024
 
 
-__all__ = ('zmq_subscribe', 'BLOCK_SIZE', 'HWM', 'LINGER')
-
-
-def zmq_subscribe(endpoint, topic='', sid=None, json=False):
-    """Generator; yields lines from ZMQ_SUB socket."""
+def pub_socket(endpoint):
+    """Get a pre-configured ØMQ publisher."""
     context = zmq.Context.instance()
-    sock = context.socket(zmq.SUB)
-    if sid is not None:
-        sock.identity = sid.encode('utf8')
-    sock.hwm = HWM
-    sock.linger = LINGER
-    sock.setsockopt(zmq.RCVBUF, BLOCK_SIZE)
-    sock.connect(endpoint)
-    sock.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
-    recv = sock.recv_json if json else sock.recv_unicode
+    socket = context.socket(zmq.PUB)
+    if hasattr(zmq, 'HWM'):
+        socket.hwm = ZMQ_HIGH_WATER_MARK
+    socket.linger = ZMQ_LINGER
+    socket.sndbuf = SOCKET_BUFFER_SIZE
+    canonical_endpoint = make_canonical(endpoint, host='*')
+    socket.bind(canonical_endpoint)
+    return socket
 
-    while 1:
-        yield recv()
+
+def sub_socket(endpoint, identity='', subscribe=''):
+    """Get a pre-configured ØMQ subscriber."""
+    context = zmq.Context.instance()
+    socket = context.socket(zmq.SUB)
+    if hasattr(zmq, 'HWM'):
+        socket.hwm = ZMQ_HIGH_WATER_MARK
+    socket.linger = ZMQ_LINGER
+    socket.rcvbuf = SOCKET_BUFFER_SIZE
+    if identity:
+        socket.setsockopt_string(zmq.IDENTITY, identity)
+    canonical_endpoint = make_canonical(endpoint)
+    socket.connect(canonical_endpoint)
+    socket.setsockopt_string(zmq.SUBSCRIBE, subscribe)
+    return socket
+
+
+def iter_socket(socket):
+    """Iterator; read and decode unicode strings from a socket."""
+    return iter(socket.recv_unicode, None)
+
+
+def iter_socket_json(socket):
+    """Iterator; read and decode successive JSON objects from a socket."""
+    return iter(socket.recv_json, None)
+
+
+def make_canonical(uri, protocol='tcp', host='127.0.0.1'):
+    """Convert a partial endpoint URI to a fully canonical one, using
+    TCP and localhost as the default protocol and host. The partial URI
+    must at minimum contain a port number."""
+    fragments = dict(protocol=protocol, host=host)
+    match = re.match(r'((?P<protocol>[^:]+)://)?((?P<host>[^:]+):)?'
+                     r'(?P<port>\d+)(?:\?.*)?', '%s' % uri)
+    fragments.update((k, v) for k, v in items(match.groupdict()) if v)
+    return '%(protocol)s://%(host)s:%(port)s' % dict(fragments)

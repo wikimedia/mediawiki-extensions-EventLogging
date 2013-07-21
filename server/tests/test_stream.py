@@ -54,15 +54,17 @@ class ZmqTestCase(TimeoutTestMixin, unittest.TestCase):
         self.pipe.send('')
         super(ZmqTestCase, self).tearDown()
 
-    def test_zmq_subscribe(self):
+    def test_iter_sub_socket(self):
         """zmq_subscribe(...) receives string objects."""
-        subscriber = eventlogging.stream.zmq_subscribe(self.endpoint)
+        subscriber = eventlogging.stream.sub_socket(self.endpoint)
+        subscriber = eventlogging.stream.iter_socket(subscriber)
         self.pipe.send('Hello.')
         self.assertEqual(next(subscriber), 'Hello.')
 
-    def test_zmq_subscribe_json(self):
+    def test_iter_socket_json(self):
         """zmq_subscribe(..., json=True) decodes JSON messages."""
-        subscriber = eventlogging.zmq_subscribe(
-            self.endpoint, sid=self.id(), json=True)
+        subscriber = eventlogging.stream.sub_socket(
+            self.endpoint, identity='%s' % self.id())
+        subscriber = eventlogging.stream.iter_socket_json(subscriber)
         self.pipe.send('{"message":"secret"}')
         self.assertEqual(next(subscriber), dict(message='secret'))
