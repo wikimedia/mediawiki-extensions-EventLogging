@@ -38,6 +38,7 @@ import jsonschema
 import zmq
 
 from eventlogging import capsule_uuid, json, LogParser, validate, zmq_subscribe
+from eventlogging.stream import HWM, LINGER, BLOCK_SIZE
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
@@ -54,6 +55,9 @@ parser = LogParser(args.format)
 
 context = zmq.Context.instance()
 pub = context.socket(zmq.PUB)
+pub.hwm = HWM
+pub.linger = LINGER
+pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
 pub.bind(args.output)
 
 logging.info('Publishing JSON events on %s.', args.output)

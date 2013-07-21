@@ -30,6 +30,8 @@ import sys
 
 import zmq
 
+from eventlogging.stream import BLOCK_SIZE, HWM, LINGER
+
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
 
@@ -44,6 +46,9 @@ ctx = zmq.Context.instance()
 poller = zmq.Poller()
 
 pub = ctx.socket(zmq.PUB)
+pub.hwm = HWM
+pub.linger = LINGER
+pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
 pub.bind(args.output)
 logging.info('Writing to %s..', args.output)
 
@@ -52,7 +57,10 @@ for uri in args.input:
     logging.info('Polling %s..', uri)
     sock = ctx.socket(zmq.SUB)
     if args.sid is not None:
-        sock.setsockopt(zmq.IDENTITY, args.sid)
+        sock.identity = args.sid.encode('utf8')
+    sock.hwm = HWM
+    sock.linger = LINGER
+    sock.setsockopt(zmq.RCVBUF, BLOCK_SIZE)
     sock.connect(uri)
     sock.setsockopt(zmq.SUBSCRIBE, b'')
     poller.register(sock, zmq.POLLIN)

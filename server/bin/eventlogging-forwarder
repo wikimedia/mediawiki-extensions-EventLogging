@@ -30,6 +30,8 @@ import sys
 import zmq
 
 
+from eventlogging.stream import HWM, LINGER, BLOCK_SIZE
+
 UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
 
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
@@ -45,6 +47,9 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
 
 ctx = zmq.Context.instance()
 sock_out = ctx.socket(zmq.PUB)
+sock_out.hwm = HWM
+sock_out.linger = LINGER
+sock_out.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
 sock_out.bind('tcp://*:%d' % args.port)
 
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
@@ -52,7 +57,7 @@ sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock_in.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 sock_in.bind(('0.0.0.0', args.port))
 
-with io.open(sock_in.fileno(), buffering=UDP_BUFSIZE, encoding='utf8',
+with io.open(sock_in.fileno(), buffering=BLOCK_SIZE, encoding='utf8',
              errors='ignore') as f:
     if args.count:
         f = (str(id) + '\t' + msg for id, msg in enumerate(f))

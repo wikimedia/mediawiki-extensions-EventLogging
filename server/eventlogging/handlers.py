@@ -27,6 +27,7 @@ import zmq
 
 from .factory import writes, reads, mapper
 from .compat import urlparse
+from .stream import BLOCK_SIZE, HWM, LINGER
 from .jrm import store_sql_event
 
 
@@ -36,8 +37,6 @@ __all__ = ('load_plugins',)
 #: 'EVENTLOGGING_PLUGIN_DIR' environment variable if it is defined. If it is
 #: not defined, EventLogging will default to the value specified below.
 DEFAULT_PLUGIN_DIR = '/usr/local/lib/eventlogging'
-
-UDP_BLOCK_SIZE = 65536  # Corresponds to Udp2LogConfig::BLOCK_SIZE
 
 
 def iter_text(f, encoding='utf8', errors='replace', **kwargs):
@@ -117,6 +116,9 @@ def zmq_publisher(uri):
     """Publish events on a ZeroMQ publisher socket."""
     context = zmq.Context.instance()
     pub = context.socket(zmq.PUB)
+    pub.hwm = HWM
+    pub.linger = LINGER
+    pub.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
     pub.bind(uri)
 
     while 1:
@@ -152,7 +154,10 @@ def zmq_subscriber(uri, socket_id=None, topic=''):
     context = zmq.Context.instance()
     sub = context.socket(zmq.SUB)
     if socket_id is not None:
-        sub.setsockopt(zmq.IDENTITY, socket_id.encode('utf8'))
+        sub.identity = socket_id.encode('utf8')
+    sub.hwm = HWM
+    sub.linger = LINGER
+    sub.setsockopt(zmq.RCVBUF, BLOCK_SIZE)
     sub.connect(uri)
     sub.setsockopt(zmq.SUBSCRIBE, topic.encode('utf8'))
 
@@ -167,4 +172,4 @@ def udp_reader(uri):
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind((ip, int(port)))
-    return iter_text(sock, buffering=UDP_BLOCK_SIZE)
+    return iter_text(sock, buffering=BLOCK_SIZE)
