@@ -66,6 +66,9 @@ def monitor_pubs(endpoints, counters):
     for name, uri in endpoints.iteritems():
         logging.info('Registering %s (%s).', name, uri)
         socket = ctx.socket(zmq.SUB)
+        socket.hwm = 1000
+        socket.linger = 1000
+        socket.setsockopt(zmq.RCVBUF, 65536)
         socket.connect(uri)
         socket.setsockopt(zmq.SUBSCRIBE, '')
         poller.register(socket, zmq.POLLIN)
