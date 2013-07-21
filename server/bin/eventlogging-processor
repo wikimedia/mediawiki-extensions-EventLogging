@@ -37,8 +37,8 @@ import sys
 import jsonschema
 import zmq
 
-from eventlogging import (capsule_uuid, json, LogParser, pub_socket,
-                          sub_socket, validate)
+from eventlogging import (capsule_uuid, iter_socket, json, LogParser,
+                          pub_socket, sub_socket, validate)
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)

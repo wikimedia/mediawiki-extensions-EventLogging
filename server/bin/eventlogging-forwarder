@@ -30,7 +30,7 @@ import sys
 import zmq
 
 
-from eventlogging.stream import HWM, LINGER, BLOCK_SIZE
+from eventlogging import pub_socket
 
 UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
 
@@ -45,13 +45,7 @@ args = parser.parse_args()
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-ctx = zmq.Context.instance()
-sock_out = ctx.socket(zmq.PUB)
-sock_out.hwm = HWM
-sock_out.linger = LINGER
-sock_out.setsockopt(zmq.SNDBUF, BLOCK_SIZE)
-sock_out.bind('tcp://*:%d' % args.port)
-
+sock_out = pub_socket(args.port)
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
 sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock_in.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
