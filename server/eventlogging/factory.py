@@ -7,7 +7,6 @@
 
 """
 import inspect
-import json
 
 from .compat import items, parse_qsl
 

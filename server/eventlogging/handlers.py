@@ -13,17 +13,14 @@
 import datetime
 import glob
 import imp
-import io
 import json
 import logging
 import logging.handlers
 import os
-import socket
 import sys
 
 import pymongo
 import sqlalchemy
-import zmq
 
 from .factory import writes, reads, mapper
 from .compat import urlparse
@@ -68,9 +65,8 @@ def count(stream):
 #
 
 @writes('mongodb')
-def mongodb_writer(uri, **kwargs):
-    map = pymongo.uri_parser.parse_uri(uri, **kwargs)
-    client = pymongo.MongoClient(uri, **kwargs)
+def mongodb_writer(uri):
+    client = pymongo.MongoClient(uri)
     db = client[map['database'] or 'events']
     datetime_from_timestamp = datetime.datetime.fromtimestamp
 
@@ -83,7 +79,7 @@ def mongodb_writer(uri, **kwargs):
 
 
 @writes('mysql', 'sqlite')
-def sql_writer(uri, **kwargs):
+def sql_writer(uri):
     engine = sqlalchemy.create_engine(uri)
     meta = sqlalchemy.MetaData(bind=engine)
 
