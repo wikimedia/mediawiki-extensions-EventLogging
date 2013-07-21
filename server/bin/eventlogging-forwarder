@@ -23,16 +23,11 @@
 
 """
 import argparse
-import io
 import logging
-import socket
 import sys
-import zmq
 
+from eventlogging import pub_socket, udp_socket, iter_socket
 
-from eventlogging import pub_socket
-
-UDP_BUFSIZE = 65536  # Udp2LogConfig::BLOCK_SIZE
 
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
                                  fromfile_prefix_chars='@')
@@ -41,19 +36,16 @@ parser.add_argument('--count', action='store_true',
                     help='Prepend an autoincrementing ID to each message')
 args = parser.parse_args()
 
-
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
                     format='%(asctime)s %(message)s')
 
-sock_out = pub_socket(args.port)
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
-sock_in = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock_in.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-sock_in.bind(('0.0.0.0', args.port))
+sock_out = pub_socket(args.port)
+sock_in = udp_socket(args.port)
 
-with io.open(sock_in.fileno(), buffering=BLOCK_SIZE, encoding='utf8',
-             errors='ignore') as f:
-    if args.count:
-        f = (str(id) + '\t' + msg for id, msg in enumerate(f))
-    for line in f:
-        sock_out.send_string(line)
+f = iter_socket(sock_in)
+if args.count:
+    f = (str(id) + '\t' + msg for id, msg in enumerate(f))
+for line in f:
+    print(line)
+    sock_out.send_string(line)

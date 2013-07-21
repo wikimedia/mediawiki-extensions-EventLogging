@@ -44,13 +44,12 @@ args = ap.parse_args()
 
 poller = zmq.Poller()
 pub = pub_socket(args.output)
-pub.bind(args.output)
 logging.info('Writing to %s..', args.output)
 
 
 for uri in args.input:
     logging.info('Polling %s..', uri)
-    sub = sub_socket(args.input, identity=args.sid)
+    sub = sub_socket(uri, identity=args.sid)
     poller.register(sub, zmq.POLLIN)
 
 

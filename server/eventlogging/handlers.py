@@ -27,7 +27,8 @@ import zmq
 
 from .factory import writes, reads, mapper
 from .compat import urlparse
-from .stream import pub_socket, sub_socket, iter_socket_json
+from .stream import (iter_socket, iter_socket_json, pub_socket,
+                     sub_socket, udp_socket)
 from .jrm import store_sql_event
 
 
@@ -37,12 +38,6 @@ __all__ = ('load_plugins',)
 #: 'EVENTLOGGING_PLUGIN_DIR' environment variable if it is defined. If it is
 #: not defined, EventLogging will default to the value specified below.
 DEFAULT_PLUGIN_DIR = '/usr/local/lib/eventlogging'
-
-
-def iter_text(f, encoding='utf8', errors='replace', **kwargs):
-    """Returns an iterator that decodes data from a file-like object opened in
-    binary mode into lines of unicode text."""
-    return io.open(f.fileno(), encoding=encoding, errors=errors, **kwargs)
 
 
 def load_plugins(path=None):
@@ -99,8 +94,7 @@ def sql_writer(uri, **kwargs):
 @writes('file')
 def log_writer(uri):
     """Write events to a file on disk."""
-    parsed = urlparse(uri)
-    filename = parsed.path
+    filename = urlparse(uri).path
     handler = logging.handlers.WatchedFileHandler(filename)
     log = logging.getLogger('Events')
     log.setLevel(logging.INFO)
@@ -112,7 +106,7 @@ def log_writer(uri):
 
 
 @writes('tcp')
-def zmq_publisher(uri):
+def zeromq_writer(uri):
     """Publish events on a ZeroMQ publisher socket."""
     pub = pub_socket(uri)
     while 1:
@@ -135,9 +129,9 @@ def stdout_writer(uri, **kwargs):
 
 
 @reads('stdin')
-def stdin_reader(uri, **kwargs):
+def stdin_reader(uri):
     """Reads data from standard input."""
-    return iter_text(sys.stdin, **kwargs)
+    return iter_socket(sys.stdin)
 
 
 @reads('tcp')
@@ -151,8 +145,4 @@ def zeromq_subscriber(uri, socket_id=None, subscribe=''):
 @reads('udp')
 def udp_reader(uri):
     """Reads data from a UDP socket."""
-    ip, port = urlparse(uri).netloc.split(':')
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((ip, int(port)))
-    return iter_text(sock, buffering=BLOCK_SIZE)
+    return iter_socket(udp_socket(uri))

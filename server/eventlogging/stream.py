@@ -9,14 +9,18 @@
 """
 from __future__ import unicode_literals
 
+import io
+import json
 import re
+import socket
 
 import zmq
-from eventlogging.compat import items
+
+from .compat import items, urlparse
 
 
-__all__ = ('pub_socket', 'sub_socket', 'iter_socket', 'iter_socket_json',
-           'make_canonical')
+__all__ = ('pub_socket', 'sub_socket', 'udp_socket', 'iter_socket',
+           'iter_socket_json', 'make_canonical')
 
 #: High water mark. The maximum number of outstanding messages to queue in
 #: memory for any single peer that the socket is communicating with.
@@ -54,7 +58,7 @@ def sub_socket(endpoint, identity='', subscribe=''):
         socket.hwm = ZMQ_HIGH_WATER_MARK
     socket.linger = ZMQ_LINGER
     socket.rcvbuf = SOCKET_BUFFER_SIZE
-    if identity:
+    if identity and hasattr(socket, 'identity'):
         socket.identity = identity.encode('utf-8')
     canonical_endpoint = make_canonical(endpoint)
     socket.connect(canonical_endpoint)
@@ -62,14 +66,37 @@ def sub_socket(endpoint, identity='', subscribe=''):
     return socket
 
 
+def udp_socket(endpoint):
+    """Parse a URI and configure a UDP socket for it."""
+    canonical_endpoint = make_canonical(endpoint)
+    ip, port = urlparse(canonical_endpoint).netloc.split(':')
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind((ip, int(port)))
+    return sock
+
+
+def iter_file(file):
+    """Wrap a file object's underlying file descriptor with a UTF8 line
+    reader and read successive lines."""
+    with io.open(file.fileno(), mode='rt', encoding='utf8',
+                 errors='replace') as f:
+        for line in f:
+            yield line
+
+
 def iter_socket(socket):
     """Iterator; read and decode unicode strings from a socket."""
-    return iter(socket.recv_unicode, None)
+    if hasattr(socket, 'recv_unicode'):
+        return iter(socket.recv_unicode, None)
+    return iter_file(socket)
 
 
 def iter_socket_json(socket):
     """Iterator; read and decode successive JSON objects from a socket."""
-    return iter(socket.recv_json, None)
+    if hasattr(socket, 'recv_json'):
+        return iter(socket.recv_json, None)
+    return (json.loads(dgram) for dgram in iter_socket(socket))
 
 
 def make_canonical(uri, protocol='tcp', host='127.0.0.1'):
