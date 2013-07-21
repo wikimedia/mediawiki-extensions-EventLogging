@@ -68,7 +68,7 @@ def sub_socket(endpoint, identity='', subscribe=''):
 
 def udp_socket(endpoint):
     """Parse a URI and configure a UDP socket for it."""
-    canonical_endpoint = make_canonical(endpoint)
+    canonical_endpoint = make_canonical(endpoint, host='0.0.0.0')
     ip, port = urlparse(canonical_endpoint).netloc.split(':')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
