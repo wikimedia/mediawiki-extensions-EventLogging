@@ -244,9 +244,12 @@ $messages['ja'] = array(
  * @author 아라
  */
 $messages['ko'] = array(
-	'eventlogging-desc' => '클라이언트 쪽 코드에서 사건 기록에 대한 프레임워크',
+	'eventlogging-desc' => '클라이언트 측 코드에서 이벤트를 기록하기 위한 프레임워크',
 	'eventlogging-invalid-json' => '잘못된 JSON',
 	'eventlogging-revision-id' => '$1 판',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP 기록',
+	'eventlogging-code-sample-module-setup' => '자바스크립트 기록에 대한 PHP 설치',
+	'eventlogging-code-sample-logging-on-client-side' => '자바스크립트 기록',
 );
 
 /** Colognian (Ripoarisch)
