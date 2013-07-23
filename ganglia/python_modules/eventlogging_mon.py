@@ -95,7 +95,7 @@ def metric_init(params):
     metric descriptors.
 
     """
-    prefix = params.get('prefix', 'zeromq_')
+    prefix = params.get('prefix', 'eventlogging_')
     config_dir = params.get('config_dir', '/etc/eventlogging.d')
     pubs = {prefix + k: v for k, v in iter_pubs(config_dir)}
     counters = {k: 0 for k in pubs}
