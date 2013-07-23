@@ -9,10 +9,14 @@
 from __future__ import unicode_literals
 
 import multiprocessing
+import os
 import unittest
 import wsgiref.simple_server
 
 from eventlogging.compat import http_get
+
+
+TRAVIS = os.getenv('TRAVIS', False)
 
 
 class SingleServingHttpd(multiprocessing.Process):
@@ -30,6 +34,8 @@ class SingleServingHttpd(multiprocessing.Process):
 
 class HttpGetTestCase(unittest.TestCase):
     """Test cases for ``http_get``."""
+
+    @unittest.skipIf(TRAVIS, 'Running in Travis')
     def test_http_get(self):
         """``http_get`` can pull content via HTTP."""
         server = SingleServingHttpd('secret')
