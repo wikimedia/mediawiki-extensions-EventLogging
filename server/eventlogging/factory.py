@@ -10,8 +10,8 @@ import inspect
 
 from .compat import items, parse_qsl
 
-__all__ = ('drive', 'writes', 'reads', 'get_writer', 'get_reader')
 
+__all__ = ('get_reader', 'get_writer', 'reads', 'writes', 'drive')
 
 _writers = {}
 _readers = {}

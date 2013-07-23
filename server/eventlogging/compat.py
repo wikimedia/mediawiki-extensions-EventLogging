@@ -27,7 +27,7 @@ except ImportError:
     import json
 
 
-__all__ = ('items', 'json', 'unquote_plus', 'urlopen', 'uuid5')
+__all__ = ('http_get', 'items', 'json', 'unquote_plus', 'urlopen', 'uuid5')
 
 PY3 = sys.version_info[0] == 3
 
@@ -37,8 +37,8 @@ if PY3:
     from urllib.request import urlopen
 else:
     items = operator.methodcaller('iteritems')
-    from urllib2 import urlopen
     from urllib import unquote
+    from urllib2 import urlopen
     from urlparse import urlparse, parse_qsl
 
 

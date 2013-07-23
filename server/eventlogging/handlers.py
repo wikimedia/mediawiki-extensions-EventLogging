@@ -97,7 +97,7 @@ def log_writer(uri):
     log.addHandler(handler)
 
     while 1:
-        json_event = json.dumps((yield), check_circular=False)
+        json_event = json.dumps((yield), sort_keys=True, check_circular=False)
         log.info(json_event)
 
 
@@ -106,17 +106,18 @@ def zeromq_writer(uri):
     """Publish events on a ZeroMQ publisher socket."""
     pub = pub_socket(uri)
     while 1:
-        json_event = json.dumps((yield), check_circular=False)
+        json_event = json.dumps((yield), sort_keys=True, check_circular=False)
         pub.send_unicode(json_event + '\n')
 
 
 @writes('stdout')
-def stdout_writer(uri, **kwargs):
+def stdout_writer(uri):
     """Writes events to stdout. Pretty-prints if stdout is a terminal."""
+    dumps_kwargs = dict(sort_keys=True, check_circular=False)
     if sys.stdout.isatty():
-        kwargs.setdefault('indent', 2)
+        dumps_kwargs.update(indent=2)
     while 1:
-        print(json.dumps((yield), sort_keys=True, **kwargs))
+        print(json.dumps((yield), **dumps_kwargs))
 
 
 #
@@ -133,9 +134,8 @@ def stdin_reader(uri):
 @reads('tcp')
 def zeromq_subscriber(uri, socket_id=None, subscribe=''):
     """Reads data from a ZeroMQ publisher."""
-    sub = sub_socket(uri, identity=socket_id, subscribe=subscribe)
-    for event in iter_socket_json(sub):
-        yield event
+    sock = sub_socket(uri, identity=socket_id, subscribe=subscribe)
+    return iter_socket_json(sock)
 
 
 @reads('udp')
