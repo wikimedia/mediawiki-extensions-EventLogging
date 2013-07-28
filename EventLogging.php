@@ -35,6 +35,17 @@ $wgExtensionCredits[ 'other' ][] = array(
 define( 'NS_SCHEMA', 470 );
 define( 'NS_SCHEMA_TALK', 471 );
 
+$wgHooks[ 'CanonicalNamespaces' ][] = function ( &$namespaces ) {
+	global $wgDBname, $wgEventLoggingDBname;
+	if ( $wgEventLoggingDBname === $wgDBname ) {
+		$namespaces[ NS_SCHEMA ] = 'Schema';
+		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
+	}
+};
+$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
+$wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
+$wgNamespaceProtection[ NS_SCHEMA ] = array( 'autoconfirmed' );
+
 
 
 // Configuration

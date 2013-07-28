@@ -12,27 +12,20 @@
 class JsonSchemaHooks {
 
 	/**
-	 * Registers hook and content handlers if the JSON Schema
-	 * namespace is enabled for this site.
+	 * Registers API module and hooks which should only run if the JSON
+	 * Schema namespace is enabled for this wiki.
 	 * @return bool: Whether hooks and handler were registered.
 	 */
 	static function registerHandlers() {
-		global $wgAPIModules, $wgHooks, $wgContentHandlers,
-			$wgEventLoggingDBname, $wgDBname;
+		global $wgAPIModules, $wgHooks, $wgEventLoggingDBname, $wgDBname;
 
 		if ( $wgEventLoggingDBname === $wgDBname ) {
-			$wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
-
 			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
-			$wgHooks[ 'CanonicalNamespaces' ][] = 'JsonSchemaHooks::onCanonicalNamespaces';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
 			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
-
 			$wgAPIModules[ 'jsonschema' ] = 'ApiJsonSchema';
-
 			return true;
 		}
-
 		return false;
 	}
 
@@ -47,23 +40,6 @@ class JsonSchemaHooks {
 		if ( $title->inNamespace( NS_SCHEMA ) ) {
 			$lang = 'json';
 		}
-		return true;
-	}
-
-	/**
-	 * Registers Schema namespaces and assign edit rights.
-	 * @param array &$namespaces Mapping of numbers to namespace names.
-	 * @return bool
-	 */
-	static function onCanonicalNamespaces( array &$namespaces ) {
-		global $wgNamespaceContentModels, $wgNamespaceProtection;
-
-		$namespaces[ NS_SCHEMA ] = 'Schema';
-		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
-
-		$wgNamespaceProtection[ NS_SCHEMA ] = array( 'autoconfirmed' );
-		$wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
-
 		return true;
 	}
 
