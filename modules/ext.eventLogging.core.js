@@ -131,7 +131,7 @@
 				if ( !( e instanceof ValidationError ) ) {
 					throw e;
 				}
-				self.warn( e.message );
+				self.warn( 'Validation error against schema ' + schemaName + ': ' + e.message );
 				return false;
 			}
 		},
