@@ -325,6 +325,7 @@ $messages['sv'] = array(
 );
 
 /** Ukrainian (українська)
+ * @author Andriykopanytsia
  * @author Ата
  */
 $messages['uk'] = array(
@@ -334,6 +335,7 @@ $messages['uk'] = array(
 	'jsonschema-invalidempty' => 'Порожня структура даних не припустима у цій схемі',
 	'jsonschema-invalidnode' => 'Неприпустимий вузок: очікувано "$1", отримано "$2". Шлях: "$3"',
 	'jsonschema-invalid-missingfield' => 'Відсутнє обов\'язкове поле "$1"',
+	'jsonschema-invalid-notinenum' => 'Значення "$1" не міститься у переліку для властивості $2',
 );
 
 /** Vietnamese (Tiếng Việt)
