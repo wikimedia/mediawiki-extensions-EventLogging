@@ -26,7 +26,7 @@ import argparse
 import logging
 import sys
 
-from eventlogging import iter_socket, pub_socket, udp_socket
+from eventlogging import iter_unicode, pub_socket, udp_socket
 
 
 parser = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
@@ -43,7 +43,7 @@ logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
 sock_out = pub_socket(args.port)
 sock_in = udp_socket(args.port)
 
-f = iter_socket(sock_in)
+f = iter_unicode(sock_in)
 if args.count:
     f = (str(id) + '\t' + msg for id, msg in enumerate(f))
 for line in f:

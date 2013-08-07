@@ -37,7 +37,7 @@ import sys
 import jsonschema
 import zmq
 
-from eventlogging import (capsule_uuid, iter_socket, json, LogParser,
+from eventlogging import (capsule_uuid, iter_unicode, json, LogParser,
                           pub_socket, sub_socket, validate)
 
 
@@ -55,7 +55,7 @@ parser = LogParser(args.format)
 pub = pub_socket(args.output)
 logging.info('Publishing JSON events on %s.', args.output)
 
-for raw_event in iter_socket(sub_socket(args.input, identity=args.sid)):
+for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
     try:
         event = parser.parse(raw_event)
         validate(event)

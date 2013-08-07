@@ -22,10 +22,8 @@ import sys
 import pymongo
 import sqlalchemy
 
-from .factory import writes, reads, mapper
-from .compat import urlparse
-from .stream import (iter_socket, iter_socket_json, pub_socket,
-                     sub_socket, udp_socket)
+from .factory import writes, reads
+from .streams import stream, pub_socket, sub_socket, udp_socket
 from .jrm import store_sql_event
 
 
@@ -44,20 +42,6 @@ def load_plugins(path=None):
         path = os.environ.get('EVENTLOGGING_PLUGIN_DIR', DEFAULT_PLUGIN_DIR)
     for plugin in glob.glob(os.path.join(path, '*.py')):
         imp.load_source('__eventlogging_plugin_%x__' % hash(plugin), plugin)
-
-
-#
-# Mappers
-#
-
-@mapper
-def decode_json(stream):
-    return (json.loads(val) for val in stream)
-
-
-@mapper
-def count(stream):
-    return (str(id) + '\t' + val for id, val in enumerate(stream))
 
 
 #
@@ -88,10 +72,9 @@ def sql_writer(uri):
 
 
 @writes('file')
-def log_writer(uri):
+def log_writer(path):
     """Write events to a file on disk."""
-    filename = urlparse(uri).path
-    handler = logging.handlers.WatchedFileHandler(filename)
+    handler = logging.handlers.WatchedFileHandler(path)
     log = logging.getLogger('Events')
     log.setLevel(logging.INFO)
     log.addHandler(handler)
@@ -124,21 +107,21 @@ def stdout_writer(uri):
 # Readers
 #
 
-
 @reads('stdin')
-def stdin_reader(uri):
+def stdin_reader(uri, raw=False):
     """Reads data from standard input."""
-    return iter_socket(sys.stdin)
+    return stream(sys.stdin, raw)
 
 
 @reads('tcp')
-def zeromq_subscriber(uri, socket_id=None, subscribe=''):
-    """Reads data from a ZeroMQ publisher."""
-    sock = sub_socket(uri, identity=socket_id, subscribe=subscribe)
-    return iter_socket_json(sock)
+def zeromq_subscriber(netloc, socket_id=None, subscribe='', raw=False):
+    """Reads data from a ZeroMQ publisher. If `raw` is truthy, reads
+    unicode strings. Otherwise, reads JSON."""
+    sock = sub_socket(netloc, identity=socket_id, subscribe=subscribe)
+    return stream(sock, raw)
 
 
 @reads('udp')
 def udp_reader(uri):
     """Reads data from a UDP socket."""
-    return iter_socket(udp_socket(uri))
+    return stream(udp_socket(uri), raw)

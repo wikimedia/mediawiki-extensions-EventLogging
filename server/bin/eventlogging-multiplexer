@@ -30,7 +30,7 @@ import sys
 
 import zmq
 
-from eventlogging import pub_socket, sub_socket, iter_socket
+from eventlogging import pub_socket, sub_socket
 
 
 logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)

@@ -8,35 +8,36 @@
 """
 import inspect
 
-from .compat import items, parse_qsl
+from .compat import items, parse_qsl, urlparse
 
 
-__all__ = ('get_reader', 'get_writer', 'reads', 'writes', 'drive')
+__all__ = ('apply_safe', 'drive', 'get_reader', 'get_writer', 'handle',
+           'reads', 'writes')
 
 _writers = {}
 _readers = {}
-_mappers = {}
 
 
-def deparam(uri):
-    """Parse query string from URI into a dict."""
-    qs = uri.rsplit('?', 1)[-1]
-    return dict(parse_qsl(qs))
-
-
-def call(f, kwargs):
-    """Inspect a function's signature and call it with the keyword arguments in
-    `kwargs` that it accepts. Other arguments are discarded."""
+def apply_safe(f, kwargs):
+    """Apply a function with only those kwargs that it would accept."""
+    # If the function takes a '**' arg, all keyword args are safe.
+    # If it doesn't, we have to remove any arguments that are not
+    # present in the function's signature.
     sig = inspect.getargspec(f)
     if sig.keywords is None:
         kwargs = {k: v for k, v in items(kwargs) if k in sig.args}
     return f(**kwargs)
 
 
-def mapper(f):
-    """Decorator that registers a function as a mapper."""
-    _mappers[f.__name__] = f
-    return f
+def handle(handlers, uri):
+    """Use a URI to look up a handler and then invoke the handler with
+    the parts and params of a URI as kwargs."""
+    parts = urlparse(uri)
+    handler = handlers[parts.scheme]
+    kwargs = dict(parse_qsl(parts.query), uri=uri)
+    for k in 'hostname', 'port', 'path':
+        kwargs[k] = getattr(parts, k)
+    return apply_safe(handler, kwargs)
 
 
 def writes(*schemes):
@@ -60,10 +61,7 @@ def reads(*schemes):
 def get_writer(uri):
     """Given a writer URI (representing, for example, a database
     connection), invoke and initialize the appropriate handler."""
-    uri_scheme = uri.split('://', 1)[0]
-    writer = _writers[uri_scheme]
-    params = dict(deparam(uri), uri=uri)
-    coroutine = call(writer, params)
+    coroutine = handle(_writers, uri)
     next(coroutine)
     return coroutine
 
@@ -72,15 +70,7 @@ def get_reader(uri):
     """Given a reader URI (representing the address of an input stream),
     invoke and initialize a generator that will yield values from that
     stream."""
-    uri_scheme = uri.split('://', 1)[0]
-    reader = _readers[uri_scheme]
-    params = dict(deparam(uri), uri=uri)
-    mappers = params.pop('mappers', None)
-    iterator = call(reader, params)
-    if mappers is not None:
-        mappers = [_mappers[mapper] for mapper in mappers.split(',')]
-        for mapper in mappers:
-            iterator = mapper(iterator)
+    iterator = handle(_readers, uri)
     return iterator
 
 

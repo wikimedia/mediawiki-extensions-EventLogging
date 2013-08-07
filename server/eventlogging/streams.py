@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-  eventlogging.stream
-  ~~~~~~~~~~~~~~~~~~~
+  eventlogging.streams
+  ~~~~~~~~~~~~~~~~~~~~
 
   This module provides helpers for reading from and writing to ZeroMQ
   data streams using ZeroMQ or UDP.
@@ -19,8 +19,8 @@ import zmq
 from .compat import items, urlparse
 
 
-__all__ = ('pub_socket', 'sub_socket', 'udp_socket', 'iter_socket',
-           'iter_socket_json', 'make_canonical')
+__all__ = ('iter_json', 'iter_unicode', 'make_canonical', 'pub_socket',
+           'stream', 'sub_socket', 'udp_socket')
 
 #: High water mark. The maximum number of outstanding messages to queue in
 #: memory for any single peer that the socket is communicating with.
@@ -66,13 +66,11 @@ def sub_socket(endpoint, identity='', subscribe=''):
     return socket
 
 
-def udp_socket(endpoint):
+def udp_socket(hostname, port):
     """Parse a URI and configure a UDP socket for it."""
-    canonical_endpoint = make_canonical(endpoint, host='0.0.0.0')
-    ip, port = urlparse(canonical_endpoint).netloc.split(':')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.bind((ip, int(port)))
+    sock.bind((hostname, port))
     return sock
 
 
@@ -85,18 +83,24 @@ def iter_file(file):
             yield line
 
 
-def iter_socket(socket):
-    """Iterator; read and decode unicode strings from a socket."""
-    if hasattr(socket, 'recv_unicode'):
-        return iter(socket.recv_unicode, None)
-    return iter_file(socket)
+def iter_unicode(stream):
+    """Iterator; read and decode unicode strings from a stream."""
+    if hasattr(stream, 'recv_unicode'):
+        return iter(stream.recv_unicode, None)
+    return iter_file(stream)
 
 
-def iter_socket_json(socket):
-    """Iterator; read and decode successive JSON objects from a socket."""
-    if hasattr(socket, 'recv_json'):
-        return iter(socket.recv_json, None)
-    return (json.loads(dgram) for dgram in iter_socket(socket))
+def iter_json(stream):
+    """Iterator; read and decode successive JSON objects from a stream."""
+    if hasattr(stream, 'recv_json'):
+        return iter(stream.recv_json, None)
+    return (json.loads(dgram) for dgram in iter_unicode(stream))
+
+
+def stream(s, raw=False):
+    """Convenience method for getting a JSON-based or line-based
+    streaming iterator."""
+    return iter_unicode(s) if raw else iter_json(s)
 
 
 def make_canonical(uri, protocol='tcp', host='127.0.0.1'):

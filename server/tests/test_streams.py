@@ -3,7 +3,7 @@
   eventlogging unit tests
   ~~~~~~~~~~~~~~~~~~~~~~~
 
-  This module contains tests for :module:`eventlogging.stream`.
+  This module contains tests for :module:`eventlogging.streams`.
 
 """
 from __future__ import unicode_literals
@@ -55,16 +55,16 @@ class ZmqTestCase(TimeoutTestMixin, unittest.TestCase):
         super(ZmqTestCase, self).tearDown()
 
     def test_iter_sub_socket(self):
-        """``iter_socket`` receives string objects."""
-        subscriber = eventlogging.stream.sub_socket(self.endpoint)
-        subscriber = eventlogging.stream.iter_socket(subscriber)
+        """``iter_unicode`` receives string objects."""
+        subscriber = eventlogging.streams.sub_socket(self.endpoint)
+        subscriber = eventlogging.streams.iter_unicode(subscriber)
         self.pipe.send('Hello.')
         self.assertEqual(next(subscriber), 'Hello.')
 
-    def test_iter_socket_json(self):
-        """``iter_socket_json`` decodes JSON messages."""
-        subscriber = eventlogging.stream.sub_socket(
+    def test_iter_json(self):
+        """``iter_json`` decodes JSON messages."""
+        subscriber = eventlogging.streams.sub_socket(
             self.endpoint, identity='%s' % self.id())
-        subscriber = eventlogging.stream.iter_socket_json(subscriber)
+        subscriber = eventlogging.streams.iter_json(subscriber)
         self.pipe.send('{"message":"secret"}')
         self.assertEqual(next(subscriber), dict(message='secret'))
