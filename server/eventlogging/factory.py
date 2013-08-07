@@ -19,14 +19,18 @@ _readers = {}
 
 
 def apply_safe(f, kwargs):
-    """Apply a function with only those kwargs that it would accept."""
+    """Apply a function with only those arguments that it would accept."""
     # If the function takes a '**' arg, all keyword args are safe.
     # If it doesn't, we have to remove any arguments that are not
     # present in the function's signature.
     sig = inspect.getargspec(f)
     if sig.keywords is None:
         kwargs = {k: v for k, v in items(kwargs) if k in sig.args}
-    return f(**kwargs)
+    if sig.defaults is not None:
+        args = [kwargs.pop(k) for k in sig.args[:-len(sig.defaults)]]
+    else:
+        args = [kwargs.pop(k) for k in sig.args]
+    return f(*args, **kwargs)
 
 
 def handle(handlers, uri):
