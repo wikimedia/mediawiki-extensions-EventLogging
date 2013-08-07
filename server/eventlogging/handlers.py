@@ -114,10 +114,10 @@ def stdin_reader(uri, raw=False):
 
 
 @reads('tcp')
-def zeromq_subscriber(netloc, socket_id=None, subscribe='', raw=False):
+def zeromq_subscriber(uri, socket_id=None, subscribe='', raw=False):
     """Reads data from a ZeroMQ publisher. If `raw` is truthy, reads
     unicode strings. Otherwise, reads JSON."""
-    sock = sub_socket(netloc, identity=socket_id, subscribe=subscribe)
+    sock = sub_socket(uri, identity=socket_id, subscribe=subscribe)
     return stream(sock, raw)
 
 
