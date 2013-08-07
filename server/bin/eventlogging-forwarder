@@ -41,7 +41,7 @@ logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
 
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
 sock_out = pub_socket(args.port)
-sock_in = udp_socket(args.port)
+sock_in = udp_socket('0.0.0.0', args.port)
 
 f = iter_unicode(sock_in)
 if args.count:

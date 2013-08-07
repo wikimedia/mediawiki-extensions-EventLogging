@@ -16,7 +16,7 @@ import socket
 
 import zmq
 
-from .compat import items, urlparse
+from .compat import items, urisplit
 
 
 __all__ = ('iter_json', 'iter_unicode', 'make_canonical', 'pub_socket',

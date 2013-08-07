@@ -8,7 +8,7 @@
 """
 import inspect
 
-from .compat import items, parse_qsl, urlparse
+from .compat import items, parse_qsl, urisplit
 
 
 __all__ = ('apply_safe', 'drive', 'get_reader', 'get_writer', 'handle',
@@ -36,7 +36,7 @@ def apply_safe(f, kwargs):
 def handle(handlers, uri):
     """Use a URI to look up a handler and then invoke the handler with
     the parts and params of a URI as kwargs."""
-    parts = urlparse(uri)
+    parts = urisplit(uri)
     handler = handlers[parts.scheme]
     kwargs = dict(parse_qsl(parts.query), uri=uri)
     for k in 'hostname', 'port', 'path':

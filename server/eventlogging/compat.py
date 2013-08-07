@@ -27,19 +27,32 @@ except ImportError:
     import json
 
 
-__all__ = ('http_get', 'items', 'json', 'unquote_plus', 'urlopen', 'uuid5')
+__all__ = ('http_get', 'items', 'json', 'unquote_plus', 'urisplit',
+           'urlopen', 'uuid5')
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
     items = operator.methodcaller('items')
-    from urllib.parse import unquote_to_bytes as unquote, urlparse, parse_qsl
     from urllib.request import urlopen
+    from urllib.parse import (unquote_to_bytes as unquote, urlsplit,
+                              parse_qsl, SplitResult)
 else:
     items = operator.methodcaller('iteritems')
     from urllib import unquote
     from urllib2 import urlopen
-    from urlparse import urlparse, parse_qsl
+    from urlparse import urlsplit, parse_qsl, SplitResult
+
+
+def urisplit(uri):
+    """Like `urlparse.urlsplit`, except always parses query and fragment
+    components, regardless of URI scheme."""
+    scheme, netloc, path, query, fragment = urlsplit(uri)
+    if not fragment and '#' in path:
+        path, fragment = path.split('#', 1)
+    if not query and '?' in path:
+        path, query = path.split('?', 1)
+    return SplitResult(scheme, netloc, path, query, fragment)
 
 
 def unquote_plus(unicode):
