@@ -65,9 +65,9 @@ def count(stream):
 #
 
 @writes('mongodb')
-def mongodb_writer(uri):
+def mongodb_writer(uri, database='events'):
     client = pymongo.MongoClient(uri)
-    db = client[map['database'] or 'events']
+    db = client[database]
     datetime_from_timestamp = datetime.datetime.fromtimestamp
 
     while 1:
