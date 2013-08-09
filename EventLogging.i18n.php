@@ -286,6 +286,18 @@ $messages['mk'] = array(
 	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript-заведување',
 );
 
+/** Malayalam (മലയാളം)
+ * @author Praveenp
+ */
+$messages['ml'] = array(
+	'eventlogging-desc' => 'ക്ലയന്റ്-സൈഡിലെ കോഡിൽ നിന്നും സംഭവങ്ങൾ ശേഖരിക്കാനുള്ള ചട്ടക്കൂട്',
+	'eventlogging-invalid-json' => 'അസാധുവായ ജെസൺ (JSON)',
+	'eventlogging-revision-id' => 'നാൾപ്പതിപ്പ് $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'പി.എച്ച്.പി. വിവരശേഖരണം',
+	'eventlogging-code-sample-module-setup' => 'ജാവാസ്ക്രിപ്റ്റ് വിവരശേഖരണത്തിനുള്ള പി.എച്ച്.പി. സജ്ജമാക്കൽ',
+	'eventlogging-code-sample-logging-on-client-side' => 'ജാവാസ്ക്രിപ്റ്റ് വിവരശേഖരണം',
+);
+
 /** Malay (Bahasa Melayu)
  * @author Anakmalaysia
  */
