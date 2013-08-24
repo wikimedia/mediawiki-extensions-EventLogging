@@ -26,13 +26,29 @@ $messages['en'] = array(
 
 /** Message documentation (Message documentation)
  * @author Ori Livneh
+ * @author Shirayuki
  */
 $messages['qqq'] = array(
-	'jsonschema-badidref' => 'JSON Schema validation error, shown when an id ref field is malformed.',
-	'jsonschema-idconvert' => 'JSON Schema validation error, shown when no valid HTML id could be generated from input string.',
-	'jsonschema-invalidkey' => 'JSON Schema validation error, shown object has a key not specified in schema.',
+	'jsonschema-badidref' => 'JSON Schema validation error, shown when an id ref field is malformed.
+
+Parameters:
+* $1 - ID ref',
+	'jsonschema-idconvert' => "JSON Schema validation error, shown when no valid HTML id could be generated from input string.
+
+Parameters:
+* $1 - var (<code>print_r()</code>'ed)",
+	'jsonschema-invalidkey' => 'JSON Schema validation error, shown object has a key not specified in schema.
+
+Parameters:
+* $1 - invalid key
+* $2 - data path, in user-friendly terms',
 	'jsonschema-invalidempty' => 'JSON Schema validation error, shown when attempting to validate empty object against a schema that does not allow empty objects.',
-	'jsonschema-invalidnode' => 'JSON Schema validation error, shown when object node does not match expected type.',
+	'jsonschema-invalidnode' => 'JSON Schema validation error, shown when object node does not match expected type.
+
+Parameters:
+* $1 - schema type
+* $2 - data type
+* $3 - data path, in user-friendly terms',
 	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
 	'jsonschema-invalid-notinenum' => 'JSON Schema validation error, shown when a value is not in the set of permitted values for a field.',
 );
