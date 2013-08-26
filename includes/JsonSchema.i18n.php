@@ -49,8 +49,15 @@ Parameters:
 * $1 - schema type
 * $2 - data type
 * $3 - data path, in user-friendly terms',
-	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.',
-	'jsonschema-invalid-notinenum' => 'JSON Schema validation error, shown when a value is not in the set of permitted values for a field.',
+	'jsonschema-invalid-missingfield' => 'JSON Schema validation error, shown when a required field is missing.
+
+Parameters:
+* $1 - schema key',
+	'jsonschema-invalid-notinenum' => 'JSON Schema validation error, shown when a value is not in the set of permitted values for a field.
+
+Parameters:
+* $1 - value
+* $2 - property',
 );
 
 /** Asturian (asturianu)
