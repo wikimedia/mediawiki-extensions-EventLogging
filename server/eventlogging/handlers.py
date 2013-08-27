@@ -17,6 +17,7 @@ import json
 import logging
 import logging.handlers
 import os
+import socket
 import sys
 
 import pymongo
@@ -91,6 +92,16 @@ def zeromq_writer(uri):
     while 1:
         json_event = json.dumps((yield), sort_keys=True, check_circular=False)
         pub.send_unicode(json_event + '\n')
+
+
+@writes('statsd')
+def statsd_writer(hostname, port, prefix='eventlogging'):
+    """Increments StatsD SCID counters for each event."""
+    addr = socket.gethostbyname(hostname), port
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    while 1:
+        stat = prefix + '.%(schema)s_%(revision)s:1' % (yield)
+        sock.sendto(stat.encode('utf-8'), addr)
 
 
 @writes('stdout')
