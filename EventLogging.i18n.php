@@ -214,6 +214,18 @@ $messages['hu'] = array(
 	'eventlogging-invalid-json' => 'Érvénytelen JSON',
 );
 
+/** Interlingua (interlingua)
+ * @author McDutchie
+ */
+$messages['ia'] = array(
+	'eventlogging-desc' => 'Structura pro le registration de eventos del latere del cliente',
+	'eventlogging-invalid-json' => 'JSON invalide',
+	'eventlogging-revision-id' => 'Version $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Registro PHP',
+	'eventlogging-code-sample-module-setup' => 'Configuration de PHP pro le registro in JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Rexistro JavaScript',
+);
+
 /** Indonesian (Bahasa Indonesia)
  * @author Farras
  */
