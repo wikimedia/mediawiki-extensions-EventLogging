@@ -190,6 +190,19 @@ $messages['hsb'] = array(
 	'jsonschema-invalid-missingfield' => 'Trěbne polo "$1" faluje',
 );
 
+/** Interlingua (interlingua)
+ * @author McDutchie
+ */
+$messages['ia'] = array(
+	'jsonschema-badidref' => 'Mal idref: "$1"',
+	'jsonschema-idconvert' => 'Non pote converter var in id: "$1"',
+	'jsonschema-invalidkey' => 'Clave invalide "$1" in "$2"',
+	'jsonschema-invalidempty' => 'Un structura de datos vacue non es valide con iste schema',
+	'jsonschema-invalidnode' => 'Nodo invalide: expectava "$1", recipeva "$2". Cammino: "$3"',
+	'jsonschema-invalid-missingfield' => 'Campo obligatori "$1" mancante',
+	'jsonschema-invalid-notinenum' => 'Valor "$1" non es in enum pro le proprietate $2',
+);
+
 /** Indonesian (Bahasa Indonesia)
  * @author Farras
  */
