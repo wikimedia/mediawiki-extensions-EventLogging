@@ -344,29 +344,27 @@ class JsonTreeRef {
 	 */
 	public function getMappingChildRef( $key ) {
 		$snode = $this->schemaref->node;
-		$nodename = null;
+		$schemadata = array();
+		$nodename = $key;
 		if( array_key_exists( 'properties', $snode ) &&
 			array_key_exists( $key, $snode['properties'] ) ) {
 			$schemadata = $snode['properties'][$key];
 			$nodename = isset( $schemadata['title'] ) ? $schemadata['title'] : $key;
 		}
 		elseif ( array_key_exists( 'additionalProperties', $snode ) ) {
-			// additionalProperties can *either* be false (a boolean) or can be
+			// additionalProperties can *either* be a boolean or can be
 			// defined as a schema (an object)
-			if ( $snode['additionalProperties'] == false ) {
-				$msg = JsonUtil::uiMessage( 'jsonschema-invalidkey',
-											$key, $this->getDataPathTitles() );
-				throw new JsonSchemaException( $msg );
+			if ( gettype( $snode['additionalProperties'] ) == "boolean" ) {
+			    if ( !$snode['additionalProperties'] ) {
+			        $msg = JsonUtil::uiMessage( 'jsonschema-invalidkey',
+			                                    $key, $this->getDataPathTitles() );
+			        throw new JsonSchemaException( $msg );
+			    }
 			}
 			else {
 				$schemadata = $snode['additionalProperties'];
 				$nodename = $key;
 			}
-		}
-		else {
-			// return the default schema
-			$schemadata = array();
-			$nodename = $key;
 		}
 		$value = $this->node[$key];
 		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, $key );
