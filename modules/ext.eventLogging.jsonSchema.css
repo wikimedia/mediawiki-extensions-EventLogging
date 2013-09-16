@@ -55,14 +55,14 @@
 }
 
 .mw-json-schema-code-samples {
+	border: 1px solid #ddd;
 	display: none;
 	font-size: 120%;
-	width: 30em;
+	min-width: 30em;
 	position: absolute;
-	background: #efefef;
-	border-radius: 0.6em;
+	background: #fff;
 	padding: 1.4em;
-	box-shadow: 0.4em 0.4em 1em #333;
+	box-shadow: rgba(0, 0, 0, 0.3) 0.3em 0.3em 1em;
 	right: 0;
 	top: 1em;
 }
