@@ -133,6 +133,7 @@ $messages['es'] = array(
  * @author Pikne
  */
 $messages['et'] = array(
+	'eventlogging-invalid-json' => 'Vigane JSON',
 	'eventlogging-revision-id' => 'Redaktsioon $1',
 );
 
@@ -414,10 +415,15 @@ $messages['roa-tara'] = array(
 
 /** Russian (русский)
  * @author DCamer
+ * @author Okras
  */
 $messages['ru'] = array(
+	'eventlogging-desc' => 'Фреймворк для протоколирования событий кода на стороне клиента',
 	'eventlogging-invalid-json' => 'Неверный JSON',
 	'eventlogging-revision-id' => 'Ревизия $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Протоколирование PHP',
+	'eventlogging-code-sample-module-setup' => 'Установки PHP для протоколирования JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Протоколирование JavaScript',
 );
 
 /** Sinhala (සිංහල)
