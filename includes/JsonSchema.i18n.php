@@ -333,12 +333,16 @@ $messages['roa-tara'] = array(
 
 /** Russian (русский)
  * @author DCamer
+ * @author Okras
  */
 $messages['ru'] = array(
 	'jsonschema-badidref' => 'Неверный idref: "$1"',
 	'jsonschema-idconvert' => 'Не удается преобразовать var в id: "$1"',
 	'jsonschema-invalidkey' => 'Недействительный ключ "$1" в "$2"',
+	'jsonschema-invalidempty' => 'Пустая структура данные недопустима для этой схемы',
+	'jsonschema-invalidnode' => 'Недопустимый узел: ожидался «$1», получен «$2». Путь: «$3»',
 	'jsonschema-invalid-missingfield' => 'Отсутствует обязательное поле "$1"',
+	'jsonschema-invalid-notinenum' => 'Значения «$1» нет в перечислении для свойства $2',
 );
 
 /** Sinhala (සිංහල)
