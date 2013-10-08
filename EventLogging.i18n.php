@@ -333,7 +333,7 @@ $messages['mt'] = array(
 	'eventlogging-invalid-json' => 'JSON invalidu',
 );
 
-/** Neapolitan (Nnapulitano)
+/** Neapolitan (Napulitano)
  * @author Chelin
  */
 $messages['nap'] = array(
