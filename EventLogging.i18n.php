@@ -287,6 +287,7 @@ $messages['lb'] = array(
 	'eventlogging-invalid-json' => 'JSON net valabel',
 	'eventlogging-revision-id' => 'Versioun $1',
 	'eventlogging-code-sample-logging-on-server-side' => 'PHP-Logbicher',
+	'eventlogging-code-sample-module-setup' => "PHP Astellung fir d'Logge vu JavaSCript",
 	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript-Logbicher',
 );
 
