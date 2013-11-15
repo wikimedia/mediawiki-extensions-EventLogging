@@ -17,10 +17,12 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	const TITLE = 'TestSchema';
 	const REV = 99;
 
-	var $context;
-	var $module;
-	var $schema;
-
+	/** @var ResourceLoaderContext */
+	private $context;
+	/** @var ResourceLoaderSchemaModule */
+	private $module;
+	/** @var PHPUnit_Framework_MockObject_MockObject */
+	private $schema;
 
 	function setUp() {
 		parent::setUp();

@@ -14,9 +14,12 @@
  */
 class RemoteSchemaTest extends MediaWikiTestCase {
 
-	var $cache;
-	var $http;
-	var $schema;
+	/** @var PHPUnit_Framework_MockObject_MockObject */
+	private $cache;
+	/** @var PHPUnit_Framework_MockObject_MockObject */
+	private $http;
+	/** @var RemoteSchema */
+	private $schema;
 
 	var $statusSchema = array( 'status' => array( 'type' => 'string' ) );
 

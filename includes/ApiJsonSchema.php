@@ -91,6 +91,7 @@ class ApiJsonSchema extends ApiBase {
 			$this->dieUsageMsg( array( 'invalidtitle', $title ) );
 		}
 
+		/** @var JsonSchemaContent $content */
 		$content = $rev->getContent();
 		if ( !$content ) {
 			$this->dieUsageMsg( array( 'nosuchrevid', $params['revid'] ) );
