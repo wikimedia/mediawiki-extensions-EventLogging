@@ -121,12 +121,16 @@ $messages['eo'] = array(
 
 /** Spanish (español)
  * @author Armando-Martin
+ * @author Ihojose
  * @author Vivaelcelta
  */
 $messages['es'] = array(
 	'eventlogging-desc' => 'Marco para registro de eventos del código del lado del cliente',
 	'eventlogging-invalid-json' => 'JSON no válido',
 	'eventlogging-revision-id' => 'Revisión $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Registro PHP',
+	'eventlogging-code-sample-module-setup' => 'Configuración PHP para el registro de JavaScript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Registro JavaScript',
 );
 
 /** Estonian (eesti)
