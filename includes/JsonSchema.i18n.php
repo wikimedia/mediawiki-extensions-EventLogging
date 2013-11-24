@@ -120,6 +120,7 @@ $messages['dsb'] = array(
 
 /** Spanish (español)
  * @author Armando-Martin
+ * @author Fitoschido
  * @author Ihojose
  */
 $messages['es'] = array(
@@ -128,7 +129,7 @@ $messages['es'] = array(
 	'jsonschema-invalidkey' => 'Clave no válida "$1" en "$2"',
 	'jsonschema-invalidempty' => 'No es válida la estructura de datos vacía con este esquema',
 	'jsonschema-invalidnode' => 'Nodo no válido: se esperaba "$1", se obtuvo "$2". Ruta: "$3"',
-	'jsonschema-invalid-missingfield' => 'Campo obligatorio faltante "$1"',
+	'jsonschema-invalid-missingfield' => 'Falta el campo obligatorio «$1»',
 );
 
 /** French (français)
