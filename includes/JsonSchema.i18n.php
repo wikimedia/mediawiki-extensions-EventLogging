@@ -86,7 +86,7 @@ $messages['be-tarask'] = array(
 	'jsonschema-invalid-notinenum' => 'Значэньне «$1» не належыць да enum уласьцівасьці $2',
 );
 
-/** Czech (česky)
+/** Czech (čeština)
  * @author Mormegil
  */
 $messages['cs'] = array(
@@ -191,6 +191,7 @@ $messages['hsb'] = array(
 	'jsonschema-invalidempty' => 'Prózdna datowa struktura z tutym šema płaćiwa njeje',
 	'jsonschema-invalidnode' => 'Njepłaćiwy suk: "$1" je so wočakował, "$2" dóstany.  Šćežka: "$3"',
 	'jsonschema-invalid-missingfield' => 'Trěbne polo "$1" faluje',
+	'jsonschema-invalid-notinenum' => 'Hódnota "$1" w naličenju za kajkosć $2 njeje',
 );
 
 /** Interlingua (interlingua)

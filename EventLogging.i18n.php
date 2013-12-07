@@ -79,7 +79,7 @@ $messages['br'] = array(
 	'eventlogging-revision-id' => 'Adweladenn $1',
 );
 
-/** Czech (česky)
+/** Czech (čeština)
  * @author Mormegil
  * @author Vks
  */
@@ -210,6 +210,9 @@ $messages['hsb'] = array(
 	'eventlogging-desc' => 'Framework za protokolowanje podawkow koda ze strony klienta',
 	'eventlogging-invalid-json' => 'Njepłaćiwy JSON',
 	'eventlogging-revision-id' => 'Wersija $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP-protokolowanje',
+	'eventlogging-code-sample-module-setup' => 'PHP-instalacija za JavaScript-protokolowanje',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript-protokolowanje',
 );
 
 /** Hungarian (magyar)
