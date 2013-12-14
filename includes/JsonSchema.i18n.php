@@ -368,6 +368,7 @@ $messages['sv'] = array(
 	'jsonschema-invalidempty' => 'Tom datastruktur är inte giltig med detta schema',
 	'jsonschema-invalidnode' => 'Ogiltig nod: förväntar sig "$1", fick "$2". Sökväg: "$3"',
 	'jsonschema-invalid-missingfield' => 'Saknar obligatoriskt fält "$1"',
+	'jsonschema-invalid-notinenum' => 'Värdet "$1" är inte med i uppräkningen för egendom $2',
 );
 
 /** Ukrainian (українська)
