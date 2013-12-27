@@ -255,12 +255,16 @@ $messages['it'] = array(
 );
 
 /** Japanese (日本語)
+ * @author Fryed-peach
  * @author Shirayuki
  */
 $messages['ja'] = array(
 	'eventlogging-desc' => 'クライアント側コードでのイベントを記録するためのフレームワーク',
 	'eventlogging-invalid-json' => '無効な JSON',
 	'eventlogging-revision-id' => '版 $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'PHP ロギング',
+	'eventlogging-code-sample-module-setup' => 'JavaScript ロギングのための PHP セットアップ',
+	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript ロギング',
 );
 
 /** Korean (한국어)
