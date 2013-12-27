@@ -133,9 +133,12 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 		'recvFrom'         => gethostname(),
 		'timestamp'        => $_SERVER[ 'REQUEST_TIME' ],
 	);
-
 	if ( isset( $_SERVER[ 'HTTP_HOST' ] ) ) {
 		$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
+	}
+
+	if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
+		$encapsulated[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 	}
 
 	// To make the resultant JSON easily extracted from a row of
