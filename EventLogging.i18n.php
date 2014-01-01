@@ -493,6 +493,7 @@ $messages['zh-hans'] = array(
 	'eventlogging-invalid-json' => '无效的JSON',
 	'eventlogging-revision-id' => '修订$1',
 	'eventlogging-code-sample-logging-on-server-side' => 'PHP 日志',
+	'eventlogging-code-sample-module-setup' => '设置PHP以供JavaScript日志记录',
 	'eventlogging-code-sample-logging-on-client-side' => 'JavaScript 日志',
 );
 
