@@ -132,6 +132,19 @@ $messages['es'] = array(
 	'jsonschema-invalid-missingfield' => 'Falta el campo obligatorio «$1»',
 );
 
+/** Persian (فارسی)
+ * @author Armin1392
+ */
+$messages['fa'] = array(
+	'jsonschema-badidref' => 'آیدرِف بد: "$1"',
+	'jsonschema-idconvert' => 'وار به آی‌دی نمی‌تواند تبدیل شود: "$1"',
+	'jsonschema-invalidkey' => 'کلید نامعتبر "$1" در "$2"',
+	'jsonschema-invalidempty' => 'ساختار اطلاعات خالی با این طرح کلی معتبر نیست',
+	'jsonschema-invalidnode' => 'گره نامعتبر:‌ انتظار می‌رود "$1"، "$2" شده باشد. مسیر: "$3"',
+	'jsonschema-invalid-missingfield' => 'زمینه‌ٔ مورد نیاز از دست رفتهٔ "$1"',
+	'jsonschema-invalid-notinenum' => 'ارزش "$1" برای مالکیت $2 در شمارش نیست',
+);
+
 /** French (français)
  * @author Gomoko
  * @author Urhixidur
