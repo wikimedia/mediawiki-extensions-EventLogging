@@ -142,6 +142,7 @@ $messages['et'] = array(
 );
 
 /** Persian (فارسی)
+ * @author Ebraminio
  * @author Reza1615
  */
 $messages['fa'] = array(
@@ -149,7 +150,7 @@ $messages['fa'] = array(
 	'eventlogging-invalid-json' => 'JSON نامعتبر',
 	'eventlogging-revision-id' => 'نسخه  $1',
 	'eventlogging-code-sample-logging-on-server-side' => 'سیاههٔ پی‌اچ‌پی',
-	'eventlogging-code-sample-module-setup' => 'پی‌اچ‌پی را برای نمایش سیاهه جاوااسکریپت تصب کنید',
+	'eventlogging-code-sample-module-setup' => 'پی‌اچ‌پی را برای نمایش سیاهه جاوااسکریپت نصب کنید',
 	'eventlogging-code-sample-logging-on-client-side' => 'سیاهه جاوااسکریپت',
 );
 
