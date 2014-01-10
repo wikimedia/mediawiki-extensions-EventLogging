@@ -400,11 +400,15 @@ $messages['pms'] = array(
 
 /** Portuguese (português)
  * @author Alchimista
+ * @author Vitorvicentevalente
  */
 $messages['pt'] = array(
 	'eventlogging-desc' => 'Estrutura para registo de eventos no código Client Side',
 	'eventlogging-invalid-json' => 'JSON inválido',
 	'eventlogging-revision-id' => 'Revisão: $1',
+	'eventlogging-code-sample-logging-on-server-side' => 'Registo de PHP',
+	'eventlogging-code-sample-module-setup' => 'Instalação PHP para registo de Javascript',
+	'eventlogging-code-sample-logging-on-client-side' => 'Registo JavaScript',
 );
 
 /** Romanian (română)
