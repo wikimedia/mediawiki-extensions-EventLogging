@@ -83,7 +83,9 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @return string: JavaScript code.
 	 */
 	function getScript( ResourceLoaderContext $context ) {
-		$params = array( $this->schema->title, $this->schema->jsonSerialize() );
+		$schema = $this->schema->jsonSerialize();
+		efStripKeyRecursive( $schema, 'description' );
+		$params = array( $this->schema->title, $schema );
 		return Xml::encodeJsCall( 'mediaWiki.eventLog.declareSchema', $params );
 	}
 }
