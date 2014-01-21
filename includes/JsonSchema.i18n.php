@@ -86,6 +86,13 @@ $messages['be-tarask'] = array(
 	'jsonschema-invalid-notinenum' => 'Значэньне «$1» не належыць да enum уласьцівасьці $2',
 );
 
+/** Breton (brezhoneg)
+ * @author Fohanno
+ */
+$messages['br'] = array(
+	'jsonschema-invalidkey' => 'Alc\'hwez direizh "$1" e-barzh "$2"',
+);
+
 /** Czech (čeština)
  * @author Mormegil
  */
