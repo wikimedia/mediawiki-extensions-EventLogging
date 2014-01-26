@@ -76,6 +76,7 @@ $messages['bn'] = array(
  * @author Fohanno
  */
 $messages['br'] = array(
+	'eventlogging-invalid-json' => 'JSON direizh',
 	'eventlogging-revision-id' => 'Adweladenn $1',
 );
 
