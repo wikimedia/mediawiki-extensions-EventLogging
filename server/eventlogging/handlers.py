@@ -133,6 +133,6 @@ def zeromq_subscriber(uri, socket_id=None, subscribe='', raw=False):
 
 
 @reads('udp')
-def udp_reader(uri):
+def udp_reader(uri, raw=False):
     """Reads data from a UDP socket."""
     return stream(udp_socket(uri), raw)
