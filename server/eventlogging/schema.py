@@ -19,7 +19,7 @@ __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 
 
 #: URL of index.php on the schema wiki (same as
-#: '$wgEventLoggingSchemaIndexUri').
+#: '$wgEventLoggingSchemaApiUri').
 SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
 
 #: Template for schema article URLs. Interpolates SCIDs.
