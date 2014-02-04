@@ -32,24 +32,16 @@
 from __future__ import division, unicode_literals
 
 import calendar
-import hashlib
-import os
+import datetime
 import re
 import time
 import uuid
 
 from .compat import json, unquote_plus, uuid5
+from .crypto import keyhasher, rotating_key
 
 
 __all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow', 'capsule_uuid')
-
-#: Salt value for hashing IPs. Because this value is generated at
-#: runtime, IPs cannot be compared across restarts. This limitation is
-#: tolerated because it helps underscore the field's unsuitability for
-#: analytic purposes. Client IP is logged solely for detecting and
-#: grouping spam coming from a single origin so that it can be filtered
-#: out of the logs.
-salt = os.urandom(16)
 
 #: Format string (as would be passed to `strftime`) for timestamps in
 #: NCSA Common Log Format.
@@ -63,6 +55,11 @@ NCSA_FORMAT = '%Y-%m-%dT%H:%M:%S'
 #:
 EVENTLOGGING_URL_FORMAT = (
     'event://%(recvFrom)s/?seqId=%(seqId)s&timestamp=%(timestamp).10s')
+
+#: Specifies the length of time in seconds from the moment a key is
+#: generated until it is expired and replaced with a new key. The key is
+#: used to anonymize IP addresses.
+KEY_LIFESPAN = datetime.timedelta(days=90)
 
 
 def capsule_uuid(capsule):
@@ -95,14 +92,6 @@ def ncsa_utcnow():
     return time.strftime(NCSA_FORMAT, time.gmtime())
 
 
-def hash_value(val):
-    """Produces a salted SHA1 hash of any string value.
-    :param val: String to hash.
-    """
-    hash = hashlib.sha1(val.encode('utf-8') + salt)
-    return hash.hexdigest()
-
-
 def decode_qson(qson):
     """Decodes a QSON (query-string-encoded JSON) object.
     :param qs: Query string.
@@ -110,9 +99,16 @@ def decode_qson(qson):
     return json.loads(unquote_plus(qson.strip('?;')))
 
 
+#: A crytographic hash function for hashing client IPs. Produces HMAC SHA1
+#: hashes by using the client IP as the message and a 64-byte byte string as
+#: the key. The key is generated at runtime and is refreshed every 24 hours.
+#: It is not written anywhere. The hash value is useful for detecting spam
+#: (large volume of events sharing a common origin).
+hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
+
 #: A mapping of format specifiers to a tuple of (regexp, caster).
 format_specifiers = {
-    '%h': (r'(?P<clientIp>\S+)', hash_value),
+    '%h': (r'(?P<clientIp>\S+)', hash_ip),
     '%j': (r'(?P<capsule>\S+)', json.loads),
     '%l': (r'(?P<recvFrom>\S+)', str),
     '%n': (r'(?P<seqId>\d+)', int),

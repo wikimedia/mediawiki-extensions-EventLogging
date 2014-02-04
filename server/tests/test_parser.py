@@ -47,7 +47,7 @@ class LogParserTestCase(unittest.TestCase):
             'webHost': 'test.wikipedia.org',
             'seqId': 132073,
             'timestamp': 1358637398,
-            'clientIp': eventlogging.parse.hash_value('86.149.229.149'),
+            'clientIp': eventlogging.parse.hash_ip('86.149.229.149'),
             'schema': 'Generic',
             'revision': 13,
             'event': {
