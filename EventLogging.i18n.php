@@ -80,6 +80,13 @@ $messages['br'] = array(
 	'eventlogging-revision-id' => 'Adweladenn $1',
 );
 
+/** Chechen (нохчийн)
+ * @author Умар
+ */
+$messages['ce'] = array(
+	'eventlogging-desc' => 'Фреймворко клиентан хиламаш лато',
+);
+
 /** Czech (čeština)
  * @author Mormegil
  * @author Vks
