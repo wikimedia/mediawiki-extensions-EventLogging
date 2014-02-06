@@ -16,32 +16,36 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
 	const TITLE = 'TestSchema';
 	const REV = 99;
+	const ERROR_VERSION = 1;
 
 	/** @var ResourceLoaderContext */
 	private $context;
 	/** @var ResourceLoaderSchemaModule */
 	private $module;
-	/** @var PHPUnit_Framework_MockObject_MockObject */
-	private $schema;
 
 	function setUp() {
 		parent::setUp();
 
-		$this->schema = $this
-			->getMockBuilder( 'RemoteSchema' )
-			->setConstructorArgs( array( self::TITLE, self::REV ) )
-			->getMock();
-
 		$this->context = new ResourceLoaderContext(
 			new ResourceLoader(), new WebRequest() );
 
-		$this->module = new ResourceLoaderSchemaModule( array(
-			'schema'   => self::TITLE,
-			'revision' => self::REV
+		$this->module = self::getMockSchemaModule( self::TITLE, self::REV );
+	}
+
+	function getMockSchemaModule( $title, $revid ) {
+		$schema = $this
+			->getMockBuilder( 'RemoteSchema' )
+			->setConstructorArgs( array( $title, $revid ) )
+			->getMock();
+
+		$module = new ResourceLoaderSchemaModule( array(
+			'schema'   => $title,
+			'revision' => $revid
 		) );
 
 		// Inject mock
-		$this->module->schema = $this->schema;
+		$module->schema = $schema;
+		return $module;
 	}
 
 
@@ -51,31 +55,90 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	 * @covers ResourceLoaderSchemaModule::getModifiedTime
 	 */
 	function testFetchFailureModifiedTime() {
-		$this->schema
+		$this->module->schema
 			->expects( $this->once() )
 			->method( 'get' )
 			->will( $this->returnValue( false ) );
 
 		$mtime = $this->module->getModifiedTime( $this->context );
-		$this->assertEquals( 1, $mtime );
+		$this->assertEquals( self::ERROR_VERSION, $mtime );
 	}
 
 
 	/**
 	 * When the RemoteSchema dependency can be loaded, the modified time
-	 * should be set to the revision number.
+	 * should be set to sum of $wgCacheEpoch (in UNIX time) and the revision number.
 	 * @covers ResourceLoaderSchemaModule::getModifiedTime
 	 */
 	function testFetchOkModifiedTime() {
+		global $wgCacheEpoch;
+
+		$unixTimeCacheEpoch = wfTimestamp( TS_UNIX, $wgCacheEpoch );
+
 		$schema = array( 'status' => array( 'type' => 'string' ) );
 
-		$this->schema
+		$this->module->schema
 			->expects( $this->once() )
 			->method( 'get' )
 			->will( $this->returnValue( $schema ) );
 
 		$mtime = $this->module->getModifiedTime( $this->context );
-		$this->assertEquals( self::REV, $mtime );
+
+		// Should be true regardless of epoch
+		$this->assertGreaterThan(
+			self::ERROR_VERSION,
+			$mtime,
+			'1 signifies an error, and <1 should not be possible'
+		);
+		$this->assertGreaterThan(
+			$unixTimeCacheEpoch,
+			$mtime,
+			'Should be greater than cache epoch, so epoch does not mask updates'
+		);
+	}
+
+	/*
+	   Gets the effective modification time, as calculated by
+	   ResourceLoaderStartupModule.  It calculates this as the maximum of
+	   the module's self-reported modification time and $wgCacheEpoch.
+
+	   This is not broken into a method in core, so we reproduce it here.
+	*/
+	function getEffectiveModifiedTime( $module) {
+		global $wgCacheEpoch;
+
+		$moduleMtime = wfTimestamp( TS_UNIX, $module->getModifiedTime( $this->context ) );
+		$mtime = max( $moduleMtime, wfTimestamp( TS_UNIX, $wgCacheEpoch ) );
+		return $mtime;
+	}
+
+	/**
+	 * When a schema is updated, the effective ModifiedTime as calculated by ResourceLoader
+	 * should increase.
+	 */
+	function testEffectiveModifiedTimeIncreases() {
+		$oldSchemaContent = array( 'numberOfGrains' => array( 'type' => 'integer' ) );
+		$newSchemaContent = array( 'grainCount' => array( 'type' => 'integer' ) );
+
+		$oldModule = $this->getMockSchemaModule( self::TITLE, 123 );
+		$oldModule->schema
+			->expects( $this->once() )
+			->method( 'get' )
+			->will( $this->returnValue( $oldSchemaContent ) );
+		$oldEffectiveModifiedTime = $this->getEffectiveModifiedTime( $oldModule );
+
+		$newModule = $this->getMockSchemaModule( self::TITLE, 124 );
+		$newModule->schema
+			->expects( $this->once() )
+			->method( 'get' )
+			->will( $this->returnValue( $newSchemaContent ) );
+		$newEffectiveModifiedTime = $this->getEffectiveModifiedTime( $newModule );
+
+		$this->assertGreaterThan(
+			$oldEffectiveModifiedTime,
+			$newEffectiveModifiedTime,
+			'A schema with a newer revid should have a greater effective modified time.'
+		);
 	}
 
 	/**

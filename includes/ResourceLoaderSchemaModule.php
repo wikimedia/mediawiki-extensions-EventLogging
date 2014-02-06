@@ -70,7 +70,20 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @return integer: Unix timestamp.
 	 */
 	function getModifiedTime( ResourceLoaderContext $context ) {
-		return $this->schema->get() ? $this->schema->revision : 1;
+		global $wgCacheEpoch;
+
+		$unixTimeCacheEpoch = wfTimestamp( TS_UNIX, $wgCacheEpoch );
+		if ( $this->schema->get() ) {
+			// ResourceLoader will set the module's modification time to be
+			// either the value returned by this method, or the Unix time
+			// number of $wgCacheEpoch, whichever is greater. To ensure that
+			// the modification time is always updated whenever the schema
+			// revision changes, we add the revision ID to the Unix time number
+			// of $wgCacheEpoch.
+			return $unixTimeCacheEpoch + $this->schema->revision;
+		} else {
+			return 1;
+		}
 	}
 
 
