@@ -101,7 +101,7 @@ def decode_qson(qson):
 
 #: A crytographic hash function for hashing client IPs. Produces HMAC SHA1
 #: hashes by using the client IP as the message and a 64-byte byte string as
-#: the key. The key is generated at runtime and is refreshed every 24 hours.
+#: the key. The key is generated at runtime and is refreshed every 90 days.
 #: It is not written anywhere. The hash value is useful for detecting spam
 #: (large volume of events sharing a common origin).
 hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
