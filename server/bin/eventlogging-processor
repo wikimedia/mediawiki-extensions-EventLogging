@@ -63,5 +63,4 @@ for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
     except Exception:
         logging.exception('Unable to decode: %s', raw_event)
     else:
-        event.pop('userAgent', None)
         pub.send_unicode(json.dumps(event) + '\n')
