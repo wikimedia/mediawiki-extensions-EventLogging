@@ -29,7 +29,7 @@ SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s'
 schema_cache = {}
 
 #: SCID of the metadata object which wraps each event.
-CAPSULE_SCID = ('EventCapsule', 5315751)
+CAPSULE_SCID = ('EventCapsule', 6862080)
 
 
 def get_schema(scid, encapsulate=False):
