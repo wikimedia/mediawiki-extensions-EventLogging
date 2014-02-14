@@ -19,14 +19,24 @@
   +--------+-----------------------------+
   |   %j   | JSON object                 |
   +--------+-----------------------------+
-  |   %l   | Hostname of origin          |
+  |   %l   | Hostname of origin*         |
   +--------+-----------------------------+
-  |   %n   | Sequence ID                 |
+  |   %n   | Sequence ID*                |
   +--------+-----------------------------+
   |   %q   | Query-string-encoded JSON   |
   +--------+-----------------------------+
-  |   %t   | Timestamp in NCSA format.   |
+  |   %t   | Timestamp in NCSA format    |
   +--------+-----------------------------+
+  | %{..}i | Tab-delimited string        |
+  +--------+-----------------------------+
+  | %{..}s | Space-delimited string      |
+  +--------+-----------------------------+
+  | %{..}d | Integer                     |
+  +--------+-----------------------------+
+
+   '..' is the desired property name for the capturing group.
+
+   *: Deprecated; use "%{..}x"-style format specifiers instead.
 
 """
 from __future__ import division, unicode_literals
@@ -108,13 +118,18 @@ hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
 
 #: A mapping of format specifiers to a tuple of (regexp, caster).
 format_specifiers = {
-    '%h': (r'(?P<clientIp>\S+)', hash_ip),
-    '%j': (r'(?P<capsule>\S+)', json.loads),
-    '%l': (r'(?P<recvFrom>\S+)', str),
-    '%n': (r'(?P<seqId>\d+)', int),
-    '%q': (r'(?P<capsule>\?\S+)', decode_qson),
-    '%t': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
-           ncsa_to_epoch),
+    'h': (r'(?P<clientIp>\S+)', hash_ip),
+    'j': (r'(?P<capsule>\S+)', json.loads),
+    's': (r'(?P<%s>\S+)', str),
+    'i': (r'(?P<%s>[^\t]+)', str),
+    'd': (r'(?P<%s>\d+)', int),
+    'q': (r'(?P<capsule>\?\S+)', decode_qson),
+    't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
+          ncsa_to_epoch),
+
+    #: Deprecated format specifiers:
+    'l': (r'(?P<recvFrom>\S+)', str),
+    'n': (r'(?P<seqId>\d+)', int),
 }
 
 
@@ -134,13 +149,17 @@ class LogParser(object):
 
         #: Compiled regexp.
         format = re.sub(' ', r'\s+', format)
-        self.re = re.compile(re.sub(r'(?<!%)%[hjlnqt]', self._repl, format))
+        raw = re.sub(r'(?<!%)%({(\w+)})?([dhijlnqst])', self._repl, format)
+        self.re = re.compile(raw)
 
     def _repl(self, spec):
         """Replace a format specifier with its expanded regexp matcher
         and append its caster to the list. Called by :func:`re.sub`.
         """
-        matcher, caster = format_specifiers[spec.group()]
+        _, name, specifier = spec.groups()
+        matcher, caster = format_specifiers[specifier]
+        if name:
+            matcher = matcher % name
         self.casters.append(caster)
         return matcher
 

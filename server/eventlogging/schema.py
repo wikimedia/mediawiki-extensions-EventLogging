@@ -72,6 +72,9 @@ def validate(capsule):
         # KeyError exception will be raised. We re-raise it as a
         # :exc:`ValidationError` to provide a simpler API for callers.
         raise jsonschema.ValidationError('Missing key: %s' % ex)
+    if capsule['revision'] < 1:
+        raise jsonschema.ValidationError(
+            'Invalid revision ID: %(revision)s' % capsule)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.Draft3Validator.check_schema(schema)
     jsonschema.Draft3Validator(schema).validate(capsule)
