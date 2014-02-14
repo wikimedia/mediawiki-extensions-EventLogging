@@ -22,8 +22,8 @@ __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 #: '$wgEventLoggingSchemaApiUri').
 SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
 
-#: Template for schema article URLs. Interpolates SCIDs.
-SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s'
+#: Template for schema article URLs. Interpolates a revision ID.
+SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&revid=%s'
 
 #: Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}
@@ -51,7 +51,8 @@ def get_schema(scid, encapsulate=False):
 
 def http_get_schema(scid):
     """Retrieve schema via HTTP."""
-    url = SCHEMA_URL_FORMAT % scid
+    schema_name, revision_id = scid
+    url = SCHEMA_URL_FORMAT % revision_id
     try:
         schema = json.loads(http_get(url))
     except (ValueError, EnvironmentError) as ex:
