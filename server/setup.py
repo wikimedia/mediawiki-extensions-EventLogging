@@ -19,7 +19,7 @@ import multiprocessing
 
 setup(
     name='eventlogging',
-    version='0.6',
+    version='0.7',
     license='GPL',
     author='Ori Livneh',
     author_email='ori@wikimedia.org',

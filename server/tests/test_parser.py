@@ -31,10 +31,9 @@ class LogParserTestCase(unittest.TestCase):
     maxDiff = None
 
     def test_parse_client_side_events(self):
-        """Parser test: client-side events
-        (%q %{recvFrom}s %{seqId}d %t %h %{userAgent}i)."""
-        parser = eventlogging.LogParser('%q %{recvFrom}s %{seqId}d %t %h'
-                                        '%{userAgent}i')
+        """Parser test: client-side events."""
+        parser = eventlogging.LogParser(
+            '%q %{recvFrom}s %{seqId}d %t %h %{userAgent}i')
         raw = ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
                '%22%2C%22revision%22%3A13%2C%22clientValidated%22%3Atrue%2C'
                '%22event%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3'
@@ -61,7 +60,7 @@ class LogParserTestCase(unittest.TestCase):
         self.assertEqual(parser.parse(raw), parsed)
 
     def test_parser_server_side_events(self):
-        """Parser test: server-side events (%n EventLogging %j)."""
+        """Parser test: server-side events."""
         parser = eventlogging.LogParser('%n EventLogging %j')
         raw = ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
                'ma":"FakeSchema","clientValidated":true,"wiki":"enwiki","eve'

@@ -16,7 +16,7 @@ import socket
 
 import zmq
 
-from .compat import items, urisplit
+from .compat import items
 
 
 __all__ = ('iter_json', 'iter_unicode', 'make_canonical', 'pub_socket',
@@ -40,30 +40,30 @@ SOCKET_BUFFER_SIZE = 64 * 1024
 def pub_socket(endpoint):
     """Get a pre-configured ØMQ publisher."""
     context = zmq.Context.instance()
-    socket = context.socket(zmq.PUB)
+    sock = context.socket(zmq.PUB)
     if hasattr(zmq, 'HWM'):
-        socket.hwm = ZMQ_HIGH_WATER_MARK
-    socket.linger = ZMQ_LINGER
-    socket.sndbuf = SOCKET_BUFFER_SIZE
+        sock.hwm = ZMQ_HIGH_WATER_MARK
+    sock.linger = ZMQ_LINGER
+    sock.sndbuf = SOCKET_BUFFER_SIZE
     canonical_endpoint = make_canonical(endpoint, host='*')
-    socket.bind(canonical_endpoint)
-    return socket
+    sock.bind(canonical_endpoint)
+    return sock
 
 
 def sub_socket(endpoint, identity='', subscribe=''):
     """Get a pre-configured ØMQ subscriber."""
     context = zmq.Context.instance()
-    socket = context.socket(zmq.SUB)
+    sock = context.socket(zmq.SUB)
     if hasattr(zmq, 'HWM'):
-        socket.hwm = ZMQ_HIGH_WATER_MARK
-    socket.linger = ZMQ_LINGER
-    socket.rcvbuf = SOCKET_BUFFER_SIZE
-    if identity and hasattr(socket, 'identity'):
-        socket.identity = identity.encode('utf-8')
+        sock.hwm = ZMQ_HIGH_WATER_MARK
+    sock.linger = ZMQ_LINGER
+    sock.rcvbuf = SOCKET_BUFFER_SIZE
+    if identity and hasattr(sock, 'identity'):
+        sock.identity = identity.encode('utf-8')
     canonical_endpoint = make_canonical(endpoint)
-    socket.connect(canonical_endpoint)
-    socket.subscribe = subscribe.encode('utf-8')
-    return socket
+    sock.connect(canonical_endpoint)
+    sock.subscribe = subscribe.encode('utf-8')
+    return sock
 
 
 def udp_socket(hostname, port):

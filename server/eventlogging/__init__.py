@@ -32,4 +32,4 @@ from .crypto import *
 # :exc:`jsonschema.SchemaError`.
 from jsonschema import ValidationError, SchemaError
 
-__version__ = '0.5'
+__version__ = '0.7'

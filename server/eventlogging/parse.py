@@ -17,11 +17,7 @@
   +========+=============================+
   |   %h   | Client IP                   |
   +--------+-----------------------------+
-  |   %j   | JSON object                 |
-  +--------+-----------------------------+
-  |   %l   | Hostname of origin*         |
-  +--------+-----------------------------+
-  |   %n   | Sequence ID*                |
+  |   %j   | JSON event object           |
   +--------+-----------------------------+
   |   %q   | Query-string-encoded JSON   |
   +--------+-----------------------------+
@@ -35,8 +31,6 @@
   +--------+-----------------------------+
 
    '..' is the desired property name for the capturing group.
-
-   *: Deprecated; use "%{..}x"-style format specifiers instead.
 
 """
 from __future__ import division, unicode_literals

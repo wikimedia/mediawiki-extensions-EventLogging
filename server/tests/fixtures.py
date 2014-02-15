@@ -9,7 +9,6 @@
 from __future__ import unicode_literals
 
 import copy
-import io
 import signal
 
 import eventlogging
