@@ -191,14 +191,16 @@ $messages['gl'] = array(
 
 /** Hebrew (עברית)
  * @author Amire80
+ * @author Yona b
  */
 $messages['he'] = array(
-	'jsonschema-badidref' => 'ערף idref שגוי: "$1"',
+	'jsonschema-badidref' => 'ערך idref שגוי: "$1"',
 	'jsonschema-idconvert' => 'לא ניתן להמיר var למזהה: "$1"',
 	'jsonschema-invalidkey' => 'מפתח בלתי־תקין: "$1" ב־"$2"',
 	'jsonschema-invalidempty' => 'מבנה נתונים ריק אינו תקין עם הסכֵמה הזאת',
 	'jsonschema-invalidnode' => 'צומת בלתי־תקין: ציפיתי ל־"$1", קיבלתי "$2". נתיב: "$3"',
 	'jsonschema-invalid-missingfield' => 'חסר השדה הנדרש "$1"',
+	'jsonschema-invalid-notinenum' => 'הערך "$1" לא נמצא ב־enum של מאפיין $2',
 );
 
 /** Upper Sorbian (hornjoserbsce)
