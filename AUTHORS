@@ -4,17 +4,13 @@ This extension uses Rob Lanphier's JSON Schema validation library, originally
 developed for the JsonData MediaWiki extension. Used with permission.
 See http://jsonwidget.org/LICENSE.
 
+== Development Lead ==
+* Ori Livneh <ori@wikimedia.org>
 
-Development Lead
-----------------
- - Ori Livneh <ori@wikimedia.org>
-
-
-Patches and Suggestions
------------------------
+== Patches and Suggestions ==
 In alphabetical order:
- - Munaf Assaf
- - Matthew Flaschen
- - Rob Lanphier
- - S Page
- - Timo Tijhof
+* Munaf Assaf
+* Matthew Flaschen
+* Rob Lanphier
+* S Page
+* Timo Tijhof
