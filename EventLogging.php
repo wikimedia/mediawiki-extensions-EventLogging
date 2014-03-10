@@ -41,6 +41,8 @@ $wgHooks[ 'CanonicalNamespaces' ][] = function ( &$namespaces ) {
 		$namespaces[ NS_SCHEMA ] = 'Schema';
 		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 	}
+
+	return true;
 };
 $wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
 $wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
