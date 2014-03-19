@@ -137,6 +137,7 @@ $messages['es'] = array(
 	'jsonschema-invalidempty' => 'No es válida la estructura de datos vacía con este esquema',
 	'jsonschema-invalidnode' => 'Nodo no válido: se esperaba "$1", se obtuvo "$2". Ruta: "$3"',
 	'jsonschema-invalid-missingfield' => 'Falta el campo obligatorio «$1»',
+	'jsonschema-invalid-notinenum' => 'El valor "$1" no está en la enumeración para la propiedad $2',
 );
 
 /** Persian (فارسی)
