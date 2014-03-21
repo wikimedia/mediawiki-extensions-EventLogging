@@ -79,6 +79,13 @@ def monitor_pubs(endpoints, counters):
             for socket, _ in poller.poll():
                 socket.recv(zmq.NOBLOCK)
                 counters[sockets[socket]] += 1
+        except KeyboardInterrupt:
+            # PyZMQ 13.0.x raises EINTR as KeyboardInterrupt.
+            # Fixed in <https://github.com/zeromq/pyzmq/pull/338>.
+            funcs = [frame[3] for frame in inspect.trace()]
+            if '_check_rc' in funcs:
+                continue
+            raise
         except zmq.ZMQError as e:
             # Calls interrupted by EINTR should be re-tried.
             if e.errno == errno.EINTR:
