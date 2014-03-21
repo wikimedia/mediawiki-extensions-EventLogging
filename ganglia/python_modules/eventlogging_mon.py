@@ -83,8 +83,7 @@ def monitor_pubs(endpoints, counters):
         except KeyboardInterrupt:
             # PyZMQ 13.0.x raises EINTR as KeyboardInterrupt.
             # Fixed in <https://github.com/zeromq/pyzmq/pull/338>.
-            funcs = [frame[3] for frame in inspect.trace()]
-            if '_check_rc' in funcs:
+            if any(f for f in inspect.trace() if 'check_rc' in f[3]):
                 continue
             raise
         except zmq.ZMQError as e:
