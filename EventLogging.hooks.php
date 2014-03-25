@@ -36,6 +36,14 @@ class EventLoggingHooks {
 	}
 
 	/**
+	 * @param OutputPage &$out
+	 * @param Skin &$skin
+	 */
+	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+		$out->addModules( array( 'ext.eventLogging.subscriber' ) );
+	}
+
+	/**
 	 * @param array &$vars
 	 * @return bool
 	 */

@@ -251,6 +251,12 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'targets'       => array( 'desktop', 'mobile' ),
 );
 
+$wgResourceModules[ 'ext.eventLogging.subscriber' ] = array(
+	'scripts'       => 'modules/ext.eventLogging.subscriber.js',
+	'localBasePath' => __DIR__,
+	'remoteExtPath' => 'EventLogging',
+	'targets'       => array( 'desktop', 'mobile' ),
+);
 
 $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 	'scripts'       => 'modules/ext.eventLogging.jsonSchema.js',
@@ -264,6 +270,7 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 
+$wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 
