@@ -44,6 +44,40 @@ class EventLoggingHooks {
 	}
 
 	/**
+	 * ResourceLoaderRegisterModules hook handler.
+	 * Allows extensions to register schema modules by adding keys to an
+	 * associative array which is passed by reference to each handler. The
+	 * array maps schema names to numeric revision IDs. By using this hook
+	 * handler rather than registering modules directly, extensions can have
+	 * a soft dependency on EventLogging. If EventLogging is not present, the
+	 * hook simply never fires. To log events for schemas that have been
+	 * declared in this fashion, use mw#track.
+	 *
+	 * @example
+	 * <code>
+	 * $wgHooks[ 'EventLoggingRegisterSchemas' ][] = function ( &$schemas ) {
+	 *     $schemas[ 'MultimediaViewerNetworkPerformance' ] = 7917896;
+	 * };
+	 * </code>
+	 *
+	 * @param ResourceLoader &$resourceLoader
+	 */
+	public static function onResourceLoaderRegisterModules( ResourceLoader &$resourceLoader ) {
+		$schemas = array();
+		wfRunHooks( 'EventLoggingRegisterSchemas', array( &$schemas ) );
+
+		$modules = array();
+		foreach ( $schemas as $schemaName => $rev ) {
+			$modules[ "schema.$schemaName" ] = array(
+				'class'    => 'ResourceLoaderSchemaModule',
+				'schema'   => $schemaName,
+				'revision' => $rev,
+			);
+		}
+		$resourceLoader->register( $modules );
+	}
+
+	/**
 	 * @param array &$vars
 	 * @return bool
 	 */

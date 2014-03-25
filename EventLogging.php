@@ -273,6 +273,7 @@ $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 $wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
+$wgHooks[ 'ResourceLoaderRegisterModules' ][] = 'EventLoggingHooks::onResourceLoaderRegisterModules';
 
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
