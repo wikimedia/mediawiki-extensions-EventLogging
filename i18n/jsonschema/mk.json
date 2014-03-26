@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+        "authors": [
+            "Bjankuloski06"
+        ]
+    },
+    "jsonschema-badidref": "Погрешен idref: „$1“",
+    "jsonschema-idconvert": "Не можам да го претворам var во id: „$1“",
+    "jsonschema-invalidkey": "Неважечки клуч „$1“ во „$2“",
+    "jsonschema-invalidempty": "Празната податочна структура не важи за оваа шема",
+    "jsonschema-invalidnode": "Неважечки јазол: очекував „$1“, а добив „$2“. Патека: „$3“",
+    "jsonschema-invalid-missingfield": "Недостасува задолжителното поле „$1“",
+    "jsonschema-invalid-notinenum": "Вредноста „$1“ не се содржи во набројувањето за ствојството $2"
+}

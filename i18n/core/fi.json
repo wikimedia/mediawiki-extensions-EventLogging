@@ -1,0 +1,8 @@
+{
+    "@metadata": {
+        "authors": [
+            "Nike"
+        ]
+    },
+    "eventlogging-json": "Objekti, $1 {{PLURAL:$1|ominaisuus|ominaisuutta}}"
+}

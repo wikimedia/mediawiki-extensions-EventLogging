@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+        "authors": [
+            "Toliño"
+        ]
+    },
+    "jsonschema-badidref": "idref incorrecto: \"$1\"",
+    "jsonschema-idconvert": "Non se pode converter var en id: \"$1\"",
+    "jsonschema-invalidkey": "Clave \"$1\" non válida en \"$2\"",
+    "jsonschema-invalidempty": "Estrutura de datos baleira non válida con este esquema",
+    "jsonschema-invalidnode": "Nodo non válido: Agardábse \"$1\"; recibiuse \"$2\". Ruta: \"$3\"",
+    "jsonschema-invalid-missingfield": "Falta o parámetro obrigatorio \"$1\"",
+    "jsonschema-invalid-notinenum": "O valor \"$1\" non é parte da enumeración da propiedade $2"
+}

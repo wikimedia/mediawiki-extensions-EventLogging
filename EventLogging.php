@@ -23,15 +23,12 @@ $wgExtensionCredits[ 'other' ][] = array(
 		'S Page',
 		'Matthew Flaschen',
 	),
-	'version' => '0.7',
+	'version' => '0.8.0',
 	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc'
 );
 
-
-
 // Namespaces
-
 define( 'NS_SCHEMA', 470 );
 define( 'NS_SCHEMA_TALK', 471 );
 
@@ -90,8 +87,6 @@ $wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
  * housing schemas; false if not set.
  */
 $wgEventLoggingDBname = 'metawiki';
-
-
 
 // Helpers
 
@@ -153,7 +148,6 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	return true;
 }
 
-
 /**
  * Takes a string of JSON data and formats it for readability.
  * @param string $json
@@ -166,7 +160,6 @@ function efBeautifyJson( $json ) {
 	}
 	return FormatJson::encode( $decoded, true );
 }
-
 
 /**
  * Validates object against JSON Schema.
@@ -196,7 +189,6 @@ function efSchemaValidate( $object, $schema = NULL ) {
 	return $root->validate();
 }
 
-
 /**
  * Recursively remove a key from an array and all its subarray members.
  * Does not detect cycles.
@@ -212,7 +204,6 @@ function efStripKeyRecursive( &$array, $key ) {
 		}
 	}
 }
-
 
 // Classes
 
@@ -240,17 +231,15 @@ $wgAutoloadClasses += array(
 	'ApiJsonSchema' => __DIR__ . '/includes/ApiJsonSchema.php',
 );
 
-
-
 // Messages
 
+$wgMessagesDirs['EventLogging'] = __DIR__ . '/i18n/core';
+$wgMessagesDirs['JsonSchema'] = __DIR__ . '/i18n/jsonschema';
 $wgExtensionMessagesFiles += array(
 	'EventLogging'           => __DIR__ . '/EventLogging.i18n.php',
 	'EventLoggingNamespaces' => __DIR__ . '/EventLogging.namespaces.php',
 	'JsonSchema'             => __DIR__ . '/includes/JsonSchema.i18n.php',
 );
-
-
 
 // Modules
 
@@ -272,8 +261,6 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 	'position'      => 'top',
 );
 
-
-
 // Hooks
 
 $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
@@ -284,8 +271,6 @@ $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoader
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
 $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
-
-
 
 // Unit Tests
 

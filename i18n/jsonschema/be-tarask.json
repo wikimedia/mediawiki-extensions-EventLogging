@@ -1,0 +1,14 @@
+{
+    "@metadata": {
+        "authors": [
+            "Wizardist"
+        ]
+    },
+    "jsonschema-badidref": "Благі idref: «$1»",
+    "jsonschema-idconvert": "Не атрымалася канвэртаваць var у id: «$1»",
+    "jsonschema-invalidkey": "Няслушны ключ «$1» у «$2»",
+    "jsonschema-invalidempty": "Пустая структура зьвестак паводле гэтай схемы недапушчальная",
+    "jsonschema-invalidnode": "Няслушны вузел: чакалася «$1», атрымана «$2». Шлях: «$3»",
+    "jsonschema-invalid-missingfield": "Ня знойдзенае абавязковае поле «$1»",
+    "jsonschema-invalid-notinenum": "Значэньне «$1» не належыць да enum уласьцівасьці $2"
+}
