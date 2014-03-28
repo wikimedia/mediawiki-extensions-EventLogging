@@ -288,9 +288,6 @@
 		}
 	};
 
-	// For backward-compatibility; may be removed after 28-Feb-2012 deployment.
-	self.setSchema = self.declareSchema;
-
 	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
 		self.warn( '"$wgEventLoggingBaseUri" is not set.' );
 	}
