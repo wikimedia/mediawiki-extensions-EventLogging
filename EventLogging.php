@@ -9,7 +9,7 @@
  *
  * @author Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
- * @version 0.7
+ * @version 0.8
  */
 
 // Credits
@@ -104,7 +104,7 @@ $wgEventLoggingDBname = 'metawiki';
  * @param array $event Map of event keys/vals.
  * @return bool: Whether the event was logged.
  */
-function efLogServerSideEvent( $schemaName, $revId, $event ) {
+function efLogEvent( $schemaName, $revId, $event ) {
 	global $wgDBname, $wgEventLoggingFile;
 
 	if ( !$wgEventLoggingFile ) {
@@ -146,6 +146,15 @@ function efLogServerSideEvent( $schemaName, $revId, $event ) {
 	wfErrorLog( $json . "\n", $wgEventLoggingFile );
 	wfProfileOut( __FUNCTION__ );
 	return true;
+}
+
+/**
+ * Backward-compatibility alias for efLogEvent.
+ * @deprecated use efLogEvent() instead.
+ */
+function efLogServerSideEvent( $schemaName, $revId, $event ) {
+	wfDeprecated( __FUNCTION__ );
+	return efLogEvent( $schemaName, $revId, $event );
 }
 
 /**
