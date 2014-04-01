@@ -63,8 +63,11 @@ class EventLoggingHooks {
 	 * @param ResourceLoader &$resourceLoader
 	 */
 	public static function onResourceLoaderRegisterModules( ResourceLoader &$resourceLoader ) {
+		global $wgEventLoggingSchemas;
+
 		$schemas = array();
 		wfRunHooks( 'EventLoggingRegisterSchemas', array( &$schemas ) );
+		$schemas = array_merge( $wgEventLoggingSchemas, $schemas );
 
 		$modules = array();
 		foreach ( $schemas as $schemaName => $rev ) {

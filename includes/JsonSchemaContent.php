@@ -118,11 +118,7 @@ class JsonSchemaContent extends TextContent {
 			array(
 				'language' => 'php',
 				'header' => 'eventlogging-code-sample-module-setup',
-				'code' => "\$wgResourceModules[ 'schema.{$dbKey}' ] = array(\n" .
-				"	'class'  => 'ResourceLoaderSchemaModule',\n" .
-				"	'schema' => '{$dbKey}',\n" .
-				"	'revision' => {$revId},\n" .
-				");",
+				'code' => "\$wgEventLoggingSchemas[ '{$dbKey}' ] = {$revId};",
 			),
 			array(
 				'language' => 'javascript',
