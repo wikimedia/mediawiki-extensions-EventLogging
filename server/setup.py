@@ -48,6 +48,7 @@ setup(
         'bin/eventlogging-consumer',
         'bin/eventlogging-devserver',
         'bin/eventlogging-processor',
+        'bin/eventlogging-reporter',
     ),
     zip_safe=False,
     test_suite='tests',
