@@ -113,7 +113,7 @@ class JsonSchemaContent extends TextContent {
 			array(
 				'language' => 'php',
 				'header' => 'eventlogging-code-sample-logging-on-server-side',
-				'code' => "efLogEvent( '$dbKey', $revId, \$event );",
+				'code' => "EventLogging::logEvent( '$dbKey', $revId, \$event );",
 			),
 			array(
 				'language' => 'php',
