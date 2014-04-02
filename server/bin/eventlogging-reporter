@@ -133,8 +133,7 @@ def monitor_pubs(endpoints):
                     for name, value in counts.iteritems():
                         if value:
                             stat = '%s:%s|c' % (name, value)
-                            print stat
-                            # sock.sendto(stat.encode('utf-8'), addr)
+                            sock.sendto(stat.encode('utf-8'), addr)
                     counts.clear()
         except KeyboardInterrupt:
             # PyZMQ 13.0.x raises EINTR as KeyboardInterrupt.
