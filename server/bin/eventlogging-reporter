@@ -4,7 +4,7 @@
   eventlogging-reporter
   ---------------------
 
-  This script emits StatsD counter stats for raw and processed EventLogging
+  This script emits StatsD metric stats for raw and processed EventLogging
   streams configured on this server. The script discovers stream URIs by
   walking the /etc/eventlogging.d/processors directory.
 
@@ -36,6 +36,7 @@ ap = argparse.ArgumentParser(description='eventlogging-reporter',
                              fromfile_prefix_chars='@')
 ap.add_argument('--host', default='localhost', type=socket.gethostbyname)
 ap.add_argument('--port', default=8125, type=int)
+ap.add_argument('--prefix', default='eventlogging')
 args = ap.parse_args()
 
 addr = (args.host, args.port)
@@ -87,8 +88,8 @@ def iter_pubs(config_dir):
         name = re.sub(r'[^A-Za-z0-9]+', '_', os.path.basename(filename))
         with open(filename) as f:
             raw, valid = re.findall(r'tcp://[^:]+:(\d+)', f.read())
-            publishers['eventlogging.%s.raw' % name] = raw
-            publishers['eventlogging.%s.valid' % name] = valid
+            publishers[('%s.raw' % name, 'overall.raw')] = raw
+            publishers[('%s.valid' % name, 'overall.valid')] = valid
     return publishers
 
 
@@ -107,8 +108,8 @@ def monitor_pubs(endpoints):
     counts = collections.defaultdict(int)
     sockets = {}
 
-    for name, port in endpoints.iteritems():
-        logging.info('Registering %s (%s).', name, port)
+    for names, port in endpoints.iteritems():
+        logging.info('Registering %s (%s).', names, port)
         socket = ctx.socket(zmq.SUB)
         socket.hwm = 1000
         socket.linger = 1000
@@ -116,7 +117,7 @@ def monitor_pubs(endpoints):
         socket.connect('tcp://127.0.0.1:%s' % port)
         socket.setsockopt(zmq.SUBSCRIBE, '')
         poller.register(socket, zmq.POLLIN)
-        sockets[socket] = name
+        sockets[socket] = names
 
     timer = timerfd(5)
     poller.register(timer, zmq.POLLIN)
@@ -124,15 +125,16 @@ def monitor_pubs(endpoints):
     while 1:
         try:
             for fd, _ in poller.poll():
-                name = sockets.get(fd)
-                if name:
+                names = sockets.get(fd)
+                if names:
                     fd.recv(zmq.NOBLOCK)
-                    counts[name] += 1
+                    for name in names:
+                        counts[name] += 1
                 else:
                     os.read(fd, 8)
                     for name, value in counts.iteritems():
                         if value:
-                            stat = '%s:%s|c' % (name, value)
+                            stat = '%s.%s:%s|m' % (args.prefix, name, value)
                             sock.sendto(stat.encode('utf-8'), addr)
                     counts.clear()
         except KeyboardInterrupt:
