@@ -95,7 +95,7 @@ def zeromq_writer(uri):
 
 
 @writes('statsd')
-def statsd_writer(hostname, port, prefix='eventlogging'):
+def statsd_writer(hostname, port, prefix='eventlogging.schema'):
     """Increments StatsD SCID counters for each event."""
     addr = socket.gethostbyname(hostname), port
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
