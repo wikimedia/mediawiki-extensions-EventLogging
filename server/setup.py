@@ -14,7 +14,7 @@ except ImportError:
     from distutils.core import setup
 
 # Workaround for <http://bugs.python.org/issue15881#msg170215>:
-import multiprocessing
+import multiprocessing  # noqa
 
 
 setup(
