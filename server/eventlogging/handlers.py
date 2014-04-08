@@ -20,7 +20,6 @@ import os
 import socket
 import sys
 
-import pymongo
 import sqlalchemy
 
 from .factory import writes, reads
@@ -51,6 +50,8 @@ def load_plugins(path=None):
 
 @writes('mongodb')
 def mongodb_writer(uri, database='events'):
+    import pymongo
+
     client = pymongo.MongoClient(uri)
     db = client[database]
     datetime_from_timestamp = datetime.datetime.fromtimestamp
@@ -61,6 +62,21 @@ def mongodb_writer(uri, database='events'):
         event['_id'] = event['uuid']
         collection = event['schema']
         db[collection].insert(event)
+
+
+@writes('kafka')
+def kafka_writer(brokers, topic='eventlogging', **kwargs):
+    """Write events to Kafka, keyed by SCID."""
+    from kafka.client import KafkaClient
+    from kafka.producer import KeyedProducer
+
+    kafka = KafkaClient(brokers)
+    producer = KeyedProducer(kafka, topic, **kwargs)
+
+    while 1:
+        event = (yield)
+        key = '%(schema)s_%(revision)s' % event  # e.g. 'EchoMail_5467650'
+        producer.send(key, json.dumps(event, sort_keys=True))
 
 
 @writes('mysql', 'sqlite')

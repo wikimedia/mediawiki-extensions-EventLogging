@@ -16,7 +16,7 @@ import wsgiref.simple_server
 import eventlogging
 
 
-TRAVIS = os.getenv('TRAVIS', False)
+CI = 'TRAVIS' in os.environ or 'JENKINS_URL' in os.environ
 
 
 class SingleServingHttpd(multiprocessing.Process):
@@ -45,7 +45,7 @@ class UriSplitTestCase(unittest.TestCase):
 class HttpGetTestCase(unittest.TestCase):
     """Test cases for ``http_get``."""
 
-    @unittest.skipIf(TRAVIS, 'Running in Travis')
+    @unittest.skipIf(CI, 'Running in a CI environment')
     def test_http_get(self):
         """``http_get`` can pull content via HTTP."""
         server = SingleServingHttpd('secret')
