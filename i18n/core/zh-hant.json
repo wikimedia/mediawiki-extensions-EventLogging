@@ -1,13 +1,13 @@
 {
-    "@metadata": {
-        "authors": [
-            "Justincheng12345"
-        ]
-    },
-    "eventlogging-desc": "從用戶端代碼記錄事件日誌的框架",
-    "eventlogging-invalid-json": "無效的JSON",
-    "eventlogging-revision-id": "修訂版本：$1",
-    "eventlogging-code-sample-logging-on-server-side": "PHP日誌",
-    "eventlogging-code-sample-module-setup": "PHP設定以作JavaScript日誌",
-    "eventlogging-code-sample-logging-on-client-side": "JavaScript日誌"
+	"@metadata": {
+		"authors": [
+			"Justincheng12345"
+		]
+	},
+	"eventlogging-desc": "從用戶端代碼記錄事件日誌的框架",
+	"eventlogging-invalid-json": "無效的JSON",
+	"eventlogging-revision-id": "修訂版本：$1",
+	"eventlogging-code-sample-logging-on-server-side": "PHP日誌",
+	"eventlogging-code-sample-module-setup": "PHP設定以作JavaScript日誌",
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript日誌"
 }

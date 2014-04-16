@@ -1,14 +1,14 @@
 {
-    "@metadata": {
-        "authors": [
-            "McDutchie"
-        ]
-    },
-    "jsonschema-badidref": "Mal idref: \"$1\"",
-    "jsonschema-idconvert": "Non pote converter var in id: \"$1\"",
-    "jsonschema-invalidkey": "Clave invalide \"$1\" in \"$2\"",
-    "jsonschema-invalidempty": "Un structura de datos vacue non es valide con iste schema",
-    "jsonschema-invalidnode": "Nodo invalide: expectava \"$1\", recipeva \"$2\". Cammino: \"$3\"",
-    "jsonschema-invalid-missingfield": "Campo obligatori \"$1\" mancante",
-    "jsonschema-invalid-notinenum": "Valor \"$1\" non es in enum pro le proprietate $2"
+	"@metadata": {
+		"authors": [
+			"McDutchie"
+		]
+	},
+	"jsonschema-badidref": "Mal idref: \"$1\"",
+	"jsonschema-idconvert": "Non pote converter var in id: \"$1\"",
+	"jsonschema-invalidkey": "Clave invalide \"$1\" in \"$2\"",
+	"jsonschema-invalidempty": "Un structura de datos vacue non es valide con iste schema",
+	"jsonschema-invalidnode": "Nodo invalide: expectava \"$1\", recipeva \"$2\". Cammino: \"$3\"",
+	"jsonschema-invalid-missingfield": "Campo obligatori \"$1\" mancante",
+	"jsonschema-invalid-notinenum": "Valor \"$1\" non es in enum pro le proprietate $2"
 }

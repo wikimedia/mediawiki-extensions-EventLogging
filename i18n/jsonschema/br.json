@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Fohanno"
-        ]
-    },
-    "jsonschema-invalidkey": "Alc'hwez direizh \"$1\" e-barzh \"$2\""
+	"@metadata": {
+		"authors": [
+			"Fohanno"
+		]
+	},
+	"jsonschema-invalidkey": "Alc'hwez direizh \"$1\" e-barzh \"$2\""
 }

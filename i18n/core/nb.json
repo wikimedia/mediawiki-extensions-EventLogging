@@ -1,10 +1,10 @@
 {
-    "@metadata": {
-        "authors": [
-            "Danmichaelo"
-        ]
-    },
-    "eventlogging-desc": "Rammeverk for å logge hendelser fra klientside-kode",
-    "eventlogging-invalid-json": "Ugyldig JSON",
-    "eventlogging-revision-id": "Revisjon $1"
+	"@metadata": {
+		"authors": [
+			"Danmichaelo"
+		]
+	},
+	"eventlogging-desc": "Rammeverk for å logge hendelser fra klientside-kode",
+	"eventlogging-invalid-json": "Ugyldig JSON",
+	"eventlogging-revision-id": "Revisjon $1"
 }

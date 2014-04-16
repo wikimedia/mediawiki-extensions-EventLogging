@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Firilacroco"
-        ]
-    },
-    "eventlogging-invalid-json": "JSON nevalid"
+	"@metadata": {
+		"authors": [
+			"Firilacroco"
+		]
+	},
+	"eventlogging-invalid-json": "JSON nevalid"
 }

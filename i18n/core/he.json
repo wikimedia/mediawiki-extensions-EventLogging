@@ -1,13 +1,13 @@
 {
-    "@metadata": {
-        "authors": [
-            "Amire80"
-        ]
-    },
-    "eventlogging-desc": "מסגרת לרישום אירועים מקוד בצד הלקוח",
-    "eventlogging-invalid-json": "נתוני JSON בלתי־תקינים",
-    "eventlogging-revision-id": "גרסה $1",
-    "eventlogging-code-sample-logging-on-server-side": "רישום אירועי PHP",
-    "eventlogging-code-sample-module-setup": "הגדרות PHP לרישום אירועי JavaScript",
-    "eventlogging-code-sample-logging-on-client-side": "רישום אירועי JavaScript"
+	"@metadata": {
+		"authors": [
+			"Amire80"
+		]
+	},
+	"eventlogging-desc": "מסגרת לרישום אירועים מקוד בצד הלקוח",
+	"eventlogging-invalid-json": "נתוני JSON בלתי־תקינים",
+	"eventlogging-revision-id": "גרסה $1",
+	"eventlogging-code-sample-logging-on-server-side": "רישום אירועי PHP",
+	"eventlogging-code-sample-module-setup": "הגדרות PHP לרישום אירועי JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "רישום אירועי JavaScript"
 }

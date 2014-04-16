@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Mormegil"
-        ]
-    },
-    "jsonschema-invalid-notinenum": "Výčtový typ pro vlastnost $2 neobsahuje hodnotu „$1“"
+	"@metadata": {
+		"authors": [
+			"Mormegil"
+		]
+	},
+	"jsonschema-invalid-notinenum": "Výčtový typ pro vlastnost $2 neobsahuje hodnotu „$1“"
 }

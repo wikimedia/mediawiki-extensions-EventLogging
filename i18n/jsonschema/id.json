@@ -1,10 +1,10 @@
 {
-    "@metadata": {
-        "authors": [
-            "Farras"
-        ]
-    },
-    "jsonschema-badidref": "Idref buruk: \"$1\"",
-    "jsonschema-idconvert": "Gagal mengubah var ke id: \"$1\"",
-    "jsonschema-invalidempty": "Struktur data kosong tidak sesuai dengan skema ini"
+	"@metadata": {
+		"authors": [
+			"Farras"
+		]
+	},
+	"jsonschema-badidref": "Idref buruk: \"$1\"",
+	"jsonschema-idconvert": "Gagal mengubah var ke id: \"$1\"",
+	"jsonschema-invalidempty": "Struktur data kosong tidak sesuai dengan skema ini"
 }

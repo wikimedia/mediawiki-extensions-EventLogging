@@ -1,13 +1,13 @@
 {
-    "@metadata": {
-        "authors": [
-            "Joetaras"
-        ]
-    },
-    "eventlogging-desc": "Framework per traccià l'evende da 'u codece late client",
-    "eventlogging-invalid-json": "JSON invalide",
-    "eventlogging-revision-id": "Revisione $1",
-    "eventlogging-code-sample-logging-on-server-side": "Tracciature de PHP",
-    "eventlogging-code-sample-module-setup": "'Mbostaziune de PHP pu tracciamende JavaScript",
-    "eventlogging-code-sample-logging-on-client-side": "Tracciamende JavaScript"
+	"@metadata": {
+		"authors": [
+			"Joetaras"
+		]
+	},
+	"eventlogging-desc": "Framework per traccià l'evende da 'u codece late client",
+	"eventlogging-invalid-json": "JSON invalide",
+	"eventlogging-revision-id": "Revisione $1",
+	"eventlogging-code-sample-logging-on-server-side": "Tracciature de PHP",
+	"eventlogging-code-sample-module-setup": "'Mbostaziune de PHP pu tracciamende JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "Tracciamende JavaScript"
 }

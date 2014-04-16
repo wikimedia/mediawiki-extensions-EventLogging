@@ -1,13 +1,13 @@
 {
-    "@metadata": {
-        "authors": [
-            "Toliño"
-        ]
-    },
-    "eventlogging-desc": "Estrutura para rexistrar os eventos do código do lado do cliente",
-    "eventlogging-invalid-json": "JSON non válido",
-    "eventlogging-revision-id": "Revisión $1",
-    "eventlogging-code-sample-logging-on-server-side": "Rexistro PHP",
-    "eventlogging-code-sample-module-setup": "Configuración PHP para o rexistro de JavaScript",
-    "eventlogging-code-sample-logging-on-client-side": "Rexistro de JavaScript"
+	"@metadata": {
+		"authors": [
+			"Toliño"
+		]
+	},
+	"eventlogging-desc": "Estrutura para rexistrar os eventos do código do lado do cliente",
+	"eventlogging-invalid-json": "JSON non válido",
+	"eventlogging-revision-id": "Revisión $1",
+	"eventlogging-code-sample-logging-on-server-side": "Rexistro PHP",
+	"eventlogging-code-sample-module-setup": "Configuración PHP para o rexistro de JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "Rexistro de JavaScript"
 }

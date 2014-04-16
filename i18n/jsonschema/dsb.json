@@ -1,12 +1,12 @@
 {
-    "@metadata": {
-        "authors": [
-            "Michawiki"
-        ]
-    },
-    "jsonschema-badidref": "idref njepłaśiwy: \"$1\"",
-    "jsonschema-idconvert": "var njedajo se do id konwertěrowaś: \"$1\"",
-    "jsonschema-invalidkey": "Njepłaśiwy kluc \"$1\" w \"$2\"",
-    "jsonschema-invalidempty": "Prozna datowa struktura z toś tym šema njejo płaśiwa",
-    "jsonschema-invalidnode": "Njepłaśiwy suk: \"$1\" jo se wótcakał, \"$2\" dostany.  Sćažka: \"$3\""
+	"@metadata": {
+		"authors": [
+			"Michawiki"
+		]
+	},
+	"jsonschema-badidref": "idref njepłaśiwy: \"$1\"",
+	"jsonschema-idconvert": "var njedajo se do id konwertěrowaś: \"$1\"",
+	"jsonschema-invalidkey": "Njepłaśiwy kluc \"$1\" w \"$2\"",
+	"jsonschema-invalidempty": "Prozna datowa struktura z toś tym šema njejo płaśiwa",
+	"jsonschema-invalidnode": "Njepłaśiwy suk: \"$1\" jo se wótcakał, \"$2\" dostany.  Sćažka: \"$3\""
 }

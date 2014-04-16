@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "Yekrats"
-        ]
-    },
-    "eventlogging-invalid-json": "Malvalida JSON"
+	"@metadata": {
+		"authors": [
+			"Yekrats"
+		]
+	},
+	"eventlogging-invalid-json": "Malvalida JSON"
 }

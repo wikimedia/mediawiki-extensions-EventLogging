@@ -1,14 +1,14 @@
 {
-    "@metadata": {
-        "authors": [
-            "Kghbln",
-            "Metalhead64"
-        ]
-    },
-    "eventlogging-desc": "Ergänzt ein Framework zum Protokollieren von Aktionen clientseitigen Codes",
-    "eventlogging-invalid-json": "Ungültiges JSON",
-    "eventlogging-revision-id": "Version $1",
-    "eventlogging-code-sample-logging-on-server-side": "PHP-Protokollierung",
-    "eventlogging-code-sample-module-setup": "PHP-Setup für JavaScript-Protokollierung",
-    "eventlogging-code-sample-logging-on-client-side": "JavaScript-Protokollierung"
+	"@metadata": {
+		"authors": [
+			"Kghbln",
+			"Metalhead64"
+		]
+	},
+	"eventlogging-desc": "Ergänzt ein Framework zum Protokollieren von Aktionen clientseitigen Codes",
+	"eventlogging-invalid-json": "Ungültiges JSON",
+	"eventlogging-revision-id": "Version $1",
+	"eventlogging-code-sample-logging-on-server-side": "PHP-Protokollierung",
+	"eventlogging-code-sample-module-setup": "PHP-Setup für JavaScript-Protokollierung",
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript-Protokollierung"
 }

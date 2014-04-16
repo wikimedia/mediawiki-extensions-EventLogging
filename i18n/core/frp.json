@@ -1,8 +1,8 @@
 {
-    "@metadata": {
-        "authors": [
-            "ChrisPtDe"
-        ]
-    },
-    "eventlogging-invalid-json": "JSON envalido"
+	"@metadata": {
+		"authors": [
+			"ChrisPtDe"
+		]
+	},
+	"eventlogging-invalid-json": "JSON envalido"
 }

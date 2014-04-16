@@ -1,13 +1,13 @@
 {
-    "@metadata": {
-        "authors": [
-            "Purodha"
-        ]
-    },
-    "eventlogging-desc": "Vörjäng us enem Projramm om Rääschener vom Metmaacher uß en e Logbooch schriive.",
-    "eventlogging-invalid-json": "Onjöltesch <i lang=\"en\">JSON</i>-ẞööver",
-    "eventlogging-revision-id": "Väsjohn $1",
-    "eventlogging-code-sample-logging-on-server-side": "Met PHP en et Logbooch schriive",
-    "eventlogging-code-sample-module-setup": "De Enschtällonge em PHP, om övver JavaSkrep en et Logbooch schriive",
-    "eventlogging-code-sample-logging-on-client-side": "Övver JavaSkrep en et Logbooch schriive"
+	"@metadata": {
+		"authors": [
+			"Purodha"
+		]
+	},
+	"eventlogging-desc": "Vörjäng us enem Projramm om Rääschener vom Metmaacher uß en e Logbooch schriive.",
+	"eventlogging-invalid-json": "Onjöltesch <i lang=\"en\">JSON</i>-ẞööver",
+	"eventlogging-revision-id": "Väsjohn $1",
+	"eventlogging-code-sample-logging-on-server-side": "Met PHP en et Logbooch schriive",
+	"eventlogging-code-sample-module-setup": "De Enschtällonge em PHP, om övver JavaSkrep en et Logbooch schriive",
+	"eventlogging-code-sample-logging-on-client-side": "Övver JavaSkrep en et Logbooch schriive"
 }
