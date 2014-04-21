@@ -13,13 +13,34 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function ( mw, $ ) {
-	$( window ).on( 'load', function () {
-		mw.trackSubscribe( 'event', function ( topic, eventInstance ) {
-			var prefixLength = topic.indexOf( '.' ),
-				schemaName = topic.charAt( prefixLength + 1 ).toUpperCase() + topic.slice( prefixLength + 2 );
-			mw.loader.using( [ 'ext.eventLogging', 'schema.' + schemaName ], function () {
-				mw.eventLog.logEvent( schemaName, eventInstance );
-			} );
+
+	/**
+	 * Convert the first letter of a string to uppercase.
+	 *
+	 * @param {String} word
+	 * @return {String}
+	 */
+	function titleCase( word ) {
+		return word.charAt( 0 ).toUpperCase() + word.slice( 1 );
+	}
+
+	/**
+	 * mw#track handler for EventLogging events.
+	 *
+	 * @param {String} topic Topic name ('event.*').
+	 * @param {Object} event
+	 */
+	function handleTrackedEvent( topic, event ) {
+		var schema = titleCase( topic.slice( topic.indexOf( '.' ) ) ),
+			dependencies = [ 'ext.eventLogging', 'schema.' + schema ];
+
+		mediaWiki.loader.using( dependencies, function () {
+			mw.eventLog.logEvent( schema, event );
 		} );
+	}
+
+	$( window ).on( 'load', function () {
+		mw.trackSubscribe( 'event', handleTrackedEvent );
 	} );
+
 } ( mediaWiki, jQuery ) );

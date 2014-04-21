@@ -253,21 +253,21 @@
 		dispatch: function ( data ) {
 			var beacon = document.createElement( 'img' ),
 				baseUri = mw.config.get( 'wgEventLoggingBaseUri' ),
-				dfd = $.Deferred();
+				deferred = $.Deferred();
 
 			if ( !baseUri ) {
-				dfd.rejectWith( data, [ data ] );
-				return dfd.promise();
+				deferred.rejectWith( data, [ data ] );
+				return deferred.promise();
 			}
 
 			// Browsers trigger `onerror` event on HTTP 204 replies to image
 			// requests. Thus, confusingly, `onerror` indicates success.
 			$( beacon ).on( 'error', function () {
-				dfd.resolveWith( data, [ data ] );
+				deferred.resolveWith( data, [ data ] );
 			} );
 
 			beacon.src = baseUri + '?' + encodeURIComponent( $.toJSON( data ) ) + ';';
-			return dfd.promise();
+			return deferred.promise();
 		},
 
 
