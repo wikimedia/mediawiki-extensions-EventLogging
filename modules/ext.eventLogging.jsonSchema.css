@@ -82,6 +82,7 @@
 	padding: 0.1em;
 	cursor: pointer;
 	transition: background-color .5s;
+	line-height: 0.46em;
 }
 
 .mw-json-schema-code-glyph:hover {
