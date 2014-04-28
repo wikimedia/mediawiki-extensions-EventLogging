@@ -156,8 +156,8 @@ def declare_table(meta, scid):
     # binary in a CHAR(16) column, but at the cost of readability.)
     columns = [
         sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
-        # To keep INSERTs fast, the index on `uuid` is not unique.
-        sqlalchemy.Column('uuid', sqlalchemy.CHAR(32), index=True)
+        sqlalchemy.Column('uuid', sqlalchemy.CHAR(32), index=True,
+                          unique=True, nullable=False)
     ]
     columns.extend(schema_mapper(schema))
 
@@ -170,7 +170,7 @@ def declare_table(meta, scid):
     return table
 
 
-def store_sql_event(meta, event):
+def store_sql_event(meta, event, ignore_dupes=False):
     """Store an event in the database."""
     scid = (event['schema'], event['revision'])
     table = get_table(meta, scid)
@@ -179,6 +179,9 @@ def store_sql_event(meta, event):
     insert = table.insert(values=event)
     try:
         insert.execute()
+    except sqlalchemy.exc.IntegrityError as e:
+        if not ignore_dupes or 'unique' not in str(e).lower():
+            raise
     except sqlalchemy.exc.ProgrammingError:
         table.create()
         insert.execute()

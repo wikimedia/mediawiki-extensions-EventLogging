@@ -79,5 +79,5 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # The ``checkfirst`` arg to :func:`sqlalchemy.Table.create`
         # will ensure that we don't attempt to CREATE TABLE on the
         # already-existing table:
-        eventlogging.store_sql_event(self.meta, self.event)
+        eventlogging.store_sql_event(self.meta, self.event, True)
         self.assertIn('TestSchema_123', self.meta.tables)
