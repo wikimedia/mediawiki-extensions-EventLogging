@@ -145,6 +145,7 @@ class SchemaTestMixin(object):
 
     def tearDown(self):
         """Clear schema cache and restore stubbed `http_get_schema`."""
+        super(SchemaTestMixin, self).tearDown()
         eventlogging.schema.schema_cache.clear()
         eventlogging.schema.http_get_schema = orig_http_get_schema
 
@@ -166,8 +167,14 @@ class DatabaseTestMixin(SchemaTestMixin):
         """Configure :class:`sqlalchemy.engine.Engine` and
         :class:`sqlalchemy.schema.MetaData` objects."""
         super(DatabaseTestMixin, self).setUp()
-        self.engine = sqlalchemy.create_engine('sqlite:///:memory:', echo=True)
+        self.engine = sqlalchemy.create_engine('sqlite://', echo=True)
         self.meta = sqlalchemy.MetaData(bind=self.engine)
+
+    def tearDown(self):
+        """Dispose of the database access objects."""
+        super(DatabaseTestMixin, self).tearDown()
+        self.meta.drop_all()
+        self.engine.dispose()
 
 
 class HttpSchemaTestMixin(object):
