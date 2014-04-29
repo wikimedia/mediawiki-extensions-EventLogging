@@ -90,10 +90,12 @@ mappers = collections.OrderedDict((
     }),
     ('format', {
         'utc-millisec': {'type_': MediaWikiTimestamp, 'index': True},
+        'uuid5-hex': {'type_': sqlalchemy.CHAR(32), 'index': True,
+                      'unique': True},
     }),
     ('required', {
-        True: {'nullable': True},
-        False: {'nullable': False}
+        True: {'nullable': False},
+        False: {'nullable': True}
     })
 ))
 
@@ -151,15 +153,7 @@ def declare_table(meta, scid):
     the database, issue ``CREATE TABLE`` statement."""
     schema = get_schema(scid, encapsulate=True)
 
-    # Every table gets an integer auto-increment primary key column `id`
-    # and an indexed CHAR(32) column, `uuid`. (UUIDs could be stored as
-    # binary in a CHAR(16) column, but at the cost of readability.)
-    columns = [
-        sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True),
-        sqlalchemy.Column('uuid', sqlalchemy.CHAR(32), index=True,
-                          unique=True, nullable=False)
-    ]
-    columns.extend(schema_mapper(schema))
+    columns = schema_mapper(schema)
 
     table_options = ENGINE_TABLE_OPTIONS.get(meta.bind.name, {})
     table_name = TABLE_NAME_FORMAT % scid
@@ -214,18 +208,29 @@ def flatten(d, sep='_', f=None):
     return dict(flat)
 
 
+def column_sort_key(column):
+    """Sort key for column names. 'id' and 'uuid' come first, then the
+    top-level properties in alphabetical order, followed by the nested
+    properties (identifiable by the presence of an underscore)."""
+    return (
+        ('id', 'uuid', column.name).index(column.name),
+        column.name.count('_'),
+        column.name,
+    )
+
+
 def schema_mapper(schema):
     """Takes a schema and map its properties to database column
     definitions."""
     properties = {k: v for k, v in items(schema.get('properties', {}))
                   if k not in NO_DB_PROPERTIES}
-    columns = []
+
+    # Every table gets an integer auto-increment primary key column `id`
+    columns = [sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True)]
+
     for name, col in items(flatten(properties, f=_property_getter)):
         col.name = name
         columns.append(col)
 
-    # Sort the mapped columns lexicographically by name, with 'nested'
-    # columns (identifiable by the presence of an underscore in the
-    # name) appearing last.
-    columns.sort(key=lambda col: ('_' in col.name, col.name))
+    columns.sort(key=column_sort_key)
     return columns

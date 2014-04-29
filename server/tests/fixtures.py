@@ -62,7 +62,9 @@ _schemas = {
                 'format': 'utc-millisec'
             },
             'uuid': {
-                'type': 'string'
+                'type': 'string',
+                'required': True,
+                'format': 'uuid5-hex'
             }
         },
         'additionalProperties': False
