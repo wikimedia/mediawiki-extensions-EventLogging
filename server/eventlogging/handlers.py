@@ -65,18 +65,20 @@ def mongodb_writer(uri, database='events'):
 
 
 @writes('kafka')
-def kafka_writer(brokers, topic='eventlogging', **kwargs):
+def kafka_writer(brokers, topic='eventlogging'):
     """Write events to Kafka, keyed by SCID."""
     from kafka.client import KafkaClient
     from kafka.producer import KeyedProducer
 
     kafka = KafkaClient(brokers)
-    producer = KeyedProducer(kafka, topic, **kwargs)
+    producer = KeyedProducer(kafka)
+    topic = topic.encode('utf-8')
 
     while 1:
         event = (yield)
         key = '%(schema)s_%(revision)s' % event  # e.g. 'EchoMail_5467650'
-        producer.send(key, json.dumps(event, sort_keys=True))
+        key = key.encode('utf-8')
+        producer.send(topic, key, json.dumps(event, sort_keys=True))
 
 
 @writes('mysql', 'sqlite')
