@@ -118,7 +118,7 @@ def statsd_writer(hostname, port, prefix='eventlogging.schema'):
     addr = socket.gethostbyname(hostname), port
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     while 1:
-        stat = prefix + '.%(schema)s_%(revision)s:1|c' % (yield)
+        stat = prefix + '.%(schema)s:1|m' % (yield)
         sock.sendto(stat.encode('utf-8'), addr)
 
 
