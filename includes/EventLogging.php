@@ -10,6 +10,10 @@
  */
 
 class EventLogging {
+
+	/** @var const Flag indicating the user-agent should not be logged. **/
+	const OMIT_USER_AGENT = 2;
+
 	/**
 	 * Writes an event to a file descriptor or socket.
 	 * Takes an event ID and an event, encodes it as query string,
@@ -20,11 +24,12 @@ class EventLogging {
 	 * @see wfErrorLog
 	 *
 	 * @param string $schemaName Schema name.
-	 * @param int $revId revision ID of schema
+	 * @param int $revId revision ID of schema.
 	 * @param array $event Map of event keys/vals.
+	 * @param int $options Bitmask consisting of EventLogging::OMIT_USER_AGENT.
 	 * @return bool: Whether the event was logged.
 	 */
-	static function logEvent( $schemaName, $revId, $event ) {
+	static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
 		global $wgDBname, $wgEventLoggingFile;
 
 		if ( !$wgEventLoggingFile ) {
@@ -54,7 +59,7 @@ class EventLogging {
 			$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
 		}
 
-		if ( isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
+		if ( !( $options & self::OMIT_USER_AGENT ) && isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$encapsulated[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
 
