@@ -11,13 +11,19 @@
   test wiki to point at the host and port of this web server. The value
   '//localhost:8080/event.gif' should work.
 
+  Example:
+    event : {"wiki": "devwiki", "schema": "TrackedPageContentSaveComplete", "revision": 7872558, "event": {"revId": 10, "token": "foobar"}}
+    url : http://localhost:8080/event.gif?%7B%22wiki%22%3A+%22devwiki%22%2C+%22schema%22%3A+%22TrackedPageContentSaveComplete%22%2C+%22revision%22%3A+7872558%2C+%22event%22%3A+%7B%22revId%22%3A+10%2C+%22token%22%3A+%22foobar%22%7D%7D
+
+
   usage: eventlogging-devserver [-h] [--host HOST] [--port PORT]
 
   optional arguments:
-    -h, --help    show this help message and exit
-    --host HOST   server host (default: 'localhost')
-    --port PORT   server port (default: 8080)
-    --nocolor     turn off all syntax highlighting
+    -h, --help        show this help message and exit
+    --host HOST       server host (default: 'localhost')
+    --port PORT       server port (default: 8080)
+    --append-to PATH  file to append to (default: stdout)
+    --verbose         print pretty colors to stderr
 
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
@@ -28,6 +34,7 @@ from __future__ import print_function, unicode_literals
 
 import argparse
 import itertools
+import sys
 
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 
@@ -43,16 +50,15 @@ argparser.add_argument('--host', default='localhost',
                        help='server host (default: localhost)')
 argparser.add_argument('--port', default=8080, type=int,
                        help='server port (default: 8080)')
-argparser.add_argument('--nocolor', action='store_true',
-                       help='turn off all syntax highlighting')
+argparser.add_argument('--append-to', type=type=argparse.FileType('a'),
+                       default=sys.stdout,
+                       help='file to append to (optional)')
+argparser.add_argument('--verbose', action='store_true',
+                       help='print out events to stderr as they come in')
 args = argparser.parse_args()
 
-if args.nocolor:
-    formatter = formatters.get_formatter_by_name('null')
-    colorize = lambda color, string: string
-else:
-    formatter = formatters.get_formatter_by_name('256', style='rrt')
-    colorize = ansiformat
+formatter = formatters.get_formatter_by_name('256', style='rrt')
+colorize = ansiformat
 
 json_lexer = lexers.get_lexer_by_name('json')
 php_lexer = lexers.get_lexer_by_name('php', startinline=True)
@@ -139,28 +145,32 @@ def handle_event(environ, start_response):
     status, headers = prepare_response('204 No Content', headers)
     start_response(status, headers)
 
-    print(heading('request'))
-    print(log_line)
+    args.append_to.write(eventlogging.json.dumps(event) + "\n")
 
-    print(heading('event'))
-    json = eventlogging.json.dumps(event, indent=2, sort_keys=True)
-    print(highlight(json, json_lexer, formatter), end='')
+    if args.verbose:
+        print(heading('request'))
+        print(log_line)
 
-    print(heading('validation'))
-    for error in errors:
-        print(colorize('_red_', 'Error:'), error)
+        print(heading('event'))
+        pretty_json = eventlogging.json.dumps(event, indent=2, sort_keys=True)
+        print(highlight(pretty_json, json_lexer, formatter), end='')
 
-    if not errors:
-        print(colorize('_green_', 'Valid.'))
+        print(heading('validation'))
+        for error in errors:
+            print(colorize('_red_', 'Error:'), error)
 
-    print(heading())
+        if not errors:
+            print(colorize('_green_', 'Valid.'))
+
+        print(heading())
+
     return []
 
 
 httpd = make_server(args.host, args.port, handle_event,
                     handler_class=EventLoggingHandler)
 
-print('''
+sys.stderr.write('''
    ___                        _
   / (_)                    \_|_)                 o
   \__        _   _  _  _|_   |     __   __,  __,     _  _    __,
@@ -175,7 +185,7 @@ require_once( "$IP/extensions/EventLogging/EventLogging.php" );
 $wgEventLoggingBaseUri = 'http://%s:%s/event.gif';
 $wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
 
-# Listening to events.''' % (args.host, args.port), php_lexer, formatter))
+# Listening to events.\n''' % (args.host, args.port), php_lexer, formatter))
 
 try:
     httpd.serve_forever()
