@@ -59,7 +59,7 @@ class EventLogging {
 			$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
 		}
 
-		if ( !( $options & self::OMIT_USER_AGENT ) && isset( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
+		if ( !( $options & self::OMIT_USER_AGENT ) && !empty( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$encapsulated[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
 
