@@ -46,6 +46,11 @@ class EventLogging {
 			$isValid = false;
 		}
 
+		if ( count( $event ) === 0 ) {
+			// Ensure empty events are serialized as '{}' and not '[]'.
+			$event = (object)$event;
+		}
+
 		$encapsulated = array(
 			'event'            => $event,
 			'schema'           => $schemaName,
