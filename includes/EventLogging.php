@@ -46,11 +46,6 @@ class EventLogging {
 			$isValid = false;
 		}
 
-		if ( count( $event ) === 0 ) {
-			// Ensure empty events are serialized as '{}' and not '[]'.
-			$event = (object)$event;
-		}
-
 		$encapsulated = array(
 			'event'            => $event,
 			'schema'           => $schemaName,
@@ -68,13 +63,36 @@ class EventLogging {
 			$encapsulated[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
 
-		// To make the resultant JSON easily extracted from a row of
-		// space-separated values, we replace literal spaces with unicode
-		// escapes. This is permitted by the JSON specs.
-		$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulated ) );
+		$json = static::serializeEvent( $encapsulated );
 
 		wfErrorLog( $json . "\n", $wgEventLoggingFile );
 		wfProfileOut( __METHOD__ );
 		return true;
+	}
+
+	/**
+	 *
+	 * Converts the encapsulated event from an object to a string.
+	 *
+	 * @param array $encapsulatedEvent Encapsulated event
+	 * @return string $json
+	**/
+	static function serializeEvent($encapsulatedEvent) {
+
+		$event = $encapsulatedEvent['event'];
+
+		if ( count( $event ) === 0 ) {
+			// Ensure empty events are serialized as '{}' and not '[]'.
+			$event = (object)$event;
+		}
+
+		$encapsulatedEvent['event'] = $event;
+
+		// To make the resultant JSON easily extracted from a row of
+		// space-separated values, we replace literal spaces with unicode
+		// escapes. This is permitted by the JSON specs.
+		$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulatedEvent ) );
+
+		return $json;
 	}
 }

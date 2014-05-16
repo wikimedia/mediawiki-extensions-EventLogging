@@ -115,6 +115,24 @@ _event = {
     'uuid': 'babb66f34a0a5de3be0c6513088be33e'
 }
 
+# {} is preferred and PHP side of EL
+# should be translating empty events to {} but this is
+# to test that [] also works
+_incorrectly_serialized_empty_event = {
+    'event': [],
+    'seqId': 12345,
+    'clientIp': '127.0.0.1',
+    'timestamp': 1358791834912,
+    'isTruncated': False,
+    'wiki': 'enwiki',
+    'webHost': 'en.m.wikipedia.org',
+    'recvFrom': 'fenari',
+    'clientValidated': True,
+    'revision': 123,
+    'schema': 'TestSchema',
+    'uuid': 'babb66f34a0a5de3be0c6513088be33e'
+}
+
 
 class HttpRequestAttempted(RuntimeError):
     """Raised on attempt to retrieve a schema via HTTP."""
@@ -142,6 +160,8 @@ class SchemaTestMixin(object):
         """Stub `http_get_schema` and pre-fill schema cache."""
         super(SchemaTestMixin, self).setUp()
         self.event = copy.deepcopy(_event)
+        self.incorrectly_serialized_empty_event = copy.deepcopy(
+            _incorrectly_serialized_empty_event)
         eventlogging.schema.schema_cache = copy.deepcopy(_schemas)
         eventlogging.schema.http_get_schema = mock_http_get_schema
 

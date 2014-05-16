@@ -94,3 +94,7 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
         """capsule_uuid() generates a unique UUID for capsule objects."""
         self.assertEqual(eventlogging.capsule_uuid(self.event),
                          'babb66f34a0a5de3be0c6513088be33e')
+
+    def test_empty_event(self):
+        """An empty event with no mandatory properties should validate"""
+        self.assertIsValid(self.incorrectly_serialized_empty_event)
