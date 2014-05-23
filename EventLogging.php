@@ -90,11 +90,9 @@ $wgEventLoggingDBname = 'metawiki';
 
 /**
  * @var array: A map of event schema names to revision IDs.
- *
  * @example array: array( 'MultimediaViewerNetworkPerformance' => 7917896 );
  */
-$wgEventLoggingSchemas = array();
-
+$wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchemas : array();
 
 // Helpers
 
