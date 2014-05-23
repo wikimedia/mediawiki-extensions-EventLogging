@@ -2,7 +2,8 @@
 language: python
 python:
     - "2.7"
-    - "3.3"
+    - "3.2"
+    - "3.4"
 install:
     - pip install -q pyzmq --install-option="--zmq=bundled" --use-mirrors
     - pip install -q server/ --use-mirrors
@@ -11,6 +12,6 @@ script:
     - python setup.py test
 notifications:
     email: ori@wikimedia.org
-    irc: "irc.freenode.org#wikimedia-e3"
+    irc: "irc.freenode.org#wikimedia-analytics"
     on_success: change
     on_failure: change
