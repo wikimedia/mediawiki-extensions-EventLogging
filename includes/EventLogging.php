@@ -11,7 +11,7 @@
 
 class EventLogging {
 
-	/** @var const Flag indicating the user-agent should not be logged. **/
+	/** @var int flag indicating the user-agent should not be logged. **/
 	const OMIT_USER_AGENT = 2;
 
 	/**
