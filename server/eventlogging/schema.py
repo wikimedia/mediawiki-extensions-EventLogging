@@ -76,5 +76,4 @@ def validate(capsule):
         raise jsonschema.ValidationError(
             'Invalid revision ID: %(revision)s' % capsule)
     schema = get_schema(scid, encapsulate=True)
-    jsonschema.Draft3Validator.check_schema(schema)
     jsonschema.Draft3Validator(schema).validate(capsule)
