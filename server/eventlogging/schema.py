@@ -28,9 +28,6 @@ SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&revid=%s'
 #: Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}
 
-#: Mapping of SCIDs to cached :class:`jsonschema.Draft3Validator` objects.
-validator_cache = {}
-
 #: SCID of the metadata object which wraps each event.
 CAPSULE_SCID = ('EventCapsule', 8326736)
 
@@ -64,16 +61,6 @@ def http_get_schema(scid):
     return schema
 
 
-def get_validator(scid):
-    """Get a :class:`jsonschema.Draft3Validator` object for a SCID."""
-    validator = validator_cache.get(scid)
-    if validator is None:
-        schema = get_schema(scid, True)
-        validator = jsonschema.Draft3Validator(schema)
-        validator_cache[scid] = validator
-    return validator
-
-
 def validate(capsule):
     """Validates an encapsulated event.
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
@@ -88,5 +75,5 @@ def validate(capsule):
     if capsule['revision'] < 1:
         raise jsonschema.ValidationError(
             'Invalid revision ID: %(revision)s' % capsule)
-    validator = get_validator(scid)
-    validator.validate(capsule)
+    schema = get_schema(scid, encapsulate=True)
+    jsonschema.Draft3Validator(schema).validate(capsule)
