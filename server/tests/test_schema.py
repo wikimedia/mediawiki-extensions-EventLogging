@@ -78,7 +78,9 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     def test_schema_retrieval(self):
         """Schemas missing from the cache are retrieved via HTTP."""
         # Pop the schema from the cache.
-        eventlogging.schema.schema_cache.pop(TEST_SCHEMA_SCID)
+        for cache in (eventlogging.schema.schema_cache,
+                      eventlogging.schema.validator_cache):
+            cache.clear()
         with self.assertRaises(HttpRequestAttempted) as context:
             eventlogging.validate(self.event)
             self.assertEqual(context.exception.rev_id, 123)
