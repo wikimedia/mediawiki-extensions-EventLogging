@@ -32,9 +32,12 @@
 # pylint: disable=E0611
 from __future__ import print_function, unicode_literals
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import argparse
 import itertools
-import sys
 
 from wsgiref.simple_server import make_server, WSGIRequestHandler
 

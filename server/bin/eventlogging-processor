@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -OO
 # -*- coding: utf8 -*-
 """
   eventlogging-stream-processor
@@ -30,9 +30,12 @@
 """
 from __future__ import unicode_literals
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 import argparse
 import logging
-import sys
 
 import jsonschema
 import zmq
@@ -60,7 +63,7 @@ for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
         event = parser.parse(raw_event)
         validate(event)
         event['uuid'] = capsule_uuid(event)
-    except Exception:
-        logging.exception('Unable to decode: %s', raw_event)
+    except Exception as e:
+        logging.error('Unable to decode: %s (%s)', raw_event, e)
     else:
         pub.send_unicode(json.dumps(event) + '\n')
