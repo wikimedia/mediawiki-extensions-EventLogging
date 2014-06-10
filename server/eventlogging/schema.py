@@ -68,8 +68,8 @@ def validate(capsule):
     try:
         scid = capsule['schema'], capsule['revision']
     except KeyError as ex:
-        # If `schema`, `revision` or `event` keys are missing, a
-        # KeyError exception will be raised. We re-raise it as a
+        # If `schema` or `revision` keys are missing, a KeyError
+        # exception will be raised. We re-raise it as a
         # :exc:`ValidationError` to provide a simpler API for callers.
         raise jsonschema.ValidationError('Missing key: %s' % ex)
     if capsule['revision'] < 1:
