@@ -12,10 +12,12 @@
 from __future__ import unicode_literals
 
 import jsonschema
+import logging
 
 from .compat import json, http_get
 
-__all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
+__all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT',
+           'post_validation_fixups', 'validate')
 
 
 #: URL of index.php on the schema wiki (same as
@@ -61,6 +63,80 @@ def http_get_schema(scid):
     return schema
 
 
+def delete_if_exists_and_length_mismatches(capsule, field, expected_length):
+    """Remove the field from the capsule's event, if it exists and
+    does not have a length of expected_length.
+
+    Relies on capsule being valid.
+    """
+    try:
+        value = capsule['event'][field]
+        actual_length = len(value)
+        if actual_length != expected_length:
+            del capsule['event'][field]
+            logging.error(
+                'Post validation fixup: {0}_{1}, removing field {2} '
+                'because length is {3} instead of {4}'.format(
+                    capsule['schema'],
+                    capsule['revision'],
+                    field,
+                    actual_length,
+                    expected_length
+                )
+            )
+    except KeyError:
+        # capsule['event'][event_field] does not exist
+        # That's ok. Nothing to fixup.
+        pass
+
+
+def post_validation_fixups(capsule):
+    """Clean known harmfull or semantically wrong data from validated
+    capsules.
+
+    This function never turns a valid capsule into an invalid one.
+    """
+    # Add checks only sparingly to this function.
+    #
+    # Do not use this function to implement more thorough checking of
+    # existing schemas. Refine the schemas to achieve that, and refine
+    # the client code to send the proper values.
+    #
+    # Instead, use this function only to clean up a few fields that
+    # are known to be harmful and (after cleaning up client code) are
+    # still arriving in the EventLogging pipeline, but do not warrant
+    # throwing away the whole event.
+
+    # As the capsule is required to be valid, schema and revision keys
+    # have to exist.
+    schema = capsule['schema']
+
+    if schema == 'MultimediaViewerDuration':
+        if capsule['revision'] == [8318615, 8572641]:
+            # Cleanup against session cookies leaking in.
+            # See bug #66478
+            #
+            # TODO: Please check after 2014-09-13, and remove if
+            # clients stopped sending sessionId.
+            delete_if_exists_and_length_mismatches(capsule, 'originCountry', 2)
+    elif schema == 'MultimediaViewerNetworkPerformance':
+        if capsule['revision'] == 7917896:
+            # Cleanup against session cookies leaking in.
+            # See bug #66478
+            #
+            # TODO: Please check after 2014-09-13, and remove if
+            # clients stopped sending sessionId.
+            delete_if_exists_and_length_mismatches(capsule, 'country', 2)
+    elif schema == 'NavigationTiming':
+        if capsule['revision'] in [7494934, 8365252]:
+            # Cleanup against session cookies leaking in.
+            # See bug #66478
+            #
+            # TODO: Please check after 2014-09-13, and remove if
+            # clients stopped sending sessionId.
+            delete_if_exists_and_length_mismatches(capsule, 'country', 2)
+
+
 def validate(capsule):
     """Validates an encapsulated event.
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
@@ -77,3 +153,4 @@ def validate(capsule):
             'Invalid revision ID: %(revision)s' % capsule)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.Draft3Validator(schema).validate(capsule)
+    post_validation_fixups(capsule)

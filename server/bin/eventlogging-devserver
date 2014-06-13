@@ -129,7 +129,10 @@ def validate(log_line):
         return event, [err]
 
     validator = jsonschema.Draft3Validator(schema)
-    return event, list(validator.iter_errors(event))
+    validation_errors = list(validator.iter_errors(event))
+    if not validation_errors:
+        eventlogging.post_validation_fixups(event)
+    return event, validation_errors
 
 
 def handle_event(environ, start_response):
