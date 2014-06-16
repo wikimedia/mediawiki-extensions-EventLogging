@@ -118,7 +118,7 @@ def post_validation_fixups(capsule):
             #
             # TODO: Please check after 2014-09-13, and remove if
             # clients stopped sending sessionId.
-            delete_if_exists_and_length_mismatches(capsule, 'originCountry', 2)
+            delete_if_exists_and_length_mismatches(capsule, 'country', 2)
     elif schema == 'MultimediaViewerNetworkPerformance':
         if capsule['revision'] == 7917896:
             # Cleanup against session cookies leaking in.
@@ -134,7 +134,7 @@ def post_validation_fixups(capsule):
             #
             # TODO: Please check after 2014-09-13, and remove if
             # clients stopped sending sessionId.
-            delete_if_exists_and_length_mismatches(capsule, 'country', 2)
+            delete_if_exists_and_length_mismatches(capsule, 'originCountry', 2)
 
 
 def validate(capsule):
