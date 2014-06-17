@@ -112,7 +112,7 @@ def post_validation_fixups(capsule):
     schema = capsule['schema']
 
     if schema == 'MultimediaViewerDuration':
-        if capsule['revision'] == [8318615, 8572641]:
+        if capsule['revision'] in [8318615, 8572641]:
             # Cleanup against session cookies leaking in.
             # See bug #66478
             #
