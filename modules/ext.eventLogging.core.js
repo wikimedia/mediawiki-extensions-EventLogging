@@ -176,7 +176,7 @@
 
 				if ( desc[ 'enum' ] && $.inArray( val, desc[ 'enum' ] ) === -1 ) {
 					throw new ValidationError( 'Value "' + val + '" for property: ' + prop +
-						' not in enum ' + $.toJSON( desc[ 'enum' ] ) );
+						' not in enum ' + JSON.stringify( desc[ 'enum' ] ) );
 				}
 			} );
 
@@ -266,7 +266,7 @@
 				deferred.resolveWith( data, [ data ] );
 			} );
 
-			beacon.src = baseUri + '?' + encodeURIComponent( $.toJSON( data ) ) + ';';
+			beacon.src = baseUri + '?' + encodeURIComponent( JSON.stringify( data ) ) + ';';
 			return deferred.promise();
 		},
 

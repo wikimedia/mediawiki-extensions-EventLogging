@@ -178,11 +178,11 @@
 		QUnit.test( type, asserts, function ( assert ) {
 			$.each( cases.valid, function ( index, value ) {
 				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), true,
-					$.toJSON( value ) + ' is a ' + type );
+					JSON.stringify( value ) + ' is a ' + type );
 			} );
 			$.each( cases.invalid, function ( index, value ) {
 				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), false,
-					$.toJSON( value ) + ' is not a ' + type );
+					JSON.stringify( value ) + ' is not a ' + type );
 			} );
 		} );
 	} );
