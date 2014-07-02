@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Yfdyh000",
-			"Mywood"
+			"Mywood",
+			"Impersonator 1"
 		]
 	},
 	"eventlogging-desc": "从客户端代码记录事件日志的框架",
