@@ -74,7 +74,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 */
 	function testGetHighlightHtml() {
 		$evil = new JsonSchemaContent( self::EVIL_JSON );
-		$html = $evil->getHighlightHtml();
+		$html = $evil->getHtml();
 		$this->assertContains( '&lt;script&gt;', $html, 'HTML output should be escaped' );
 	}
 }

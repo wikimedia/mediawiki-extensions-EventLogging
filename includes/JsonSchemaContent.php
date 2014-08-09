@@ -13,7 +13,7 @@
 /**
  * Represents the content of a JSON Schema article.
  */
-class JsonSchemaContent extends TextContent {
+class JsonSchemaContent extends JSONContent {
 
 	const DEFAULT_RECURSION_LIMIT = 3;
 
@@ -51,14 +51,6 @@ class JsonSchemaContent extends TextContent {
 	}
 
 	/**
-	 * Decodes the JSON schema into a PHP associative array.
-	 * @return array: Schema array.
-	 */
-	function getJsonData() {
-		return FormatJson::decode( $this->getNativeData(), true );
-	}
-
-	/**
 	 * @throws JsonSchemaException: If invalid.
 	 * @return bool: True if valid.
 	 */
@@ -75,49 +67,23 @@ class JsonSchemaContent extends TextContent {
 	 */
 	function isValid() {
 		try {
-			return $this->validate();
+			return parent::isValid() && $this->validate();
 		} catch ( JsonSchemaException $e ) {
 			return false;
 		}
 	}
 
 	/**
-	 * Beautifies JSON prior to save.
-	 * @param Title $title Title
-	 * @param User $user User
-	 * @param ParserOptions $popts
-	 * @return JsonSchemaContent
-	 */
-	function preSaveTransform( Title $title, User $user, ParserOptions $popts ) {
-		return new JsonSchemaContent( efBeautifyJson( $this->getNativeData() ) );
-	}
-
-	/**
-	 * Constructs an HTML representation of a JSON object.
-	 * @param Array $mapping
-	 * @return string: HTML.
-	 */
-	static function objectTable( $mapping ) {
-		$rows = array();
-
-		foreach ( $mapping as $key => $val ) {
-			$rows[] = self::objectRow( $key, $val );
-		}
-		return Xml::tags( 'table', array( 'class' => 'mw-json-schema' ),
-			Xml::tags( 'tbody', array(), join( "\n", $rows ) )
-		);
-	}
-
-	/**
 	 * Constructs HTML representation of a single key-value pair.
+	 * Override this to support $ref
 	 * @param string $key
 	 * @param mixed $val
 	 * @return string: HTML.
 	 */
-	static function objectRow( $key, $val ) {
+	public function objectRow( $key, $val ) {
 		$th = Xml::elementClean( 'th', array(), $key );
 		if ( is_array( $val ) ) {
-			$td = Xml::tags( 'td', array(), self::objectTable( $val ) );
+			$td = Xml::tags( 'td', array(), $this->objectTable( $val ) );
 		} elseif ( $key === '$ref' ) {
 			list( , $revId ) = explode( '/', $val );
 			$title = Revision::newFromId( $revId )->getTitle();
@@ -210,7 +176,7 @@ class JsonSchemaContent extends TextContent {
 	 * Generates HTML representation of content.
 	 * @return string: HTML representation.
 	 */
-	function getHighlightHtml() {
+	function getHtml() {
 		$schema = $this->getJsonData();
 		return is_array( $schema ) ? self::objectTable( $schema ) : '';
 	}
