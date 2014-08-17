@@ -21,7 +21,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	/** @var RemoteSchema */
 	private $schema;
 
-	var $statusSchema = array( 'status' => array( 'type' => 'string' ) );
+	public $statusSchema = array( 'status' => array( 'type' => 'string' ) );
 
 	function setUp() {
 		parent::setUp();

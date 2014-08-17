@@ -17,7 +17,7 @@
 class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 
 	/** @var RemoteSchema $schema **/
-	var $schema;
+	public $schema;
 
 
 	/**

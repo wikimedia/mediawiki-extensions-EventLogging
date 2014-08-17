@@ -8,12 +8,12 @@ class RemoteSchema {
 
 	const LOCK_TIMEOUT = 20;
 
-	var $cache;
-	var $http;
-	var $key;
-	var $revision;
-	var $title;
-	var $content = false;
+	public $cache;
+	public $http;
+	public $key;
+	public $revision;
+	public $title;
+	public $content = false;
 
 
 	/**
