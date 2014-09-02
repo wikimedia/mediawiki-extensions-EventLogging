@@ -15,5 +15,7 @@ class JsonSchemaContentHandler extends JSONContentHandler {
 		parent::__construct( $modelId, array( CONTENT_FORMAT_JSON ) );
 	}
 
-	protected $contentClass = 'JsonSchemaContent';
+	protected function getContentClass() {
+		return 'JsonSchemaContent';
+	}
 }
