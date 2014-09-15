@@ -13,7 +13,7 @@
 /**
  * Represents the content of a JSON Schema article.
  */
-class JsonSchemaContent extends JSONContent {
+class JsonSchemaContent extends JsonContent {
 
 	const DEFAULT_RECURSION_LIMIT = 3;
 
@@ -24,6 +24,7 @@ class JsonSchemaContent extends JSONContent {
 	/**
 	 * Resolve a JSON reference to a schema.
 	 * @param string $ref Schema reference with format 'Title/Revision'.
+	 * @return array|bool
 	 */
 	static function resolve( $ref ) {
 		list( $title, $revId ) = explode( '/', $ref );

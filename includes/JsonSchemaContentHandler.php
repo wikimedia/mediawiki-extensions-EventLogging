@@ -9,7 +9,7 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-class JsonSchemaContentHandler extends JSONContentHandler {
+class JsonSchemaContentHandler extends JsonContentHandler {
 
 	public function __construct( $modelId = 'JsonSchema' ) {
 		parent::__construct( $modelId, array( CONTENT_FORMAT_JSON ) );
