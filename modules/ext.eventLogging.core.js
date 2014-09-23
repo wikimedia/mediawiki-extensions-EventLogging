@@ -241,10 +241,29 @@
 			};
 		},
 
+		/**
+		 * Constructs the EventLogging URI based on the base URI and the
+		 * encoded and stringified data.
+		 *
+		 * @method getEventLoggingUri
+		 * @param {Object} data Payload to send
+		 * @return {String|Boolean} The URI to log the event.
+		 *  false if the baseUri doesn't exist.
+		 */
+		getEventLoggingUri: function ( data ) {
+			var baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
+			if ( !baseUri ) {
+				return false;
+			} else {
+				return baseUri + '?' + encodeURIComponent( JSON.stringify( data ) ) + ';';
+			}
+		},
 
 		/**
 		 * Encodes a JavaScript object as percent-encoded JSON and
-		 * pushes it to the server using a GET request.
+		 * pushes it to the server using a GET request. This request
+		 * is sent by requesting an image with the source as the
+		 * required EventLogging URI.
 		 *
 		 * @method dispatch
 		 * @param {Object} data Payload to send.
@@ -252,10 +271,10 @@
 		 */
 		dispatch: function ( data ) {
 			var beacon = document.createElement( 'img' ),
-				baseUri = mw.config.get( 'wgEventLoggingBaseUri' ),
+				uri = self.getEventLoggingUri( data ),
 				deferred = $.Deferred();
 
-			if ( !baseUri ) {
+			if ( !uri ) {
 				deferred.rejectWith( data, [ data ] );
 				return deferred.promise();
 			}
@@ -266,10 +285,50 @@
 				deferred.resolveWith( data, [ data ] );
 			} );
 
-			beacon.src = baseUri + '?' + encodeURIComponent( JSON.stringify( data ) ) + ';';
+			beacon.src = uri;
 			return deferred.promise();
 		},
 
+		/*
+		 * Asynchronously initiate logging for event data. The method returns a
+		 * promise that indicates whether the method successfully queued the data.
+		 * Even if it is queued for delivery, there is no guarantee it will ever be
+		 * delivered. Currently, the only backend is sendBeacon, so if that is not
+		 * available, the promise will be rejected.
+		 * NOTE: This is an experimental method.
+		 *
+		 * @method logPersistentEvent
+		 * @experimental
+		 * @param {String} schemaName Canonical schema name.
+		 * @param {Object} eventInstance Event instance.
+		 * @return {jQuery.Promise} jQuery Promise object for the logging call. The promise would
+		 *  have been resolved or rejected before the function returns. The first argument passed
+		 *  to the callback is the data itself and the second one is a string with the status.
+		 *  Even when the deferred is resolved it only means that the data has been queued to be sent.
+		 */
+		logPersistentEvent: function ( schemaName, eventInstance ) {
+			var data = self.prepare( schemaName, eventInstance ),
+				uri = self.getEventLoggingUri( data ),
+				deferred = $.Deferred();
+
+			if ( !uri ) {
+				deferred.rejectWith( data, [ data, 'no-base-uri' ] );
+				return deferred.promise();
+			}
+
+			if ( navigator.sendBeacon === undefined ) {
+				deferred.rejectWith( data, [ data, 'no-browser-support' ] );
+				return deferred.promise();
+			}
+
+			if ( navigator.sendBeacon( uri ) ) {
+				deferred.resolveWith( data, [ data, 'queued' ] );
+			} else {
+				deferred.rejectWith( data, [ data, 'could-not-queue' ]  );
+			}
+
+			return deferred.promise();
+		},
 
 		/**
 		 * Construct and transmit to a remote server a record of some event
