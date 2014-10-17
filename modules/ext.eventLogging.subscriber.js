@@ -31,7 +31,7 @@
 	 * @param {Object} event
 	 */
 	function handleTrackedEvent( topic, event ) {
-		var schema = titleCase( topic.slice( topic.indexOf( '.' ) ) ),
+		var schema = titleCase( topic.slice( topic.indexOf( '.' ) + 1 ) ),
 			dependencies = [ 'ext.eventLogging', 'schema.' + schema ];
 
 		mediaWiki.loader.using( dependencies, function () {
@@ -40,7 +40,7 @@
 	}
 
 	$( window ).on( 'load', function () {
-		mw.trackSubscribe( 'event', handleTrackedEvent );
+		mw.trackSubscribe( 'event.', handleTrackedEvent );
 	} );
 
 } ( mediaWiki, jQuery ) );
