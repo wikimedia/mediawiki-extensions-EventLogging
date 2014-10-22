@@ -84,7 +84,7 @@ COLUMN_DEFAULTS = {'type_': sqlalchemy.Unicode(STRING_MAX_LEN)}
 mappers = collections.OrderedDict((
     ('type', {
         'boolean': {'type_': sqlalchemy.Boolean},
-        'integer': {'type_': sqlalchemy.Integer},
+        'integer': {'type_': sqlalchemy.BigInteger},
         'number': {'type_': sqlalchemy.Float},
         'string': {'type_': sqlalchemy.Unicode(STRING_MAX_LEN)},
     }),
