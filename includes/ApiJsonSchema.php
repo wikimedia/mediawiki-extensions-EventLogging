@@ -43,6 +43,9 @@ class ApiJsonSchema extends ApiBase {
 		);
 	}
 
+	/**
+	 * @deprecated since MediaWiki core 1.25
+	 */
 	public function getParamDescription() {
 		return array(
 			'revid' => 'Schema revision ID',
@@ -50,12 +53,28 @@ class ApiJsonSchema extends ApiBase {
 		);
 	}
 
+	/**
+	 * @deprecated since MediaWiki core 1.25
+	 */
 	public function getDescription() {
 		return 'Retrieve a JSON Schema page';
 	}
 
+	/**
+	 * @deprecated since MediaWiki core 1.25
+	 */
 	public function getExamples() {
 		return array( 'api.php?action=jsonschema&revid=1234'  => 'Retrieve schema for revision 1234' );
+	}
+
+	/**
+	 * @see ApiBase::getExamplesMessages()
+	 */
+	protected function getExamplesMessages() {
+		return array(
+			'action=jsonschema&revid=1234'
+				=> 'apihelp-jsonschema-example-1',
+		);
 	}
 
 	/**
