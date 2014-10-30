@@ -13,7 +13,7 @@ import unittest
 
 import eventlogging
 import sqlalchemy
-
+from sqlalchemy.sql import select
 from .fixtures import DatabaseTestMixin, TEST_SCHEMA_SCID
 
 
@@ -24,8 +24,15 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         """If an attempt is made to store an event for which no table
         exists, the schema is automatically retrieved and a suitable
         table generated."""
-        eventlogging.store_sql_event(self.meta, self.event)
+        eventlogging.store_sql_events(self.meta, [self.event])
         self.assertIn('TestSchema_123', self.meta.tables)
+        table = self.meta.tables['TestSchema_123']
+        # is the table on the db  and does it have the right data?
+        s = select([table])
+        results = self.engine.execute(s)
+        row = results.fetchone()
+        # see columns with print table.c
+        self.assertEquals(row['clientIp'], self.event['clientIp'])
 
     def test_column_names(self):
         """Generated tables contain columns for each relevant field."""
@@ -51,7 +58,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
     def test_encoding(self):
         """Timestamps and unicode strings are correctly encoded."""
-        eventlogging.jrm.store_sql_event(self.meta, self.event)
+        eventlogging.jrm.store_sql_events(self.meta, [self.event])
         table = eventlogging.jrm.get_table(self.meta, TEST_SCHEMA_SCID)
         row = table.select().execute().fetchone()
         self.assertEqual(row['event_value'], '☆ 彡')
@@ -64,7 +71,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
     def test_reflection(self):
         """Tables which exist in the database but not in the MetaData cache are
         correctly reflected."""
-        eventlogging.store_sql_event(self.meta, self.event)
+        eventlogging.store_sql_events(self.meta, [self.event])
 
         # Tell Python to forget everything it knows about this database
         # by purging ``MetaData``. The actual data in the database is
@@ -79,5 +86,43 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # The ``checkfirst`` arg to :func:`sqlalchemy.Table.create`
         # will ensure that we don't attempt to CREATE TABLE on the
         # already-existing table:
-        eventlogging.store_sql_event(self.meta, self.event, True)
+        eventlogging.store_sql_events(self.meta, [self.event], True)
         self.assertIn('TestSchema_123', self.meta.tables)
+
+    def test_happy_case_insert_more_than_one_event(self):
+        """Insert more than one event on database using batch_write"""
+        another_event = next(self.event_generator)
+        event_list = [another_event, self.event]
+        eventlogging.store_sql_events(self.meta, event_list)
+        table = self.meta.tables['TestSchema_123']
+        # is the table on the db  and does it have the right data?
+        s = select([table])
+        results = self.engine.execute(s)
+        # the number of records in table must be the list size
+        rows = results.fetchall()
+        self.assertEquals(len(rows), 2)
+
+    def test_insertion_of_multiple_events_with_a_duplicate(self):
+        """"If an insert with multiple events includes
+        a duplicate and replace=True we have to
+        insert the other items.
+        """
+        # insert event
+        eventlogging.jrm.store_sql_events(self.meta, [self.event])
+        # now try to insert list of events in which this event is included
+        another_event = next(self.event_generator)
+        event_list = [another_event, self.event]
+        eventlogging.store_sql_events(self.meta, event_list, replace=True)
+
+        # we should still have to insert the other record though
+        table = self.meta.tables['TestSchema_123']
+        s = select([table])
+        results = self.engine.execute(s)
+        rows = results.fetchall()
+        self.assertEquals(len(rows), 2)
+
+    def test_event_queue_is_empty(self):
+        """An empty event queue is handled well
+        No exception is raised"""
+        event_list = []
+        eventlogging.store_sql_events(self.meta, event_list)

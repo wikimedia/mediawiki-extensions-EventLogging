@@ -11,14 +11,16 @@ from __future__ import division, unicode_literals
 
 import collections
 import datetime
+import itertools
 
 import sqlalchemy
 
-from .schema import get_schema
+from .schema import get_schema, get_scid
 from .compat import items
 
 
-__all__ = ('store_sql_event',)
+__all__ = ('store_sql_events',)
+
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
 #: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
@@ -164,21 +166,48 @@ def declare_table(meta, scid):
     return table
 
 
-def store_sql_event(meta, event, ignore_dupes=False):
-    """Store an event in the database."""
-    scid = (event['schema'], event['revision'])
-    table = get_table(meta, scid)
-    event = flatten(event)
-    event = {k: v for k, v in items(event) if k not in NO_DB_PROPERTIES}
-    insert = table.insert(values=event)
+def _insert_sequential(table, events, replace=False):
+    """Insert events into the database by issuing an INSERT for each one."""
+    for event in events:
+        insert = table.insert(values=event)
+        try:
+            insert.execute()
+        except sqlalchemy.exc.IntegrityError as e:
+            if not replace or 'unique' not in str(e).lower():
+                raise
+        except sqlalchemy.exc.ProgrammingError:
+            table.create()
+            insert.execute()
+
+
+def _insert_multi(table, events, replace=False):
+    """Insert events into the database using a single INSERT."""
+    insert = table.insert(values=events)
+    if replace:
+        insert = (insert
+                  .prefix_with('IGNORE', dialect='mysql')
+                  .prefix_with('OR REPLACE', dialect='sqlite'))
     try:
         insert.execute()
-    except sqlalchemy.exc.IntegrityError as e:
-        if not ignore_dupes or 'unique' not in str(e).lower():
-            raise
-    except sqlalchemy.exc.ProgrammingError:
-        table.create()
+    except sqlalchemy.exc.SQLAlchemyError:
+        table.create(checkfirst=True)
         insert.execute()
+
+
+def store_sql_events(meta, events, replace=False):
+    """Store events in the database."""
+    queue = [events.pop() for _ in range(len(events))]
+    queue.sort(key=get_scid)
+
+    if meta.bind.dialect.supports_multivalues_insert:
+        insert = _insert_multi
+    else:
+        insert = _insert_sequential
+
+    for scid, events in itertools.groupby(queue, get_scid):
+        prepared_events = [prepare(event) for event in events]
+        table = get_table(meta, scid)
+        insert(table, prepared_events, replace)
 
 
 def _property_getter(item):
@@ -191,6 +220,14 @@ def _property_getter(item):
         elif 'type' in val:
             val = typecast(val)
     return key, val
+
+
+def prepare(event):
+    """Prepare an event for insertion into the database."""
+    event = flatten(event)
+    for prop in NO_DB_PROPERTIES:
+        event.pop(prop, None)
+    return event
 
 
 def flatten(d, sep='_', f=None):

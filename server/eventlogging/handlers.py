@@ -10,6 +10,7 @@
   :func:`eventlogging.drive` pumps data through a reader-writer pair.
 
 """
+import collections
 import datetime
 import glob
 import imp
@@ -22,9 +23,10 @@ import sys
 
 import sqlalchemy
 
+from .utils import PeriodicThread
 from .factory import writes, reads
 from .streams import stream, pub_socket, sub_socket, udp_socket
-from .jrm import store_sql_event
+from .jrm import store_sql_events
 
 
 __all__ = ('load_plugins',)
@@ -86,8 +88,14 @@ def sql_writer(uri):
     engine = sqlalchemy.create_engine(uri)
     meta = sqlalchemy.MetaData(bind=engine)
 
+    events = collections.deque()
+    worker = PeriodicThread(
+        interval=2, target=store_sql_events, args=(meta, events))
+    worker.start()
+
     while 1:
-        store_sql_event(meta, (yield))
+        event = (yield)
+        events.append(event)
 
 
 @writes('file')
