@@ -199,7 +199,8 @@ def store_sql_events(meta, events, replace=False):
     queue = [events.pop() for _ in range(len(events))]
     queue.sort(key=get_scid)
 
-    if meta.bind.dialect.supports_multivalues_insert:
+    if (getattr(meta.bind.dialect, 'supports_multivalues_insert', False)
+            or getattr(meta.bind.dialect, 'supports_multirow_insert', False)):
         insert = _insert_multi
     else:
         insert = _insert_sequential
