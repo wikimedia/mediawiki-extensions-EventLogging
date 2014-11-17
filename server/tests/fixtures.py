@@ -152,6 +152,14 @@ def mock_http_get_schema(scid):
     raise HttpRequestAttempted('Attempted HTTP fetch: %s' % (scid,))
 
 
+def _get_event():
+    """ Creates events on demand with unique ids"""
+    for i in range(1, 100):
+        event = copy.deepcopy(_event)
+        event['uuid'] = i
+        yield event
+
+
 class SchemaTestMixin(object):
     """A :class:`unittest.TestCase` mix-in for test cases that depend on
     schema look-ups."""
@@ -164,6 +172,7 @@ class SchemaTestMixin(object):
             _incorrectly_serialized_empty_event)
         eventlogging.schema.schema_cache = copy.deepcopy(_schemas)
         eventlogging.schema.http_get_schema = mock_http_get_schema
+        self.event_generator = _get_event()
 
     def tearDown(self):
         """Clear schema cache and restore stubbed `http_get_schema`."""
@@ -189,7 +198,7 @@ class DatabaseTestMixin(SchemaTestMixin):
         """Configure :class:`sqlalchemy.engine.Engine` and
         :class:`sqlalchemy.schema.MetaData` objects."""
         super(DatabaseTestMixin, self).setUp()
-        self.engine = sqlalchemy.create_engine('sqlite://', echo=True)
+        self.engine = sqlalchemy.create_engine('sqlite://', echo=False)
         self.meta = sqlalchemy.MetaData(bind=self.engine)
 
     def tearDown(self):

@@ -2,7 +2,6 @@
 language: python
 python:
     - "2.7"
-    - "3.2"
     - "3.4"
 install:
     - pip install -q pyzmq --install-option="--zmq=bundled" --use-mirrors
