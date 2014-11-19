@@ -7,6 +7,8 @@
   a particular function.
 
 """
+from __future__ import unicode_literals
+
 import threading
 
 
@@ -22,7 +24,7 @@ class PeriodicThread(threading.Thread):
         super(PeriodicThread, self).__init__(*args, **kwargs)
 
     def run(self):
-        self.ready.clear()
-        self.ready.wait(self.interval)
-        self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
-        self.run()
+        while 1:
+            self.ready.clear()
+            self.ready.wait(self.interval)
+            self._Thread__target(*self._Thread__args, **self._Thread__kwargs)

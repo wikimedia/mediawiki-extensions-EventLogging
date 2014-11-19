@@ -13,6 +13,7 @@ import unittest
 
 import eventlogging
 import sqlalchemy
+import itertools
 from sqlalchemy.sql import select
 from .fixtures import DatabaseTestMixin, TEST_SCHEMA_SCID
 
@@ -126,3 +127,58 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         No exception is raised"""
         event_list = []
         eventlogging.store_sql_events(self.meta, event_list)
+
+    def test_grouping_of_events_happy_case(self):
+        """Events belonging to the same schema with the same
+        set of fields are gropued together """
+        another_event = next(self.event_generator)
+
+        event_list = [another_event, self.event]
+
+        queue = [eventlogging.flatten(event_list.pop())
+                 for _ in range(len(event_list))]
+        queue.sort(key=eventlogging.key_func)
+
+        uniquekeys = []
+        for k, events in itertools.groupby(queue, eventlogging.key_func):
+            uniquekeys.append(k)
+        # we should have stored one key as events can be batched together
+        self.assertEquals(len(uniquekeys), 1)
+
+    def test_grouping_of_events_separately(self):
+        """Events belonging to the same schema with a different
+        set of optional fields are grouped separately
+        This might introspect the code too much, but
+        how else can we test?"""
+        another_event = next(self.event_generator)
+        # clientValidated is an optional field, remove it
+        del another_event['clientValidated']
+
+        event_list = [another_event, self.event]
+
+        queue = [eventlogging.flatten(event_list.pop())
+                 for _ in range(len(event_list))]
+        queue.sort(key=eventlogging.key_func)
+
+        uniquekeys = []
+        for k, events in itertools.groupby(queue, eventlogging.key_func):
+            uniquekeys.append(k)
+        # we should have stored two keys as events cannot be grouped together
+        self.assertEquals(len(uniquekeys), 2)
+
+    def test_insert_events_with_different_set_of_optional_fields(self):
+        """Events belonging to the same schema with a different
+        set of optional fields are inserted correctly"""
+        another_event = next(self.event_generator)
+        # clientValidated is an optional field, remove it
+        del another_event['clientValidated']
+        # ensure both events get inserted?
+        event_list = [another_event, self.event]
+        eventlogging.store_sql_events(self.meta, event_list)
+        table = self.meta.tables['TestSchema_123']
+        # is the table on the db  and does it have the right data?
+        s = select([table])
+        results = self.engine.execute(s)
+        # the number of records in table must be the list size
+        rows = results.fetchall()
+        self.assertEquals(len(rows), 2)

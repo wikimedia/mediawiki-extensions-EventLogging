@@ -15,11 +15,11 @@ import itertools
 
 import sqlalchemy
 
-from .schema import get_schema, get_scid
+from .schema import get_schema
 from .compat import items
 
 
-__all__ = ('store_sql_events',)
+__all__ = ('store_sql_events', 'flatten', 'key_func')
 
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
@@ -194,10 +194,20 @@ def _insert_multi(table, events, replace=False):
         insert.execute()
 
 
+def key_func(event):
+    """Sort / group function that batches events that share the same
+    SCID and set of fields. We need to group together events that
+    belong to the same schema AND that have the same set of fields.
+    Please note that schemas allow for optional fields that might/might
+    not have been included in the event.
+    """
+    return (event['schema'], event['revision']), tuple(sorted(event))
+
+
 def store_sql_events(meta, events, replace=False):
     """Store events in the database."""
-    queue = [events.pop() for _ in range(len(events))]
-    queue.sort(key=get_scid)
+    queue = [flatten(events.pop()) for _ in range(len(events))]
+    queue.sort(key=key_func)
 
     if (getattr(meta.bind.dialect, 'supports_multivalues_insert', False)
             or getattr(meta.bind.dialect, 'supports_multirow_insert', False)):
@@ -205,7 +215,7 @@ def store_sql_events(meta, events, replace=False):
     else:
         insert = _insert_sequential
 
-    for scid, events in itertools.groupby(queue, get_scid):
+    for (scid, _), events in itertools.groupby(queue, key_func):
         prepared_events = [prepare(event) for event in events]
         table = get_table(meta, scid)
         insert(table, prepared_events, replace)
@@ -225,7 +235,6 @@ def _property_getter(item):
 
 def prepare(event):
     """Prepare an event for insertion into the database."""
-    event = flatten(event)
     for prop in NO_DB_PROPERTIES:
         event.pop(prop, None)
     return event

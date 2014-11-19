@@ -93,7 +93,11 @@ def sql_writer(uri):
         interval=2, target=store_sql_events, args=(meta, events))
     worker.start()
 
-    while 1:
+    # is_alive will be false if an exception
+    # was thrown on the worker thread
+    # main process will exit and will be re-started
+    # by upstart
+    while worker.is_alive():
         event = (yield)
         events.append(event)
 
