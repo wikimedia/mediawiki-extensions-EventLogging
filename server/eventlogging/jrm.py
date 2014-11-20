@@ -41,6 +41,10 @@ ENGINE_TABLE_OPTIONS = {
     }
 }
 
+#: How long (in seconds) we should accumulate events before flushing
+#: to the database.
+DB_FLUSH_INTERVAL = 2
+
 
 class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""

@@ -26,7 +26,7 @@ import sqlalchemy
 from .utils import PeriodicThread
 from .factory import writes, reads
 from .streams import stream, pub_socket, sub_socket, udp_socket
-from .jrm import store_sql_events
+from .jrm import store_sql_events, DB_FLUSH_INTERVAL
 
 
 __all__ = ('load_plugins',)
@@ -87,16 +87,12 @@ def kafka_writer(brokers, topic='eventlogging'):
 def sql_writer(uri):
     engine = sqlalchemy.create_engine(uri)
     meta = sqlalchemy.MetaData(bind=engine)
-
     events = collections.deque()
-    worker = PeriodicThread(
-        interval=2, target=store_sql_events, args=(meta, events))
+    worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
+                            target=store_sql_events,
+                            args=(meta, events))
     worker.start()
 
-    # is_alive will be false if an exception
-    # was thrown on the worker thread
-    # main process will exit and will be re-started
-    # by upstart
     while worker.is_alive():
         event = (yield)
         events.append(event)
