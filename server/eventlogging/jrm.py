@@ -19,7 +19,7 @@ from .schema import get_schema
 from .compat import items
 
 
-__all__ = ('store_sql_events', 'flatten', 'key_func')
+__all__ = ('store_sql_events', 'flatten')
 
 
 #: Format string for :func:`datetime.datetime.strptime` for MediaWiki
@@ -198,7 +198,7 @@ def _insert_multi(table, events, replace=False):
         insert.execute()
 
 
-def key_func(event):
+def insert_sort_key(event):
     """Sort / group function that batches events that share the same
     SCID and set of fields. We need to group together events that
     belong to the same schema AND that have the same set of fields.
@@ -211,7 +211,7 @@ def key_func(event):
 def store_sql_events(meta, events, replace=False):
     """Store events in the database."""
     queue = [flatten(events.pop()) for _ in range(len(events))]
-    queue.sort(key=key_func)
+    queue.sort(key=insert_sort_key)
 
     if (getattr(meta.bind.dialect, 'supports_multivalues_insert', False)
             or getattr(meta.bind.dialect, 'supports_multirow_insert', False)):
@@ -219,7 +219,7 @@ def store_sql_events(meta, events, replace=False):
     else:
         insert = _insert_sequential
 
-    for (scid, _), events in itertools.groupby(queue, key_func):
+    for (scid, _), events in itertools.groupby(queue, insert_sort_key):
         prepared_events = [prepare(event) for event in events]
         table = get_table(meta, scid)
         insert(table, prepared_events, replace)

@@ -137,17 +137,12 @@ def post_validation_fixups(capsule):
             delete_if_exists_and_length_mismatches(capsule, 'originCountry', 2)
 
 
-def get_scid(event):
-    """Extract a SCID from an event."""
-    return event['schema'], event['revision']
-
-
 def validate(capsule):
     """Validates an encapsulated event.
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
     """
     try:
-        scid = get_scid(capsule)
+        scid = capsule['schema'], capsule['revision']
     except KeyError as ex:
         # If `schema` or `revision` keys are missing, a KeyError
         # exception will be raised. We re-raise it as a

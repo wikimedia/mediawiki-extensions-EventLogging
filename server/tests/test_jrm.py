@@ -9,13 +9,14 @@
 from __future__ import unicode_literals
 
 import datetime
+import itertools
 import unittest
 
 import eventlogging
 import sqlalchemy
-import itertools
-from sqlalchemy.sql import select
-from .fixtures import DatabaseTestMixin, TEST_SCHEMA_SCID
+import sqlalchemy.sql
+
+from .fixtures import (DatabaseTestMixin, TEST_SCHEMA_SCID)
 
 
 class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
@@ -29,7 +30,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         self.assertIn('TestSchema_123', self.meta.tables)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
-        s = select([table])
+        s = sqlalchemy.sql.select([table])
         results = self.engine.execute(s)
         row = results.fetchone()
         # see columns with print table.c
@@ -97,7 +98,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         eventlogging.store_sql_events(self.meta, event_list)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
-        s = select([table])
+        s = sqlalchemy.sql.select([table])
         results = self.engine.execute(s)
         # the number of records in table must be the list size
         rows = results.fetchall()
@@ -117,7 +118,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
         # we should still have to insert the other record though
         table = self.meta.tables['TestSchema_123']
-        s = select([table])
+        s = sqlalchemy.sql.select([table])
         results = self.engine.execute(s)
         rows = results.fetchall()
         self.assertEquals(len(rows), 2)
@@ -137,10 +138,11 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
         queue = [eventlogging.flatten(event_list.pop())
                  for _ in range(len(event_list))]
-        queue.sort(key=eventlogging.key_func)
+        queue.sort(key=eventlogging.jrm.insert_sort_key)
 
         uniquekeys = []
-        for k, events in itertools.groupby(queue, eventlogging.key_func):
+        batches = itertools.groupby(queue, eventlogging.jrm.insert_sort_key)
+        for k, events in batches:
             uniquekeys.append(k)
         # we should have stored one key as events can be batched together
         self.assertEquals(len(uniquekeys), 1)
@@ -158,10 +160,11 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
         queue = [eventlogging.flatten(event_list.pop())
                  for _ in range(len(event_list))]
-        queue.sort(key=eventlogging.key_func)
+        queue.sort(key=eventlogging.jrm.insert_sort_key)
 
         uniquekeys = []
-        for k, events in itertools.groupby(queue, eventlogging.key_func):
+        batches = itertools.groupby(queue, eventlogging.jrm.insert_sort_key)
+        for k, events in batches:
             uniquekeys.append(k)
         # we should have stored two keys as events cannot be grouped together
         self.assertEquals(len(uniquekeys), 2)
@@ -177,7 +180,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         eventlogging.store_sql_events(self.meta, event_list)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
-        s = select([table])
+        s = sqlalchemy.sql.select([table])
         results = self.engine.execute(s)
         # the number of records in table must be the list size
         rows = results.fetchall()
