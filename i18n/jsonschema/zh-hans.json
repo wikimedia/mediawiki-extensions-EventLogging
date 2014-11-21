@@ -14,5 +14,6 @@
 	"jsonschema-invalidnode": "无效的节点：预期为“$1”，但得到“$2”。路径：“$3”",
 	"jsonschema-invalid-missingfield": "缺少必要的字段“$1”",
 	"jsonschema-invalid-notinenum": "值“$1”在属性$2的枚举中不存在",
+	"apihelp-jsonschema-param-revid": "架构修订ID。",
 	"apihelp-jsonschema-param-title": "模式名称。"
 }
