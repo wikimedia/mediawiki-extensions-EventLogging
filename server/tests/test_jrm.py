@@ -34,7 +34,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         results = self.engine.execute(s)
         row = results.fetchone()
         # see columns with print table.c
-        self.assertEquals(row['clientIp'], self.event['clientIp'])
+        self.assertEqual(row['clientIp'], self.event['clientIp'])
 
     def test_column_names(self):
         """Generated tables contain columns for each relevant field."""
@@ -102,7 +102,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         results = self.engine.execute(s)
         # the number of records in table must be the list size
         rows = results.fetchall()
-        self.assertEquals(len(rows), 2)
+        self.assertEqual(len(rows), 2)
 
     def test_insertion_of_multiple_events_with_a_duplicate(self):
         """"If an insert with multiple events includes
@@ -121,7 +121,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         s = sqlalchemy.sql.select([table])
         results = self.engine.execute(s)
         rows = results.fetchall()
-        self.assertEquals(len(rows), 2)
+        self.assertEqual(len(rows), 2)
 
     def test_event_queue_is_empty(self):
         """An empty event queue is handled well
@@ -145,7 +145,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         for k, events in batches:
             uniquekeys.append(k)
         # we should have stored one key as events can be batched together
-        self.assertEquals(len(uniquekeys), 1)
+        self.assertEqual(len(uniquekeys), 1)
 
     def test_grouping_of_events_separately(self):
         """Events belonging to the same schema with a different
@@ -167,7 +167,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         for k, events in batches:
             uniquekeys.append(k)
         # we should have stored two keys as events cannot be grouped together
-        self.assertEquals(len(uniquekeys), 2)
+        self.assertEqual(len(uniquekeys), 2)
 
     def test_insert_events_with_different_set_of_optional_fields(self):
         """Events belonging to the same schema with a different
@@ -184,4 +184,4 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         results = self.engine.execute(s)
         # the number of records in table must be the list size
         rows = results.fetchall()
-        self.assertEquals(len(rows), 2)
+        self.assertEqual(len(rows), 2)

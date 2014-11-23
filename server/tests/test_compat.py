@@ -30,6 +30,7 @@ class SingleServingHttpd(multiprocessing.Process):
             return [self.resp]
         httpd = wsgiref.simple_server.make_server('127.0.0.1', 44080, app)
         httpd.handle_request()
+        httpd.socket.close()
 
 
 class UriSplitTestCase(unittest.TestCase):
@@ -38,8 +39,8 @@ class UriSplitTestCase(unittest.TestCase):
     def test_urisplit(self):
         uri = 'tcp://127.0.0.1:8600/?q=1#f=2'
         parts = eventlogging.urisplit(uri)
-        self.assertEquals(parts.query, 'q=1')
-        self.assertEquals(parts.fragment, 'f=2')
+        self.assertEqual(parts.query, 'q=1')
+        self.assertEqual(parts.fragment, 'f=2')
 
 
 class HttpGetTestCase(unittest.TestCase):
@@ -51,4 +52,4 @@ class HttpGetTestCase(unittest.TestCase):
         server = SingleServingHttpd('secret')
         server.start()
         response = eventlogging.http_get('http://127.0.0.1:44080')
-        self.assertEquals(response, 'secret')
+        self.assertEqual(response, 'secret')

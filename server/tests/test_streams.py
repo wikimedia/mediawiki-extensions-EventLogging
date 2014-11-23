@@ -34,6 +34,8 @@ def publish(pipe, interface='tcp://127.0.0.1'):
         time.sleep(0.05)
         pub.send_unicode(message)
 
+    pub.close()
+
 
 class ZmqTestCase(TimeoutTestMixin, unittest.TestCase):
     """Test case for ZeroMQ-related functionality."""
