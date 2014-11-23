@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 
 import multiprocessing
 import os
+import time
 import unittest
 import wsgiref.simple_server
 
@@ -57,3 +58,15 @@ class HttpGetTestCase(unittest.TestCase):
             self.fail('Server did not start within 2 seconds')
         response = eventlogging.http_get('http://127.0.0.1:44080')
         self.assertEqual(response, 'secret')
+
+
+class MonotonicClockTestCase(unittest.TestCase):
+    """Test cases for ``monotonic_clock``."""
+
+    @unittest.skipIf(eventlogging.monotonic_clock == time.time,
+                     'using non-monotonic time.time() as fallback')
+    def test_monotonic_clock(self):
+        """``monotonic_clock`` is indeed monotonic."""
+        t1 = eventlogging.monotonic_clock()
+        t2 = eventlogging.monotonic_clock()
+        self.assertGreater(t2, t1)
