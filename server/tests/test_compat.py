@@ -22,6 +22,7 @@ CI = 'TRAVIS' in os.environ or 'JENKINS_URL' in os.environ
 class SingleServingHttpd(multiprocessing.Process):
     def __init__(self, resp):
         self.resp = resp.encode('utf-8')
+        self.is_started = multiprocessing.Event()
         super(SingleServingHttpd, self).__init__()
 
     def run(self):
@@ -29,6 +30,7 @@ class SingleServingHttpd(multiprocessing.Process):
             start_response(str('200 OK'), [])
             return [self.resp]
         httpd = wsgiref.simple_server.make_server('127.0.0.1', 44080, app)
+        self.is_started.set()
         httpd.handle_request()
         httpd.socket.close()
 
@@ -51,5 +53,7 @@ class HttpGetTestCase(unittest.TestCase):
         """``http_get`` can pull content via HTTP."""
         server = SingleServingHttpd('secret')
         server.start()
+        if not server.is_started.wait(2):
+            self.fail('Server did not start within 2 seconds')
         response = eventlogging.http_get('http://127.0.0.1:44080')
         self.assertEqual(response, 'secret')
