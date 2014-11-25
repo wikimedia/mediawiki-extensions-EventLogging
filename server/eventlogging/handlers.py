@@ -97,9 +97,22 @@ def sql_writer(uri, replace=False):
                             args=(meta, events, replace))
     worker.start()
 
-    while worker.is_alive():
-        event = (yield)
-        events.append(event)
+    try:
+        # Link the main thread to the worker thread to ensure that we don't
+        # keep filling the queue if the worker isn't around to drain it.
+        while worker.is_alive():
+            event = (yield)
+            events.append(event)
+    except GeneratorExit:
+        # Allow the worker to complete any work that is already in progress
+        # before shutting down.
+        worker.stop()
+        worker.join()
+    finally:
+        # If there are any events remaining in the queue, process them in the
+        # main thread before exiting.
+        if events:
+            store_sql_events(meta, events)
 
 
 @writes('file')

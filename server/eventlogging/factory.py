@@ -84,3 +84,4 @@ def drive(in_url, out_url):
     writer = get_writer(out_url)
     for event in reader:
         writer.send(event)
+    writer.close()
