@@ -23,7 +23,7 @@ import sys
 
 import sqlalchemy
 
-from .utils import PeriodicThread
+from .utils import PeriodicThread, uri_delete_query_item
 from .factory import writes, reads
 from .streams import stream, pub_socket, sub_socket, udp_socket
 from .jrm import store_sql_events, DB_FLUSH_INTERVAL
@@ -84,13 +84,17 @@ def kafka_writer(brokers, topic='eventlogging'):
 
 
 @writes('mysql', 'sqlite')
-def sql_writer(uri):
+def sql_writer(uri, replace=False):
+    """Writes to an RDBMS, creating tables for SCIDs and rows for events."""
+    # Don't pass 'replace' parameter to SQLAlchemy.
+    uri = uri_delete_query_item(uri, 'replace')
+
     engine = sqlalchemy.create_engine(uri)
     meta = sqlalchemy.MetaData(bind=engine)
     events = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
-                            args=(meta, events))
+                            args=(meta, events, replace))
     worker.start()
 
     while worker.is_alive():

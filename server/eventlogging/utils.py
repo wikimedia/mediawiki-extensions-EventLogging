@@ -9,10 +9,11 @@
 """
 from __future__ import unicode_literals
 
+import re
 import threading
 
 
-__all__ = ('PeriodicThread',)
+__all__ = ('PeriodicThread', 'uri_delete_query_item')
 
 
 class PeriodicThread(threading.Thread):
@@ -31,3 +32,11 @@ class PeriodicThread(threading.Thread):
                 # do, we reset the flag.
                 self.ready.clear()
             self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
+
+
+def uri_delete_query_item(uri, key):
+    """Delete a key=value pair (specified by key) from a URI's query string."""
+    def repl(match):
+        separator, trailing_ampersand = match.groups()
+        return separator if trailing_ampersand else ''
+    return re.sub('([?&])%s=[^&]*(&?)' % re.escape(key), repl, uri)
