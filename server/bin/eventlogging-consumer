@@ -32,9 +32,7 @@ import logging
 import eventlogging
 
 
-log = logging.getLogger('EventLogging')
-log.setLevel(logging.DEBUG)
-log.addHandler(logging.StreamHandler(sys.stderr))
+eventlogging.setup_logging()
 
 ap = argparse.ArgumentParser(description='EventLogger',
                              fromfile_prefix_chars='@')
@@ -48,5 +46,5 @@ args = ap.parse_args()
 if args.load_plugins:
     eventlogging.load_plugins()
 
-log.info('Driving %s -> %s..', args.input, args.output)
+logging.info('Driving %s -> %s..', args.input, args.output)
 eventlogging.drive(args.input, args.output)

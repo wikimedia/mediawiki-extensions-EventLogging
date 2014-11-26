@@ -9,13 +9,15 @@
 """
 from __future__ import unicode_literals
 
+import sys
 import re
 import threading
+import logging
 
 from .compat import monotonic_clock
 
 
-__all__ = ('PeriodicThread', 'uri_delete_query_item')
+__all__ = ('PeriodicThread', 'uri_delete_query_item', 'setup_logging')
 
 
 class PeriodicThread(threading.Thread):
@@ -59,3 +61,8 @@ def uri_delete_query_item(uri, key):
         separator, trailing_ampersand = match.groups()
         return separator if trailing_ampersand else ''
     return re.sub('([?&])%s=[^&]*(&?)' % re.escape(key), repl, uri)
+
+
+def setup_logging():
+    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
+                        format='%(asctime)s %(message)s')

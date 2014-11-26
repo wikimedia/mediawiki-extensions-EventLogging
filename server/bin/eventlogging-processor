@@ -38,10 +38,10 @@ import argparse
 import logging
 
 from eventlogging import (capsule_uuid, iter_unicode, json, LogParser,
-                          pub_socket, sub_socket, validate)
+                          pub_socket, sub_socket, validate, setup_logging)
 
 
-logging.basicConfig(level=logging.DEBUG, stream=sys.stderr)
+setup_logging()
 
 ap = argparse.ArgumentParser(description='Raw log -> JSON stream',
                              fromfile_prefix_chars='@')

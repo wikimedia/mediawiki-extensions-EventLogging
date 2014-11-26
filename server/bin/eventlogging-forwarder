@@ -31,7 +31,7 @@ sys.setdefaultencoding('utf-8')
 import argparse
 import logging
 
-from eventlogging import iter_unicode, pub_socket, udp_socket
+from eventlogging import iter_unicode, pub_socket, udp_socket, setup_logging
 
 
 ap = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
@@ -41,8 +41,7 @@ ap.add_argument('--count', action='store_true',
                 help='Prepend an autoincrementing ID to each message')
 args = ap.parse_args()
 
-logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
-                    format='%(asctime)s %(message)s')
+setup_logging()
 
 logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
 sock_out = pub_socket(args.port)

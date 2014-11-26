@@ -30,6 +30,10 @@ import socket
 
 import zmq
 
+from eventlogging import setup_logging
+
+
+setup_logging()
 
 ap = argparse.ArgumentParser(description='eventlogging-reporter',
                              fromfile_prefix_chars='@')
