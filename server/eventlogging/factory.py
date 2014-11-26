@@ -82,6 +82,12 @@ def drive(in_url, out_url):
     """Impel data from a reader into a writer."""
     reader = get_reader(in_url)
     writer = get_writer(out_url)
-    for event in reader:
-        writer.send(event)
-    writer.close()
+    try:
+        for event in reader:
+            writer.send(event)
+    finally:
+        # The closing is underneath a "finally", so in case the reader
+        # throws an exception, we properly flag to the writer that
+        # we're about to bail out. This allows the writer to stop
+        # child threads and allow the consumer to properly shut down.
+        writer.close()
