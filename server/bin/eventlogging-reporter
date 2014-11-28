@@ -22,7 +22,6 @@ import ctypes
 import ctypes.util
 import errno
 import inspect
-import json
 import logging
 import math
 import os

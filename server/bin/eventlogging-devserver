@@ -28,7 +28,7 @@
   :copyright: (c) 2012 by Ori Livneh <ori@wikimedia.org>
   :license: GNU General Public Licence 2.0 or later
 
-"""
+"""  # noqa
 # pylint: disable=E0611
 from __future__ import print_function, unicode_literals
 
@@ -72,11 +72,6 @@ seq_ids = itertools.count()
 parser = eventlogging.LogParser('%q %l %n %t %h')
 log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
            '%(TIME)s %(REMOTE_ADDR)s')
-
-
-def format_config(vars):
-    code = '\n'.join('$%s = %r;' % item for item in items(vars))
-    return highlight(code, php_lexer, formatter).strip()
 
 
 def heading(caption=None):
