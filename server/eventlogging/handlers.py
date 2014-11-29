@@ -98,19 +98,19 @@ def sql_writer(uri, replace=False):
     worker.start()
 
     try:
-        # Link the main thread to the worker thread to ensure that we don't
-        # keep filling the queue if the worker isn't around to drain it.
+        # Link the main thread to the worker thread so we
+        # don't keep filling the queue if the worker died.
         while worker.is_alive():
             event = (yield)
             events.append(event)
     except GeneratorExit:
-        # Allow the worker to complete any work that is already in progress
-        # before shutting down.
+        # Allow the worker to complete any work that is
+        # already in progress before shutting down.
         worker.stop()
         worker.join()
     finally:
-        # If there are any events remaining in the queue, process them in the
-        # main thread before exiting.
+        # If there are any events remaining in the queue,
+        # process them in the main thread before exiting.
         if events:
             store_sql_events(meta, events)
 
@@ -124,7 +124,8 @@ def log_writer(path):
     log.addHandler(handler)
 
     while 1:
-        json_event = json.dumps((yield), sort_keys=True, check_circular=False)
+        event = (yield)
+        json_event = json.dumps(event, sort_keys=True, check_circular=False)
         log.info(json_event)
 
 
@@ -133,7 +134,8 @@ def zeromq_writer(uri):
     """Publish events on a ZeroMQ publisher socket."""
     pub = pub_socket(uri)
     while 1:
-        json_event = json.dumps((yield), sort_keys=True, check_circular=False)
+        event = (yield)
+        json_event = json.dumps(event, sort_keys=True, check_circular=False)
         pub.send_unicode(json_event + '\n')
 
 
@@ -143,7 +145,8 @@ def statsd_writer(hostname, port, prefix='eventlogging.schema'):
     addr = socket.gethostbyname(hostname), port
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     while 1:
-        stat = prefix + '.%(schema)s:1|m' % (yield)
+        event = (yield)
+        stat = prefix + '.%(schema)s:1|m' % event
         sock.sendto(stat.encode('utf-8'), addr)
 
 
@@ -154,7 +157,8 @@ def stdout_writer(uri):
     if sys.stdout.isatty():
         dumps_kwargs.update(indent=2)
     while 1:
-        print(json.dumps((yield), **dumps_kwargs))
+        event = (yield)
+        print(json.dumps(event, **dumps_kwargs))
 
 
 #
