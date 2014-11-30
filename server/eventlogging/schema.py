@@ -20,17 +20,17 @@ __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT',
            'post_validation_fixups', 'validate')
 
 
-#: URL of index.php on the schema wiki (same as
-#: '$wgEventLoggingSchemaApiUri').
+# URL of index.php on the schema wiki (same as
+# '$wgEventLoggingSchemaApiUri').
 SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
 
-#: Template for schema article URLs. Interpolates a revision ID.
+# Template for schema article URLs. Interpolates a revision ID.
 SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&revid=%s'
 
-#: Schemas retrieved via HTTP are cached in this dictionary.
+# Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}
 
-#: SCID of the metadata object which wraps each event.
+# SCID of the metadata object which wraps each event.
 CAPSULE_SCID = ('EventCapsule', 8326736)
 
 

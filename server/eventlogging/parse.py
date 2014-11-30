@@ -47,22 +47,22 @@ from .crypto import keyhasher, rotating_key
 
 __all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow', 'capsule_uuid')
 
-#: Format string (as would be passed to `strftime`) for timestamps in
-#: NCSA Common Log Format.
+# Format string (as would be passed to `strftime`) for timestamps in
+# NCSA Common Log Format.
 NCSA_FORMAT = '%Y-%m-%dT%H:%M:%S'
 
-#: Formats event capsule objects into URLs using the combination of
-#: origin hostname, sequence ID, and timestamp. This combination is
-#: guaranteed to be unique. Example::
-#:
-#:   event://vanadium.eqiad.wmnet/?seqId=438763&timestamp=1359702955
-#:
+# Formats event capsule objects into URLs using the combination of
+# origin hostname, sequence ID, and timestamp. This combination is
+# guaranteed to be unique. Example::
+#
+#   event://vanadium.eqiad.wmnet/?seqId=438763&timestamp=1359702955
+#
 EVENTLOGGING_URL_FORMAT = (
     'event://%(recvFrom)s/?seqId=%(seqId)s&timestamp=%(timestamp).10s')
 
-#: Specifies the length of time in seconds from the moment a key is
-#: generated until it is expired and replaced with a new key. The key is
-#: used to anonymize IP addresses.
+# Specifies the length of time in seconds from the moment a key is
+# generated until it is expired and replaced with a new key. The key is
+# used to anonymize IP addresses.
 KEY_LIFESPAN = datetime.timedelta(days=90)
 
 
@@ -103,14 +103,14 @@ def decode_qson(qson):
     return json.loads(unquote_plus(qson.strip('?;')))
 
 
-#: A crytographic hash function for hashing client IPs. Produces HMAC SHA1
-#: hashes by using the client IP as the message and a 64-byte byte string as
-#: the key. The key is generated at runtime and is refreshed every 90 days.
-#: It is not written anywhere. The hash value is useful for detecting spam
-#: (large volume of events sharing a common origin).
+# A crytographic hash function for hashing client IPs. Produces HMAC SHA1
+# hashes by using the client IP as the message and a 64-byte byte string as
+# the key. The key is generated at runtime and is refreshed every 90 days.
+# It is not written anywhere. The hash value is useful for detecting spam
+# (large volume of events sharing a common origin).
 hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
 
-#: A mapping of format specifiers to a tuple of (regexp, caster).
+# A mapping of format specifiers to a tuple of (regexp, caster).
 format_specifiers = {
     'h': (r'(?P<clientIp>\S+)', hash_ip),
     'j': (r'(?P<capsule>\S+)', json.loads),
@@ -121,7 +121,7 @@ format_specifiers = {
     't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
           ncsa_to_epoch),
 
-    #: Deprecated format specifiers:
+    # Deprecated format specifiers:
     'l': (r'(?P<recvFrom>\S+)', str),
     'n': (r'(?P<seqId>\d+)', int),
 }
@@ -137,11 +137,11 @@ class LogParser(object):
         """
         self.format = format
 
-        #: Field casters, ordered by the relevant field's position in
-        #: format string.
+        # Field casters, ordered by the relevant field's position in
+        # format string.
         self.casters = []
 
-        #: Compiled regexp.
+        # Compiled regexp.
         format = re.sub(' ', r'\s+', format)
         raw = re.sub(r'(?<!%)%({(\w+)})?([dhijlnqst])', self._repl, format)
         self.re = re.compile(raw)

@@ -22,23 +22,23 @@ from .compat import items
 __all__ = ('iter_json', 'iter_unicode', 'make_canonical', 'pub_socket',
            'stream', 'sub_socket', 'udp_socket')
 
-#: High water mark. The maximum number of outstanding messages to queue in
-#: memory for any single peer that the socket is communicating with.
+# High water mark. The maximum number of outstanding messages to queue
+# in memory for any single peer that the socket is communicating with.
 ZMQ_HIGH_WATER_MARK = 3000
 
-#: If a socket is closed before all its messages has been sent, ØMQ will
-#: wait up to this many miliseconds before discarding the messages.
-#: We'd rather fail fast, even at the cost of dropping a few events.
+# If a socket is closed before all its messages has been sent, ZeroMQ
+# will wait up to this many miliseconds before discarding the messages.
+# We'd rather fail fast, even at the cost of dropping a few events.
 ZMQ_LINGER = 0
 
-#: The maximum socket buffer size in bytes. This is used to set either
-#: SO_SNDBUF or SO_RCVBUF for the underlying socket, depending on its
-#: type. We set it to 64 kB to match Udp2LogConfig::BLOCK_SIZE.
+# The maximum socket buffer size in bytes. This is used to set either
+# SO_SNDBUF or SO_RCVBUF for the underlying socket, depending on its
+# type. We set it to 64 kB to match Udp2LogConfig::BLOCK_SIZE.
 SOCKET_BUFFER_SIZE = 64 * 1024
 
 
 def pub_socket(endpoint):
-    """Get a pre-configured ØMQ publisher."""
+    """Get a pre-configured ZeroMQ publisher."""
     context = zmq.Context.instance()
     sock = context.socket(zmq.PUB)
     if hasattr(zmq, 'HWM'):
@@ -51,7 +51,7 @@ def pub_socket(endpoint):
 
 
 def sub_socket(endpoint, identity='', subscribe=''):
-    """Get a pre-configured ØMQ subscriber."""
+    """Get a pre-configured ZeroMQ subscriber."""
     context = zmq.Context.instance()
     sock = context.socket(zmq.SUB)
     if hasattr(zmq, 'HWM'):

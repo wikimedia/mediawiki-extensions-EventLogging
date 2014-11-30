@@ -22,18 +22,18 @@ from .compat import items
 __all__ = ('store_sql_events', 'flatten')
 
 
-#: Format string for :func:`datetime.datetime.strptime` for MediaWiki
-#: timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
+# Format string for :func:`datetime.datetime.strptime` for MediaWiki
+# timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
 MEDIAWIKI_TIMESTAMP = '%Y%m%d%H%M%S'
 
-#: Format string for table names. Interpolates a `SCID` -- i.e., a tuple
-#: of (schema_name, revision_id).
+# Format string for table names. Interpolates a `SCID` -- i.e., a tuple
+# of (schema_name, revision_id).
 TABLE_NAME_FORMAT = '%s_%s'
 
-#: An iterable of properties that should not be stored in the database.
+# An iterable of properties that should not be stored in the database.
 NO_DB_PROPERTIES = ('recvFrom', 'revision', 'schema', 'seqId')
 
-#: A dictionary mapping database engine names to table defaults.
+# A dictionary mapping database engine names to table defaults.
 ENGINE_TABLE_OPTIONS = {
     'mysql': {
         'mysql_charset': 'utf8',
@@ -41,15 +41,15 @@ ENGINE_TABLE_OPTIONS = {
     }
 }
 
-#: How long (in seconds) we should accumulate events before flushing
-#: to the database.
+# How long (in seconds) we should accumulate events before flushing
+# to the database.
 DB_FLUSH_INTERVAL = 2
 
 
 class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
     """A :class:`sqlalchemy.TypeDecorator` for MediaWiki timestamps."""
 
-    #: Timestamps are stored as VARCHAR(14) columns.
+    # Timestamps are stored as VARCHAR(14) columns.
     impl = sqlalchemy.Unicode(14)
 
     def process_bind_param(self, value, dialect=None):
@@ -69,24 +69,24 @@ class MediaWikiTimestamp(sqlalchemy.TypeDecorator):
         return datetime.datetime.strptime(value, MEDIAWIKI_TIMESTAMP)
 
 
-#: Maximum length for string and string-like types. Because InnoDB limits index
-#: columns to 767 bytes, the maximum length for a utf8mb4 column (which
-#: reserves up to four bytes per character) is 191 (191 * 4 = 764).
+# Maximum length for string and string-like types. Because InnoDB limits index
+# columns to 767 bytes, the maximum length for a utf8mb4 column (which
+# reserves up to four bytes per character) is 191 (191 * 4 = 764).
 STRING_MAX_LEN = 191
 
-#: Default table column definition, to be overridden by mappers below.
+# Default table column definition, to be overridden by mappers below.
 COLUMN_DEFAULTS = {'type_': sqlalchemy.Unicode(STRING_MAX_LEN)}
 
-#: Mapping of JSON Schema attributes to valid values. Each value maps to
-#: a dictionary of options. The options are compounded into a single
-#: dict, which is then used as kwargs for :class:`sqlalchemy.Column`.
-#:
-#: ..note::
-#:
-#:   The mapping is keyed in order of increasing specificity. Thus a
-#:   JSON property {"type": "number", "format": "utc-millisec"} will
-#:   map onto a :class:`MediaWikiTimestamp` type, and not
-#:   :class:`sqlalchemy.Float`.
+# Mapping of JSON Schema attributes to valid values. Each value maps to
+# a dictionary of options. The options are compounded into a single
+# dict, which is then used as kwargs for :class:`sqlalchemy.Column`.
+#
+# ..note::
+#
+#   The mapping is keyed in order of increasing specificity. Thus a
+#   JSON property {"type": "number", "format": "utc-millisec"} will
+#   map onto a :class:`MediaWikiTimestamp` type, and not
+#   :class:`sqlalchemy.Float`.
 mappers = collections.OrderedDict((
     ('type', {
         'boolean': {'type_': sqlalchemy.Boolean},

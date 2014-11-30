@@ -31,9 +31,9 @@ from .jrm import store_sql_events, DB_FLUSH_INTERVAL
 
 __all__ = ('load_plugins',)
 
-#: EventLogging will attempt to load the configuration file specified in the
-#: 'EVENTLOGGING_PLUGIN_DIR' environment variable if it is defined. If it is
-#: not defined, EventLogging will default to the value specified below.
+# EventLogging will attempt to load the configuration file specified in the
+# 'EVENTLOGGING_PLUGIN_DIR' environment variable if it is defined. If it is
+# not defined, EventLogging will default to the value specified below.
 DEFAULT_PLUGIN_DIR = '/usr/local/lib/eventlogging'
 
 

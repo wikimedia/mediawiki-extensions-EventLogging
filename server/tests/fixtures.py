@@ -241,7 +241,7 @@ class TimeoutTestMixin(object):
     """A :class:`unittest.TestCase` mix-in that imposes a time-limit on
     tests. Tests exceeding the limit are failed."""
 
-    #: Max time (in seconds) to allow tests to run before failing.
+    # Max time (in seconds) to allow tests to run before failing.
     max_time = 2
 
     def setUp(self):
