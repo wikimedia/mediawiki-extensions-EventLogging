@@ -14,8 +14,6 @@
 # pylint: disable=E0611, F0401, E1101
 from __future__ import unicode_literals
 
-import ctypes
-import ctypes.util
 import functools
 import hashlib
 import operator
@@ -40,8 +38,6 @@ except ImportError:
 __all__ = ('http_get', 'items', 'json', 'monotonic_clock', 'unquote_plus',
            'urisplit', 'urlopen', 'uuid5')
 
-LIBC = ctypes.CDLL(ctypes.util.find_library('c'), use_errno=True)
-CLOCK_MONOTONIC_RAW = 4
 PY3 = sys.version_info[0] == 3
 
 if PY3:
