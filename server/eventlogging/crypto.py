@@ -6,6 +6,16 @@
   This module implements ephemeral key-hashing, used by EventLogging to
   anonymize IP addresses.
 
+  .. admonition :: The intent of the code in this module is to frustrate
+                   casual and unthinking misuse of data by researchers.
+                   The scrambling process is not resilient and it can be
+                   inverted. What more, scrambled IP addresses can be
+                   used to cross-reference events by origin, which can
+                   facilitate identification by means of accumulation of
+                   partially-identifying data. Upholding privacy and
+                   anonymity in your data infrastructure will require
+                   additional measures.
+
 """
 from __future__ import unicode_literals
 
