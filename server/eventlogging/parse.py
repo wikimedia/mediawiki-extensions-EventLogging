@@ -45,7 +45,7 @@ from .compat import json, unquote_plus, uuid5
 from .crypto import keyhasher, rotating_key
 
 
-__all__ = ('LogParser', 'ncsa_to_epoch', 'ncsa_utcnow', 'capsule_uuid')
+__all__ = ('LogParser', 'ncsa_to_unix', 'ncsa_utcnow', 'capsule_uuid')
 
 # Format string (as would be passed to `strftime`) for timestamps in
 # NCSA Common Log Format.
@@ -82,9 +82,9 @@ def capsule_uuid(capsule):
     return '%032x' % id.int
 
 
-def ncsa_to_epoch(ncsa_ts):
+def ncsa_to_unix(ncsa_ts):
     """Converts an NCSA Common Log Format timestamp to an integer
-    timestamp representing the number of seconds since epoch UTC.
+    timestamp representing the number of seconds since UNIX epoch UTC.
 
     :param ncsa_ts: Timestamp in NCSA format.
     """
@@ -112,18 +112,13 @@ hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
 
 # A mapping of format specifiers to a tuple of (regexp, caster).
 format_specifiers = {
-    'h': (r'(?P<clientIp>\S+)', hash_ip),
-    'j': (r'(?P<capsule>\S+)', json.loads),
-    's': (r'(?P<%s>\S+)', str),
-    'i': (r'(?P<%s>[^\t]+)', str),
     'd': (r'(?P<%s>\d+)', int),
+    'h': (r'(?P<clientIp>\S+)', hash_ip),
+    'i': (r'(?P<%s>[^\t]+)', str),
+    'j': (r'(?P<capsule>\S+)', json.loads),
     'q': (r'(?P<capsule>\?\S+)', decode_qson),
-    't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
-          ncsa_to_epoch),
-
-    # Deprecated format specifiers:
-    'l': (r'(?P<recvFrom>\S+)', str),
-    'n': (r'(?P<seqId>\d+)', int),
+    's': (r'(?P<%s>\S+)', str),
+    't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})', ncsa_to_unix),
 }
 
 

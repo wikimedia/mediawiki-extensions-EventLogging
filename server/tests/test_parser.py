@@ -21,7 +21,7 @@ class NcsaTimestampTestCase(unittest.TestCase):
     def test_ncsa_timestamp_handling(self):
         epoch_ts = calendar.timegm(datetime.datetime.utcnow().utctimetuple())
         ncsa_ts = eventlogging.ncsa_utcnow()
-        self.assertAlmostEqual(eventlogging.ncsa_to_epoch(ncsa_ts),
+        self.assertAlmostEqual(eventlogging.ncsa_to_unix(ncsa_ts),
                                epoch_ts, delta=100)
 
 
@@ -61,7 +61,7 @@ class LogParserTestCase(unittest.TestCase):
 
     def test_parser_server_side_events(self):
         """Parser test: server-side events."""
-        parser = eventlogging.LogParser('%n EventLogging %j')
+        parser = eventlogging.LogParser('%{seqId}d EventLogging %j')
         raw = ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
                'ma":"FakeSchema","clientValidated":true,"wiki":"enwiki","eve'
                'nt":{"action":"save\\u0020page"},"recvFrom":"fenari"}')
@@ -82,12 +82,12 @@ class LogParserTestCase(unittest.TestCase):
 
     def test_parse_failure(self):
         """Parse failure raises ValueError exception."""
-        parser = eventlogging.LogParser('%q %l %n %t %h')
+        parser = eventlogging.LogParser('%q %{recvFrom}s %t %h')
         with self.assertRaises(ValueError):
             parser.parse('Fails to parse.')
 
     def test_repr(self):
         """Calling 'repr' on LogParser returns canonical string
         representation."""
-        parser = eventlogging.LogParser('%q %l %n %t %h')
-        self.assertEqual(repr(parser), "<LogParser('%q %l %n %t %h')>")
+        parser = eventlogging.LogParser('%q %{seqId}d %t %h')
+        self.assertEqual(repr(parser), "<LogParser('%q %{seqId}d %t %h')>")
