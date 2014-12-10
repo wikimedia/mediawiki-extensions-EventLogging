@@ -43,6 +43,14 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 				throw new MWException( "ResourceLoaderSchemaModule params must set '$key' key." );
 			}
 		}
+
+		if ( !is_int( $args['revision'] ) ) {
+			// Events will not validate on the Python server if this is defined
+			// wrong.  Enforce it here as well, so it can be more easily caught
+			// during local development.
+			throw new MWException( "Revision for schema \"{$args['schema']}\" must be given as an integer" );
+		}
+
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
 		$this->targets = array( 'desktop', 'mobile' );
 	}
