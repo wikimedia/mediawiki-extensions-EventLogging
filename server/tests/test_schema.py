@@ -48,6 +48,31 @@ class HttpSchemaTestCase(HttpSchemaTestMixin, unittest.TestCase):
         self.assertIn(TEST_SCHEMA_SCID, eventlogging.schema.schema_cache)
 
 
+class ValidateScidTestCase(unittest.TestCase):
+    """Tests for :func:`eventlogging.schema.validate_scid`."""
+
+    schema_name, revision_id = TEST_SCHEMA_SCID
+
+    def test_valid_scid(self):
+        """Valid SCIDs validate."""
+        scid = self.schema_name, self.revision_id
+        self.assertIsNone(eventlogging.schema.validate_scid(scid))
+
+    def test_invalid_schema_name(self):
+        """Invalid schema name triggers SCID validation failure."""
+        for invalid_schema_name in ('Foo%', 'X' * 64, 123):
+            scid = invalid_schema_name, self.revision_id
+            with self.assertRaises(eventlogging.ValidationError):
+                eventlogging.schema.validate_scid(scid)
+
+    def test_invalid_revision_id(self):
+        """Invalid revision ID triggers SCID validation failure."""
+        for invalid_revision_id in (-1, 0, '1'):
+            scid = self.schema_name, invalid_revision_id
+            with self.assertRaises(eventlogging.ValidationError):
+                eventlogging.schema.validate_scid(scid)
+
+
 class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     """Tests for :module:`eventlogging.schema`."""
 

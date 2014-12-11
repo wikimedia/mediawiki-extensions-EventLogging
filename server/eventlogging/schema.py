@@ -11,9 +11,11 @@
 """
 from __future__ import unicode_literals
 
+import re
+
 import jsonschema
 
-from .compat import json, http_get
+from .compat import integer_types, json, http_get, string_types
 
 __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 
@@ -61,6 +63,20 @@ def http_get_schema(scid):
     return schema
 
 
+def validate_scid(scid):
+    """Validates an SCID.
+    :raises :exc:`jsonschema.ValidationError`: If SCID is invalid.
+    """
+    schema_name, revision_id = scid
+    if not isinstance(revision_id, integer_types) or revision_id < 1:
+        raise jsonschema.ValidationError(
+            'Invalid revision ID: %s' % revision_id)
+    if (not isinstance(schema_name, string_types) or
+            not re.match(r'^[a-zA-Z0-9_-]{1,63}$', schema_name)):
+        raise jsonschema.ValidationError(
+            'Invalid schema name: %s' % schema_name)
+
+
 def validate(capsule):
     """Validates an encapsulated event.
     :raises :exc:`jsonschema.ValidationError`: If event is invalid.
@@ -72,8 +88,6 @@ def validate(capsule):
         # exception will be raised. We re-raise it as a
         # :exc:`ValidationError` to provide a simpler API for callers.
         raise jsonschema.ValidationError('Missing key: %s' % ex)
-    if capsule['revision'] < 1:
-        raise jsonschema.ValidationError(
-            'Invalid revision ID: %(revision)s' % capsule)
+    validate_scid(scid)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.Draft3Validator(schema).validate(capsule)

@@ -53,7 +53,14 @@ class JsonSchemaHooks {
 	 * @return True
 	 */
 	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
-		if ( $editor->getTitle()->getNamespace() !== NS_SCHEMA ) {
+		$title = $editor->getTitle();
+
+		if ( $title->getNamespace() !== NS_SCHEMA ) {
+			return true;
+		}
+
+		if ( !preg_match( '/^[a-zA-Z0-9_-]{1,63}$/', $title->getText() ) ) {
+			$error = wfMessage( 'badtitle' )->text();
 			return true;
 		}
 
