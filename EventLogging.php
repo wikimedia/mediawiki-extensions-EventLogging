@@ -67,7 +67,7 @@ $wgEventLoggingBaseUri = false;
  * convention it specifies which log bucket the message should be routed
  * to. It is best if the prefix is simply "EventLogging".
  *
- * @see wfErrorLog()
+ * @see MWLoggerLegacyLogger::emit()
  *
  * @example string: 'udp://127.0.0.1:9000/EventLogging'
  * @example string: '/var/log/mediawiki/events.log'

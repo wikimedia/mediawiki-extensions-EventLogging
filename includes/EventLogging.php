@@ -21,7 +21,7 @@ class EventLogging {
 	 * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
 	 * false without logging anything.
 	 *
-	 * @see wfErrorLog
+	 * @see MWLoggerLegacyLogger::emit
 	 *
 	 * @param string $schemaName Schema name.
 	 * @param int $revId revision ID of schema.
@@ -65,7 +65,7 @@ class EventLogging {
 
 		$json = static::serializeEvent( $encapsulated );
 
-		wfErrorLog( $json . "\n", $wgEventLoggingFile );
+		MWLoggerLegacyLogger::emit( $json . "\n", $wgEventLoggingFile );
 		wfProfileOut( __METHOD__ );
 		return true;
 	}
