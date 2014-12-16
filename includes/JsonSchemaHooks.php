@@ -23,6 +23,7 @@ class JsonSchemaHooks {
 			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
 			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
 			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
+			$wgHooks[ 'MovePageIsValidMove' ][] = 'JsonSchemaHooks::onMovePageIsValidMove';
 			$wgAPIModules[ 'jsonschema' ] = 'ApiJsonSchema';
 			return true;
 		}
@@ -95,6 +96,25 @@ class JsonSchemaHooks {
 					->rawParams( $revId )
 					->escaped() );
 			}
+		}
+		return true;
+	}
+
+	/**
+	 * Prohibit moving (renaming) Schema pages, as doing so violates
+	 * immutability guarantees.
+	 *
+	 * @param Title $currentTitle
+	 * @param Title $newTitle
+	 * @param Status $status
+	 */
+	static function onMovePageIsValidMove( Title $currentTitle, Title $newTitle, Status $status ) {
+		if ( $currentTitle->inNamespace( NS_SCHEMA ) ) {
+			$status->fatal( 'eventlogging-error-move-source' );
+			return false;
+		} elseif ( $newTitle->inNamespace( NS_SCHEMA ) ) {
+			$status->fatal( 'eventlogging-error-move-destination' );
+			return false;
 		}
 		return true;
 	}
