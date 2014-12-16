@@ -38,7 +38,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 				"required": false
 			},
 			"clientValidated":{
-				"type": "string",
+				"type": "boolean",
 				"description": "Some fake",
 				"required": false
 			}
