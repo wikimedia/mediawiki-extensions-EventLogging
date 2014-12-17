@@ -10,5 +10,7 @@
 	"eventlogging-revision-id": "Version $1",
 	"eventlogging-code-sample-logging-on-server-side": "PHP-Protokollierung",
 	"eventlogging-code-sample-module-setup": "PHP-Setup für JavaScript-Protokollierung",
-	"eventlogging-code-sample-logging-on-client-side": "JavaScript-Protokollierung"
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript-Protokollierung",
+	"eventlogging-error-move-source": "Schemaseiten können nicht umbenannt werden",
+	"eventlogging-error-move-destination": "Seiten können nicht zu Schemaseiten umbenannt werden"
 }
