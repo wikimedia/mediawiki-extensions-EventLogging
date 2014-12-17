@@ -20,6 +20,9 @@ from .compat import integer_types, json, http_get, string_types
 __all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
 
 
+# Regular expression which matches valid schema names.
+SCHEMA_RE = re.compile(r'^[a-zA-Z0-9_-]{1,63}$')
+
 # URL of index.php on the schema wiki (same as
 # '$wgEventLoggingSchemaApiUri').
 SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
@@ -53,6 +56,7 @@ def get_schema(scid, encapsulate=False):
 
 def http_get_schema(scid):
     """Retrieve schema via HTTP."""
+    validate_scid(scid)
     url = SCHEMA_URL_FORMAT % scid
     try:
         schema = json.loads(http_get(url))
@@ -66,14 +70,11 @@ def validate_scid(scid):
     """Validates an SCID.
     :raises :exc:`jsonschema.ValidationError`: If SCID is invalid.
     """
-    schema_name, revision_id = scid
-    if not isinstance(revision_id, integer_types) or revision_id < 1:
-        raise jsonschema.ValidationError(
-            'Invalid revision ID: %s' % revision_id)
-    if (not isinstance(schema_name, string_types) or
-            not re.match(r'^[a-zA-Z0-9_-]{1,63}$', schema_name)):
-        raise jsonschema.ValidationError(
-            'Invalid schema name: %s' % schema_name)
+    schema, revision = scid
+    if not isinstance(revision, integer_types) or revision < 1:
+        raise jsonschema.ValidationError('Invalid revision ID: %s' % revision)
+    if not isinstance(schema, string_types) or not SCHEMA_RE.match(schema):
+        raise jsonschema.ValidationError('Invalid schema name: %s' % schema)
 
 
 def validate(capsule):
@@ -87,6 +88,5 @@ def validate(capsule):
         # exception will be raised. We re-raise it as a
         # :exc:`ValidationError` to provide a simpler API for callers.
         raise jsonschema.ValidationError('Missing key: %s' % ex)
-    validate_scid(scid)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.Draft3Validator(schema).validate(capsule)
