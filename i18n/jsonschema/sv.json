@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Jopparn",
-			"Tobulos1"
+			"Tobulos1",
+			"Lokal Profil"
 		]
 	},
 	"jsonschema-badidref": "Fel idref: \"$1\"",
@@ -11,5 +12,9 @@
 	"jsonschema-invalidempty": "Tom datastruktur är inte giltig med detta schema",
 	"jsonschema-invalidnode": "Ogiltig nod: förväntar sig \"$1\", fick \"$2\". Sökväg: \"$3\"",
 	"jsonschema-invalid-missingfield": "Saknar obligatoriskt fält \"$1\"",
-	"jsonschema-invalid-notinenum": "Värdet \"$1\" är inte med i uppräkningen för egendom $2"
+	"jsonschema-invalid-notinenum": "Värdet \"$1\" är inte med i uppräkningen för egendom $2",
+	"apihelp-jsonschema-description": "Hämta en JSON-schemasida.",
+	"apihelp-jsonschema-param-revid": "Versions-ID för schema.",
+	"apihelp-jsonschema-param-title": "Schemanamn.",
+	"apihelp-jsonschema-example-1": "Hämta schemat för version 1234"
 }

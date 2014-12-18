@@ -4,7 +4,8 @@
 			"Ainali",
 			"Bengt B",
 			"Jopparn",
-			"Lokal Profil"
+			"Lokal Profil",
+			"Stens51"
 		]
 	},
 	"eventlogging-desc": "Ramverk för loggning av händelser från klientsidans kod",
@@ -12,5 +13,7 @@
 	"eventlogging-revision-id": "Version $1",
 	"eventlogging-code-sample-logging-on-server-side": "PHP-loggning",
 	"eventlogging-code-sample-module-setup": "PHP-inställningar för JavaScript-loggning",
-	"eventlogging-code-sample-logging-on-client-side": "JavaScript-loggning"
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript-loggning",
+	"eventlogging-error-move-source": "Schemasidor kan inte döpas om",
+	"eventlogging-error-move-destination": "Sidor kan inte döpas om till Schemasidor"
 }
