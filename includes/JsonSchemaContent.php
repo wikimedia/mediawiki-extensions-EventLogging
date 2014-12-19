@@ -52,6 +52,14 @@ class JsonSchemaContent extends JsonContent {
 	}
 
 	/**
+	 * Decodes the JSON schema into a PHP associative array.
+	 * @return array: Schema array.
+	 */
+	function getJsonData() {
+		return FormatJson::decode( $this->getNativeData(), true );
+	}
+
+	/**
 	 * @throws JsonSchemaException: If invalid.
 	 * @return bool: True if valid.
 	 */
