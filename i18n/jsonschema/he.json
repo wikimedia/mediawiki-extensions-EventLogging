@@ -11,5 +11,9 @@
 	"jsonschema-invalidempty": "מבנה נתונים ריק אינו תקין עם הסכֵמה הזאת",
 	"jsonschema-invalidnode": "צומת בלתי־תקין: ציפיתי ל־\"$1\", קיבלתי \"$2\". נתיב: \"$3\"",
 	"jsonschema-invalid-missingfield": "חסר השדה הנדרש \"$1\"",
-	"jsonschema-invalid-notinenum": "הערך \"$1\" לא נמצא ב־enum של מאפיין $2"
+	"jsonschema-invalid-notinenum": "הערך \"$1\" לא נמצא ב־enum של מאפיין $2",
+	"apihelp-jsonschema-description": "אחזור דף סכֵמה ב־JSON",
+	"apihelp-jsonschema-param-revid": "מזהה גרסה של סכֵמה",
+	"apihelp-jsonschema-param-title": "שם הסכֵמה.",
+	"apihelp-jsonschema-example-1": "אחזור סכֵמה עבור גרסה 1234"
 }
