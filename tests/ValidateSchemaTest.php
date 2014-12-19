@@ -52,7 +52,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		"event": {
 			"action": "view",
 			 "connectEnd": 393,
-			 "connectStart": 393,
+			 "connectStart": 393
 		},
 		"userAgent": "some",
 		"other": "some"
