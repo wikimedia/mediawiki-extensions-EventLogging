@@ -10,6 +10,7 @@ from __future__ import unicode_literals
 
 import multiprocessing
 import os
+import sys
 import time
 import unittest
 import wsgiref.simple_server
@@ -32,7 +33,12 @@ class SingleServingHttpd(multiprocessing.Process):
             return [self.resp]
         httpd = wsgiref.simple_server.make_server('127.0.0.1', 44080, app)
         self.is_started.set()
-        httpd.handle_request()
+        stderr, sys.stderr = sys.stderr, open(os.devnull, 'w')
+        try:
+            httpd.handle_request()
+        finally:
+            sys.stderr, stderr = stderr, sys.stderr
+            stderr.close()
         httpd.socket.close()
 
 

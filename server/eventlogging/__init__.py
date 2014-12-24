@@ -34,3 +34,6 @@ from .utils import *
 from jsonschema import ValidationError, SchemaError
 
 __version__ = '0.8'
+
+# Alias :class:`EventConsumer` as `connect'.
+connect = EventConsumer

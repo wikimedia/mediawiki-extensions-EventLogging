@@ -41,9 +41,9 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         t = eventlogging.jrm.declare_table(self.meta, TEST_SCHEMA_SCID)
 
         # The columns we expect to see are..
-        cols = set(eventlogging.jrm.flatten(self.event))  # all properties
-        cols -= set(eventlogging.jrm.NO_DB_PROPERTIES)    # unless excluded
-        cols |= {'id', 'uuid'}                            # plus 'id' & 'uuid'
+        cols = set(eventlogging.utils.flatten(self.event))  # all properties
+        cols -= set(eventlogging.jrm.NO_DB_PROPERTIES)      # unless excluded
+        cols |= {'id', 'uuid'}                              # plus id & uuid
 
         self.assertSetEqual(set(t.columns.keys()), cols)
 
@@ -55,7 +55,7 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
     def test_flatten(self):
         """``flatten`` correctly collapses deeply nested maps."""
-        flat = eventlogging.jrm.flatten(self.event)
+        flat = eventlogging.utils.flatten(self.event)
         self.assertEqual(flat['event_nested_deeplyNested_pi'], 3.14159)
 
     def test_encoding(self):

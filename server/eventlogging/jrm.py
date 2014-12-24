@@ -15,11 +15,12 @@ import itertools
 
 import sqlalchemy
 
-from .schema import get_schema
 from .compat import items
+from .schema import get_schema
+from .utils import flatten
 
 
-__all__ = ('store_sql_events', 'flatten')
+__all__ = ('store_sql_events',)
 
 
 # Format string for :func:`datetime.datetime.strptime` for MediaWiki
@@ -242,21 +243,6 @@ def prepare(event):
     for prop in NO_DB_PROPERTIES:
         event.pop(prop, None)
     return event
-
-
-def flatten(d, sep='_', f=None):
-    """Collapse a nested dictionary. `f` specifies an optional mapping
-    function to apply to each (key, value) pair."""
-    flat = []
-    for k, v in items(d):
-        if f is not None:
-            (k, v) = f((k, v))
-        if isinstance(v, dict):
-            nested = items(flatten(v, sep, f))
-            flat.extend((k + sep + nk, nv) for nk, nv in nested)
-        else:
-            flat.append((k, v))
-    return dict(flat)
 
 
 def column_sort_key(column):
