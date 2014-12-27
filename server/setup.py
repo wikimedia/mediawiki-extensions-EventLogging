@@ -41,6 +41,7 @@ setup(
     ),
     packages=(
         'eventlogging',
+        'eventlogging.lib',
     ),
     scripts=(
         'bin/eventlogging-forwarder',
