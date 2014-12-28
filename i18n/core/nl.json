@@ -11,5 +11,5 @@
 	"eventlogging-code-sample-logging-on-server-side": "Logboekregistratie voor PHP",
 	"eventlogging-code-sample-module-setup": "PHP-instellingen voor logboekregistratie voor JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Logboekregistratie voor JavaScript",
-	"eventlogging-error-move-source": "Schema pagina's mogen nier hernoemd worden"
+	"eventlogging-error-move-source": "Schemapagina's mogen niet hernoemd worden"
 }
