@@ -12,5 +12,6 @@
 	"jsonschema-invalidnode": "Ungültiger Knoten: Erwartet „$1“, erhalten „$2“. Pfad: „$3“",
 	"jsonschema-invalid-missingfield": "Es fehlt das erforderliche Feld „$1“.",
 	"jsonschema-invalid-notinenum": "Der Wert „$1“ ist nicht in der Aufzählung für die Eigenschaft $2",
+	"apihelp-jsonschema-param-revid": "Versionskennung des Schemas.",
 	"apihelp-jsonschema-param-title": "Name des Schemas."
 }
