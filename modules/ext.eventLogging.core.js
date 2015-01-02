@@ -52,8 +52,12 @@
 		 */
 		schemas: {},
 
-		warn: console && $.isFunction( console.warn ) ?
-			$.proxy( console.warn, console ) : mw.log,
+		/**
+		 * Log a warning.
+		 *
+		 * @param {String} message Warning message.
+		 */
+		warn: $.proxy( mw.track, mw, 'eventlogging.warning' ),
 
 		/**
 		 * Register a schema so that it can be used to validate events.
@@ -289,7 +293,7 @@
 			return deferred.promise();
 		},
 
-		/*
+		/**
 		 * Asynchronously initiate logging for event data. The method returns a
 		 * promise that indicates whether the method successfully queued the data.
 		 * Even if it is queued for delivery, there is no guarantee it will ever be
@@ -349,6 +353,13 @@
 
 	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
 		self.warn( '"$wgEventLoggingBaseUri" is not set.' );
+	}
+
+	// Output `mw.eventLog.warn` calls to the browser console, if available.
+	if ( typeof console === 'object' && typeof console.warn === 'function' ) {
+		mw.trackSubscribe( 'eventlogging.warning', function ( topic, warning ) {
+			console.warn( warning );
+		} );
 	}
 
 } ( mediaWiki, jQuery, window.console ) );
