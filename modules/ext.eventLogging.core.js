@@ -14,19 +14,13 @@
 ( function ( mw, $, console ) {
 	'use strict';
 
-	/**
-	 * Represents a failure to validate an object against its schema.
-	 *
-	 * @class ValidationError
-	 * @constructor
-	 * @extends Error
-	 * @private
-	 **/
-	function ValidationError( message ) {
-		this.message = message;
-	}
-	ValidationError.prototype = new Error();
 
+	var
+
+	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
+	// in EventLogging.php. If the default value of 'false' has not
+	// been overridden, events will not be sent to the server.
+	baseUrl = mw.config.get( 'wgEventLoggingBaseUri' ),
 
 	/**
 	 * Client-side EventLogging API.
@@ -40,7 +34,7 @@
 	 * @namespace mediaWiki
 	 * @static
 	 */
-	var self = mw.eventLog = {
+	self = mw.eventLog = {
 
 		/**
 		 * Schema registry. Schemas that have been declared explicitly via
@@ -53,11 +47,19 @@
 		schemas: {},
 
 		/**
-		 * Log a warning.
+		 * Load a schema from the schema registry.
+		 * If the schema does not exist, it will be initialised.
 		 *
-		 * @param {String} message Warning message.
+		 * @method getSchema
+		 * @param {String} schemaName Name of schema.
+		 * @return {Object} Schema object.
 		 */
-		warn: $.proxy( mw.track, mw, 'eventlogging.warning' ),
+		getSchema: function ( schemaName ) {
+			if ( !self.schemas.hasOwnProperty( schemaName ) ) {
+				self.schemas[ schemaName ] = { schema: { title: schemaName } };
+			}
+			return self.schemas[ schemaName ];
+		},
 
 		/**
 		 * Register a schema so that it can be used to validate events.
@@ -72,22 +74,13 @@
 		 * @return {Object} The registered schema.
 		 */
 		declareSchema: function ( schemaName, meta ) {
-			if ( self.schemas.hasOwnProperty( schemaName ) ) {
-				self.warn( 'Clobbering existing "' + schemaName + '" schema' );
-			}
-			self.schemas[ schemaName ] = $.extend( true, {
-				revision : -1,
-				schema   : { properties: {} },
-				defaults : {}
-			}, self.schemas[ schemaName ], meta );
-			return self.schemas[ schemaName ];
+			return $.extend( true, self.getSchema( schemaName ), meta );
 		},
 
 
 		/**
-		 * Checks whether a JavaScript value conforms to a specified JSON
-		 * Schema type. Supports string, timestamp, boolean, integer and
-		 * number types. Arrays are not currently supported.
+		 * Checks whether a JavaScript value conforms to a specified
+		 * JSON Schema type.
 		 *
 		 * @method isInstanceOf
 		 * @param {Object} value Object to test.
@@ -95,96 +88,64 @@
 		 * @return {Boolean} Whether value is instance of type.
 		 */
 		isInstanceOf: function ( value, type ) {
-			// undefined and null are invalid values for any type.
-			if ( value === undefined || value === null ) {
-				return false;
-			}
+			var jsType = $.type( value );
 			switch ( type ) {
-			case 'string':
-				return typeof value === 'string';
-			case 'timestamp':
-				return value instanceof Date || (
-						typeof value === 'number' &&
-						value >= 0 &&
-						value % 1 === 0 );
-			case 'boolean':
-				return typeof value === 'boolean';
 			case 'integer':
-				return typeof value === 'number' && value % 1 === 0;
+				return jsType === 'number' && value % 1 === 0;
 			case 'number':
-				return typeof value === 'number' && isFinite( value );
+				return jsType === 'number' && isFinite( value );
+			case 'timestamp':
+				return jsType === 'date' || ( jsType === 'number' && value >= 0 && value % 1 === 0 );
 			default:
-				return false;
+				return jsType === type;
 			}
 		},
 
 
 		/**
-		 * Checks whether an event object conforms to a JSON Schema.
+		 * Check whether a JavaScript object conforms to a JSON Schema.
 		 *
-		 * @method isValid
-		 * @param {Object} event Event to test for validity.
-		 * @param {String} schemaName Name of schema.
-		 * @return {Boolean} Whether event conforms to the schema.
+		 * @method validate
+		 * @param {Object} obj Object to validate.
+		 * @param {Object} schema JSON Schema object.
+		 * @return {Array} An array of validation errors (empty if valid).
 		 */
-		isValid: function ( event, schemaName ) {
-			try {
-				self.assertValid( event, schemaName );
-				return true;
-			} catch ( e ) {
-				if ( !( e instanceof ValidationError ) ) {
-					throw e;
-				}
-				self.warn( 'Validation error against schema ' + schemaName + ': ' + e.message );
-				return false;
-			}
-		},
+		validate: function ( obj, schema ) {
+			var errors = [], key, val, prop;
 
-		/**
-		 * Asserts that an event validates against a JSON Schema. If the event
-		 * does not validate, throws a `ValidationError`.
-		 *
-		 * @method assertValid
-		 * @param {Object} event Event to validate.
-		 * @param {Object} schemaName Name of schema.
-		 * @throws {ValidationError} If event fails to validate.
-		 */
-		assertValid: function ( event, schemaName ) {
-			var schema = self.schemas[ schemaName ] || null,
-				props = schema.schema.properties,
-				prop;
-
-			if ( $.isEmpty( props ) ) {
-				throw new ValidationError( 'Unknown schema: ' + schemaName );
+			if ( $.isEmptyObject( schema.properties ) ) {
+				errors.push( 'Unknown schema' );
+				return errors;
 			}
 
-			for ( prop in event ) {
-				if ( props[ prop ] === undefined ) {
-					throw new ValidationError( 'Unrecognized property: ' + prop );
+			for ( key in obj ) {
+				if ( !schema.properties.hasOwnProperty( key ) ) {
+					errors.push( 'Undeclared property "' + key + '"' );
 				}
 			}
 
-			$.each( props, function ( prop, desc ) {
-				var val = event[ prop ];
+			for ( key in schema.properties ) {
+				prop = schema.properties[ key ];
 
-				if ( val === undefined ) {
-					if ( desc.required ) {
-						throw new ValidationError( 'Missing property: ' + prop );
+				if ( !obj.hasOwnProperty( key ) ) {
+					if ( prop.required ) {
+						errors.push( 'Missing property "' + key + '"' );
 					}
-					return true;
+					continue;
+				}
+				val = obj[ key ];
+
+				if ( !( self.isInstanceOf( val, prop.type ) ) ) {
+					errors.push( 'Value ' + JSON.stringify( val ) + ' is the wrong type for property "' + key + '" (' + prop.type + ' expected)' );
+					continue;
 				}
 
-				if ( !( self.isInstanceOf( val, desc.type ) ) ) {
-					throw new ValidationError( 'Wrong type for property: ' + prop + ' ' +  val );
+				if ( prop[ 'enum' ] && $.inArray( val, prop[ 'enum' ] ) === -1 ) {
+					errors.push( 'Value ' + JSON.stringify( val ) + ' for property "' + key + '" is not one of ' + JSON.stringify( prop['enum'] ) );
 				}
+			}
 
-				if ( desc[ 'enum' ] && $.inArray( val, desc[ 'enum' ] ) === -1 ) {
-					throw new ValidationError( 'Value "' + val + '" for property: ' + prop +
-						' not in enum ' + JSON.stringify( desc[ 'enum' ] ) );
-				}
-			} );
-
-			return true;
+			return errors;
 		},
 
 
@@ -200,47 +161,36 @@
 		 * @return {Object} Updated defaults for schema.
 		 */
 		setDefaults: function ( schemaName, schemaDefaults ) {
-			var schema = self.schemas[ schemaName ];
-			if ( schema === undefined ) {
-				self.warn( 'Setting defaults on unknown schema "' + schemaName + '"' );
-				schema = self.declareSchema( schemaName );
-			}
-			return $.extend( true, schema.defaults, schemaDefaults );
+			return self.declareSchema( schemaName, { defaults: schemaDefaults } );
 		},
 
 
 		/**
 		 * Prepares an event for dispatch by filling defaults for any
-		 * missing properties, invoking any properties that are
-		 * functions, and finally encapsulating the result in a generic
-		 * wrapper object that contains metadata about the event.
+		 * missing properties, and finally encapsulating the result in
+		 * a generic object that contains metadata about the event.
 		 *
 		 * @method prepare
 		 * @param {String} schemaName Canonical schema name.
-		 * @param {Object} event Event instance.
+		 * @param {Object} eventData Event instance.
 		 * @return {Object} Encapsulated event.
 		 */
-		prepare: function ( schemaName, event ) {
-			var prop, schema = self.schemas[ schemaName ];
+		prepare: function ( schemaName, eventData ) {
+			var schema = self.getSchema( schemaName ),
+				event = $.extend( true, {}, schema.defaults, eventData ),
+				errors = self.validate( event, schema.schema ),
+				valid = !errors.length;
 
-			if ( schema === undefined ) {
-				self.warn( 'Got event with unknown schema "' + schemaName + '"' );
-				schema = self.declareSchema( schemaName );
-			}
-
-			event = $.extend( true, {}, schema.defaults, event );
-			for ( prop in event ) {
-				if ( typeof event[ prop ] === 'function' ) {
-					event[ prop ] = event[ prop ].call( event );
-				}
+			while ( errors.length ) {
+				mw.track( 'eventlogging.error', '[' + schema.title + '] ' + errors.pop() );
 			}
 
 			return {
 				event            : event,
-				clientValidated  : self.isValid( event, schemaName ),
-				revision         : schema.revision,
-				schema           : schemaName,
-				webHost          : window.location.hostname,
+				clientValidated  : valid,
+				revision         : schema.revision || -1,
+				schema           : schema.title,
+				webHost          : location.hostname,
 				wiki             : mw.config.get( 'wgDBname' )
 			};
 		},
@@ -249,18 +199,13 @@
 		 * Constructs the EventLogging URI based on the base URI and the
 		 * encoded and stringified data.
 		 *
-		 * @method getEventLoggingUri
+		 * @method makeBeaconUrl
 		 * @param {Object} data Payload to send
 		 * @return {String|Boolean} The URI to log the event.
-		 *  false if the baseUri doesn't exist.
 		 */
-		getEventLoggingUri: function ( data ) {
-			var baseUri = mw.config.get( 'wgEventLoggingBaseUri' );
-			if ( !baseUri ) {
-				return false;
-			} else {
-				return baseUri + '?' + encodeURIComponent( JSON.stringify( data ) ) + ';';
-			}
+		makeBeaconUrl: function ( data ) {
+			var queryString = encodeURIComponent( JSON.stringify( data ) );
+			return baseUrl + '?' + queryString + ';';
 		},
 
 		/**
@@ -275,7 +220,7 @@
 		 */
 		dispatch: function ( data ) {
 			var beacon = document.createElement( 'img' ),
-				uri = self.getEventLoggingUri( data ),
+				uri = self.makeBeaconUrl( data ),
 				deferred = $.Deferred();
 
 			if ( !uri ) {
@@ -312,7 +257,7 @@
 		 */
 		logPersistentEvent: function ( schemaName, eventInstance ) {
 			var data = self.prepare( schemaName, eventInstance ),
-				uri = self.getEventLoggingUri( data ),
+				uri = self.makeBeaconUrl( data ),
 				deferred = $.Deferred();
 
 			if ( !uri ) {
@@ -333,7 +278,6 @@
 
 			return deferred.promise();
 		},
-
 		/**
 		 * Construct and transmit to a remote server a record of some event
 		 * having occurred. Events are represented as JavaScript objects that
@@ -343,22 +287,18 @@
 		 *
 		 * @method logEvent
 		 * @param {String} schemaName Canonical schema name.
-		 * @param {Object} eventInstance Event instance.
-		 * @return {jQuery.Promise} jQuery Promise object for the logging call
+		 * @param {Object} eventData Event object.
+		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
-		logEvent: function ( schemaName, eventInstance ) {
-			return self.dispatch( self.prepare( schemaName, eventInstance ) );
+		logEvent: function ( schemaName, eventData ) {
+			return self.dispatch( self.prepare( schemaName, eventData ) );
 		}
 	};
 
-	if ( !mw.config.get( 'wgEventLoggingBaseUri' ) ) {
-		self.warn( '"$wgEventLoggingBaseUri" is not set.' );
-	}
-
-	// Output `mw.eventLog.warn` calls to the browser console, if available.
-	if ( typeof console === 'object' && typeof console.warn === 'function' ) {
-		mw.trackSubscribe( 'eventlogging.warning', function ( topic, warning ) {
-			console.warn( warning );
+	// Output validation errors to the browser console, if available.
+	if ( console && console.error ) {
+		mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
+			console.error( error );
 		} );
 	}
 
