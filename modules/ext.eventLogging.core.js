@@ -113,8 +113,8 @@
 		validate: function ( obj, schema ) {
 			var errors = [], key, val, prop;
 
-			if ( $.isEmptyObject( schema.properties ) ) {
-				errors.push( 'Unknown schema' );
+			if ( !schema || !schema.properties ) {
+				errors.push( 'Missing or empty schema' );
 				return errors;
 			}
 
@@ -156,15 +156,14 @@
 
 
 		/**
-		 * Sets default values to be applied to all subsequent events belonging
-		 * to a schema. Note that `setDefaults` does not validate, but the
-		 * complete event object (including defaults) is validated prior to
-		 * dispatch.
+		 * Sets default property values for events belonging to a particular schema.
+		 * If default values have already been declared, the new defaults are merged
+		 * on top.
 		 *
 		 * @method setDefaults
-		 * @param {String} schemaName Canonical schema name.
-		 * @param {Object} schemaDefaults Default values for schema's events.
-		 * @return {Object} Updated defaults for schema.
+		 * @param {String} schemaName The name of the schema.
+		 * @param {Object} schemaDefaults A map of property names to default values.
+		 * @return {Object} Combined defaults for schema.
 		 */
 		setDefaults: function ( schemaName, schemaDefaults ) {
 			return self.declareSchema( schemaName, { defaults: schemaDefaults } );
@@ -172,9 +171,9 @@
 
 
 		/**
-		 * Prepares an event for dispatch by filling defaults for any
-		 * missing properties, and finally encapsulating the result in
-		 * a generic object that contains metadata about the event.
+		 * Prepares an event for dispatch by filling defaults for any missing
+		 * properties and by encapsulating the event object in an object which
+		 * contains metadata about the event itself.
 		 *
 		 * @method prepare
 		 * @param {String} schemaName Canonical schema name.
@@ -215,75 +214,19 @@
 		},
 
 		/**
-		 * Encodes a JavaScript object as percent-encoded JSON and
-		 * pushes it to the server using a GET request. This request
-		 * is sent by requesting an image with the source as the
-		 * required EventLogging URI.
+		 * Transfer data to a remote server by making a lightweight HTTP
+		 * request to the specified URL.
 		 *
-		 * @method dispatch
-		 * @param {Object} data Payload to send.
-		 * @return {jQuery.Promise} jQuery Promise object for the logging call
+		 * @method sendBeacon
+		 * @param {String} url URL to request from the server.
+		 * @return undefined
 		 */
-		dispatch: function ( data ) {
-			var beacon = document.createElement( 'img' ),
-				uri = self.makeBeaconUrl( data ),
-				deferred = $.Deferred();
+		sendBeacon: !baseUrl
+			? $.noop
+			: navigator.sendBeacon
+				? function ( url ) { navigator.sendBeacon( url ); }
+				: function ( url ) { document.createElement( 'img' ).src = url; },
 
-			if ( !uri ) {
-				deferred.rejectWith( data, [ data ] );
-				return deferred.promise();
-			}
-
-			// Browsers trigger `onerror` event on HTTP 204 replies to image
-			// requests. Thus, confusingly, `onerror` indicates success.
-			$( beacon ).on( 'error', function () {
-				deferred.resolveWith( data, [ data ] );
-			} );
-
-			beacon.src = uri;
-			return deferred.promise();
-		},
-
-		/**
-		 * Asynchronously initiate logging for event data. The method returns a
-		 * promise that indicates whether the method successfully queued the data.
-		 * Even if it is queued for delivery, there is no guarantee it will ever be
-		 * delivered. Currently, the only backend is sendBeacon, so if that is not
-		 * available, the promise will be rejected.
-		 * NOTE: This is an experimental method.
-		 *
-		 * @method logPersistentEvent
-		 * @experimental
-		 * @param {String} schemaName Canonical schema name.
-		 * @param {Object} eventInstance Event instance.
-		 * @return {jQuery.Promise} jQuery Promise object for the logging call. The promise would
-		 *  have been resolved or rejected before the function returns. The first argument passed
-		 *  to the callback is the data itself and the second one is a string with the status.
-		 *  Even when the deferred is resolved it only means that the data has been queued to be sent.
-		 */
-		logPersistentEvent: function ( schemaName, eventInstance ) {
-			var data = self.prepare( schemaName, eventInstance ),
-				uri = self.makeBeaconUrl( data ),
-				deferred = $.Deferred();
-
-			if ( !uri ) {
-				deferred.rejectWith( data, [ data, 'no-base-uri' ] );
-				return deferred.promise();
-			}
-
-			if ( navigator.sendBeacon === undefined ) {
-				deferred.rejectWith( data, [ data, 'no-browser-support' ] );
-				return deferred.promise();
-			}
-
-			if ( navigator.sendBeacon( uri ) ) {
-				deferred.resolveWith( data, [ data, 'queued' ] );
-			} else {
-				deferred.rejectWith( data, [ data, 'could-not-queue' ]  );
-			}
-
-			return deferred.promise();
-		},
 		/**
 		 * Construct and transmit to a remote server a record of some event
 		 * having occurred. Events are represented as JavaScript objects that
@@ -297,8 +240,11 @@
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
 		logEvent: function ( schemaName, eventData ) {
-			return self.dispatch( self.prepare( schemaName, eventData ) );
+			var event = self.prepare( schemaName, eventData );
+			self.sendBeacon( self.makeBeaconUrl( event ) );
+			return $.Deferred().resolveWith( event, [ event ] ).promise();
 		}
+
 	};
 
 	// Output validation errors to the browser console, if available.
