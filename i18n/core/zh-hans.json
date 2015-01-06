@@ -3,7 +3,8 @@
 		"authors": [
 			"Yfdyh000",
 			"Mywood",
-			"Impersonator 1"
+			"Impersonator 1",
+			"Liuxinyu970226"
 		]
 	},
 	"eventlogging-desc": "从客户端代码记录事件日志的框架",
@@ -11,5 +12,7 @@
 	"eventlogging-revision-id": "版本$1",
 	"eventlogging-code-sample-logging-on-server-side": "PHP 日志",
 	"eventlogging-code-sample-module-setup": "设置PHP以供JavaScript日志记录",
-	"eventlogging-code-sample-logging-on-client-side": "JavaScript 日志"
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript 日志",
+	"eventlogging-error-move-source": "架构页面无法被重命名",
+	"eventlogging-error-move-destination": "页面无法重命名为架构页面"
 }
