@@ -120,7 +120,7 @@
 
 			for ( key in obj ) {
 				if ( !schema.properties.hasOwnProperty( key ) ) {
-					errors.push( 'Undeclared property "' + key + '"' );
+					errors.push( mw.format( 'Undeclared property "$1"', key ) );
 				}
 			}
 
@@ -129,19 +129,25 @@
 
 				if ( !obj.hasOwnProperty( key ) ) {
 					if ( prop.required ) {
-						errors.push( 'Missing property "' + key + '"' );
+						errors.push( mw.format( 'Missing property "$1"', key ) );
 					}
 					continue;
 				}
 				val = obj[ key ];
 
 				if ( !( self.isInstanceOf( val, prop.type ) ) ) {
-					errors.push( 'Value ' + JSON.stringify( val ) + ' is the wrong type for property "' + key + '" (' + prop.type + ' expected)' );
+					errors.push( mw.format(
+						'Value $1 is the wrong type for property "$2" ($3 expected)',
+						JSON.stringify( val ), key, prop.type
+					) );
 					continue;
 				}
 
 				if ( prop[ 'enum' ] && $.inArray( val, prop[ 'enum' ] ) === -1 ) {
-					errors.push( 'Value ' + JSON.stringify( val ) + ' for property "' + key + '" is not one of ' + JSON.stringify( prop['enum'] ) );
+					errors.push( mw.format(
+						'Value $1 for property "$2" is not one of $3',
+						JSON.stringify( val ), key, JSON.stringify( prop['enum'] )
+					) );
 				}
 			}
 
@@ -182,7 +188,7 @@
 				valid = !errors.length;
 
 			while ( errors.length ) {
-				mw.track( 'eventlogging.error', '[' + schema.title + '] ' + errors.pop() );
+				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, errors.pop() ) );
 			}
 
 			return {
