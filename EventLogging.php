@@ -97,28 +97,6 @@ $wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchema
 // Helpers
 
 /**
- * Backward-compatibility alias for EventLogging::logEvent
- * @deprecated use EventLogging::logEvent instead.
- */
-function efLogServerSideEvent( $schemaName, $revId, $event ) {
-	wfDeprecated( __FUNCTION__ );
-	return EventLogging::logEvent( $schemaName, $revId, $event );
-}
-
-/**
- * Takes a string of JSON data and formats it for readability.
- * @param string $json
- * @return string|null: Formatted JSON or null if input was invalid.
- */
-function efBeautifyJson( $json ) {
-	$decoded = FormatJson::decode( $json, true );
-	if ( !is_array( $decoded ) ) {
-		return NULL;
-	}
-	return FormatJson::encode( $decoded, true );
-}
-
-/**
  * Validates object against JSON Schema.
  *
  * @throws JsonSchemaException: If the object fails to validate.

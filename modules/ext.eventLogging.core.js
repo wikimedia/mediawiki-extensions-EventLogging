@@ -185,7 +185,6 @@
 				mw.track( 'eventlogging.error', '[' + schema.title + '] ' + errors.pop() );
 			}
 
-
 			return {
 				event            : event,
 				clientValidated  : valid,

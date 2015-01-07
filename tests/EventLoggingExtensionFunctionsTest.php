@@ -72,18 +72,4 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 		$this->setExpectedException( 'JsonSchemaException' );
 		efSchemaValidate( self::$invalidObject, self::$validSchema );
 	}
-
-
-	/**
-	 * Tests beautification of JSON.
-	 * Beautification of JSON should only introduce non-significant
-	 * whitespace changes.
-	 *
-	 * @covers efJsonBeautify
-	 */
-	function testBeautifyJson() {
-		$pretty = efBeautifyJson( self::UGLY_JSON );
-		$this->assertJsonStringEqualsJsonString( $pretty, self::UGLY_JSON );
-		$this->assertContains( "\n", $pretty );
-	}
 }
