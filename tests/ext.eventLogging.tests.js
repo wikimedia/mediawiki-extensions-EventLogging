@@ -3,19 +3,22 @@
 	'use strict';
 
 	var earthquakeSchema = {
-			description: 'Record of a history earthquake',
-			properties: {
-				epicenter: {
-					type: 'string',
-					'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
-					required: true
-				},
-				magnitude: {
-					type: 'number',
-					required: true
-				},
-				article: {
-					type: 'string'
+			revision: 123,
+			schema: {
+				description: 'Record of a history earthquake',
+				properties: {
+					epicenter: {
+						type: 'string',
+						'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
+						required: true
+					},
+					magnitude: {
+						type: 'number',
+						required: true
+					},
+					article: {
+						type: 'string'
+					}
 				}
 			}
 		},
@@ -71,10 +74,7 @@
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
-			mw.eventLog.declareSchema( 'earthquake', {
-				schema: earthquakeSchema,
-				revision: 'TEST'
-			} );
+			mw.eventLog.declareSchema( 'earthquake', earthquakeSchema );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );
 		},
 		teardown: function () {
@@ -88,28 +88,18 @@
 	} );
 
 
-	QUnit.test( 'assertValid', validationCases.length + 1, function ( assert ) {
-		assert.ok( mw.eventLog.assertValid( {
-			epicenter: 'Valdivia',
-			magnitude: 9.5
-		}, 'earthquake' ), 'Non-required fields may be omitted' );
+	QUnit.test( 'validate', validationCases.length + 1, function ( assert ) {
+		var meta = mw.eventLog.getSchema( 'earthquake' ),
+			errors = mw.eventLog.validate( {
+				epicenter: 'Valdivia',
+				magnitude: 9.5
+			}, meta.schema );
+
+		assert.ok( !errors.length, 'Non-required fields may be omitted' );
 
 		$.each( validationCases, function ( _, vCase ) {
-			assert.throws( function () {
-				mw.eventLog.assertValid( vCase.args, 'earthquake' );
-			}, vCase.regex, vCase.msg );
-		} );
-	} );
-
-	QUnit.test( 'isValid', validationCases.length + 1, function ( assert ) {
-
-		assert.ok( mw.eventLog.isValid( {
-			epicenter: 'Valdivia',
-			magnitude: 9.5
-		}, 'earthquake' ), 'Non-required fields may be omitted' );
-
-		$.each( validationCases, function ( _, vCase ) {
-			assert.assertFalse( mw.eventLog.isValid( vCase.args, 'earthquake' ), vCase.msg );
+			errors = mw.eventLog.validate( vCase.args, meta.schema );
+			assert.ok( errors.length );
 		} );
 	} );
 
@@ -125,27 +115,24 @@
 		} );
 	} );
 
-	QUnit.asyncTest( 'setDefaults', 2, function ( assert ) {
+	QUnit.test( 'setDefaults', 1, function ( assert ) {
+		var prepared, defaults;
 
-		assert.deepEqual( mw.eventLog.setDefaults( 'earthquake', {
+		defaults = mw.eventLog.setDefaults( 'earthquake', {
 			article: '[[1960 Valdivia earthquake]]',
 			epicenter: 'Valdivia'
-		} ), {
-			article: '[[1960 Valdivia earthquake]]',
-			epicenter: 'Valdivia'
-		}, 'setDefaults returns defaults' );
+		} );
 
-		mw.eventLog.logEvent( 'earthquake', {
+		prepared = mw.eventLog.prepare( 'earthquake', {
 			article: '[[1575 Valdivia earthquake]]',
 			magnitude: 9.5
-		} ).always( function ( e ) {
-			assert.deepEqual( e.event, {
-				article: '[[1575 Valdivia earthquake]]',
-				epicenter: 'Valdivia',
-				magnitude: 9.5
-			}, 'Logged event is annotated with defaults' );
-			QUnit.start();
 		} );
+
+		assert.deepEqual( prepared.event, {
+			article: '[[1575 Valdivia earthquake]]',
+			epicenter: 'Valdivia',
+			magnitude: 9.5
+		}, 'Logged event is annotated with defaults' );
 	} );
 
 
@@ -171,6 +158,10 @@
 		timestamp: {
 			valid: [ +new Date(), new Date() ],
 			invalid: [ -1, 'yesterday', NaN ]
+		},
+		array: {
+			valid: [ [], [ 42 ] ],
+			invalid: [ -1, {}, undefined ],
 		}
 	}, function ( type, cases ) {
 		var asserts = cases.valid.length + cases.invalid.length;
