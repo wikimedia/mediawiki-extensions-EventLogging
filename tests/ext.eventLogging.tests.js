@@ -26,14 +26,14 @@
 		validationCases = [
 			{
 				args: {},
-				regex: /Missing/,
+				regex: /^Missing property/,
 				msg: 'Empty, omitting all optional and required fields.'
 			},
 			{
 				args: {
 					epicenter: 'Valdivia'
 				},
-				regex: /Missing/,
+				regex: /^Missing property/,
 				msg: 'Empty, omitting one optional and one required field.'
 			},
 			{
@@ -41,7 +41,7 @@
 					epicenter: 'Valdivia',
 					article: '[[1960 Valdivia earthquake]]'
 				},
-				regex: /Missing/,
+				regex: /^Missing property/,
 				msg: 'Required fields must be present.'
 			},
 			{
@@ -49,7 +49,7 @@
 					epicenter: 'Valdivia',
 					magnitude: '9.5'
 				},
-				regex: /Wrong/,
+				regex: /wrong type for property/,
 				msg: 'Values must be instances of declared type'
 			},
 			{
@@ -58,7 +58,7 @@
 					magnitude: 9.5,
 					depth: 33
 				},
-				regex: /Unrecognized/,
+				regex: /^Undeclared property/,
 				msg: 'Unrecognized fields fail validation'
 			},
 			{
@@ -66,7 +66,7 @@
 					epicenter: 'Tōhoku',
 					magnitude: 9.0
 				},
-				regex: /enum/,
+				regex: /is not one of/,
 				msg: 'Enum fields constrain possible values'
 			}
 		];
@@ -95,11 +95,11 @@
 				magnitude: 9.5
 			}, meta.schema );
 
-		assert.ok( !errors.length, 'Non-required fields may be omitted' );
+		assert.propEqual( errors, [], 'Non-required fields may be omitted' );
 
 		$.each( validationCases, function ( _, vCase ) {
 			errors = mw.eventLog.validate( vCase.args, meta.schema );
-			assert.ok( errors.length );
+			assert.ok( errors.join('').match( vCase.regex ), vCase.msg );
 		} );
 	} );
 
