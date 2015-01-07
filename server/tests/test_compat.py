@@ -75,4 +75,4 @@ class MonotonicClockTestCase(unittest.TestCase):
         """``monotonic_clock`` is indeed monotonic."""
         t1 = eventlogging.monotonic_clock()
         t2 = eventlogging.monotonic_clock()
-        self.assertGreater(t2, t1)
+        self.assertGreaterEqual(t2, t1)
