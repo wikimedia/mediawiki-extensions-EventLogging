@@ -185,11 +185,12 @@
 				mw.track( 'eventlogging.error', '[' + schema.title + '] ' + errors.pop() );
 			}
 
+
 			return {
 				event            : event,
 				clientValidated  : valid,
 				revision         : schema.revision || -1,
-				schema           : schema.title,
+				schema           : schemaName,
 				webHost          : location.hostname,
 				wiki             : mw.config.get( 'wgDBname' )
 			};
