@@ -69,9 +69,8 @@ php_lexer = lexers.get_lexer_by_name('php', startinline=True)
 server_software = 'EventLogging/%s' % eventlogging.__version__
 
 seq_ids = itertools.count()
-parser = eventlogging.LogParser('%q %l %n %t %h')
-log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s %(SEQ_ID)d '
-           '%(TIME)s %(REMOTE_ADDR)s')
+parser = eventlogging.LogParser('%q %t %h')
+log_fmt = '?%(QUERY_STRING)s %(TIME)s %(REMOTE_ADDR)s'
 
 
 def heading(caption=None):
