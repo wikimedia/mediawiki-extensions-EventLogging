@@ -34,13 +34,13 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 *  );
 	 * @endcode
 	 *
-	 * @throws MWException if 'schema' or 'revision' keys are missing.
+	 * @throws Exception if 'schema' or 'revision' keys are missing.
 	 * @param array $args
 	 */
 	function __construct( $args ) {
 		foreach( array( 'schema', 'revision' ) as $key ) {
 			if ( !isset( $args[ $key ] ) ) {
-				throw new MWException( "ResourceLoaderSchemaModule params must set '$key' key." );
+				throw new Exception( "ResourceLoaderSchemaModule params must set '$key' key." );
 			}
 		}
 
@@ -48,7 +48,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 			// Events will not validate on the Python server if this is defined
 			// wrong.  Enforce it here as well, so it can be more easily caught
 			// during local development.
-			throw new MWException( "Revision for schema \"{$args['schema']}\" must be given as an integer" );
+			throw new Exception( "Revision for schema \"{$args['schema']}\" must be given as an integer" );
 		}
 
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
