@@ -19,8 +19,6 @@
   formatters:
      %h         Client IP
      %j         JSON object
-     %l         Hostname of origin
-     %n         Sequence ID
      %q         Query-string-encoded JSON
      %t         Timestamp in NCSA format.
 

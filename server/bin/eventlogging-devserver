@@ -69,8 +69,9 @@ php_lexer = lexers.get_lexer_by_name('php', startinline=True)
 server_software = 'EventLogging/%s' % eventlogging.__version__
 
 seq_ids = itertools.count()
-parser = eventlogging.LogParser('%q %t %h')
-log_fmt = '?%(QUERY_STRING)s %(TIME)s %(REMOTE_ADDR)s'
+parser = eventlogging.LogParser('%q %{recvFrom}s %{seqId}d %t %h')
+log_fmt = ('?%(QUERY_STRING)s %(SERVER_NAME)s '
+           '%(SEQ_ID)d %(TIME)s %(REMOTE_ADDR)s')
 
 
 def heading(caption=None):
@@ -179,10 +180,9 @@ sys.stderr.write('''
 ''' + highlight('''
 # Ensure the following values are set in LocalSettings.php:
 require_once( "$IP/extensions/EventLogging/EventLogging.php" );
-$wgEventLoggingBaseUri = 'http://%s:%s/event.gif';
 $wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
 
-# Listening to events.\n''' % (args.host, args.port), php_lexer, formatter))
+# Listening to events.\n''', php_lexer, formatter))
 
 try:
     httpd.serve_forever()

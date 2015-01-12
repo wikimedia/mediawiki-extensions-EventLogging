@@ -138,7 +138,7 @@ class LogParser(object):
 
         # Compiled regexp.
         format = re.sub(' ', r'\s+', format)
-        raw = re.sub(r'(?<!%)%({(\w+)})?([dhijlnqst])', self._repl, format)
+        raw = re.sub(r'(?<!%)%({(\w+)})?([dhijqst])', self._repl, format)
         self.re = re.compile(raw)
 
     def _repl(self, spec):
