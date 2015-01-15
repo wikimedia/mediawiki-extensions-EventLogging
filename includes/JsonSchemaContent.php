@@ -91,22 +91,14 @@ class JsonSchemaContent extends JsonContent {
 	 */
 	public function objectRow( $key, $val ) {
 		$th = Xml::elementClean( 'th', array(), $key );
-		if ( is_array( $val ) ) {
-			$td = Xml::tags( 'td', array(), $this->objectTable( $val ) );
-		} elseif ( $key === '$ref' ) {
+		if ( $key === '$ref' ) {
 			list( , $revId ) = explode( '/', $val );
 			$title = Revision::newFromId( $revId )->getTitle();
 			$link = Linker::link( $title, htmlspecialchars( $val ), array(),
 				array( 'oldid' => $revId ) );
 			$td = Xml::tags( 'td', array( 'class' => 'value' ), $link );
 		} else {
-			if ( is_string( $val ) ) {
-				$val = '"' . $val . '"';
-			} else {
-				$val = FormatJson::encode( $val );
-			}
-
-			$td = Xml::elementClean( 'td', array( 'class' => 'value' ), $val );
+			$td = self::valueCell( $val );
 		}
 
 		return Xml::tags( 'tr', array(), $th . $td );
