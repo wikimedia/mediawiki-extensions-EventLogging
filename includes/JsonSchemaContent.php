@@ -9,7 +9,6 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-
 /**
  * Represents the content of a JSON Schema article.
  */
@@ -17,16 +16,16 @@ class JsonSchemaContent extends JsonContent {
 
 	const DEFAULT_RECURSION_LIMIT = 3;
 
-	function __construct( $text ) {
-		parent::__construct( $text, 'JsonSchema' );
+	public function __construct( $text, $modelId = 'JsonSchema' ) {
+		parent::__construct( $text, $modelId );
 	}
 
 	/**
 	 * Resolve a JSON reference to a schema.
-	 * @param string $ref Schema reference with format 'Title/Revision'.
+	 * @param string $ref Schema reference with format 'Title/Revision'
 	 * @return array|bool
 	 */
-	static function resolve( $ref ) {
+	public static function resolve( $ref ) {
 		list( $title, $revId ) = explode( '/', $ref );
 		$rs = new RemoteSchema( $title, $revId );
 		return $rs->get();
@@ -34,11 +33,11 @@ class JsonSchemaContent extends JsonContent {
 
 	/**
 	 * Recursively resolve references in a schema.
-	 * @param array $schema Schema object to expand.
-	 * @param int $recursionLimit Maximum recursion limit.
-	 * @return array: Expanded schema object.
+	 * @param array $schema Schema object to expand
+	 * @param int $recursionLimit Maximum recursion limit
+	 * @return array Expanded schema object
 	 */
-	static function expand( $schema, $recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
+	public static function expand( $schema, $recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
 		return array_map( function ( $value ) use( $recursionLimit ) {
 			if ( is_array( $value ) && $recursionLimit > 0 ) {
 				if ( isset( $value['$ref'] ) ) {
@@ -53,17 +52,17 @@ class JsonSchemaContent extends JsonContent {
 
 	/**
 	 * Decodes the JSON schema into a PHP associative array.
-	 * @return array: Schema array.
+	 * @return array Schema array
 	 */
-	function getJsonData() {
+	public function getJsonData() {
 		return FormatJson::decode( $this->getNativeData(), true );
 	}
 
 	/**
-	 * @throws JsonSchemaException: If invalid.
-	 * @return bool: True if valid.
+	 * @throws JsonSchemaException If content is invalid
+	 * @return bool True if valid
 	 */
-	function validate() {
+	public function validate() {
 		$schema = $this->getJsonData();
 		if ( !is_array( $schema ) ) {
 			throw new JsonSchemaException( wfMessage( 'eventlogging-invalid-json' )->parse() );
@@ -72,9 +71,9 @@ class JsonSchemaContent extends JsonContent {
 	}
 
 	/**
-	 * @return bool: Whether content is valid JSON Schema.
+	 * @return bool Whether content is valid JSON Schema.
 	 */
-	function isValid() {
+	public function isValid() {
 		try {
 			return parent::isValid() && $this->validate();
 		} catch ( JsonSchemaException $e ) {
@@ -87,21 +86,24 @@ class JsonSchemaContent extends JsonContent {
 	 * Override this to support $ref
 	 * @param string $key
 	 * @param mixed $val
-	 * @return string: HTML.
+	 * @return string HTML
 	 */
 	public function objectRow( $key, $val ) {
-		$th = Xml::elementClean( 'th', array(), $key );
 		if ( $key === '$ref' ) {
-			list( , $revId ) = explode( '/', $val );
-			$title = Revision::newFromId( $revId )->getTitle();
-			$link = Linker::link( $title, htmlspecialchars( $val ), array(),
-				array( 'oldid' => $revId ) );
-			$td = Xml::tags( 'td', array( 'class' => 'value' ), $link );
-		} else {
-			$td = self::valueCell( $val );
+			$valParts = explode( '/', $val, 2 );
+			if ( !isset( $valParts[1] ) ) {
+				$revId = $valParts[1];
+				$title = Revision::newFromId( $revId )->getTitle();
+				$link = Linker::link( $title, htmlspecialchars( $val ), array(),
+					array( 'oldid' => $revId ) );
+
+				$th = Xml::elementClean( 'th', array(), $key );
+				$td = Xml::tags( 'td', array( 'class' => 'value' ), $link );
+				return Html::rawElement( 'tr', array(), $th . $td );
+			}
 		}
 
-		return Xml::tags( 'tr', array(), $th . $td );
+		return parent::objectRow( $key, $val );
 	}
 
 	/**
@@ -109,7 +111,7 @@ class JsonSchemaContent extends JsonContent {
 	 * use a schema.
 	 * @param string $dbKey DB key of schema article
 	 * @param int $revId Revision ID of schema article
-	 * @return array: Nested array with each sub-array having a language, header
+	 * @return array Nested array with each sub-array having a language, header
 	 *  (message key), and code
 	 */
 	public function getCodeSamples( $dbKey, $revId ) {
@@ -144,7 +146,7 @@ class JsonSchemaContent extends JsonContent {
 	 * @param Title $title
 	 * @param int|null $revId Revision ID
 	 * @param ParserOptions|null $options
-	 * @param boolean $generateHtml Whether or not to generate HTML
+	 * @param bool $generateHtml Whether or not to generate HTML
 	 * @return ParserOutput
 	 */
 	public function getParserOutput( Title $title, $revId = null,
