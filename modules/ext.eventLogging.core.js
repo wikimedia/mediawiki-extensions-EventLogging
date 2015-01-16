@@ -224,7 +224,7 @@
 		sendBeacon: !baseUrl
 			? $.noop
 			: navigator.sendBeacon
-				? function ( url ) { navigator.sendBeacon( url ); }
+				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
 				: function ( url ) { document.createElement( 'img' ).src = url; },
 
 		/**
