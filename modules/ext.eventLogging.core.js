@@ -31,8 +31,7 @@
 	 *
 	 *
 	 * @class eventLog
-	 * @namespace mediaWiki
-	 * @static
+	 * @singleton
 	 */
 	self = mw.eventLog = {
 
@@ -50,8 +49,7 @@
 		 * Load a schema from the schema registry.
 		 * If the schema does not exist, it will be initialised.
 		 *
-		 * @method getSchema
-		 * @param {String} schemaName Name of schema.
+		 * @param {string} schemaName Name of schema.
 		 * @return {Object} Schema object.
 		 */
 		getSchema: function ( schemaName ) {
@@ -66,11 +64,10 @@
 		 * `ResourceLoaderSchemaModule` instances generate JavaScript code that
 		 * invokes this method.
 		 *
-		 * @method declareSchema
-		 * @param {String} schemaName Name of schema.
-		 * @param {Object} [meta] An object describing a schema:
-		 *   @param {Number} meta.revision Revision ID.
-		 *   @param {Object} meta.schema The schema itself.
+		 * @param {string} schemaName Name of schema.
+		 * @param {Object} meta An object describing a schema:
+		 * @param {Number} meta.revision Revision ID.
+		 * @param {Object} meta.schema The schema itself.
 		 * @return {Object} The registered schema.
 		 */
 		declareSchema: function ( schemaName, meta ) {
@@ -82,10 +79,9 @@
 		 * Checks whether a JavaScript value conforms to a specified
 		 * JSON Schema type.
 		 *
-		 * @method isInstanceOf
 		 * @param {Object} value Object to test.
-		 * @param {String} type JSON Schema type.
-		 * @return {Boolean} Whether value is instance of type.
+		 * @param {string} type JSON Schema type.
+		 * @return {boolean} Whether value is instance of type.
 		 */
 		isInstanceOf: function ( value, type ) {
 			var jsType = $.type( value );
@@ -105,7 +101,6 @@
 		/**
 		 * Check whether a JavaScript object conforms to a JSON Schema.
 		 *
-		 * @method validate
 		 * @param {Object} obj Object to validate.
 		 * @param {Object} schema JSON Schema object.
 		 * @return {Array} An array of validation errors (empty if valid).
@@ -160,8 +155,7 @@
 		 * If default values have already been declared, the new defaults are merged
 		 * on top.
 		 *
-		 * @method setDefaults
-		 * @param {String} schemaName The name of the schema.
+		 * @param {string} schemaName The name of the schema.
 		 * @param {Object} schemaDefaults A map of property names to default values.
 		 * @return {Object} Combined defaults for schema.
 		 */
@@ -175,8 +169,7 @@
 		 * properties and by encapsulating the event object in an object which
 		 * contains metadata about the event itself.
 		 *
-		 * @method prepare
-		 * @param {String} schemaName Canonical schema name.
+		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object} eventData Event instance.
 		 * @return {Object} Encapsulated event.
 		 */
@@ -204,9 +197,8 @@
 		 * Constructs the EventLogging URI based on the base URI and the
 		 * encoded and stringified data.
 		 *
-		 * @method makeBeaconUrl
 		 * @param {Object} data Payload to send
-		 * @return {String|Boolean} The URI to log the event.
+		 * @return {string|boolean} The URI to log the event.
 		 */
 		makeBeaconUrl: function ( data ) {
 			var queryString = encodeURIComponent( JSON.stringify( data ) );
@@ -217,8 +209,7 @@
 		 * Transfer data to a remote server by making a lightweight HTTP
 		 * request to the specified URL.
 		 *
-		 * @method sendBeacon
-		 * @param {String} url URL to request from the server.
+		 * @param {string} url URL to request from the server.
 		 * @return undefined
 		 */
 		sendBeacon: !baseUrl
@@ -234,8 +225,7 @@
 		 * event object may (or must) contain and their type. This method
 		 * represents the public client-side API of EventLogging.
 		 *
-		 * @method logEvent
-		 * @param {String} schemaName Canonical schema name.
+		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object} eventData Event object.
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
