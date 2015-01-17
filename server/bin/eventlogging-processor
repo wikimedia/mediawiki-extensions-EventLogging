@@ -61,4 +61,6 @@ for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
     except Exception as e:
         logging.error('Unable to decode: %s (%s)', raw_event, e)
     else:
+        event.pop('clientValidated', None)
+        event.pop('isTruncated', None)
         pub.send_unicode(json.dumps(event) + '\n')

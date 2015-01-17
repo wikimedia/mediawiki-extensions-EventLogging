@@ -147,34 +147,10 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # we should have stored one key as events can be batched together
         self.assertEqual(len(uniquekeys), 1)
 
-    def test_grouping_of_events_separately(self):
-        """Events belonging to the same schema with a different
-        set of optional fields are grouped separately
-        This might introspect the code too much, but
-        how else can we test?"""
-        another_event = next(self.event_generator)
-        # clientValidated is an optional field, remove it
-        del another_event['clientValidated']
-
-        event_list = [another_event, self.event]
-
-        queue = [eventlogging.flatten(event_list.pop())
-                 for _ in range(len(event_list))]
-        queue.sort(key=eventlogging.jrm.insert_sort_key)
-
-        uniquekeys = []
-        batches = itertools.groupby(queue, eventlogging.jrm.insert_sort_key)
-        for k, events in batches:
-            uniquekeys.append(k)
-        # we should have stored two keys as events cannot be grouped together
-        self.assertEqual(len(uniquekeys), 2)
-
     def test_insert_events_with_different_set_of_optional_fields(self):
         """Events belonging to the same schema with a different
         set of optional fields are inserted correctly"""
         another_event = next(self.event_generator)
-        # clientValidated is an optional field, remove it
-        del another_event['clientValidated']
         # ensure both events get inserted?
         event_list = [another_event, self.event]
         eventlogging.store_sql_events(self.meta, event_list)

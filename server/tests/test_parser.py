@@ -35,15 +35,14 @@ class LogParserTestCase(unittest.TestCase):
         parser = eventlogging.LogParser(
             '%q %{recvFrom}s %{seqId}d %t %h %{userAgent}i')
         raw = ('?%7B%22wiki%22%3A%22testwiki%22%2C%22schema%22%3A%22Generic'
-               '%22%2C%22revision%22%3A13%2C%22clientValidated%22%3Atrue%2C'
-               '%22event%22%3A%7B%22articleId%22%3A1%2C%22articleTitle%22%3'
-               'A%22H%C3%A9ctor%20Elizondo%22%7D%2C%22webHost%22%3A%22test.'
-               'wikipedia.org%22%7D; cp3022.esams.wikimedia.org 132073 2013'
-               '-01-19T23:16:38 86.149.229.149 Mozilla/5.0')
+               '%22%2C%22revision%22%3A13%2C%22event%22%3A%7B%22articleId%2'
+               '2%3A1%2C%22articleTitle%22%3A%22H%C3%A9ctor%20Elizondo%22%7'
+               'D%2C%22webHost%22%3A%22test.wikipedia.org%22%7D; cp3022.esa'
+               'ms.wikimedia.org 132073 2013-01-19T23:16:38 86.149.229.149 '
+               'Mozilla/5.0')
         parsed = {
             'uuid': '799341a01ba957c79b15dc4d2d950864',
             'recvFrom': 'cp3022.esams.wikimedia.org',
-            'clientValidated': True,
             'wiki': 'testwiki',
             'webHost': 'test.wikipedia.org',
             'seqId': 132073,
@@ -63,8 +62,8 @@ class LogParserTestCase(unittest.TestCase):
         """Parser test: server-side events."""
         parser = eventlogging.LogParser('%{seqId}d EventLogging %j')
         raw = ('99 EventLogging {"revision":123,"timestamp":1358627115,"sche'
-               'ma":"FakeSchema","clientValidated":true,"wiki":"enwiki","eve'
-               'nt":{"action":"save\\u0020page"},"recvFrom":"fenari"}')
+               'ma":"FakeSchema","wiki":"enwiki","event":{"action":"save\\u0'
+               '020page"},"recvFrom":"fenari"}')
         parsed = {
             'uuid': '67cc2c1afa5752ba80bbbd7c5fc41f28',
             'recvFrom': 'fenari',
@@ -72,7 +71,6 @@ class LogParserTestCase(unittest.TestCase):
             'wiki': 'enwiki',
             'seqId': 99,
             'schema': 'FakeSchema',
-            'clientValidated': True,
             'revision': 123,
             'event': {
                 'action': 'save page'

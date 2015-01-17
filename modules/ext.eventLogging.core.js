@@ -176,20 +176,18 @@
 		prepare: function ( schemaName, eventData ) {
 			var schema = self.getSchema( schemaName ),
 				event = $.extend( true, {}, schema.defaults, eventData ),
-				errors = self.validate( event, schema.schema ),
-				valid = !errors.length;
+				errors = self.validate( event, schema.schema );
 
 			while ( errors.length ) {
 				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, errors.pop() ) );
 			}
 
 			return {
-				event            : event,
-				clientValidated  : valid,
-				revision         : schema.revision || -1,
-				schema           : schemaName,
-				webHost          : location.hostname,
-				wiki             : mw.config.get( 'wgDBname' )
+				event    : event,
+				revision : schema.revision || -1,
+				schema   : schemaName,
+				webHost  : location.hostname,
+				wiki     : mw.config.get( 'wgDBname' )
 			};
 		},
 

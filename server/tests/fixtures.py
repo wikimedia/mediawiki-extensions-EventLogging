@@ -28,12 +28,6 @@ _schemas = {
                 'type': 'object',
                 'required': True
             },
-            'isTruncated': {
-                'type': 'boolean'
-            },
-            'clientValidated': {
-                'type': 'boolean'
-            },
             'wiki': {
                 'type': 'string',
                 'required': True
@@ -105,11 +99,9 @@ _event = {
     'seqId': 12345,
     'clientIp': '127.0.0.1',
     'timestamp': 1358791834912,
-    'isTruncated': False,
     'wiki': 'enwiki',
     'webHost': 'en.m.wikipedia.org',
     'recvFrom': 'fenari',
-    'clientValidated': True,
     'revision': 123,
     'schema': 'TestSchema',
     'uuid': 'babb66f34a0a5de3be0c6513088be33e'
@@ -123,11 +115,9 @@ _incorrectly_serialized_empty_event = {
     'seqId': 12345,
     'clientIp': '127.0.0.1',
     'timestamp': 1358791834912,
-    'isTruncated': False,
     'wiki': 'enwiki',
     'webHost': 'en.m.wikipedia.org',
     'recvFrom': 'fenari',
-    'clientValidated': True,
     'revision': 123,
     'schema': 'TestSchema',
     'uuid': 'babb66f34a0a5de3be0c6513088be33e'
