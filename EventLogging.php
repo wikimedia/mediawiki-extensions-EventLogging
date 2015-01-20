@@ -219,6 +219,6 @@ $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
 // Unit Tests
 
 $wgHooks[ 'UnitTestsList' ][] = function ( &$files ) {
-	$files += glob( __DIR__ . '/tests/*Test.php' );
+	$files = array_merge( $files, glob( __DIR__ . '/tests/*Test.php' ) );
 	return true;
 };
