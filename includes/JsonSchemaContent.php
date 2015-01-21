@@ -174,13 +174,4 @@ class JsonSchemaContent extends JsonContent {
 
 		return $out;
 	}
-
-	/**
-	 * Generates HTML representation of content.
-	 * @return string: HTML representation.
-	 */
-	function getHtml() {
-		$schema = $this->getJsonData();
-		return is_array( $schema ) ? self::objectTable( $schema ) : '';
-	}
 }
