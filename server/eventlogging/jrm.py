@@ -262,8 +262,7 @@ def schema_mapper(schema):
     properties = {k: v for k, v in items(schema.get('properties', {}))
                   if k not in NO_DB_PROPERTIES}
 
-    # Every table gets an integer auto-increment primary key column `id`
-    columns = [sqlalchemy.Column('id', sqlalchemy.Integer, primary_key=True)]
+    columns = []
 
     for name, col in items(flatten(properties, f=_property_getter)):
         col.name = name
