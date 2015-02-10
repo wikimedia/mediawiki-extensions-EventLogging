@@ -36,7 +36,6 @@ class EventLogging {
 			return false;
 		}
 
-		wfProfileIn( __METHOD__ );
 		$remoteSchema = new RemoteSchema( $schemaName, $revId );
 		$schema = $remoteSchema->get();
 
@@ -66,7 +65,7 @@ class EventLogging {
 		$json = static::serializeEvent( $encapsulated );
 
 		MWLoggerLegacyLogger::emit( $json . "\n", $wgEventLoggingFile );
-		wfProfileOut( __METHOD__ );
+
 		return true;
 	}
 
