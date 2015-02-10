@@ -103,6 +103,8 @@ def sql_writer(uri, replace=False):
         while worker.is_alive():
             event = (yield)
             events.append(event)
+            if len(events) >= 100:
+                worker.ready.set()
     except GeneratorExit:
         # Allow the worker to complete any work that is
         # already in progress before shutting down.
