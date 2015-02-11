@@ -89,8 +89,7 @@ def sql_writer(uri, replace=False):
     # Don't pass 'replace' parameter to SQLAlchemy.
     uri = uri_delete_query_item(uri, 'replace')
 
-    engine = sqlalchemy.create_engine(uri)
-    meta = sqlalchemy.MetaData(bind=engine)
+    meta = sqlalchemy.MetaData(bind=uri)
     events = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
