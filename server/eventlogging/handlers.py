@@ -97,6 +97,13 @@ def sql_writer(uri, replace=False):
                             args=(meta, events, replace))
     worker.start()
 
+    if meta.bind.dialect.name == 'mysql':
+        @sqlalchemy.event.listens_for(sqlalchemy.pool.Pool, 'checkout')
+        def ping(dbapi_connection, connection_record, connection_proxy):
+            # Just before executing an insert, call mysql_ping() to verify
+            # that the connection is alive, and reconnect if necessary.
+            dbapi_connection.ping(True)
+
     try:
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
