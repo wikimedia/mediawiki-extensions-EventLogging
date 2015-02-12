@@ -175,11 +175,12 @@ def _insert_sequential(table, events, replace=False):
     """Insert events into the database by issuing an INSERT for each one."""
     for event in events:
         insert = table.insert(values=event)
+        if replace:
+            insert = (insert
+                      .prefix_with('IGNORE', dialect='mysql')
+                      .prefix_with('OR REPLACE', dialect='sqlite'))
         try:
             insert.execute()
-        except sqlalchemy.exc.IntegrityError as e:
-            if not replace or 'unique' not in str(e).lower():
-                raise
         except sqlalchemy.exc.ProgrammingError:
             table.create()
             insert.execute()
