@@ -20,8 +20,8 @@ import logging.handlers
 import os
 import socket
 import sys
-
 import sqlalchemy
+import traceback
 
 from .utils import PeriodicThread, uri_delete_query_item
 from .factory import writes, reads
@@ -88,12 +88,13 @@ def sql_writer(uri, replace=False):
     """Writes to an RDBMS, creating tables for SCIDs and rows for events."""
     # Don't pass 'replace' parameter to SQLAlchemy.
     uri = uri_delete_query_item(uri, 'replace')
-
+    logger = logging.getLogger('Log')
     meta = sqlalchemy.MetaData(bind=uri)
     events = collections.deque()
+    eventsBatch = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
-                            args=(meta, events, replace))
+                            args=(meta, eventsBatch, replace))
     worker.start()
 
     if meta.bind.dialect.name == 'mysql':
@@ -102,25 +103,35 @@ def sql_writer(uri, replace=False):
             # Just before executing an insert, call mysql_ping() to verify
             # that the connection is alive, and reconnect if necessary.
             dbapi_connection.ping(True)
-
     try:
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
+        batchSize = 1000
         while worker.is_alive():
             event = (yield)
             events.append(event)
-            if len(events) >= 100:
+            if len(events) >= batchSize and not worker.ready.isSet():
+                logger.debug('Queue is large, sending to child thread')
+                for i in range(0, batchSize):
+                    eventsBatch.append(events.popleft())
                 worker.ready.set()
     except GeneratorExit:
         # Allow the worker to complete any work that is
         # already in progress before shutting down.
+        logger.debug('Stopped main thread via GeneratorExit')
+        logger.debug('Events when stopped %s', len(events))
         worker.stop()
         worker.join()
+    except Exception:
+        t = traceback.format_exc()
+        logger.debug('Exception caught %s', t)
+        raise
     finally:
         # If there are any events remaining in the queue,
         # process them in the main thread before exiting.
         if events:
             store_sql_events(meta, events)
+            store_sql_events(meta, eventsBatch)
 
 
 @writes('file')

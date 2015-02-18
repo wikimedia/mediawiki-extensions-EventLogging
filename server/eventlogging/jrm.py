@@ -12,7 +12,7 @@ from __future__ import division, unicode_literals
 import collections
 import datetime
 import itertools
-
+import logging
 import sqlalchemy
 
 from .compat import items
@@ -212,7 +212,9 @@ def insert_sort_key(event):
 
 def store_sql_events(meta, events, replace=False):
     """Store events in the database."""
-    queue = [flatten(events.pop()) for _ in range(len(events))]
+    logger = logging.getLogger('Log')
+    lenEvents = len(events)
+    queue = [flatten(events.pop()) for _ in range(lenEvents)]
     queue.sort(key=insert_sort_key)
 
     dialect = meta.bind.dialect
@@ -226,6 +228,7 @@ def store_sql_events(meta, events, replace=False):
         prepared_events = [prepare(event) for event in events]
         table = get_table(meta, scid)
         insert(table, prepared_events, replace)
+    logger.debug("Data inserted %s", str(lenEvents))
 
 
 def _property_getter(item):

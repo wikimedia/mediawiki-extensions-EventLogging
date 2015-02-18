@@ -14,6 +14,7 @@ import logging
 import re
 import sys
 import threading
+import traceback
 
 from .compat import items, monotonic_clock
 from .factory import get_reader
@@ -31,32 +32,41 @@ class PeriodicThread(threading.Thread):
         self.interval = interval
         self.ready = threading.Event()
         self.stopping = threading.Event()
+        self.logger = logging.getLogger('Log')
         super(PeriodicThread, self).__init__(*args, **kwargs)
 
     def run(self):
         while not self.stopping.is_set():
-            # Run the target function. Check the clock before
-            # and after to determine how long it took to run.
-            time_start = monotonic_clock()
-            self._Thread__target(*self._Thread__args, **self._Thread__kwargs)
-            time_stop = monotonic_clock()
+            try:
+                # Run the target function. Check the clock before
+                # and after to determine how long it took to run.
+                time_start = monotonic_clock()
+                self._Thread__target(*self._Thread__args,
+                                     **self._Thread__kwargs)
+                time_stop = monotonic_clock()
 
-            run_duration = time_stop - time_start
+                run_duration = time_stop - time_start
 
-            # Subtract the time it took the target function to run
-            # from the desired run interval. The result is how long
-            # we have to sleep before the next run.
-            time_to_next_run = self.interval - run_duration
-
-            if self.ready.wait(time_to_next_run):
-                # If the internal flag of `self.ready` was set, we were
-                # interrupted mid-nap to run immediately. But before we
-                # do, we reset the flag.
-                self.ready.clear()
+                # Subtract the time it took the target function to run
+                # from the desired run interval. The result is how long
+                # we have to sleep before the next run.
+                time_to_next_run = self.interval - run_duration
+                self.logger.debug('Run duration of thread execution: %s',
+                                  str(run_duration))
+                if self.ready.wait(time_to_next_run):
+                    # If the internal flag of `self.ready` was set, we were
+                    # interrupted mid-nap to run immediately. But before we
+                    # do, we reset the flag.
+                    self.ready.clear()
+            except Exception, e:
+                trace = traceback.format_exc()
+                self.logger.debug('Child thread exiting, exception %s', trace)
+                raise e
 
     def stop(self):
         """Graceful stop: stop once the current iteration is complete."""
         self.stopping.set()
+        self.logger.debug('Stopping child thread gracefully')
 
 
 def uri_delete_query_item(uri, key):
@@ -158,4 +168,4 @@ class EventConsumer(object):
 
 def setup_logging():
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
-                        format='%(asctime)s %(message)s')
+                        format='%(asctime)s (%(threadName)-10s) %(message)s')
