@@ -109,7 +109,10 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 			->method( 'get' )
 			->with(
 				$this->stringContains( '?' ),
-				$this->lessThan( RemoteSchema::LOCK_TIMEOUT ) )
+				$this->equalTo( array(
+					'timeout' => RemoteSchema::LOCK_TIMEOUT * 0.8
+				) )
+			)
 			->will( $this->returnValue( FormatJson::encode( $this->statusSchema ) ) );
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
