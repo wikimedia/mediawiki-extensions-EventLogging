@@ -129,7 +129,9 @@ class RemoteSchema {
 		if ( !$this->lock() ) {
 			return false;
 		}
-		$raw = $this->http->get( $this->getUri(), self::LOCK_TIMEOUT * 0.8 );
+		$raw = $this->http->get( $this->getUri(), array(
+			'timeout' => self::LOCK_TIMEOUT * 0.8
+		) );
 		return FormatJson::decode( $raw, true ) ?: false;
 	}
 }
