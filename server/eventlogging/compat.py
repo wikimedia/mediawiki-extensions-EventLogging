@@ -36,20 +36,20 @@ except ImportError:
 
 
 __all__ = ('http_get', 'integer_types', 'items', 'json', 'monotonic_clock',
-           'string_types', 'unquote_plus', 'urisplit', 'urlopen', 'uuid5')
+           'string_types', 'unquote_plus', 'urisplit', 'urlopen', 'urlencode', 'uuid5')
 
 PY3 = sys.version_info[0] == 3
 
 if PY3:
     items = operator.methodcaller('items')
     from urllib.request import urlopen
-    from urllib.parse import (unquote_to_bytes as unquote, urlsplit,
+    from urllib.parse import (unquote_to_bytes as unquote, urlsplit, urlencode,
                               parse_qsl, SplitResult)
     string_types = str,
     integer_types = int,
 else:
     items = operator.methodcaller('iteritems')
-    from urllib import unquote
+    from urllib import unquote, urlencode
     from urllib2 import urlopen
     from urlparse import urlsplit, parse_qsl, SplitResult
     string_types = basestring,

@@ -3,17 +3,22 @@
 """
   eventlogging-forwarder
   ----------------------
-  UDP -> ZeroMQ socket forwarding. Reads line-oriented input from UDP socket
-  and writes it to a ZeroMQ TCP PUB socket bound to the same port number.
+  Arbitrary input -> ZeroMQ socket forwarding. Reads line-oriented input from
+  an input stream and writes it to a ZeroMQ TCP PUB socket bound to the same
+  port number.
 
   Because ZeroMQ is message-oriented, we cannot simply use recv_into to read
-  bytes from the UDP socket into the ZMQ socket. We use socket.makefile() to
+  bytes from the input into the ZMQ socket. We use socket.makefile() to
   facilitate reading and writing whole lines.
 
-  usage: eventlogging-udp-zmq-forwarder [-h] port
+  usage: eventlogging-forwarder [-h] input port
 
   positional arguments:
-    port        Port to forward
+    input    input uri
+      Examples:
+        udp://localhost:8599
+        kafka://?brokers=broker1:9092,broker2:9092&topic=foo&group_id=bar
+    port     ZeroMQ TCP port to forward to
 
   optional arguments:
     -h, --help  show this help message and exit
@@ -31,11 +36,14 @@ sys.setdefaultencoding('utf-8')
 import argparse
 import logging
 
-from eventlogging import iter_unicode, pub_socket, udp_socket, setup_logging
+from eventlogging import pub_socket, setup_logging, get_reader, uri_force_raw
 
 
 ap = argparse.ArgumentParser(description='ZeroMQ UDP => PUB Device',
                              fromfile_prefix_chars='@')
+# Forward raw events.  This keeps the reader
+# attempting to parse the input as json.
+ap.add_argument('input', help='URI of raw input stream', type=uri_force_raw)
 ap.add_argument('port', type=int, help='Port to forward')
 ap.add_argument('--count', action='store_true',
                 help='Prepend an autoincrementing ID to each message')
@@ -43,12 +51,13 @@ args = ap.parse_args()
 
 setup_logging()
 
-logging.info('Forwarding udp:%d => tcp:%d...', args.port, args.port)
+logging.info('Forwarding %s => tcp:%d...', args.input, args.port)
+input_stream = get_reader(args.input)
 sock_out = pub_socket(args.port)
-sock_in = udp_socket('0.0.0.0', args.port)
 
-f = iter_unicode(sock_in)
 if args.count:
-    f = (str(id) + '\t' + msg for id, msg in enumerate(f))
-for line in f:
+    input_stream = (
+        '{0}\t{1}'.format(str(id), msg) for id, msg in enumerate(input_stream)
+    )
+for line in input_stream:
     sock_out.send_string(line)

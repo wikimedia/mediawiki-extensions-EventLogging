@@ -16,13 +16,13 @@ import sys
 import threading
 import traceback
 
-from .compat import items, monotonic_clock
+from .compat import items, monotonic_clock, urisplit, urlencode
 from .factory import get_reader
 
 
 __all__ = ('EventConsumer', 'PeriodicThread', 'flatten', 'is_subset_dict',
            'setup_logging', 'unflatten', 'update_recursive',
-           'uri_delete_query_item')
+           'uri_delete_query_item', 'uri_append_query_items', 'uri_force_raw')
 
 
 class PeriodicThread(threading.Thread):
@@ -75,6 +75,28 @@ def uri_delete_query_item(uri, key):
         separator, trailing_ampersand = match.groups()
         return separator if trailing_ampersand else ''
     return re.sub('([?&])%s=[^&]*(&?)' % re.escape(key), repl, uri)
+
+
+def uri_append_query_items(uri, params):
+    """
+    Appends uri with the dict params as key=value pairs using
+    urlencode and returns the result.
+    """
+    return "{0}{1}{2}".format(
+        uri,
+        '&' if urisplit(uri).query else '?',
+        urlencode(params)
+    )
+
+
+def uri_force_raw(uri):
+    """
+    Returns a uri that sets raw=True as a query param if it isn't already set.
+    """
+    if 'raw=True' not in uri:
+        return uri_append_query_items(uri, {'raw': True})
+    else:
+        return uri
 
 
 def is_subset_dict(a, b):
@@ -169,3 +191,5 @@ class EventConsumer(object):
 def setup_logging():
     logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
                         format='%(asctime)s (%(threadName)-10s) %(message)s')
+    # Set kafka module logging level to INFO, DEBUG is too noisy.
+    logging.getLogger("kafka").setLevel(logging.INFO)

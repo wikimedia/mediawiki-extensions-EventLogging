@@ -87,7 +87,10 @@ def iter_unicode(stream):
     """Iterator; read and decode unicode strings from a stream."""
     if hasattr(stream, 'recv_unicode'):
         return iter(stream.recv_unicode, None)
-    return iter_file(stream)
+    elif hasattr(stream, 'fileno'):
+        return iter_file(stream)
+    else:
+        return (line.decode('utf-8', 'replace') for line in stream)
 
 
 def iter_json(stream):

@@ -69,8 +69,8 @@ def mongodb_writer(uri, database='events'):
 @writes('kafka')
 def kafka_writer(brokers, topic='eventlogging'):
     """Write events to Kafka, keyed by SCID."""
-    from kafka.client import KafkaClient
-    from kafka.producer import KeyedProducer
+    from kafka import KafkaClient
+    from kafka import KeyedProducer
 
     kafka = KafkaClient(brokers)
     producer = KeyedProducer(kafka)
@@ -199,6 +199,23 @@ def zeromq_subscriber(uri, socket_id=None, subscribe='', raw=False):
 
 
 @reads('udp')
-def udp_reader(uri, raw=False):
+def udp_reader(hostname, port, raw=False):
     """Reads data from a UDP socket."""
-    return stream(udp_socket(uri), raw)
+    return stream(udp_socket(hostname, port), raw)
+
+
+@reads('kafka')
+def kafka_reader(
+    brokers,
+    topic='eventlogging',
+    group_id='eventlogging',
+    raw=False
+):
+    """Reads events from Kafka"""
+    from kafka import KafkaConsumer
+    consumer = KafkaConsumer(
+        topic,
+        group_id=group_id,
+        metadata_broker_list=brokers
+    )
+    return stream((message.value for message in consumer), raw)

@@ -58,5 +58,6 @@ setup(
         "pygments>=1.5",
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
+        "kafka-python>=0.9.3"
     )
 )
