@@ -46,6 +46,16 @@
 		schemas: {},
 
 		/**
+		 * Maximum length in chars that a beacon url can have.
+		 * If a url is longer than that, the log may be truncated
+		 * by varnishncsa and result in validation problems.
+		 *
+		 * @property maxUrlSize
+		 * @type Number
+		 */
+		maxUrlSize: 1000,
+
+		/**
 		 * Load a schema from the schema registry.
 		 * If the schema does not exist, it will be initialised.
 		 *
@@ -204,6 +214,23 @@
 		},
 
 		/**
+		 * Checks whether a beacon url is short enough,
+		 * so that it does not get truncated by varnishncsa.
+		 *
+		 * @param {String} schemaName Canonical schema name.
+		 * @param {String} url Beacon url.
+		 * @return {String|undefined} The error message in case of error.
+		 *
+		 */
+		checkUrlSize: function ( schemaName, url ) {
+			if ( url.length > self.maxUrlSize ) {
+				var message = 'Url exceeds maximum length';
+				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, message ) );
+				return message;
+			}
+		},
+
+		/**
 		 * Transfer data to a remote server by making a lightweight HTTP
 		 * request to the specified URL.
 		 *
@@ -228,9 +255,18 @@
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
 		logEvent: function ( schemaName, eventData ) {
-			var event = self.prepare( schemaName, eventData );
-			self.sendBeacon( self.makeBeaconUrl( event ) );
-			return $.Deferred().resolveWith( event, [ event ] ).promise();
+			var event = self.prepare( schemaName, eventData ),
+				url = self.makeBeaconUrl( event ),
+				sizeError = self.checkUrlSize( schemaName, url ),
+				deferred = $.Deferred();
+
+			if ( !sizeError ) {
+				self.sendBeacon( url );
+				deferred.resolveWith( event, [ event ] );
+			} else {
+				deferred.rejectWith( event, [ event, sizeError ] );
+			}
+			return deferred.promise();
 		}
 
 	};
