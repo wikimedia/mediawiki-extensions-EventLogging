@@ -1,11 +1,11 @@
 #!/usr/bin/env python -OO
 # -*- coding: utf-8 -*-
 """
-  eventlogging-stream-processor
+  eventlogging-processor
   -----------------------------
   Transform raw log stream to JSON event stream
 
-  usage: eventlogging-stream-processor [-h] [--sid SID] format input output
+  usage: eventlogging-processor [-h] [--sid SID] format input output
 
   positional arguments:
     format      Format string
@@ -35,8 +35,9 @@ sys.setdefaultencoding('utf-8')
 import argparse
 import logging
 
-from eventlogging import (capsule_uuid, iter_unicode, json, LogParser,
-                          pub_socket, sub_socket, validate, setup_logging)
+from eventlogging import (capsule_uuid, LogParser, get_reader, get_writer,
+                          validate, setup_logging, uri_force_raw,
+                          uri_append_query_items)
 
 
 setup_logging()
@@ -44,16 +45,21 @@ setup_logging()
 ap = argparse.ArgumentParser(description='Raw log -> JSON stream',
                              fromfile_prefix_chars='@')
 ap.add_argument('format', help='Format string')
-ap.add_argument('input', help='URI of raw input stream')
+# Read in raw events.  This keeps the reader
+# attempting to parse the input as json.
+ap.add_argument('input', help='URI of raw input stream', type=uri_force_raw)
 ap.add_argument('output', help='URI of output stream')
 ap.add_argument('--sid', help='set input socket identity')
 args = ap.parse_args()
 
 parser = LogParser(args.format)
-pub = pub_socket(args.output)
+writer = get_writer(args.output)
 logging.info('Publishing JSON events on %s.', args.output)
 
-for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
+if args.sid:
+    args.input = uri_append_query_items(args.input, {'identity': args.sid})
+
+for raw_event in get_reader(args.input):
     try:
         event = parser.parse(raw_event)
         event.pop('clientValidated', None)
@@ -63,4 +69,4 @@ for raw_event in iter_unicode(sub_socket(args.input, identity=args.sid)):
     except Exception as e:
         logging.error('Unable to decode: %s (%s)', raw_event, e)
     else:
-        pub.send_unicode(json.dumps(event) + '\n')
+        writer.send(event)
