@@ -106,7 +106,7 @@ def sql_writer(uri, replace=False):
     try:
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
-        batchSize = 1000
+        batchSize = 400
         while worker.is_alive():
             event = (yield)
             events.append(event)
