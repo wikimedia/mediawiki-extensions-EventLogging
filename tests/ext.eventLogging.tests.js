@@ -115,6 +115,39 @@
 		} );
 	} );
 
+
+	$.each( {
+		'URL size is ok': {
+			size: mw.eventLog.maxUrlSize,
+			expected: undefined
+		},
+		'URL size is not ok': {
+			size: mw.eventLog.maxUrlSize + 1,
+			expected: 'Url exceeds maximum length'
+		}
+	}, function ( name, params ) {
+		QUnit.test( name, 1, function ( assert ) {
+			var url = new Array( params.size + 1 ).join( 'x' ),
+				result = mw.eventLog.checkUrlSize( 'earthquake', url );
+			assert.deepEqual( result, params.expected, name );
+		} );
+	} );
+
+	QUnit.asyncTest( 'logTooLongEvent', 1, function ( assert ) {
+		var event = {
+			epicenter: 'Valdivia',
+			magnitude: 9.5,
+			article: new Array( mw.eventLog.maxUrlSize + 1).join( 'x' )
+		};
+
+		mw.eventLog.logEvent( 'earthquake', event ).always( function ( e, error ) {
+			QUnit.start();
+			assert.deepEqual( error, 'Url exceeds maximum length',
+				'logEvent promise resolves with error' );
+		} );
+	} );
+
+
 	QUnit.test( 'setDefaults', 1, function ( assert ) {
 		var prepared, defaults;
 
