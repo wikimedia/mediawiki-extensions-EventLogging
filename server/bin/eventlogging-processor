@@ -67,6 +67,6 @@ for raw_event in get_reader(args.input):
         validate(event)
         event['uuid'] = capsule_uuid(event)
     except Exception as e:
-        logging.error('Unable to decode: %s (%s)', raw_event, e)
+        logging.error('Unable to decode: %s (%s)', raw_event, e.message)
     else:
         writer.send(event)
