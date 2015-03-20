@@ -85,14 +85,23 @@ def iter_files(path):
 
 
 def iter_pubs(config_dir):
-    """Discover local EventLogging publishers."""
+    """Discover local EventLogging publishers. Assumes really a tcp stream """
+    # TODO Kafka client side stream not reported
+
     publishers = {}
+    logger = logging.getLogger('Log')
+
     for filename in iter_files(config_dir):
         name = re.sub(r'[^A-Za-z0-9]+', '_', os.path.basename(filename))
+
         with open(filename) as f:
-            raw, valid = re.findall(r'tcp://[^:]+:(\d+)', f.read())
-            publishers[('%s.raw' % name, 'overall.raw')] = raw
-            publishers[('%s.valid' % name, 'overall.valid')] = valid
+            matches = re.findall(r'tcp://[^:]+:(\d+)', f.read())
+            if len(matches) > 1:
+                logger.debug("Reporting metrics for %s", filename)
+                raw = matches[0]
+                valid = matches[1]
+                publishers[('%s.raw' % name, 'overall.raw')] = raw
+                publishers[('%s.valid' % name, 'overall.valid')] = valid
     return publishers
 
 
