@@ -67,31 +67,34 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 
 
 	/**
-	 * Gets the last modified timestamp of this module.
+	 * Get the last modified timestamp of this module.
+	 *
 	 * The last modified timestamp controls caching. Because revisions are
-	 * immutable, we don't need to get the revision's timestamp. We
-	 * simply return a timestamp of 1 (one second past epoch) if we were
-	 * unable to retrieve the schema, or the revision id if successful.
-	 * This ensures that clients will retrieve the schema when it becomes
-	 * available.
+	 * immutable, we don't need to fetch the RemoteSchema, nor get the revision's
+	 * timestamp. We simply hash our module definition.
+	 *
 	 * @param ResourceLoaderContext $context
 	 * @return integer: Unix timestamp.
 	 */
 	function getModifiedTime( ResourceLoaderContext $context ) {
-		global $wgCacheEpoch;
-
-		$unixTimeCacheEpoch = wfTimestamp( TS_UNIX, $wgCacheEpoch );
-		if ( $this->schema->get() ) {
-			// ResourceLoader will set the module's modification time to be
-			// either the value returned by this method, or the Unix time
-			// number of $wgCacheEpoch, whichever is greater. To ensure that
-			// the modification time is always updated whenever the schema
-			// revision changes, we add the revision ID to the Unix time number
-			// of $wgCacheEpoch.
-			return $unixTimeCacheEpoch + $this->schema->revision;
-		} else {
+		if ( !$this->schema->get() ) {
+			// If we failed to fetch, hold off on rolling over definition timestamp
 			return 1;
 		}
+		return $this->getDefinitionMtime( $context );
+	}
+
+	/**
+	 * Get the definition summary for this module.
+	 *
+	 * @param ResourceLoaderContext $context
+	 * @return array
+	 */
+	public function getDefinitionSummary( ResourceLoaderContext $context ) {
+		return array(
+			'class' => get_class( $this ),
+			'revision' => $this->schema->revision,
+		);
 	}
 
 
