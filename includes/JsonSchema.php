@@ -100,7 +100,7 @@ class JsonUtil {
 	/*
 	 * Return a JSON-schema type for arbitrary data $foo
 	 */
-	public static function getType ( $foo ) {
+	public static function getType( $foo ) {
 		if ( is_null( $foo ) ) {
 			return null;
 		}
