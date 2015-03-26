@@ -8,11 +8,11 @@ class RemoteSchema {
 
 	const LOCK_TIMEOUT = 20;
 
+	public $title;
+	public $revision;
 	public $cache;
 	public $http;
 	public $key;
-	public $revision;
-	public $title;
 	public $content = false;
 
 
@@ -23,7 +23,7 @@ class RemoteSchema {
 	 * @param ObjectCache $cache (optional) cache client.
 	 * @param Http $http (optional) HTTP client.
 	 */
-	function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
+	public function __construct( $title, $revision, $cache = NULL, $http = NULL ) {
 		global $wgEventLoggingDBname;
 
 		$this->title = $title;
@@ -33,12 +33,11 @@ class RemoteSchema {
 		$this->key = "schema:{$wgEventLoggingDBname}:{$title}:{$revision}";
 	}
 
-
 	/**
 	 * Retrieves schema content.
 	 * @return array|bool: Schema or false if irretrievable.
 	 */
-	function get() {
+	public function get() {
 		if ( $this->content ) {
 			return $this->content;
 		}
@@ -56,12 +55,23 @@ class RemoteSchema {
 		return $this->content;
 	}
 
+	/**
+	 * Returns an object containing serializable properties.
+	 * @implements JsonSerializable
+	 */
+	public function jsonSerialize() {
+		return array(
+			'schema'   => $this->get() ?: new StdClass(),
+			'revision' => $this->revision
+		);
+	}
+
 
 	/**
 	 * Retrieves content from memcached.
 	 * @return array:bool: Schema or false if not in cache.
 	 */
-	function memcGet() {
+	protected function memcGet() {
 		return $this->cache->get( $this->key );
 	}
 
@@ -69,8 +79,24 @@ class RemoteSchema {
 	/**
 	 * Store content in memcached.
 	 */
-	function memcSet() {
+	protected function memcSet() {
 		return $this->cache->set( $this->key, $this->content );
+	}
+
+
+	/**
+	 * Retrieves the schema using HTTP.
+	 * Uses a memcached lock to avoid cache stampedes.
+	 * @return array|boolean: Schema or false if unable to fetch.
+	 */
+	protected function httpGet() {
+		if ( !$this->lock() ) {
+			return false;
+		}
+		$raw = $this->http->get( $this->getUri(), array(
+			'timeout' => self::LOCK_TIMEOUT * 0.8
+		) );
+		return FormatJson::decode( $raw, true ) ?: false;
 	}
 
 
@@ -78,7 +104,7 @@ class RemoteSchema {
 	 * Acquire a mutex lock for HTTP retrieval.
 	 * @return bool: Whether lock was successfully acquired.
 	 */
-	function lock() {
+	protected function lock() {
 		return $this->cache->add( $this->key . ':lock', 1, self::LOCK_TIMEOUT );
 	}
 
@@ -87,7 +113,7 @@ class RemoteSchema {
 	 * Constructs URI for retrieving schema from remote wiki.
 	 * @return string: URI.
 	 */
-	function getUri() {
+	protected function getUri() {
 		global $wgEventLoggingSchemaApiUri;
 
 		if ( substr( $wgEventLoggingSchemaApiUri, -10 ) === '/index.php' ) {
@@ -105,33 +131,5 @@ class RemoteSchema {
 		}
 
 		return wfAppendQuery( $wgEventLoggingSchemaApiUri, $q );
-	}
-
-
-	/**
-	 * Returns an object containing serializable properties.
-	 * @implements JsonSerializable
-	 */
-	function jsonSerialize() {
-		return array(
-			'schema'   => $this->get() ?: new StdClass(),
-			'revision' => $this->revision
-		);
-	}
-
-
-	/**
-	 * Retrieves the schema using HTTP.
-	 * Uses a memcached lock to avoid cache stampedes.
-	 * @return array|boolean: Schema or false if unable to fetch.
-	 */
-	function httpGet() {
-		if ( !$this->lock() ) {
-			return false;
-		}
-		$raw = $this->http->get( $this->getUri(), array(
-			'timeout' => self::LOCK_TIMEOUT * 0.8
-		) );
-		return FormatJson::decode( $raw, true ) ?: false;
 	}
 }
