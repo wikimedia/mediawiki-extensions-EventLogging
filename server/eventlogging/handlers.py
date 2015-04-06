@@ -141,6 +141,11 @@ def log_writer(path):
     log = logging.getLogger('Events')
     log.setLevel(logging.INFO)
     log.addHandler(handler)
+    # Don't propagate these events to the global logger
+    # used by eventlogging.  We don't want eventlogging
+    # daemons to print these event logs to stdout or stderr
+    # all the time.
+    log.propagate = False
 
     while 1:
         event = (yield)
