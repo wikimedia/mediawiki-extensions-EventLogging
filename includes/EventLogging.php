@@ -1,4 +1,6 @@
 <?php
+
+use MediaWiki\Logger\LegacyLogger;
 /**
  * PHP API for logging events
  *
@@ -21,7 +23,7 @@ class EventLogging {
 	 * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
 	 * false without logging anything.
 	 *
-	 * @see MWLoggerLegacyLogger::emit
+	 * @see LegacyLogger::emit
 	 *
 	 * @param string $schemaName Schema name.
 	 * @param int $revId revision ID of schema.
@@ -64,7 +66,7 @@ class EventLogging {
 
 		$json = static::serializeEvent( $encapsulated );
 
-		MWLoggerLegacyLogger::emit( $json . "\n", $wgEventLoggingFile );
+		LegacyLogger::emit( $json . "\n", $wgEventLoggingFile );
 
 		return true;
 	}
