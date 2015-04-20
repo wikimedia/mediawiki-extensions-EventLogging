@@ -112,11 +112,13 @@ def sql_writer(uri, replace=False):
             event = (yield)
             events.append(event)
             if len(events) >= batchSize and not worker.ready.isSet():
-                logger.debug('Queue is large, sending to child thread')
-                last_timestamp = str(event.get('timestamp', None))
-                logger.debug('Last event timestamp %s', last_timestamp)
+                logger.debug('Queue is large (%d), sending to child thread',
+                             len(events))
                 for i in range(0, batchSize):
-                    eventsBatch.append(events.popleft())
+                    event_to_batch = events.popleft()
+                    eventsBatch.append(event_to_batch)
+                last_timestamp = str(event_to_batch.get('timestamp', None))
+                logger.debug('Last event timestamp: %s', last_timestamp)
                 worker.ready.set()
     except GeneratorExit:
         # Allow the worker to complete any work that is
