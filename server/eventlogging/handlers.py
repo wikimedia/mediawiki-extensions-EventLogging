@@ -90,11 +90,11 @@ def sql_writer(uri, replace=False):
     uri = uri_delete_query_item(uri, 'replace')
     logger = logging.getLogger('Log')
     meta = sqlalchemy.MetaData(bind=uri)
-    events = collections.deque()
-    eventsBatch = collections.deque()
+    events = collections.defaultdict(list)
+    events_batch = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
-                            args=(meta, eventsBatch),
+                            args=(meta, events_batch),
                             kwargs={'replace': replace})
     worker.start()
 
@@ -107,19 +107,19 @@ def sql_writer(uri, replace=False):
     try:
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
-        batchSize = 400
+        batch_size = 100
         while worker.is_alive():
             event = (yield)
-            events.append(event)
-            if len(events) >= batchSize and not worker.ready.isSet():
-                logger.debug('Queue is large (%d), sending to child thread',
-                             len(events))
-                for i in range(0, batchSize):
-                    event_to_batch = events.popleft()
-                    eventsBatch.append(event_to_batch)
-                last_timestamp = str(event_to_batch.get('timestamp', None))
-                logger.debug('Last event timestamp: %s', last_timestamp)
-                worker.ready.set()
+            # Break the event stream by schema (and revision)
+            scid = (event['schema'], event['revision'])
+            scid_events = events[scid]
+            scid_events.append(event)
+            # TODO: Don't wait until len(scid_events) >= batch_size
+            # if the scid is very low traffic (could take too long).
+            if len(scid_events) >= batch_size:
+                logger.debug('%s_%s queue is large, sending to worker', *scid)
+                events_batch.append((scid, scid_events))
+                del events[scid]
     except GeneratorExit:
         # Allow the worker to complete any work that is
         # already in progress before shutting down.
@@ -134,9 +134,8 @@ def sql_writer(uri, replace=False):
     finally:
         # If there are any events remaining in the queue,
         # process them in the main thread before exiting.
-        if events:
-            store_sql_events(meta, events, replace=replace)
-            store_sql_events(meta, eventsBatch, replace=replace)
+        events_batch.extend(events.items())
+        store_sql_events(meta, events_batch, replace=replace)
 
 
 @writes('file')

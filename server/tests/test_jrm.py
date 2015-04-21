@@ -26,7 +26,8 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         """If an attempt is made to store an event for which no table
         exists, the schema is automatically retrieved and a suitable
         table generated."""
-        eventlogging.store_sql_events(self.meta, [self.event])
+        events_batch = [(TEST_SCHEMA_SCID, [self.event])]
+        eventlogging.store_sql_events(self.meta, events_batch)
         self.assertIn('TestSchema_123', self.meta.tables)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
@@ -60,7 +61,8 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
 
     def test_encoding(self):
         """Timestamps and unicode strings are correctly encoded."""
-        eventlogging.jrm.store_sql_events(self.meta, [self.event])
+        events_batch = [(TEST_SCHEMA_SCID, [self.event])]
+        eventlogging.jrm.store_sql_events(self.meta, events_batch)
         table = eventlogging.jrm.get_table(self.meta, TEST_SCHEMA_SCID)
         row = table.select().execute().fetchone()
         self.assertEqual(row['event_value'], '☆ 彡')
@@ -73,7 +75,8 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
     def test_reflection(self):
         """Tables which exist in the database but not in the MetaData cache are
         correctly reflected."""
-        eventlogging.store_sql_events(self.meta, [self.event])
+        events_batch = [(TEST_SCHEMA_SCID, [self.event])]
+        eventlogging.store_sql_events(self.meta, events_batch)
 
         # Tell Python to forget everything it knows about this database
         # by purging ``MetaData``. The actual data in the database is
@@ -88,14 +91,15 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         # The ``checkfirst`` arg to :func:`sqlalchemy.Table.create`
         # will ensure that we don't attempt to CREATE TABLE on the
         # already-existing table:
-        eventlogging.store_sql_events(self.meta, [self.event], True)
+        events_batch = [(TEST_SCHEMA_SCID, [self.event])]
+        eventlogging.store_sql_events(self.meta, events_batch, True)
         self.assertIn('TestSchema_123', self.meta.tables)
 
     def test_happy_case_insert_more_than_one_event(self):
         """Insert more than one event on database using batch_write"""
         another_event = next(self.event_generator)
-        event_list = [another_event, self.event]
-        eventlogging.store_sql_events(self.meta, event_list)
+        events_batch = [(TEST_SCHEMA_SCID, [another_event, self.event])]
+        eventlogging.store_sql_events(self.meta, events_batch)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
         s = sqlalchemy.sql.select([table])
@@ -110,11 +114,13 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         insert the other items.
         """
         # insert event
-        eventlogging.jrm.store_sql_events(self.meta, [self.event])
+        events_batch = [(TEST_SCHEMA_SCID, [self.event])]
+        eventlogging.jrm.store_sql_events(self.meta, events_batch)
         # now try to insert list of events in which this event is included
         another_event = next(self.event_generator)
         event_list = [another_event, self.event]
-        eventlogging.store_sql_events(self.meta, event_list, replace=True)
+        events_batch = [(TEST_SCHEMA_SCID, event_list)]
+        eventlogging.store_sql_events(self.meta, events_batch, replace=True)
 
         # we should still have to insert the other record though
         table = self.meta.tables['TestSchema_123']
@@ -152,8 +158,8 @@ class JrmTestCase(DatabaseTestMixin, unittest.TestCase):
         set of optional fields are inserted correctly"""
         another_event = next(self.event_generator)
         # ensure both events get inserted?
-        event_list = [another_event, self.event]
-        eventlogging.store_sql_events(self.meta, event_list)
+        events_batch = [(TEST_SCHEMA_SCID, [another_event, self.event])]
+        eventlogging.store_sql_events(self.meta, events_batch)
         table = self.meta.tables['TestSchema_123']
         # is the table on the db  and does it have the right data?
         s = sqlalchemy.sql.select([table])

@@ -201,21 +201,17 @@ def _insert_multi(table, events, replace=False):
 
 
 def insert_sort_key(event):
-    """Sort / group function that batches events that share the same
-    SCID and set of fields. We need to group together events that
-    belong to the same schema AND that have the same set of fields.
-    Please note that schemas allow for optional fields that might/might
-    not have been included in the event.
+    """Sort/group function that batches events that have the same
+    set of fields. Please note that schemas allow for optional fields
+    that might/might not have been included in the event.
     """
-    return (event['schema'], event['revision']), tuple(sorted(event))
+    return tuple(sorted(event))
 
 
-def store_sql_events(meta, events, replace=False):
-    """Store events in the database."""
+def store_sql_events(meta, events_batch, replace=False):
+    """Store events in the database.
+    It assumes that the events come broken down by scid."""
     logger = logging.getLogger('Log')
-    lenEvents = len(events)
-    queue = [flatten(events.pop()) for _ in range(lenEvents)]
-    queue.sort(key=insert_sort_key)
 
     dialect = meta.bind.dialect
     if (getattr(dialect, 'supports_multivalues_insert', False) or
@@ -224,11 +220,17 @@ def store_sql_events(meta, events, replace=False):
     else:
         insert = _insert_sequential
 
-    for (scid, _), events in itertools.groupby(queue, insert_sort_key):
-        prepared_events = [prepare(event) for event in events]
-        table = get_table(meta, scid)
-        insert(table, prepared_events, replace)
-    logger.debug("Data inserted %s", str(lenEvents))
+    while len(events_batch) > 0:
+        scid, scid_events = events_batch.pop()
+        prepared_events = [prepare(e) for e in scid_events]
+        # TODO: Avoid breaking the inserts down by same set of fields,
+        # instead force a default NULL, 0 or '' value for optional fields.
+        prepared_events.sort(key=insert_sort_key)
+        for _, grouper in itertools.groupby(prepared_events, insert_sort_key):
+            events = list(grouper)
+            table = get_table(meta, scid)
+            insert(table, events, replace)
+            logger.debug('Data inserted %d', len(events))
 
 
 def _property_getter(item):
@@ -245,9 +247,10 @@ def _property_getter(item):
 
 def prepare(event):
     """Prepare an event for insertion into the database."""
+    flat_event = flatten(event)
     for prop in NO_DB_PROPERTIES:
-        event.pop(prop, None)
-    return event
+        flat_event.pop(prop, None)
+    return flat_event
 
 
 def column_sort_key(column):
