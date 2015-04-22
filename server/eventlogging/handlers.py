@@ -94,7 +94,8 @@ def sql_writer(uri, replace=False):
     eventsBatch = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
-                            args=(meta, eventsBatch, replace))
+                            args=(meta, eventsBatch),
+                            kwargs={'replace': replace})
     worker.start()
 
     if meta.bind.dialect.name == 'mysql':
@@ -132,8 +133,8 @@ def sql_writer(uri, replace=False):
         # If there are any events remaining in the queue,
         # process them in the main thread before exiting.
         if events:
-            store_sql_events(meta, events)
-            store_sql_events(meta, eventsBatch)
+            store_sql_events(meta, events, replace=replace)
+            store_sql_events(meta, eventsBatch, replace=replace)
 
 
 @writes('file')
