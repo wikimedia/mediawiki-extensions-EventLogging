@@ -74,11 +74,13 @@
 
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
+			this.suppressWarnings();
 			mw.eventLog.declareSchema( 'earthquake', earthquakeSchema );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );
 		},
 		teardown: function () {
 			mw.eventLog.schemas = {};
+			this.restoreWarnings();
 		}
 	} ) );
 
