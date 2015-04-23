@@ -11,16 +11,16 @@
  * @module ext.eventLogging.core.js
  * @author Ori Livneh <ori@wikimedia.org>
  */
-( function ( mw, $, console ) {
+( function ( mw, $ ) {
 	'use strict';
 
 
-	var
+	var self,
 
 	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
 	// in EventLogging.php. If the default value of 'false' has not
 	// been overridden, events will not be sent to the server.
-	baseUrl = mw.config.get( 'wgEventLoggingBaseUri' ),
+	baseUrl = mw.config.get( 'wgEventLoggingBaseUri' );
 
 	/**
 	 * Client-side EventLogging API.
@@ -272,10 +272,8 @@
 	};
 
 	// Output validation errors to the browser console, if available.
-	if ( console && console.error ) {
-		mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
-			console.error( error );
-		} );
-	}
+	mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
+		mw.log.error( error );
+	} );
 
-} ( mediaWiki, jQuery, window.console ) );
+} ( mediaWiki, jQuery ) );
