@@ -55,11 +55,10 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	}
 
 	/**
-	 * Part of the ResourceLoader module interface.
-	 * Declares the core ext.eventLogging module as a dependency.
-	 * @return array: Module names.
+	 * @param ResourceLoaderContext $context
+	 * @return array Module names
 	 */
-	public function getDependencies() {
+	public function getDependencies( ResourceLoaderContext $context = null ) {
 		return array( 'ext.eventLogging' );
 	}
 

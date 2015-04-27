@@ -9,7 +9,7 @@
  *
  * @author Ori Livneh <ori@wikimedia.org>
  * @license GPL v2 or later
- * @version 0.8
+ * @version 0.8.1
  */
 
 // Credits
