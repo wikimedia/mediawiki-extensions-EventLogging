@@ -130,6 +130,11 @@ class ApiJsonSchema extends ApiBase {
 		$result = $this->getResult();
 		$result->addValue( null, 'title', $title->getText() );
 		foreach( $schema as $k => &$v ) {
+			if ( $k === 'properties' ) {
+				foreach ( $v as &$properties ) {
+					$properties[ApiResult::META_BC_BOOLS] = array( 'required' );
+				}
+			}
 			$result->addValue( null, $k, $v );
 		}
 	}
