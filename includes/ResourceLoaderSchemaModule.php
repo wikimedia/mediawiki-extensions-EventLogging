@@ -91,10 +91,11 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @return array
 	 */
 	public function getDefinitionSummary( ResourceLoaderContext $context ) {
-		return array(
-			'class' => get_class( $this ),
+		$summary = parent::getDefinitionSummary( $context );
+		$summary[] = array(
 			'revision' => $this->schema->revision,
 		);
+		return $summary;
 	}
 
 
