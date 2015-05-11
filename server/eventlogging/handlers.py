@@ -12,6 +12,7 @@
 """
 import collections
 import datetime
+import time
 import glob
 import imp
 import json
@@ -90,7 +91,8 @@ def sql_writer(uri, replace=False):
     uri = uri_delete_query_item(uri, 'replace')
     logger = logging.getLogger('Log')
     meta = sqlalchemy.MetaData(bind=uri)
-    events = collections.defaultdict(list)
+    # Each scid stores a buffer and the timestamp of the first insertion.
+    events = collections.defaultdict(lambda: ([], time.time()))
     events_batch = collections.deque()
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
@@ -105,19 +107,20 @@ def sql_writer(uri, replace=False):
             # that the connection is alive, and reconnect if necessary.
             dbapi_connection.ping(True)
     try:
+        batch_size = 400
+        batch_time = 300  # in seconds
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
-        batch_size = 100
         while worker.is_alive():
             event = (yield)
             # Break the event stream by schema (and revision)
             scid = (event['schema'], event['revision'])
-            scid_events = events[scid]
+            scid_events, first_timestamp = events[scid]
             scid_events.append(event)
-            # TODO: Don't wait until len(scid_events) >= batch_size
-            # if the scid is very low traffic (could take too long).
-            if len(scid_events) >= batch_size:
-                logger.debug('%s_%s queue is large, sending to worker', *scid)
+            # Check if the schema queue is too long or too old
+            if (len(scid_events) >= batch_size or
+                    time.time() - first_timestamp >= batch_time):
+                logger.debug('%s_%s queue is large or old, flushing', *scid)
                 events_batch.append((scid, scid_events))
                 del events[scid]
     except GeneratorExit:
@@ -134,7 +137,8 @@ def sql_writer(uri, replace=False):
     finally:
         # If there are any events remaining in the queue,
         # process them in the main thread before exiting.
-        events_batch.extend(events.items())
+        for scid, (scid_events, _) in events.iteritems():
+            events_batch.append((scid, scid_events))
         store_sql_events(meta, events_batch, replace=replace)
 
 
