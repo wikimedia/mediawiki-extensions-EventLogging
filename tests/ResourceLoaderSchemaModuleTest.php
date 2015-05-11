@@ -74,11 +74,6 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 			$mtime,
 			'1 signifies an error, and <1 should not be possible'
 		);
-		$this->assertGreaterThan(
-			$unixTimeCacheEpoch,
-			$mtime,
-			'Should be greater than cache epoch, so epoch does not mask updates'
-		);
 	}
 
 	/**
