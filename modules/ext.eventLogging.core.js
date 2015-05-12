@@ -234,10 +234,13 @@
 		 * Transfer data to a remote server by making a lightweight HTTP
 		 * request to the specified URL.
 		 *
+		 * If the user expressed a preference not to be tracked, or if
+		 * $wgEventLoggingBaseUri is unset, this method is a no-op.
+		 *
 		 * @param {string} url URL to request from the server.
 		 * @return undefined
 		 */
-		sendBeacon: !baseUrl
+		sendBeacon: /1|yes/.test( navigator.doNotTrack ) || !baseUrl
 			? $.noop
 			: navigator.sendBeacon
 				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
