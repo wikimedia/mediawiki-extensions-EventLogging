@@ -68,20 +68,27 @@ def mongodb_writer(uri, database='events'):
 
 
 @writes('kafka')
-def kafka_writer(brokers, topic='eventlogging'):
-    """Write events to Kafka, keyed by SCID."""
+def kafka_writer(brokers, topic='eventlogging', raw=False, key=''):
+    """Write events to Kafka.
+       Set key to SCID if events are not raw and key is not set ."""
     from kafka import KafkaClient
     from kafka import KeyedProducer
 
     kafka = KafkaClient(brokers)
     producer = KeyedProducer(kafka)
     topic = topic.encode('utf-8')
-
+    key = key.encode('utf-8')
     while 1:
         event = (yield)
-        key = '%(schema)s_%(revision)s' % event  # e.g. 'EchoMail_5467650'
-        key = key.encode('utf-8')
-        producer.send(topic, key, json.dumps(event, sort_keys=True))
+        if raw:
+            value = event.encode('utf-8')
+        else:
+            if not key:
+                # set key to SCID, for instance 'EchoMail_5467650'
+                key = '%(schema)s_%(revision)s' % event
+                key = key.encode('utf-8')
+            value = json.dumps(event, sort_keys=True)
+        producer.send(topic, key, value)
 
 
 @writes('mysql', 'sqlite')
@@ -143,7 +150,7 @@ def sql_writer(uri, replace=False):
 
 
 @writes('file')
-def log_writer(path):
+def log_writer(path, raw=False):
     """Write events to a file on disk."""
     handler = logging.handlers.WatchedFileHandler(path)
     log = logging.getLogger('Events')
@@ -157,18 +164,24 @@ def log_writer(path):
 
     while 1:
         event = (yield)
-        json_event = json.dumps(event, sort_keys=True, check_circular=False)
-        log.info(json_event)
+        if raw:
+            log.info(event)
+        else:
+            log.info(json.dumps(event, sort_keys=True, check_circular=False))
 
 
 @writes('tcp')
-def zeromq_writer(uri):
+def zeromq_writer(uri, raw=False):
     """Publish events on a ZeroMQ publisher socket."""
     pub = pub_socket(uri)
     while 1:
         event = (yield)
-        json_event = json.dumps(event, sort_keys=True, check_circular=False)
-        pub.send_unicode(json_event + '\n')
+        if raw:
+            pub.send_unicode(event)
+        else:
+            pub.send_unicode(json.dumps(event,
+                                        sort_keys=True,
+                                        check_circular=False) + '\n')
 
 
 @writes('statsd')
@@ -183,14 +196,17 @@ def statsd_writer(hostname, port, prefix='eventlogging.schema'):
 
 
 @writes('stdout')
-def stdout_writer(uri):
+def stdout_writer(uri, raw=False):
     """Writes events to stdout. Pretty-prints if stdout is a terminal."""
     dumps_kwargs = dict(sort_keys=True, check_circular=False)
     if sys.stdout.isatty():
         dumps_kwargs.update(indent=2)
     while 1:
         event = (yield)
-        print(json.dumps(event, **dumps_kwargs))
+        if raw:
+            print(event)
+        else:
+            print(json.dumps(event, **dumps_kwargs))
 
 
 #
