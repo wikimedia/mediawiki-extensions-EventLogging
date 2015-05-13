@@ -15,6 +15,7 @@
   optional arguments:
     -h, --help  show this help message and exit
     --sid SID   set input socket identity
+    --output-invalid  URI of stream which to send invalid events
 
   formatters:
      %h         Client IP
@@ -50,11 +51,22 @@ ap.add_argument('format', help='Format string')
 ap.add_argument('input', help='URI of raw input stream', type=uri_force_raw)
 ap.add_argument('output', help='URI of output stream')
 ap.add_argument('--sid', help='set input socket identity')
+ap.add_argument(
+    '--output-invalid',
+    help='URI of output stream for invalid events',
+    type=uri_force_raw,
+)
 args = ap.parse_args()
 
 parser = LogParser(args.format)
 writer = get_writer(args.output)
 logging.info('Publishing JSON events on %s.', args.output)
+
+if args.output_invalid:
+    writer_invalid = get_writer(args.output_invalid)
+    logging.info('Publishing invalid events on %s.', args.output_invalid)
+else:
+    writer_invalid = None
 
 if args.sid:
     args.input = uri_append_query_items(args.input, {'identity': args.sid})
@@ -68,5 +80,7 @@ for raw_event in get_reader(args.input):
         event['uuid'] = capsule_uuid(event)
     except Exception as e:
         logging.error('Unable to decode: %s (%s)', raw_event, e.message)
+        if writer_invalid:
+            writer_invalid.send(raw_event)
     else:
         writer.send(event)
