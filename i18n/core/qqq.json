@@ -4,7 +4,8 @@
 			"Metalhead64",
 			"Ori.livneh",
 			"Shirayuki",
-			"Umherirrender"
+			"Umherirrender",
+			"Nemo bis"
 		]
 	},
 	"eventlogging-desc": "{{desc|name=Event Logging|url=https://www.mediawiki.org/wiki/Extension:EventLogging}}",
@@ -13,6 +14,6 @@
 	"eventlogging-code-sample-logging-on-server-side": "Code sample for logging a server-side event",
 	"eventlogging-code-sample-module-setup": "Code sample for setting up a ResourceLoader module",
 	"eventlogging-code-sample-logging-on-client-side": "Code sample for logging a client-side event",
-	"eventlogging-error-move-source": "Error shown when an editor attempts to move a Schema article",
+	"eventlogging-error-move-source": "Error shown when an editor attempts to move a page in the \"Schema\" namespace, which controls the functioning of this extension.",
 	"eventlogging-error-move-destination": "Error shown when an editor attempts to move an article into the Schema namespace"
 }
