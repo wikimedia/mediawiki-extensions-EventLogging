@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Otogi"
+		]
+	},
+	"eventlogging-revision-id": "რევიზია $1",
+	"eventlogging-code-sample-logging-on-server-side": "PHP რეგისტრაცია",
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript რეგისტრაცია"
+}
