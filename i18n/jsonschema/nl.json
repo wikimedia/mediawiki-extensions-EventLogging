@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Siebrand"
+			"Siebrand",
+			"Esketti"
 		]
 	},
 	"jsonschema-badidref": "Onjuiste idref: \"$1\"",
@@ -10,5 +11,9 @@
 	"jsonschema-invalidempty": "Een lege gegevensstructuur is niet geldig voor dit schema",
 	"jsonschema-invalidnode": "Ongeldige node: \"$1\" werd verwacht, \"$2\" is waargenomen. Pad: \"$3\"",
 	"jsonschema-invalid-missingfield": "Het verplichte veld \"$1\" ontbreekt",
-	"jsonschema-invalid-notinenum": "Waarde \"$1\" staat niet in de lijst voor eigenschap \"$2\""
+	"jsonschema-invalid-notinenum": "Waarde \"$1\" staat niet in de lijst voor eigenschap \"$2\"",
+	"apihelp-jsonschema-description": "Het ophalen van een JSON-Schema pagina.",
+	"apihelp-jsonschema-param-revid": "Schema herziening ID.",
+	"apihelp-jsonschema-param-title": "Schema naam.",
+	"apihelp-jsonschema-example-1": "Ophalen schema voor herziening 1234"
 }

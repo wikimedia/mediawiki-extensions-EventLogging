@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Siebrand",
-			"Mirolith"
+			"Mirolith",
+			"Esketti"
 		]
 	},
 	"eventlogging-desc": "Framework voor het vastleggen van gebeurtenissen aan de clientkant",
@@ -11,5 +12,6 @@
 	"eventlogging-code-sample-logging-on-server-side": "Logboekregistratie voor PHP",
 	"eventlogging-code-sample-module-setup": "PHP-instellingen voor logboekregistratie voor JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Logboekregistratie voor JavaScript",
-	"eventlogging-error-move-source": "Schemapagina's mogen niet hernoemd worden"
+	"eventlogging-error-move-source": "Schemapagina's mogen niet hernoemd worden",
+	"eventlogging-error-move-destination": "Pagina 's kunnen niet hernoemd worden naar Schema' s"
 }
