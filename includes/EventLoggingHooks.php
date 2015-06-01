@@ -66,7 +66,7 @@ class EventLoggingHooks {
 		global $wgEventLoggingSchemas;
 
 		$schemas = array();
-		wfRunHooks( 'EventLoggingRegisterSchemas', array( &$schemas ) );
+		Hooks::run( 'EventLoggingRegisterSchemas', array( &$schemas ) );
 		$schemas = array_merge( $wgEventLoggingSchemas, $schemas );
 
 		$modules = array();
