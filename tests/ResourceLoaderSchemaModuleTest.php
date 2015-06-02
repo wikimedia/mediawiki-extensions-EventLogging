@@ -16,7 +16,6 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
 	const TITLE = 'TestSchema';
 	const REV = 99;
-	const ERROR_VERSION = 1;
 
 	/** @var ResourceLoaderContext */
 	private $context;
@@ -54,25 +53,16 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	 * should be set to sum of $wgCacheEpoch (in UNIX time) and the revision number.
 	 * @covers ResourceLoaderSchemaModule::getModifiedTime
 	 */
-	function testFetchOkModifiedTime() {
+	function testModuleVersion() {
 		global $wgCacheEpoch;
 
-		$unixTimeCacheEpoch = wfTimestamp( TS_UNIX, $wgCacheEpoch );
+		$version1 = $this->module->getVersionHash( $this->context );
 
-		$schema = array( 'status' => array( 'type' => 'string' ) );
+		$module2 = self::getMockSchemaModule( self::TITLE, self::REV + 1 );
+		$version2 = $module2->getVersionHash( $this->context );
 
-		$this->module->schema
-			->expects( $this->once() )
-			->method( 'get' )
-			->will( $this->returnValue( $schema ) );
-
-		$mtime = $this->module->getModifiedTime( $this->context );
-
-		// Should be true regardless of epoch
-		$this->assertGreaterThan(
-			self::ERROR_VERSION,
-			$mtime,
-			'1 signifies an error, and <1 should not be possible'
+		$this->assertNotEquals( $version1, $version2,
+			'Version changes when revision changes'
 		);
 	}
 

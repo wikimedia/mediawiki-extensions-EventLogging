@@ -19,7 +19,6 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	/** @var RemoteSchema $schema **/
 	public $schema;
 
-
 	/**
 	 * Constructor; invoked by ResourceLoader.
 	 * Ensures that the 'schema' and 'revision' keys were set on the
@@ -55,33 +54,13 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 		$this->targets = array( 'desktop', 'mobile' );
 	}
 
-
 	/**
 	 * Part of the ResourceLoader module interface.
 	 * Declares the core ext.eventLogging module as a dependency.
 	 * @return array: Module names.
 	 */
-	function getDependencies() {
+	public function getDependencies() {
 		return array( 'ext.eventLogging' );
-	}
-
-
-	/**
-	 * Get the last modified timestamp of this module.
-	 *
-	 * The last modified timestamp controls caching. Because revisions are
-	 * immutable, we don't need to fetch the RemoteSchema, nor get the revision's
-	 * timestamp. We simply hash our module definition.
-	 *
-	 * @param ResourceLoaderContext $context
-	 * @return integer: Unix timestamp.
-	 */
-	function getModifiedTime( ResourceLoaderContext $context ) {
-		if ( !$this->schema->get() ) {
-			// If we failed to fetch, hold off on rolling over definition timestamp
-			return 1;
-		}
-		return $this->getDefinitionMtime( $context );
 	}
 
 	/**
@@ -98,7 +77,6 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 		return $summary;
 	}
 
-
 	/**
 	 * Generates JavaScript module code from schema.
 	 * Retrieves a schema and generates a JavaScript expression which,
@@ -107,7 +85,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @param ResourceLoaderContext $context
 	 * @return string: JavaScript code.
 	 */
-	function getScript( ResourceLoaderContext $context ) {
+	public function getScript( ResourceLoaderContext $context ) {
 		$schema = $this->schema->jsonSerialize();
 		efStripKeyRecursive( $schema, 'description' );
 		$params = array( $this->schema->title, $schema );
