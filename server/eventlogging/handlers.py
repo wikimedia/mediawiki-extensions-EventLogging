@@ -12,7 +12,6 @@
 """
 import collections
 import datetime
-import time
 import glob
 import imp
 import json
@@ -70,7 +69,7 @@ def mongodb_writer(uri, database='events'):
 
 @writes('kafka')
 def kafka_writer(
-    brokers,
+    path,
     topic='eventlogging-%(schema)s',
     key='%(schema)s_%(revision)s',
     raw=False,
@@ -78,7 +77,8 @@ def kafka_writer(
     """
     Write events to Kafka.
 
-        brokers - Should be a list of Kafka Brokers.
+        path    - URI path should be comma separated Kafka Brokers.
+                  e.g. kafka01:9092,kafka02:9092,kafka03:9092
 
         topic   - A static of formatted string topic name.
                   If the incoming event is a dict (not a raw string)
@@ -92,6 +92,10 @@ def kafka_writer(
 
         raw     - Should the events be written as raw (encoded) or not?
     """
+
+    # Brokers should be in the uri path
+    brokers = path.strip('/')
+
     from kafka import KafkaClient
     from kafka import KeyedProducer
     from kafka.common import KafkaTimeoutError
@@ -296,13 +300,17 @@ def udp_reader(hostname, port, raw=False):
 
 @reads('kafka')
 def kafka_reader(
-    brokers,
+    path,
     topic='eventlogging',
     group_id='eventlogging',
     raw=False
 ):
     """Reads events from Kafka"""
     from kafka import KafkaConsumer
+
+    # Brokers should be in the uri path
+    brokers = path.strip('/')
+
     consumer = KafkaConsumer(
         topic,
         group_id=group_id,
