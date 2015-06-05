@@ -70,8 +70,8 @@ def mongodb_writer(uri, database='events'):
 @writes('kafka')
 def kafka_writer(
     path,
-    topic='eventlogging-%(schema)s',
-    key='%(schema)s_%(revision)s',
+    topic='eventlogging',
+    key='',
     raw=False,
 ):
     """
@@ -80,15 +80,15 @@ def kafka_writer(
         path    - URI path should be comma separated Kafka Brokers.
                   e.g. kafka01:9092,kafka02:9092,kafka03:9092
 
-        topic   - A static of formatted string topic name.
+        topic   - Python format string topic name.
                   If the incoming event is a dict (not a raw string)
                   topic will be interpolated against event.  I.e.
                   topic % event.  Default: eventlogging
 
-        key     - Key of the event message in Kafka.
+        key     - Python format string key of the event message in Kafka.
                   If the incoming event is a dict (not a raw string)
                   key will be interpolated against event.  I.e.
-                  key % event.  Default: '%(schema)s_%(revision)s'
+                  key % event.  Default: ''
 
         raw     - Should the events be written as raw (encoded) or not?
     """
@@ -113,7 +113,10 @@ def kafka_writer(
         event = (yield)
 
         # If event is a dict (not Raw) then we can interpolate topic and key
-        # as format strings.  E.g. topic = 'eventlogging_%(schema)' % event.
+        # as format strings.
+        # E.g. message_topic = 'eventlogging_%(schema)s' % event.
+        # WARNING!  Be sure that your topic and key strings don't try
+        # to interpolate out a field in event that doesn't exist!
         if isinstance(event, dict):
             message_topic = (topic % event).encode('utf8')
             message_key = (key % event).encode('utf8')

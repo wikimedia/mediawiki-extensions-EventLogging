@@ -63,6 +63,26 @@ _schemas = {
         },
         'additionalProperties': False
     },
+    eventlogging.schema.ERROR_SCID: {
+        'properties': {
+            'rawEvent': {
+                'type': 'string',
+                'required': True
+            },
+            'message': {
+                'type': 'string',
+                'required': True
+            },
+            "code": {
+                "type": "string",
+                "required": True,
+                "enum": [
+                    "processor",
+                    "consumer"
+                ],
+            }
+        }
+    },
     TEST_SCHEMA_SCID: {
         'properties': {
             'value': {

@@ -15,9 +15,17 @@ import re
 
 import jsonschema
 
+import socket
+import time
+
 from .compat import integer_types, json, http_get, string_types
 
-__all__ = ('CAPSULE_SCID', 'get_schema', 'SCHEMA_URL_FORMAT', 'validate')
+import uuid
+
+__all__ = (
+    'CAPSULE_SCID', 'create_event_error', 'get_schema',
+    'SCHEMA_URL_FORMAT', 'validate'
+)
 
 
 # Regular expression which matches valid schema names.
@@ -35,6 +43,9 @@ schema_cache = {}
 
 # SCID of the metadata object which wraps each event.
 CAPSULE_SCID = ('EventCapsule', 10981547)
+
+# TODO:
+ERROR_SCID = ('EventError', 12402950)
 
 
 def get_schema(scid, encapsulate=False):
@@ -90,3 +101,23 @@ def validate(capsule):
         raise jsonschema.ValidationError('Missing key: %s' % ex)
     schema = get_schema(scid, encapsulate=True)
     jsonschema.Draft3Validator(schema).validate(capsule)
+
+
+def create_event_error(raw_event, error_message, error_code):
+    """
+    Creates an EventError around this
+    unparsed and unvalidated raw_event string.
+    """
+    return {
+        'schema': ERROR_SCID[0],
+        'revision': ERROR_SCID[1],
+        'wiki': '',
+        'uuid': '%032x' % uuid.uuid1().int,
+        'recvFrom': socket.getfqdn(),
+        'timestamp': int(round(time.time())),
+        'event': {
+            'rawEvent': raw_event,
+            'message': error_message,
+            'code': error_code
+        }
+    }

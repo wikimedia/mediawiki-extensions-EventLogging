@@ -36,9 +36,9 @@ sys.setdefaultencoding('utf-8')
 import argparse
 import logging
 
-from eventlogging import (capsule_uuid, LogParser, get_reader, get_writer,
-                          validate, setup_logging, uri_force_raw,
-                          uri_append_query_items)
+from eventlogging import (capsule_uuid, create_event_error, LogParser,
+                          get_reader, get_writer, validate, setup_logging,
+                          uri_force_raw, uri_append_query_items)
 
 
 setup_logging()
@@ -54,7 +54,6 @@ ap.add_argument('--sid', help='set input socket identity')
 ap.add_argument(
     '--output-invalid',
     help='URI of output stream for invalid events',
-    type=uri_force_raw,
 )
 args = ap.parse_args()
 
@@ -81,6 +80,13 @@ for raw_event in get_reader(args.input):
     except Exception as e:
         logging.error('Unable to decode: %s (%s)', raw_event, e.message)
         if writer_invalid:
-            writer_invalid.send(raw_event)
+            try:
+                writer_invalid.send(create_event_error(
+                    raw_event, e.message, 'processor'
+                ))
+            except Exception as error_e:
+                logging.error(
+                    'Unable to create error event: %s' % error_e.message
+                )
     else:
         writer.send(event)

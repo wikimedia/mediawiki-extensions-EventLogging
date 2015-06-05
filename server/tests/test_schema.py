@@ -123,3 +123,37 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
     def test_empty_event(self):
         """An empty event with no mandatory properties should validate"""
         self.assertIsValid(self.incorrectly_serialized_empty_event)
+
+    def test_create_event_error(self):
+        """create_event_error() should create a valid EventError object."""
+
+        invalid_raw_event = "Duh this won't validate against any schema."
+        error_message = "This is just a test."
+        error_code = "processor"
+        event_error = eventlogging.create_event_error(
+            invalid_raw_event,
+            error_message,
+            error_code
+        )
+        # Test that this event validates against the EventError schema.
+        self.assertIsValid(event_error)
+        self.assertEqual(
+            event_error['schema'],
+            eventlogging.schema.ERROR_SCID[0]
+        )
+        self.assertEqual(
+            event_error['revision'],
+            eventlogging.schema.ERROR_SCID[1]
+        )
+        self.assertEqual(
+            event_error['event']['rawEvent'],
+            invalid_raw_event
+        )
+        self.assertEqual(
+            event_error['event']['message'],
+            error_message
+        )
+        self.assertEqual(
+            event_error['event']['code'],
+            error_code
+        )
