@@ -139,8 +139,8 @@ def kafka_writer(
                     event['schema'],
                     event['revision']
                 )
-            error_message +=
-                ". Skipping event. (This might be ok if this is a new topic.)"
+            error_message += ". Skipping event. " \
+                "(This might be ok if this is a new topic.)"
             logging.error(error_message)
             continue
 
