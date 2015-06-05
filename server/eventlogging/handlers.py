@@ -129,7 +129,7 @@ def kafka_writer(
             # it will try to ask Kafka for it each time.  Make sure
             # auto.create.topics.enabled is true for your Kafka cluster!
             kafka.ensure_topic_exists(
-                topic,
+                message_topic,
                 kafka_topic_create_timeout_seconds
             )
         except KafkaTimeoutError:
