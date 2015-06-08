@@ -70,8 +70,8 @@ def mongodb_writer(uri, database='events'):
 @writes('kafka')
 def kafka_writer(
     path,
-    topic='eventlogging',
-    key='',
+    topic='eventlogging_%(schema)s',
+    key='%(schema)s_%(revision)s',
     raw=False,
 ):
     """
@@ -83,12 +83,12 @@ def kafka_writer(
         topic   - Python format string topic name.
                   If the incoming event is a dict (not a raw string)
                   topic will be interpolated against event.  I.e.
-                  topic % event.  Default: eventlogging
+                  topic % event.  Default: eventlogging_%(schema)s
 
         key     - Python format string key of the event message in Kafka.
                   If the incoming event is a dict (not a raw string)
                   key will be interpolated against event.  I.e.
-                  key % event.  Default: ''
+                  key % event.  Default: %(schema)s_%(revision)s
 
         raw     - Should the events be written as raw (encoded) or not?
     """
@@ -138,7 +138,7 @@ def kafka_writer(
         except KafkaTimeoutError:
             error_message = "Failed to ensure Kafka topic %s exists " \
                 "in %f seconds when producing event" % (
-                    topic,
+                    message_topic,
                     kafka_topic_create_timeout_seconds
                 )
             if isinstance(event, dict):
