@@ -78,7 +78,8 @@ _schemas = {
                 "required": True,
                 "enum": [
                     "processor",
-                    "consumer"
+                    "consumer",
+                    "validation"
                 ],
             }
         }

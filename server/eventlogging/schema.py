@@ -45,7 +45,7 @@ schema_cache = {}
 CAPSULE_SCID = ('EventCapsule', 10981547)
 
 # TODO:
-ERROR_SCID = ('EventError', 12402950)
+ERROR_SCID = ('EventError', 12407995)
 
 
 def get_schema(scid, encapsulate=False):

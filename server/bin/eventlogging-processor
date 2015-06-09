@@ -40,6 +40,7 @@ from eventlogging import (capsule_uuid, create_event_error, LogParser,
                           get_reader, get_writer, validate, setup_logging,
                           uri_force_raw, uri_append_query_items)
 
+from jsonschema import ValidationError
 
 setup_logging()
 
@@ -88,6 +89,14 @@ else:
 if args.sid:
     args.input = uri_append_query_items(args.input, {'identity': args.sid})
 
+
+def write_event_error(writer, raw_event, error_message, error_code):
+    try:
+        event_error = create_event_error(raw_event, error_message, error_code)
+    except Exception as e:
+        logging.error('Unable to create EventError object: %s' % e.message)
+    writer.send(event_error)
+
 for raw_event in get_reader(args.input):
     try:
         event = parser.parse(raw_event)
@@ -95,16 +104,20 @@ for raw_event in get_reader(args.input):
         event.pop('isTruncated', None)
         validate(event)
         event['uuid'] = capsule_uuid(event)
-    except Exception as e:
-        logging.error('Unable to decode: %s (%s)', raw_event, e.message)
+
+    except ValidationError as e:
+        logging.error('Unable to validate: %s (%s)', raw_event, e.message)
         if writer_invalid:
-            try:
-                writer_invalid.send(create_event_error(
-                    raw_event, e.message, 'processor'
-                ))
-            except Exception as error_e:
-                logging.error(
-                    'Unable to create error event: %s' % error_e.message
-                )
+            write_event_error(
+                writer_invalid, raw_event, e.message, 'validation'
+            )
+
+    except Exception as e:
+        logging.error('Unable to process: %s (%s)', raw_event, e.message)
+        if writer_invalid:
+            write_event_error(
+                writer_invalid, raw_event, e.message, 'processor'
+            )
+
     else:
         writer.send(event)
