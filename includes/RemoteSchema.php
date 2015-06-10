@@ -69,7 +69,7 @@ class RemoteSchema {
 
 	/**
 	 * Retrieves content from memcached.
-	 * @return array:bool: Schema or false if not in cache.
+	 * @return array:bool Schema or false if not in cache.
 	 */
 	protected function memcGet() {
 		return $this->cache->get( $this->key );
@@ -87,22 +87,27 @@ class RemoteSchema {
 	/**
 	 * Retrieves the schema using HTTP.
 	 * Uses a memcached lock to avoid cache stampedes.
-	 * @return array|boolean: Schema or false if unable to fetch.
+	 * @return array|bool Schema or false if unable to fetch.
 	 */
 	protected function httpGet() {
 		if ( !$this->lock() ) {
 			return false;
 		}
-		$raw = $this->http->get( $this->getUri(), array(
+		$uri = $this->getUri();
+		$raw = $this->http->get( $uri, array(
 			'timeout' => self::LOCK_TIMEOUT * 0.8
 		) );
-		return FormatJson::decode( $raw, true ) ?: false;
+		$content = FormatJson::decode( $raw, true );
+		if ( !$content ) {
+			wfDebugLog( 'EventLogging', "Request to $uri failed." );
+		}
+		return $content ?: false;
 	}
 
 
 	/**
 	 * Acquire a mutex lock for HTTP retrieval.
-	 * @return bool: Whether lock was successfully acquired.
+	 * @return bool Whether lock was successfully acquired.
 	 */
 	protected function lock() {
 		return $this->cache->add( $this->key . ':lock', 1, self::LOCK_TIMEOUT );
@@ -111,25 +116,14 @@ class RemoteSchema {
 
 	/**
 	 * Constructs URI for retrieving schema from remote wiki.
-	 * @return string: URI.
+	 * @return string URI.
 	 */
 	protected function getUri() {
 		global $wgEventLoggingSchemaApiUri;
 
-		if ( substr( $wgEventLoggingSchemaApiUri, -10 ) === '/index.php' ) {
-			// Old-style request (index.php)
-			$q = array(
-				'action' =>  'raw',
-				'oldid'  =>  $this->revision,
-			);
-		} else {
-			// New-style request (api.php)
-			$q = array(
-				'action' =>  'jsonschema',
-				'revid'  =>  $this->revision
-			);
-		}
-
-		return wfAppendQuery( $wgEventLoggingSchemaApiUri, $q );
+		return wfAppendQuery( $wgEventLoggingSchemaApiUri, array(
+			'action' => 'jsonschema',
+			'revid'  => $this->revision
+		) );
 	}
 }
