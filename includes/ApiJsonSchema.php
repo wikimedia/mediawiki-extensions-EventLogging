@@ -78,13 +78,16 @@ class ApiJsonSchema extends ApiBase {
 	}
 
 	/**
-	 * Set future expires and public cache-control headers on the
-	 * pending HTTP response.
+	 * Set headers on the pending HTTP response.
+	 * @param Revision $rev
 	 */
-	public function markCacheable() {
+	protected function markCacheable( Revision $rev ) {
 		$main = $this->getMain();
 		$main->setCacheMode( 'public' );
 		$main->setCacheMaxAge( 300 );
+
+		$lastModified = wfTimestamp( TS_RFC2822, $rev->getTimestamp() );
+		$main->getRequest()->response()->header( "Last-Modified: $lastModified" );
 	}
 
 	/**
@@ -124,12 +127,12 @@ class ApiJsonSchema extends ApiBase {
 			$this->dieUsageMsg( array( 'revwrongpage', $params['revid'], $params['title'] ) );
 		}
 
-		$this->markCacheable();
+		$this->markCacheable( $rev );
 		$schema = $content->getJsonData( true );
 
 		$result = $this->getResult();
 		$result->addValue( null, 'title', $title->getText() );
-		foreach( $schema as $k => &$v ) {
+		foreach ( $schema as $k => &$v ) {
 			if ( $k === 'properties' ) {
 				foreach ( $v as &$properties ) {
 					$properties[ApiResult::META_BC_BOOLS] = array( 'required' );
