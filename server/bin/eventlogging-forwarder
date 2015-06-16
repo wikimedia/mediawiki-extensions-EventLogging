@@ -7,18 +7,14 @@
   an input stream and writes it to a ZeroMQ TCP PUB socket bound to the same
   port number.
 
-  Because ZeroMQ is message-oriented, we cannot simply use recv_into to read
-  bytes from the input into the ZMQ socket. We use socket.makefile() to
-  facilitate reading and writing whole lines.
-
-  usage: eventlogging-forwarder [-h] input port
+  usage: eventlogging-forwarder [-h] input output [output ...]]
 
   positional arguments:
     input    input uri
       Examples:
         udp://localhost:8599
         kafka://?brokers=broker1:9092,broker2:9092&topic=foo&group_id=bar
-    port     ZeroMQ TCP port to forward to
+    output    URIs of output stream
 
   optional arguments:
     -h, --help  show this help message and exit
