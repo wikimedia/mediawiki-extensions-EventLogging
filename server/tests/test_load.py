@@ -112,7 +112,7 @@ class EventGenerator(object):
 
 
 def get_schema(schema_name, schema_revision):
-    conn = httplib.HTTPConnection(SCHEMA_HOST)
+    conn = httplib.HTTPSConnection(SCHEMA_HOST)
     conn.request("GET", SCHEMA_URL % (schema_name, schema_revision))
     data = json.loads(conn.getresponse().read())
     pages = data['query']['pages']

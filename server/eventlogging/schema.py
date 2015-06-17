@@ -33,7 +33,7 @@ SCHEMA_RE = re.compile(r'^[a-zA-Z0-9_-]{1,63}$')
 
 # URL of index.php on the schema wiki (same as
 # '$wgEventLoggingSchemaApiUri').
-SCHEMA_WIKI_API = 'http://meta.wikimedia.org/w/api.php'
+SCHEMA_WIKI_API = 'https://meta.wikimedia.org/w/api.php'
 
 # Template for schema article URLs. Interpolates SCIDs.
 SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s'
