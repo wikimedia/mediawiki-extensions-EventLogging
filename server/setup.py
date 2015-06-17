@@ -19,7 +19,7 @@ import multiprocessing  # noqa
 
 setup(
     name='eventlogging',
-    version='0.8',
+    version='0.9',
     license='GPL',
     author='Ori Livneh',
     author_email='ori@wikimedia.org',
