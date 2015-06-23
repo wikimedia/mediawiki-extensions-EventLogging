@@ -283,9 +283,21 @@ def stdout_writer(uri, raw=False):
             print(json.dumps(event, **dumps_kwargs))
 
 
+@writes('udp')
+def udp_writer(hostname, port, raw=False):
+    """Writes data to UDP."""
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    while 1:
+        event = (yield)
+        if raw:
+            sock.sendto(event, (hostname, port))
+        else:
+            sock.sendto(json.dumps(event), (hostname, port))
+
 #
 # Readers
 #
+
 
 @reads('stdin')
 def stdin_reader(uri, raw=False):
