@@ -221,7 +221,13 @@ def sql_writer(uri, replace=False):
 def log_writer(path, raw=False):
     """Write events to a file on disk."""
     handler = logging.handlers.WatchedFileHandler(path)
-    log = logging.getLogger('Events')
+
+    # We want to be able to support multiple file writers
+    # within a given Python process, so uniquely
+    # identify this logger within Python's logging
+    # system by the file's path.
+    log = logging.getLogger('Events-' + path)
+
     log.setLevel(logging.INFO)
     log.addHandler(handler)
     # Don't propagate these events to the global logger
