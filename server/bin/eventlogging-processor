@@ -5,12 +5,13 @@
   -----------------------------
   Transform raw log stream to JSON event stream
 
-  usage: eventlogging-processor [-h] [--sid SID] format input output
+  usage: eventlogging-processor [-h] [--sid SID] format \
+              input output [output ...]
 
   positional arguments:
     format      Format string
     input       URI of raw input stream
-    output      URI of output stream
+    output      URIs of output streams
 
   optional arguments:
     -h, --help  show this help message and exit
@@ -50,7 +51,7 @@ ap.add_argument('format', help='Format string')
 # Read in raw events.  This keeps the reader
 # attempting to parse the input as json.
 ap.add_argument('input', help='URI of raw input stream', type=uri_force_raw)
-ap.add_argument('output', help='URI of output stream')
+ap.add_argument('output', nargs='+', help='URIs of output streams')
 ap.add_argument(
     '--sid',
     help='Set ZeroMQ input socket identity. '
@@ -63,22 +64,25 @@ ap.add_argument(
     nargs='?',
     action='store',
     help='URI of output stream for invalid events. '
-    'If this is given without a value, the output URI will be used '
-    'to write invalid events.  Invalid events are written using the '
+    'If this is given without a value, the first of the output URIs will be '
+    'used to write invalid events.  Invalid events are written using the '
     'EventError schema.'
 )
 args = ap.parse_args()
 
 parser = LogParser(args.format)
-writer = get_writer(args.output)
-logging.info('Publishing valid JSON events to %s.', args.output)
+
+writers_list = []
+for output_uri in args.output:
+    writers_list.append(get_writer(output_uri))
+    logging.info('Publishing valid JSON events to %s.', output_uri)
 
 if args.output_invalid:
     # If --output-invalid was supplied without a value,
     # use the same writer for both invalid and valid events.
     if args.output_invalid is True:
-        args.output_invalid = args.output
-        writer_invalid = writer
+        args.output_invalid = args.output[0]
+        writer_invalid = writers_list[0]
     else:
         writer_invalid = get_writer(args.output_invalid)
 
@@ -120,4 +124,5 @@ for raw_event in get_reader(args.input):
             )
 
     else:
-        writer.send(event)
+        for w in writers_list:
+            w.send(event)

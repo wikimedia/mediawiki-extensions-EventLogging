@@ -7,14 +7,14 @@
   an input stream and writes it to a ZeroMQ TCP PUB socket bound to the same
   port number.
 
-  usage: eventlogging-forwarder [-h] input output [output ...]]
+  usage: eventlogging-forwarder [-h] input output [output ...]
 
   positional arguments:
     input    input uri
       Examples:
         udp://localhost:8599
         kafka://?brokers=broker1:9092,broker2:9092&topic=foo&group_id=bar
-    output    URIs of output stream
+    output    URIs of output streams
 
   optional arguments:
     -h, --help  show this help message and exit
