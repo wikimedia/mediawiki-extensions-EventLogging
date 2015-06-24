@@ -230,7 +230,7 @@ def store_sql_events(meta, events_batch, replace=False):
             events = list(grouper)
             table = get_table(meta, scid)
             insert(table, events, replace)
-            logger.debug('Data inserted %d', len(events))
+            logger.info('Data inserted %d', len(events))
 
 
 def _property_getter(item):

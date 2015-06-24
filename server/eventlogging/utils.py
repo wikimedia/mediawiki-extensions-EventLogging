@@ -12,6 +12,7 @@ from __future__ import unicode_literals
 import copy
 import logging
 import re
+import os
 import sys
 import threading
 import traceback
@@ -60,13 +61,13 @@ class PeriodicThread(threading.Thread):
                     self.ready.clear()
             except Exception, e:
                 trace = traceback.format_exc()
-                self.logger.debug('Child thread exiting, exception %s', trace)
+                self.logger.warn('Child thread exiting, exception %s', trace)
                 raise e
 
     def stop(self):
         """Graceful stop: stop once the current iteration is complete."""
         self.stopping.set()
-        self.logger.debug('Stopping child thread gracefully')
+        self.logger.info('Stopping child thread gracefully')
 
 
 def uri_delete_query_item(uri, key):
@@ -189,7 +190,11 @@ class EventConsumer(object):
 
 
 def setup_logging():
-    logging.basicConfig(stream=sys.stderr, level=logging.DEBUG,
+    eventlogging_log_level = getattr(
+        logging, os.environ.get('LOG_LEVEL', 'INFO')
+    )
+    logging.basicConfig(stream=sys.stderr, level=eventlogging_log_level,
                         format='%(asctime)s (%(threadName)-10s) %(message)s')
+
     # Set kafka module logging level to INFO, DEBUG is too noisy.
     logging.getLogger("kafka").setLevel(logging.INFO)

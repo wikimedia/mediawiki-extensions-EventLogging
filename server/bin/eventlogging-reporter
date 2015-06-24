@@ -97,7 +97,7 @@ def iter_pubs(config_dir):
         with open(filename) as f:
             matches = re.findall(r'tcp://[^:]+:(\d+)', f.read())
             if len(matches) > 1:
-                logger.debug("Reporting metrics for %s", filename)
+                logger.info("Reporting metrics for %s", filename)
                 raw = matches[0]
                 valid = matches[1]
                 publishers[('%s.raw' % name, 'overall.raw')] = raw

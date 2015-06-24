@@ -167,7 +167,7 @@ def kafka_writer(
                 )
             error_message += ". Skipping event. " \
                 "(This might be ok if this is a new topic.)"
-            logging.error(error_message)
+            logging.warn(error_message)
             continue
 
         if raw:
@@ -214,19 +214,19 @@ def sql_writer(uri, replace=False):
             # Check if the schema queue is too long or too old
             if (len(scid_events) >= batch_size or
                     time.time() - first_timestamp >= batch_time):
-                logger.debug('%s_%s queue is large or old, flushing', *scid)
+                logger.info('%s_%s queue is large or old, flushing', *scid)
                 events_batch.append((scid, scid_events))
                 del events[scid]
     except GeneratorExit:
         # Allow the worker to complete any work that is
         # already in progress before shutting down.
-        logger.debug('Stopped main thread via GeneratorExit')
-        logger.debug('Events when stopped %s', len(events))
+        logger.info('Stopped main thread via GeneratorExit')
+        logger.info('Events when stopped %s', len(events))
         worker.stop()
         worker.join()
     except Exception:
         t = traceback.format_exc()
-        logger.debug('Exception caught %s', t)
+        logger.warn('Exception caught %s', t)
         raise
     finally:
         # If there are any events remaining in the queue,
