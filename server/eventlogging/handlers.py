@@ -18,6 +18,7 @@ import json
 import logging
 import logging.handlers
 import os
+import re
 import socket
 import sys
 import sqlalchemy
@@ -72,25 +73,31 @@ def kafka_writer(
     path,
     topic='eventlogging_%(schema)s',
     key='%(schema)s_%(revision)s',
+    blacklist=None,
     raw=False,
 ):
     """
     Write events to Kafka.
 
-        path    - URI path should be comma separated Kafka Brokers.
-                  e.g. kafka01:9092,kafka02:9092,kafka03:9092
+        path      - URI path should be comma separated Kafka Brokers.
+                    e.g. kafka01:9092,kafka02:9092,kafka03:9092
 
-        topic   - Python format string topic name.
-                  If the incoming event is a dict (not a raw string)
-                  topic will be interpolated against event.  I.e.
-                  topic % event.  Default: eventlogging_%(schema)s
+        topic     - Python format string topic name.
+                    If the incoming event is a dict (not a raw string)
+                    topic will be interpolated against event.  I.e.
+                    topic % event.  Default: eventlogging_%(schema)s
 
-        key     - Python format string key of the event message in Kafka.
-                  If the incoming event is a dict (not a raw string)
-                  key will be interpolated against event.  I.e.
-                  key % event.  Default: %(schema)s_%(revision)s
+        key       - Python format string key of the event message in Kafka.
+                    If the incoming event is a dict (not a raw string)
+                    key will be interpolated against event.  I.e.
+                    key % event.  Default: %(schema)s_%(revision)s
 
-        raw     - Should the events be written as raw (encoded) or not?
+        blacklist - Pattern string matching a list of schemas that should not
+                    be written. This is useful to keep high volume schemas
+                    from being written to an output stream.  This will
+                    be ignored if the incoming events are raw.
+
+        raw       - Should the events be written as raw (encoded) or not?
     """
 
     # Brokers should be in the uri path
@@ -109,6 +116,11 @@ def kafka_writer(
 
     kafka_topic_create_timeout_seconds = 0.1
 
+    if blacklist:
+        blacklist_pattern = re.compile(blacklist)
+    else:
+        blacklist_pattern = None
+
     while 1:
         event = (yield)
 
@@ -118,6 +130,13 @@ def kafka_writer(
         # WARNING!  Be sure that your topic and key strings don't try
         # to interpolate out a field in event that doesn't exist!
         if isinstance(event, dict):
+            if blacklist_pattern and blacklist_pattern.match(event['schema']):
+                logging.debug(
+                    '%s is blacklisted, not writing event %s.' %
+                    (event['schema'], event['uuid'])
+                )
+                continue
+
             message_topic = (topic % event).encode('utf8')
             message_key = (key % event).encode('utf8')
         else:
