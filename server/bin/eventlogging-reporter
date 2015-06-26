@@ -122,14 +122,17 @@ def monitor_pubs(endpoints):
 
     for names, port in endpoints.iteritems():
         logging.info('Registering %s (%s).', names, port)
-        socket = ctx.socket(zmq.SUB)
-        socket.hwm = 1000
-        socket.linger = 1000
-        socket.setsockopt(zmq.RCVBUF, 65536)
-        socket.connect('tcp://127.0.0.1:%s' % port)
-        socket.setsockopt(zmq.SUBSCRIBE, '')
-        poller.register(socket, zmq.POLLIN)
-        sockets[socket] = names
+        sub_socket = ctx.socket(zmq.SUB)
+        sub_socket.hwm = 1000
+        sub_socket.linger = 1000
+        sub_socket.setsockopt(zmq.RCVBUF, 65536)
+        sub_socket.connect('tcp://%s:%s' % (
+            socket.gethostbyname(socket.gethostname()),
+            port
+        ))
+        sub_socket.setsockopt(zmq.SUBSCRIBE, '')
+        poller.register(sub_socket, zmq.POLLIN)
+        sockets[sub_socket] = names
 
     timer = timerfd(5)
     poller.register(timer, zmq.POLLIN)
