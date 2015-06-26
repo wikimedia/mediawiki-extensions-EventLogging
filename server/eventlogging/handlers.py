@@ -325,10 +325,10 @@ def stdin_reader(uri, raw=False):
 
 
 @reads('tcp')
-def zeromq_subscriber(uri, socket_id=None, subscribe='', raw=False):
+def zeromq_subscriber(uri, identity=None, subscribe='', raw=False):
     """Reads data from a ZeroMQ publisher. If `raw` is truthy, reads
     unicode strings. Otherwise, reads JSON."""
-    sock = sub_socket(uri, identity=socket_id, subscribe=subscribe)
+    sock = sub_socket(uri, identity=identity, subscribe=subscribe)
     return stream(sock, raw)
 
 
@@ -342,7 +342,7 @@ def udp_reader(hostname, port, raw=False):
 def kafka_reader(
     path,
     topic='eventlogging',
-    group_id='eventlogging',
+    identity='eventlogging',
     raw=False
 ):
     """Reads events from Kafka"""
@@ -353,7 +353,7 @@ def kafka_reader(
 
     consumer = KafkaConsumer(
         topic,
-        group_id=group_id,
+        group_id=identity,
         metadata_broker_list=brokers
     )
     return stream((message.value for message in consumer), raw)

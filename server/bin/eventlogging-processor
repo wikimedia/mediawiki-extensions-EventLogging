@@ -54,8 +54,8 @@ ap.add_argument('input', help='URI of raw input stream', type=uri_force_raw)
 ap.add_argument('output', nargs='+', help='URIs of output streams')
 ap.add_argument(
     '--sid',
-    help='Set ZeroMQ input socket identity. '
-    'Only use this if your input URI starts with tcp://'
+    help='Set ZeroMQ/Kafka identity. '
+    'Only use this if your input URI starts with tcp:// or kafka://'
 )
 ap.add_argument(
     '--output-invalid',
