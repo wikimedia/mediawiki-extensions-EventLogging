@@ -15,6 +15,8 @@ import datetime
 import glob
 import imp
 import json
+from kafka import KafkaConsumer
+from kafka.consumer import kafka
 import logging
 import logging.handlers
 import os
@@ -25,6 +27,7 @@ import sqlalchemy
 import time
 import traceback
 
+from .compat import items
 from .utils import PeriodicThread, uri_delete_query_item
 from .factory import writes, reads
 from .streams import stream, pub_socket, sub_socket, udp_socket
@@ -343,17 +346,57 @@ def kafka_reader(
     path,
     topic='eventlogging',
     identity='eventlogging',
-    raw=False
+    raw=False,
+    **kafka_consumer_args
 ):
-    """Reads events from Kafka"""
-    from kafka import KafkaConsumer
+    """
+    Reads events from Kafka.
 
+    Kafka URIs look like:
+    kafka:///b1:9092,b2:9092?topic=topic_name&auto_commit_enable=True&...
+
+    This reader uses the kafka-python KafkaConsumer.  You may pass
+    any configs that KafkaConsumer takes as keyword arguments via
+    the kafka URI query params.
+
+    If auto_commit_enable is True, then messages will be
+    marked as done as soon as they are read.  This has the
+    downside of committing message offsets before work might
+    be actually complete.  E.g. if inserting into MySQL, and
+    the process dies somewhere along the way, it is possible
+    that message offsets will be committed to Kafka for messages
+    that have not been inserted into MySQL.  Future work
+    will have to fix this problem somehow.  Perhaps a callback?
+    """
     # Brokers should be in the uri path
     brokers = path.strip('/')
+
+    # remove non KafkaConsumer args from kafka_consumer_args
+    kafka_consumer_args = {
+        k: v for k, v in items(kafka_consumer_args)
+        if k in kafka.DEFAULT_CONSUMER_CONFIG
+    }
 
     consumer = KafkaConsumer(
         topic,
         group_id=identity,
-        metadata_broker_list=brokers
+        bootstrap_servers=brokers,
+        **kafka_consumer_args
     )
-    return stream((message.value for message in consumer), raw)
+
+    # No need to bother calling task_done() if we aren't going to commit.
+    if consumer._config['auto_commit_enable']:
+        return stream(
+            (_ack_kafka_message(consumer, message) for message in consumer),
+            raw
+        )
+    else:
+        return stream((message.value for message in consumer), raw)
+
+
+def _ack_kafka_message(consumer, message):
+    """
+    Calls consumer.task_done(message) and returns message.value.
+    """
+    consumer.task_done(message)
+    return message.value
