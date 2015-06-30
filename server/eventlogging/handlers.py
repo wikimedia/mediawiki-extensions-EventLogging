@@ -14,9 +14,17 @@ import collections
 import datetime
 import glob
 import imp
+import inspect
 import json
+
+from kafka import KafkaClient
 from kafka import KafkaConsumer
 from kafka.consumer import kafka
+from kafka import KeyedProducer
+from kafka import SimpleProducer
+from kafka.producer.base import Producer
+from kafka.common import KafkaTimeoutError
+
 import logging
 import logging.handlers
 import os
@@ -32,7 +40,6 @@ from .utils import PeriodicThread, uri_delete_query_item
 from .factory import writes, reads
 from .streams import stream, pub_socket, sub_socket, udp_socket
 from .jrm import store_sql_events, DB_FLUSH_INTERVAL
-
 
 __all__ = ('load_plugins',)
 
@@ -74,16 +81,29 @@ def mongodb_writer(uri, database='events'):
 @writes('kafka')
 def kafka_writer(
     path,
+    producer='simple',
     topic='eventlogging_%(schema)s',
     key='%(schema)s_%(revision)s',
     blacklist=None,
     raw=False,
+    **kafka_producer_args
 ):
     """
     Write events to Kafka.
 
+    Kafka URIs look like:
+    kafka:///b1:9092,b2:9092?topic=eventlogging_%s(schema)&async=True&...
+
+    This producer uses either SimpleProducer or KeyedProducer from
+    kafka-python.  You may pass any configs that base Producer takes
+    as keyword arguments via URI query params.
+
+    NOTE:  If you do not explicitly set it, async will default to True.
+
         path      - URI path should be comma separated Kafka Brokers.
                     e.g. kafka01:9092,kafka02:9092,kafka03:9092
+
+        producer  - Either 'keyed' or 'simple'.  Default: 'simple'.
 
         topic     - Python format string topic name.
                     If the incoming event is a dict (not a raw string)
@@ -93,7 +113,8 @@ def kafka_writer(
         key       - Python format string key of the event message in Kafka.
                     If the incoming event is a dict (not a raw string)
                     key will be interpolated against event.  I.e.
-                    key % event.  Default: %(schema)s_%(revision)s
+                    key % event.  Default: %(schema)s_%(revision)s.
+                    This is ignored if you are using the simple producer.
 
         blacklist - Pattern string matching a list of schemas that should not
                     be written. This is useful to keep high volume schemas
@@ -106,12 +127,24 @@ def kafka_writer(
     # Brokers should be in the uri path
     brokers = path.strip('/')
 
-    from kafka import KafkaClient
-    from kafka import KeyedProducer
-    from kafka.common import KafkaTimeoutError
+    # remove non Kafka Producer args from kafka_consumer_args
+    kafka_producer_args = {
+        k: v for k, v in items(kafka_producer_args)
+        if k in inspect.getargspec(Producer.__init__).args
+    }
+
+    # Use async producer by default
+    if 'async' not in kafka_producer_args:
+        kafka_producer_args['async'] = True
 
     kafka = KafkaClient(brokers)
-    producer = KeyedProducer(kafka)
+
+    if producer == 'keyed':
+        ProducerClass = KeyedProducer
+    else:
+        ProducerClass = SimpleProducer
+
+    kafka_producer = ProducerClass(kafka, **kafka_producer_args)
 
     # These will be used if incoming events are not interpolatable.
     default_topic = topic.encode('utf8')
@@ -141,7 +174,8 @@ def kafka_writer(
                 continue
 
             message_topic = (topic % event).encode('utf8')
-            message_key = (key % event).encode('utf8')
+            if producer == 'keyed':
+                message_key = (key % event).encode('utf8')
         else:
             message_topic = default_topic
             message_key = default_key
@@ -178,7 +212,12 @@ def kafka_writer(
         else:
             value = json.dumps(event, sort_keys=True)
 
-        producer.send(message_topic, message_key, value)
+        # send_messages() for the different producer types have different
+        # signatures.  Call it appropriately.
+        if producer == 'keyed':
+            kafka_producer.send_messages(message_topic, message_key, value)
+        else:
+            kafka_producer.send_messages(message_topic, value)
 
 
 @writes('mysql', 'sqlite')
