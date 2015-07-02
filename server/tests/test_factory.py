@@ -57,3 +57,30 @@ class FactoryTestCase(unittest.TestCase):
         finally:
             eventlogging.factory._writers.pop('echo-writer')
             eventlogging.factory._readers.pop('fail-at-third-yield')
+
+    def test_cast_string(self):
+        """``cast_string`` casts builtin looking strings to builtin types."""
+        self.assertEqual(
+            "string",
+            eventlogging.factory.cast_string("string")
+        )
+        self.assertEqual(
+            u"string",
+            eventlogging.factory.cast_string(u"string")
+        )
+        self.assertEqual(
+            1.1,
+            eventlogging.factory.cast_string("1.1")
+        )
+        self.assertEqual(
+            10,
+            eventlogging.factory.cast_string("10")
+        )
+        self.assertEqual(
+            False,
+            eventlogging.factory.cast_string("False")
+        )
+        self.assertEqual(
+            True,
+            eventlogging.factory.cast_string("True")
+        )

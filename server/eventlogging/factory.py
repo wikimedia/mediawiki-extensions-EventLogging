@@ -11,12 +11,39 @@ import inspect
 
 from .compat import items, parse_qsl, urisplit
 
-
 __all__ = ('apply_safe', 'drive', 'get_reader', 'get_writer', 'handle',
            'reads', 'writes')
 
 _writers = {}
 _readers = {}
+
+
+def cast_string(v):
+    """
+    If the string v looks like it should be a
+    bool, int or float, convert it to the builtin
+    Python type
+    """
+
+    if type(v) not in (str, unicode):
+        return v
+
+    # attempt to convert v to a bool
+    v = {
+        'true':  True,
+        'false': False
+    }.get(v.lower(), v)
+
+    # Else try to convert v to an int or float
+    if type(v) is not bool:
+        try:
+            v = int(v)
+        except ValueError:
+            try:
+                v = float(v)
+            except ValueError:
+                pass
+    return v
 
 
 def apply_safe(f, kwargs):
@@ -31,6 +58,14 @@ def apply_safe(f, kwargs):
         args = [kwargs.pop(k) for k in sig.args[:-len(sig.defaults)]]
     else:
         args = [kwargs.pop(k) for k in sig.args]
+
+    # Since kwargs come in as strings from URI
+    # query params, attempt to cast ones that
+    # look like builtin types.  E.g.
+    # 'True' => True, '0.1' => 0.1, etc.
+    for k, v in items(kwargs):
+        kwargs[k] = cast_string(v)
+
     return f(*args, **kwargs)
 
 
