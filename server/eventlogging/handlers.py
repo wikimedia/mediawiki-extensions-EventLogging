@@ -18,12 +18,12 @@ import inspect
 import json
 
 from kafka import KafkaClient
-from kafka import KafkaConsumer
-from kafka.consumer import kafka
 from kafka import KeyedProducer
 from kafka import SimpleProducer
 from kafka.producer.base import Producer
 from kafka.common import KafkaTimeoutError
+from pykafka import KafkaClient as PyKafkaClient
+from pykafka import BalancedConsumer
 
 import logging
 import logging.handlers
@@ -34,6 +34,7 @@ import sys
 import sqlalchemy
 import time
 import traceback
+import uuid
 
 from .compat import items
 from .utils import PeriodicThread, uri_delete_query_item
@@ -384,7 +385,7 @@ def udp_reader(hostname, port, raw=False):
 def kafka_reader(
     path,
     topic='eventlogging',
-    identity='eventlogging',
+    identity='',
     raw=False,
     **kafka_consumer_args
 ):
@@ -392,50 +393,55 @@ def kafka_reader(
     Reads events from Kafka.
 
     Kafka URIs look like:
-    kafka:///b1:9092,b2:9092?topic=topic_name&auto_commit_enable=True&...
+    kafka:///b1:9092,b2:9092?topic=topic_name&identity=consumer_group_name&
+    auto_commit_enable=True&auto_commit_interval_ms=1000...
 
-    This reader uses the kafka-python KafkaConsumer.  You may pass
-    any configs that KafkaConsumer takes as keyword arguments via
+    This reader uses the pykafka BalancedConsumer.  You may pass
+    any configs that BalancedConsumer takes as keyword arguments via
     the kafka URI query params.
 
-    If auto_commit_enable is True, then messages will be
-    marked as done as soon as they are read.  This has the
-    downside of committing message offsets before work might
-    be actually complete.  E.g. if inserting into MySQL, and
+    The auto_commit_interval_ms is by default 60 seconds. This is pretty high
+    and may lead to more duplicate message consumption (Kafka has at atleast
+    once message delivery guarantee). Lowering this(to 1 second?) makes sure
+    that there aren't as many duplicates, but incurs the overhead of committing
+    offsets to zookeeper more often.
+
+    If auto_commit_enable is True, then messages will be marked as done based
+    on the auto_commit_interval_ms time period.
+    This has the downside of committing message offsets before
+    work might be actually complete.  E.g. if inserting into MySQL, and
     the process dies somewhere along the way, it is possible
     that message offsets will be committed to Kafka for messages
     that have not been inserted into MySQL.  Future work
     will have to fix this problem somehow.  Perhaps a callback?
     """
+    # The identity param is used to define the consumer group name.
+    # If identity is empty create a default unique one. This ensures we don't
+    # accidentally put consumers to the same group. Explicitly specify identity
+    # to launch consumers in the same consumer group
+    identity = 'eventlogging-' + uuid.uuid1() if not identity else identity
+
     # Brokers should be in the uri path
-    brokers = path.strip('/')
+    # path.strip returns type 'unicode' and pykafka expects a string, so
+    # converting unicode to str
+    brokers = path.strip('/').encode('ascii', 'ignore')
 
     # remove non KafkaConsumer args from kafka_consumer_args
     kafka_consumer_args = {
         k: v for k, v in items(kafka_consumer_args)
-        if k in kafka.DEFAULT_CONSUMER_CONFIG
+        if k in inspect.getargspec(BalancedConsumer.__init__).args
     }
 
-    consumer = KafkaConsumer(
-        topic,
-        group_id=identity,
-        bootstrap_servers=brokers,
-        **kafka_consumer_args
-    )
+    kafka_client = PyKafkaClient(hosts=brokers)
+    kafka_topic = kafka_client.topics[topic]
 
-    # No need to bother calling task_done() if we aren't going to commit.
-    if consumer._config['auto_commit_enable']:
-        return stream(
-            (_ack_kafka_message(consumer, message) for message in consumer),
-            raw
-        )
-    else:
-        return stream((message.value for message in consumer), raw)
+    consumer = kafka_topic.get_balanced_consumer(
+        consumer_group=identity,
+        **kafka_consumer_args)
 
+    # Define a generator to read from the BalancedConsumer instance
+    def message_stream(consumer):
+        while True:
+            yield consumer.consume()
 
-def _ack_kafka_message(consumer, message):
-    """
-    Calls consumer.task_done(message) and returns message.value.
-    """
-    consumer.task_done(message)
-    return message.value
+    return stream((message.value for message in message_stream(consumer)), raw)
