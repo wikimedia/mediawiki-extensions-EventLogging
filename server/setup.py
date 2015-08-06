@@ -59,6 +59,7 @@ setup(
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
         "kafka-python>=0.9.3",
-        "pykafka>=1.0.3"
+        "pykafka>=1.0.3",
+        "statsd>=3.1"
     )
 )

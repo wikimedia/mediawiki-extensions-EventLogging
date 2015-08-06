@@ -208,7 +208,8 @@ def insert_sort_key(event):
     return tuple(sorted(event))
 
 
-def store_sql_events(meta, events_batch, replace=False):
+def store_sql_events(meta, events_batch, replace=False,
+                     on_insert_callback=None):
     """Store events in the database.
     It assumes that the events come broken down by scid."""
     logger = logging.getLogger('Log')
@@ -230,7 +231,14 @@ def store_sql_events(meta, events_batch, replace=False):
             events = list(grouper)
             table = get_table(meta, scid)
             insert(table, events, replace)
+            # The insert operation is all or nothing - either all events have
+            # been inserted successfully (sqlalchemy wraps the insertion in a
+            # transaction), or an exception is thrown and it's not caught
+            # anywhere. This means that if the following line is reached,
+            # len(events) events have been inserted, so we can log it.
             logger.info('Data inserted %d', len(events))
+            if on_insert_callback:
+                on_insert_callback(len(events))
 
 
 def _property_getter(item):

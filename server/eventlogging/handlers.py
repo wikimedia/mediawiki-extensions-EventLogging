@@ -17,6 +17,7 @@ import imp
 import inspect
 import json
 
+from functools import partial
 from kafka import KafkaClient
 from kafka import KeyedProducer
 from kafka import SimpleProducer
@@ -32,6 +33,7 @@ import re
 import socket
 import sys
 import sqlalchemy
+import statsd
 import time
 import traceback
 import uuid
@@ -221,20 +223,44 @@ def kafka_writer(
             kafka_producer.send_messages(message_topic, value)
 
 
+def insert_stats(stats, inserted_count):
+    """
+    Callback function to increment mysql inserted metric in statsd,
+    that is called after successful insertion of events into mysql.
+
+        stats           - Instance of stats.StatsClient
+        inserted_count  - Number of events that have been inserted
+    """
+    if stats:
+        stats.incr('overall.inserted', inserted_count)
+
+
 @writes('mysql', 'sqlite')
-def sql_writer(uri, replace=False):
+def sql_writer(uri, replace=False, statsd_host=''):
     """Writes to an RDBMS, creating tables for SCIDs and rows for events."""
-    # Don't pass 'replace' parameter to SQLAlchemy.
+    # Don't pass 'replace' and 'statsd_host' parameter to SQLAlchemy.
     uri = uri_delete_query_item(uri, 'replace')
+    uri = uri_delete_query_item(uri, 'statsd_host')
+
     logger = logging.getLogger('Log')
+
+    # Create a statsd client instance if statsd_host is specified
+    stats = None
+    if statsd_host:
+        stats = statsd.StatsClient(statsd_host, 8125, prefix='eventlogging')
+
     meta = sqlalchemy.MetaData(bind=uri)
     # Each scid stores a buffer and the timestamp of the first insertion.
     events = collections.defaultdict(lambda: ([], time.time()))
     events_batch = collections.deque()
+    # Since the worker is unaware of the statsd host, create a partial
+    # that binds the statsd client argument to the callback
     worker = PeriodicThread(interval=DB_FLUSH_INTERVAL,
                             target=store_sql_events,
                             args=(meta, events_batch),
-                            kwargs={'replace': replace})
+                            kwargs={'replace': replace,
+                                    'on_insert_callback':
+                                        partial(insert_stats, stats)})
     worker.start()
 
     if meta.bind.dialect.name == 'mysql':
@@ -254,6 +280,8 @@ def sql_writer(uri, replace=False):
             scid = (event['schema'], event['revision'])
             scid_events, first_timestamp = events[scid]
             scid_events.append(event)
+            if stats:
+                stats.incr('overall.insertAttempted')
             # Check if the schema queue is too long or too old
             if (len(scid_events) >= batch_size or
                     time.time() - first_timestamp >= batch_time):
@@ -276,7 +304,8 @@ def sql_writer(uri, replace=False):
         # process them in the main thread before exiting.
         for scid, (scid_events, _) in events.iteritems():
             events_batch.append((scid, scid_events))
-        store_sql_events(meta, events_batch, replace=replace)
+        store_sql_events(meta, events_batch, replace=replace,
+                         on_insert_callback=partial(insert_stats, stats))
 
 
 @writes('file')
