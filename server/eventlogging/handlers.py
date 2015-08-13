@@ -448,7 +448,7 @@ def kafka_reader(
     # If identity is empty create a default unique one. This ensures we don't
     # accidentally put consumers to the same group. Explicitly specify identity
     # to launch consumers in the same consumer group
-    identity = 'eventlogging-' + uuid.uuid1() if not identity else identity
+    identity = identity if identity else 'eventlogging-' + str(uuid.uuid1())
 
     # Brokers should be in the uri path
     # path.strip returns type 'unicode' and pykafka expects a string, so
