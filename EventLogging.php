@@ -79,9 +79,9 @@ $wgEventLoggingFile = false;
  * @var bool|string: URI or false if not set.
  * URI of api.php on schema wiki.
  *
- * @example string: 'http://meta.wikimedia.org/w/api.php'
+ * @example string: 'https://meta.wikimedia.org/w/api.php'
  */
-$wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
+$wgEventLoggingSchemaApiUri = 'https://meta.wikimedia.org/w/api.php';
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
