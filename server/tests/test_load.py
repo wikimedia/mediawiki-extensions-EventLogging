@@ -4,7 +4,7 @@ This script generates a stream of requests to beta-labs
 (bits.beta.wmflabs.org) to test EventLogging load limitations.
 
 Thanks to Emilio Monti for the Worker and ThreadPool codes!
-http://code.activestate.com/recipes/577187-python-thread-pool/
+https://code.activestate.com/recipes/577187-python-thread-pool/
 """
 
 import json

@@ -79,9 +79,9 @@ $wgEventLoggingFile = false;
  * @var bool|string: URI or false if not set.
  * URI of api.php on schema wiki.
  *
- * @example string: 'http://meta.wikimedia.org/w/api.php'
+ * @example string: 'https://meta.wikimedia.org/w/api.php'
  */
-$wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
+$wgEventLoggingSchemaApiUri = 'https://meta.wikimedia.org/w/api.php';
 
 /**
  * @var bool|string: Value of $wgDBname for the MediaWiki instance
@@ -115,7 +115,7 @@ function efSchemaValidate( $object, $schema = NULL ) {
 	// We depart from the JSON Schema specification in disallowing by default
 	// additional event fields not mentioned in the schema.
 	// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> and
-	// <http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
+	// <https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
 	if ( !array_key_exists( 'additionalProperties', $schema ) ) {
 		$schema[ 'additionalProperties' ] = false;
 	}

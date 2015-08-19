@@ -24,7 +24,7 @@ __all__ = ('store_sql_events',)
 
 
 # Format string for :func:`datetime.datetime.strptime` for MediaWiki
-# timestamps. See `<http://www.mediawiki.org/wiki/Manual:Timestamp>`_.
+# timestamps. See `<https://www.mediawiki.org/wiki/Manual:Timestamp>`_.
 MEDIAWIKI_TIMESTAMP = '%Y%m%d%H%M%S'
 
 # Format string for table names. Interpolates a `SCID` -- i.e., a tuple

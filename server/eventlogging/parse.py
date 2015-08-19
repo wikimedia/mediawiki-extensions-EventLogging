@@ -72,7 +72,7 @@ def capsule_uuid(capsule):
     Gets a unique URI for the capsule using `EVENTLOGGING_URL_FORMAT`
     and uses it to generate a UUID5 in the URL namespace.
 
-    ..seealso:: `RFC 4122 <http://www.ietf.org/rfc/rfc4122.txt>`_.
+    ..seealso:: `RFC 4122 <https://www.ietf.org/rfc/rfc4122.txt>`_.
 
     :param capsule: A capsule object (or any dictionary that defines
       `recvFrom`, `seqId`, and `timestamp`).
