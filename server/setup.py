@@ -5,7 +5,7 @@ eventlogging
 This module contains scripts for processing streams of events generated
 by `EventLogging`_, a MediaWiki extension for logging structured data.
 
-.. _EventLogging: http://www.mediawiki.org/wiki/Extension:EventLogging
+.. _EventLogging: https://www.mediawiki.org/wiki/Extension:EventLogging
 
 """
 try:
@@ -13,7 +13,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-# Workaround for <http://bugs.python.org/issue15881#msg170215>:
+# Workaround for <https://bugs.python.org/issue15881#msg170215>:
 import multiprocessing  # noqa
 
 

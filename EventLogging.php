@@ -115,7 +115,7 @@ function efSchemaValidate( $object, $schema = NULL ) {
 	// We depart from the JSON Schema specification in disallowing by default
 	// additional event fields not mentioned in the schema.
 	// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> and
-	// <http://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
+	// <https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
 	if ( !array_key_exists( 'additionalProperties', $schema ) ) {
 		$schema[ 'additionalProperties' ] = false;
 	}

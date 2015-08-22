@@ -76,7 +76,7 @@ def unquote_plus(unicode):
 
 def http_get(url):
     """Simple wrapper around the standard library's `urlopen` function which
-    works around a circular ref. See <http://bugs.python.org/issue1208304>.
+    works around a circular ref. See <https://bugs.python.org/issue1208304>.
     """
     req = None
     try:
