@@ -465,7 +465,7 @@ def kafka_reader(
     kafka_topic = kafka_client.topics[topic]
 
     consumer = kafka_topic.get_balanced_consumer(
-        consumer_group=identity,
+        consumer_group=identity.encode('ascii', 'ignore'),
         **kafka_consumer_args)
 
     # Define a generator to read from the BalancedConsumer instance
