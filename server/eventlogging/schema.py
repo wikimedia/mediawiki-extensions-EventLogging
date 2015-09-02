@@ -36,7 +36,9 @@ SCHEMA_RE = re.compile(r'^[a-zA-Z0-9_-]{1,63}$')
 SCHEMA_WIKI_API = 'https://meta.wikimedia.org/w/api.php'
 
 # Template for schema article URLs. Interpolates SCIDs.
-SCHEMA_URL_FORMAT = SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s'
+SCHEMA_URL_FORMAT = (
+    SCHEMA_WIKI_API + '?action=jsonschema&title=%s&revid=%s&formatversion=2'
+)
 
 # Schemas retrieved via HTTP are cached in this dictionary.
 schema_cache = {}

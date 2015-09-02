@@ -123,7 +123,8 @@ class RemoteSchema {
 
 		return wfAppendQuery( $wgEventLoggingSchemaApiUri, array(
 			'action' => 'jsonschema',
-			'revid'  => $this->revision
+			'revid'  => $this->revision,
+			'formatversion' => 2,
 		) );
 	}
 }
