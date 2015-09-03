@@ -52,7 +52,7 @@ setup(
         'bin/eventlogging-reporter',
     ),
     zip_safe=False,
-    test_suite='tests',
+    test_suite='eventlogging.tests',
     install_requires=(
         "jsonschema>=0.7",
         "pygments>=1.5",
