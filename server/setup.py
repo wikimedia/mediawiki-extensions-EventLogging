@@ -58,6 +58,7 @@ setup(
         "pygments>=1.5",
         "pyzmq>=2.1",
         "sqlalchemy>=0.7",
+        "MySQL-python>=1.2.3",
         "kafka-python>=0.9.3",
         "pykafka>=1.0.3",
         "statsd>=3.0"

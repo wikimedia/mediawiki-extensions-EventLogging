@@ -13,6 +13,7 @@ import collections
 import datetime
 import itertools
 import logging
+import _mysql
 import sqlalchemy
 
 from .compat import items
@@ -181,6 +182,11 @@ def _insert_sequential(table, events, replace=False):
                       .prefix_with('OR REPLACE', dialect='sqlite'))
         try:
             insert.execute()
+        except sqlalchemy.exc.IntegrityError as e:
+            # If we encouter a MySQL Duplicate key error,
+            # just log and continue.
+            if type(e.orig) == _mysql.IntegrityError and e.orig[0] == 1062:
+                logging.error(e)
         except sqlalchemy.exc.ProgrammingError:
             table.create()
             insert.execute()
@@ -195,6 +201,17 @@ def _insert_multi(table, events, replace=False):
                   .prefix_with('OR REPLACE', dialect='sqlite'))
     try:
         insert.execute()
+    except sqlalchemy.exc.IntegrityError as e:
+        # If we encouter a MySQL Duplicate key error,
+        # just log and continue.  Note that this will
+        # fail inserts for all events in this batch,
+        # not just the one that caused a duplicate
+        # key error.  In this case, should we just
+        # call _insert_sequential() with these events
+        # so that each event has a chance to be inserted
+        # separately?
+        if type(e.orig) == _mysql.IntegrityError and e.orig[0] == 1062:
+            logging.error(e)
     except sqlalchemy.exc.SQLAlchemyError:
         table.create(checkfirst=True)
         insert.execute()
