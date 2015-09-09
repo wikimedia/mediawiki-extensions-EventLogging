@@ -46,14 +46,18 @@
 		schemas: {},
 
 		/**
-		 * Maximum length in chars that a beacon url can have.
-		 * If a url is longer than that, the log may be truncated
-		 * by varnishncsa and result in validation problems.
+		 * Maximum length in chars that a beacon URL can have.
+		 * Relevant:
+		 *
+		 * - Length that browsers support (http://stackoverflow.com/a/417184/319266)
+		 * - Length that proxies support (e.g. Varnish)
+		 * - varnishlog (shm_reclen)
+		 * - varnishkafka
 		 *
 		 * @property maxUrlSize
 		 * @type Number
 		 */
-		maxUrlSize: 1000,
+		maxUrlSize: 2000,
 
 		/**
 		 * Load a schema from the schema registry.
