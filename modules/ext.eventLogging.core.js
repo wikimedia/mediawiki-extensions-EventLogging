@@ -225,6 +225,7 @@
 		checkUrlSize: function ( schemaName, url ) {
 			if ( url.length > self.maxUrlSize ) {
 				var message = 'Url exceeds maximum length';
+				mw.eventLog.logFailure( schemaName, 'urlSize' );
 				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, message ) );
 				return message;
 			}
@@ -270,6 +271,20 @@
 				deferred.rejectWith( event, [ event, sizeError ] );
 			}
 			return deferred.promise();
+		},
+
+		/**
+		 * Increment the error count in statsd for this schema.
+		 *
+		 * Should be called instead of logEvent in case of an error.
+		 *
+		 * @param {string} schemaName
+		 * @param {string} errorCode
+		 */
+		logFailure: function ( schemaName, errorCode ) {
+			// Record this failure as a simple counter. By default "counter.*" goes nowhere.
+			// The WikimediaEvents extension sends it to statsd.
+			mw.track( 'counter.eventlogging.client_errors.' + schemaName + '.' + errorCode );
 		}
 
 	};
