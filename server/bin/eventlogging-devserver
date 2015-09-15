@@ -195,8 +195,8 @@ sys.stderr.write('''
 
 ''' + highlight('''
 # Ensure the following values are set in LocalSettings.php:
-require_once( "$IP/extensions/EventLogging/EventLogging.php" );
-$wgEventLoggingSchemaApiUri = 'http://meta.wikimedia.org/w/api.php';
+require_once "$IP/extensions/EventLogging/EventLogging.php";
+$wgEventLoggingSchemaApiUri = 'https://meta.wikimedia.org/w/api.php';
 
 # Listening to events.\n''', php_lexer, formatter))
 

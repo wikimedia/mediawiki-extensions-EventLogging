@@ -116,7 +116,8 @@
 		 * @return {Array} An array of validation errors (empty if valid).
 		 */
 		validate: function ( obj, schema ) {
-			var errors = [], key, val, prop;
+			var key, val, prop,
+				errors = [];
 
 			if ( !schema || !schema.properties ) {
 				errors.push( 'Missing or empty schema' );
@@ -193,11 +194,11 @@
 			}
 
 			return {
-				event    : event,
-				revision : schema.revision || -1,
-				schema   : schemaName,
-				webHost  : location.hostname,
-				wiki     : mw.config.get( 'wgDBname' )
+				event: event,
+				revision: schema.revision || -1,
+				schema: schemaName,
+				webHost: location.hostname,
+				wiki: mw.config.get( 'wgDBname' )
 			};
 		},
 
