@@ -69,3 +69,19 @@ class UtilsTestCase(unittest.TestCase):
         not_subset = {'k1': {'k4': 'v4'}}
         self.assertTrue(eventlogging.utils.is_subset_dict(subset, map))
         self.assertFalse(eventlogging.utils.is_subset_dict(not_subset, map))
+
+    def test_parse_etcd_uri(self):
+        """`parse_etcd_uri` returns proper kwargs from uri"""
+        etcd_uri = 'https://hostA:123,hostB:234?' \
+                   'cert=/path/to/cert&allow_redirect=True'
+        print("URI %s" % etcd_uri)
+
+        etcd_kwargs = eventlogging.utils.parse_etcd_uri(etcd_uri)
+        expected_kwargs = {
+            'protocol': 'https',
+            'host': (('hostA', 123), ('hostB', 234)),
+            'cert': '/path/to/cert',
+            'allow_redirect': True
+        }
+        for key in expected_kwargs.keys():
+            self.assertEqual(etcd_kwargs[key], expected_kwargs[key])

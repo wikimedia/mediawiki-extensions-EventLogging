@@ -17,6 +17,7 @@
     -h, --help  show this help message and exit
     --sid SID   set input socket identity
     --output-invalid  URI of stream which to send invalid events
+    --etcd-uri ETCD_URI
 
   formatters:
      %h         Client IP
@@ -39,7 +40,8 @@ import logging
 
 from eventlogging import (capsule_uuid, create_event_error, LogParser,
                           get_reader, get_writer, validate, setup_logging,
-                          uri_force_raw, uri_append_query_items)
+                          uri_force_raw, uri_append_query_items, keyhasher,
+                          SharedRotatingToken, parse_etcd_uri)
 
 from jsonschema import ValidationError
 
@@ -68,10 +70,36 @@ ap.add_argument(
     'used to write invalid events.  Invalid events are written using the '
     'EventError schema.'
 )
+
+ap.add_argument(
+    '--etcd-uri',
+    help='If set, etcd will be used to get a rotating shared hash token '
+    'to use for anonymizing IP addresses during processing of raw data. '
+    'This is useful if you are running multiple eventlogging-processors '
+    'and want them all to consistently hash client IPs. '
+    'ETCD_URI is of the form: http(s)://hostA:1234,hostB:2345?cert=/my/cert',
+    default=False,
+    action='store'
+)
+
 args = ap.parse_args()
 
-parser = LogParser(args.format)
 
+# If --etcd-uri was given, then parse it and instantiate
+# a SharedRotatingToken named 'ip_hash' to use with the
+# keyhasher function.  This function will be used by the
+# LogParser to hash client IPs read in from each event.
+parser_kwargs = {}
+if args.etcd_uri:
+    etcd_kwargs = parse_etcd_uri(args.etcd_uri)
+    parser_kwargs['ip_hasher'] = keyhasher(
+        SharedRotatingToken('ip_hash', **etcd_kwargs)
+    )
+
+# Instantiate the LogParser to use for this processor.
+parser = LogParser(args.format, **parser_kwargs)
+
+# Valid events will be sent to each of these writers
 writers_list = []
 for output_uri in args.output:
     writers_list.append(get_writer(output_uri))

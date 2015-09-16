@@ -110,27 +110,29 @@ def decode_qson(qson):
 # (large volume of events sharing a common origin).
 hash_ip = keyhasher(rotating_key(size=64, period=KEY_LIFESPAN.total_seconds()))
 
-# A mapping of format specifiers to a tuple of (regexp, caster).
-format_specifiers = {
-    'd': (r'(?P<%s>\d+)', int),
-    'h': (r'(?P<clientIp>\S+)', hash_ip),
-    'i': (r'(?P<%s>[^\t]+)', str),
-    'j': (r'(?P<capsule>\S+)', json.loads),
-    'q': (r'(?P<capsule>\?\S+)', decode_qson),
-    's': (r'(?P<%s>\S+)', str),
-    't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})', ncsa_to_unix),
-}
-
 
 class LogParser(object):
     """Parses raw varnish/MediaWiki log lines into encapsulated events."""
 
-    def __init__(self, format):
+    def __init__(self, format, ip_hasher=hash_ip):
         """Constructor.
 
         :param format: Format string.
+        :param ip_hasher: function ip_hasher(ip) -> hashed ip.
         """
         self.format = format
+
+        # A mapping of format specifiers to a tuple of (regexp, caster).
+        self.format_specifiers = {
+            'd': (r'(?P<%s>\d+)', int),
+            'h': (r'(?P<clientIp>\S+)', ip_hasher),
+            'i': (r'(?P<%s>[^\t]+)', str),
+            'j': (r'(?P<capsule>\S+)', json.loads),
+            'q': (r'(?P<capsule>\?\S+)', decode_qson),
+            's': (r'(?P<%s>\S+)', str),
+            't': (r'(?P<timestamp>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})',
+                  ncsa_to_unix),
+        }
 
         # Field casters, ordered by the relevant field's position in
         # format string.
@@ -146,7 +148,7 @@ class LogParser(object):
         and append its caster to the list. Called by :func:`re.sub`.
         """
         _, name, specifier = spec.groups()
-        matcher, caster = format_specifiers[specifier]
+        matcher, caster = self.format_specifiers[specifier]
         if name:
             matcher = matcher % name
         self.casters.append(caster)

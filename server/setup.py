@@ -54,6 +54,7 @@ setup(
     zip_safe=False,
     test_suite='eventlogging.tests',
     install_requires=(
+        "python-etcd>=0.4.0",
         "jsonschema>=0.7",
         "pygments>=1.5",
         "pyzmq>=2.1",

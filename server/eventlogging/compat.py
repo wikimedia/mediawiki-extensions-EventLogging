@@ -36,7 +36,8 @@ except ImportError:
 
 
 __all__ = ('http_get', 'integer_types', 'items', 'json', 'monotonic_clock',
-           'string_types', 'unquote_plus', 'urisplit', 'urlopen', 'urlencode', 'uuid5')
+           'string_types', 'unquote_plus', 'urisplit', 'urlopen', 'urlencode',
+           'uuid5')
 
 PY3 = sys.version_info[0] == 3
 

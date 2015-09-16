@@ -17,13 +17,14 @@ import sys
 import threading
 import traceback
 
-from .compat import items, monotonic_clock, urisplit, urlencode
-from .factory import get_reader
+from .compat import items, monotonic_clock, urisplit, urlencode, parse_qsl
+from .factory import get_reader, cast_string
 
 
 __all__ = ('EventConsumer', 'PeriodicThread', 'flatten', 'is_subset_dict',
            'setup_logging', 'unflatten', 'update_recursive',
-           'uri_delete_query_item', 'uri_append_query_items', 'uri_force_raw')
+           'uri_delete_query_item', 'uri_append_query_items', 'uri_force_raw',
+           'parse_etcd_uri')
 
 
 class PeriodicThread(threading.Thread):
@@ -187,6 +188,30 @@ class EventConsumer(object):
         for event in get_reader(self.url):
             if is_subset_dict(self.conditions, event):
                 yield event
+
+
+def parse_etcd_uri(etcd_uri):
+    """
+    Parses an eventlogging formed URI and returns a kwargs dict suitable
+    for passing to etcd.client.Client().
+    """
+    # etcd_uri should look like:
+    # http(s)://hostA:1234,hostB:2345?allow_reconnect=True ...
+    parts = urisplit(etcd_uri)
+    etcd_kwargs = {
+        k: cast_string(v) for k, v in
+        items(dict(parse_qsl(parts.query)))
+    }
+
+    etcd_kwargs['protocol'] = parts.scheme
+    # Convert the host part of uri into
+    # a tuple of the form:
+    # (('hostA', 1234), ('hostB', 1234))
+    etcd_kwargs['host'] = tuple([
+        (h.split(':')[0], int(h.split(':')[1]))
+        for h in parts.netloc.split(',')
+    ])
+    return etcd_kwargs
 
 
 def setup_logging():
