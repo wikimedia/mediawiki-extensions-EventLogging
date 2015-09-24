@@ -71,7 +71,6 @@
 			}
 		];
 
-
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			this.suppressWarnings();
@@ -84,11 +83,9 @@
 		}
 	} ) );
 
-
 	QUnit.test( 'Configuration', 1, function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
 	} );
-
 
 	QUnit.test( 'validate', validationCases.length + 1, function ( assert ) {
 		var meta = mw.eventLog.getSchema( 'earthquake' ),
@@ -101,7 +98,7 @@
 
 		$.each( validationCases, function ( _, vCase ) {
 			errors = mw.eventLog.validate( vCase.args, meta.schema );
-			assert.ok( errors.join('').match( vCase.regex ), vCase.msg );
+			assert.ok( errors.join( '' ).match( vCase.regex ), vCase.msg );
 		} );
 	} );
 
@@ -116,7 +113,6 @@
 			assert.deepEqual( e.event, event, 'logEvent promise resolves with event' );
 		} );
 	} );
-
 
 	$.each( {
 		'URL size is ok': {
@@ -139,7 +135,7 @@
 		var event = {
 			epicenter: 'Valdivia',
 			magnitude: 9.5,
-			article: new Array( mw.eventLog.maxUrlSize + 1).join( 'x' )
+			article: new Array( mw.eventLog.maxUrlSize + 1 ).join( 'x' )
 		};
 
 		mw.eventLog.logEvent( 'earthquake', event ).always( function ( e, error ) {
@@ -148,7 +144,6 @@
 				'logEvent promise resolves with error' );
 		} );
 	} );
-
 
 	QUnit.test( 'setDefaults', 1, function ( assert ) {
 		var prepared, defaults;
@@ -170,11 +165,10 @@
 		}, 'Logged event is annotated with defaults' );
 	} );
 
-
 	QUnit.module( 'ext.eventLogging: isInstanceOf()' );
 
 	$.each( {
-		boolean: {
+		'boolean': {
 			valid: [ true, false ],
 			invalid: [ undefined, null, 0, -1, 1, 'false' ]
 		},
@@ -196,7 +190,7 @@
 		},
 		array: {
 			valid: [ [], [ 42 ] ],
-			invalid: [ -1, {}, undefined ],
+			invalid: [ -1, {}, undefined ]
 		}
 	}, function ( type, cases ) {
 		var asserts = cases.valid.length + cases.invalid.length;
@@ -213,4 +207,4 @@
 		} );
 	} );
 
-} ( mediaWiki, jQuery ) );
+}( mediaWiki, jQuery ) );

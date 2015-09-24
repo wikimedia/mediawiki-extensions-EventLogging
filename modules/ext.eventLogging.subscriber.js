@@ -43,4 +43,4 @@
 		mw.trackSubscribe( 'event.', handleTrackedEvent );
 	} );
 
-} ( mediaWiki, jQuery ) );
+}( mediaWiki, jQuery ) );
