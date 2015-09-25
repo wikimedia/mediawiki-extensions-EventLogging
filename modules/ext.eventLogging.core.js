@@ -1,4 +1,4 @@
-/**
+/*!
  * This module implements EventLogging's API for logging events from
  * client-side JavaScript code. Instances of `ResourceLoaderSchemaModule`
  * indicate a dependency on this module and declare themselves via its
@@ -13,7 +13,6 @@
  */
 ( function ( mw, $ ) {
 	'use strict';
-
 
 	var self,
 
@@ -80,14 +79,13 @@
 		 *
 		 * @param {string} schemaName Name of schema.
 		 * @param {Object} meta An object describing a schema:
-		 * @param {Number} meta.revision Revision ID.
+		 * @param {number} meta.revision Revision ID.
 		 * @param {Object} meta.schema The schema itself.
 		 * @return {Object} The registered schema.
 		 */
 		declareSchema: function ( schemaName, meta ) {
 			return $.extend( true, self.getSchema( schemaName ), meta );
 		},
-
 
 		/**
 		 * Checks whether a JavaScript value conforms to a specified
@@ -110,7 +108,6 @@
 				return jsType === type;
 			}
 		},
-
 
 		/**
 		 * Check whether a JavaScript object conforms to a JSON Schema.
@@ -156,14 +153,13 @@
 				if ( prop[ 'enum' ] && $.inArray( val, prop[ 'enum' ] ) === -1 ) {
 					errors.push( mw.format(
 						'Value $1 for property "$2" is not one of $3',
-						JSON.stringify( val ), key, JSON.stringify( prop['enum'] )
+						JSON.stringify( val ), key, JSON.stringify( prop[ 'enum' ] )
 					) );
 				}
 			}
 
 			return errors;
 		},
-
 
 		/**
 		 * Sets default property values for events belonging to a particular schema.
@@ -177,7 +173,6 @@
 		setDefaults: function ( schemaName, schemaDefaults ) {
 			return self.declareSchema( schemaName, { defaults: schemaDefaults } );
 		},
-
 
 		/**
 		 * Prepares an event for dispatch by filling defaults for any missing
@@ -222,14 +217,14 @@
 		 * Checks whether a beacon url is short enough,
 		 * so that it does not get truncated by varnishncsa.
 		 *
-		 * @param {String} schemaName Canonical schema name.
-		 * @param {String} url Beacon url.
-		 * @return {String|undefined} The error message in case of error.
-		 *
+		 * @param {string} schemaName Canonical schema name.
+		 * @param {string} url Beacon url.
+		 * @return {string|undefined} The error message in case of error.
 		 */
 		checkUrlSize: function ( schemaName, url ) {
+			var message;
 			if ( url.length > self.maxUrlSize ) {
-				var message = 'Url exceeds maximum length';
+				message = 'Url exceeds maximum length';
 				mw.eventLog.logFailure( schemaName, 'urlSize' );
 				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, message ) );
 				return message;
@@ -246,7 +241,7 @@
 		 * @param {string} url URL to request from the server.
 		 * @return undefined
 		 */
-		sendBeacon: /1|yes/.test( navigator.doNotTrack ) || !baseUrl
+		sendBeacon: ( /1|yes/.test( navigator.doNotTrack ) || !baseUrl )
 			? $.noop
 			: navigator.sendBeacon
 				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
@@ -299,4 +294,4 @@
 		mw.log.error( error );
 	} );
 
-} ( mediaWiki, jQuery ) );
+}( mediaWiki, jQuery ) );

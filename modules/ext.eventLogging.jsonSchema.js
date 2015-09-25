@@ -24,6 +24,5 @@
 			e.stopPropagation();
 		} );
 
-
 	} );
-} ( jQuery ) );
+}( jQuery ) );
