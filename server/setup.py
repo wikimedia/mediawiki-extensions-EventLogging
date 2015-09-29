@@ -54,7 +54,12 @@ setup(
     zip_safe=False,
     test_suite='eventlogging.tests',
     install_requires=(
-        "python-etcd>=0.3.3",
+        # python-etcd requires python-openssl >= 0.14, which is not
+        # available in Trusty.  Our python-etcd package does work with
+        # python-openssl 0.13-2 which is available via .deb.
+        # Commenting out this python dependency and allowing puppet
+        # to satisify it until we upgrade eventlogging servers to Jessie.
+        # "python-etcd>=0.3.3",
         "jsonschema>=0.7",
         "pygments>=1.5",
         "pyzmq>=2.1",
