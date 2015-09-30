@@ -23,7 +23,6 @@ SCHEMA_HOST = 'meta.wikimedia.org'
 SCHEMA_URL = ('/w/api.php?action=query&prop=revisions&format=json'
               '&rvprop=content&titles=Schema:%s&revid=%s')
 CAPSULE_REVISION = 10981547
-EL_HOST = 'bits.beta.wmflabs.org'
 EL_URL = '/event.gif?%s;'
 
 
@@ -121,9 +120,9 @@ def get_schema(schema_name, schema_revision):
     return json.loads(schema_str)
 
 
-def send_event(event):
+def send_event(event, endpoint):
     query_string = urllib.quote(json.dumps(event))
-    conn = httplib.HTTPConnection(EL_HOST)
+    conn = httplib.HTTPConnection(endpoint)
     conn.request("GET", EL_URL % query_string)
 
 
@@ -148,6 +147,11 @@ def get_arguments():
         help=('Indicates when to instantiate optional event fields. '
               'Possible values: "never", "sometimes" and "always".'),
         default='sometimes')
+    ap.add_argument(
+        '--endpoint',
+        help=('Hostname where events should be sent. '
+              'E.g. bits.wikimedia.org'),
+        default='bits.beta.wmflabs.org')
     args = ap.parse_args()
 
     # Check and build sleep interval param.
@@ -180,7 +184,7 @@ def get_arguments():
             raise ValueError('Invalid parameter --optional-values: %s.' %
                              args.optional_values)
 
-    return sleep_interval, generators, optional_values
+    return sleep_interval, generators, optional_values, args.endpoint
 
 
 def weighted_choice(choices):
@@ -195,7 +199,7 @@ def weighted_choice(choices):
 
 def main():
     print 'Initializing...'
-    sleep_interval, generators, optional_values = get_arguments()
+    sleep_interval, generators, optional_values, endpoint = get_arguments()
     capsule_schema = get_schema('EventCapsule', CAPSULE_REVISION)
     pool = ThreadPool(POOL_SIZE)
     print 'Sending events...'
@@ -205,7 +209,7 @@ def main():
             t1 = time.time()
             generator = weighted_choice(generators)
             event = generator.generate(capsule_schema, optional_values)
-            pool.add_task(send_event, event)
+            pool.add_task(send_event, event, endpoint)
             t2 = time.time()
             count += 1
             time_to_sleep = max(sleep_interval - (t2 - t1), 0)
