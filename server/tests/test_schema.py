@@ -124,8 +124,11 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
         """An empty event with no mandatory properties should validate"""
         self.assertIsValid(self.incorrectly_serialized_empty_event)
 
-    def test_create_event_error(self):
-        """create_event_error() should create a valid EventError object."""
+    def test_create_event_error_unparsed(self):
+        """
+        create_event_error() should create a valid
+        EventError object without schema or revision set.
+        """
 
         invalid_raw_event = "Duh this won't validate against any schema."
         error_message = "This is just a test."
@@ -153,7 +156,115 @@ class SchemaTestCase(SchemaTestMixin, unittest.TestCase):
             event_error['event']['message'],
             error_message
         )
+        # assert that schema and revision are the defaults, since there's
+        # there is no parsed_event and these are not even present in this
+        # raw_event.
         self.assertEqual(
-            event_error['event']['code'],
-            error_code
+            event_error['event']['schema'],
+            'unknown'
+        )
+        self.assertEqual(
+            event_error['event']['revision'],
+            -1
+        )
+
+    def test_create_event_error_parsed(self):
+        """
+        create_event_error() should create a valid
+        EventError object with schema and revision set.
+        """
+
+        invalid_raw_event = "Duh this won't validate against any schema."
+        error_message = "This is just a test."
+        error_code = "processor"
+        parsed_event = {
+            'schema': 'Nonya',
+            'revision': 12345
+        }
+
+        event_error = eventlogging.create_event_error(
+            invalid_raw_event,
+            error_message,
+            error_code,
+            parsed_event
+        )
+        # Test that this event validates against the EventError schema.
+        self.assertIsValid(event_error)
+        self.assertEqual(
+            event_error['schema'],
+            eventlogging.schema.ERROR_SCID[0]
+        )
+        self.assertEqual(
+            event_error['revision'],
+            eventlogging.schema.ERROR_SCID[1]
+        )
+        self.assertEqual(
+            event_error['event']['rawEvent'],
+            invalid_raw_event
+        )
+        self.assertEqual(
+            event_error['event']['message'],
+            error_message
+        )
+        # assert that schema and revision the same as in parsed_event
+        self.assertEqual(
+            event_error['event']['schema'],
+            'Nonya'
+        )
+        self.assertEqual(
+            event_error['event']['revision'],
+            12345
+        )
+
+    def test_create_event_error_raw_schema_and_revision(self):
+        """
+        create_event_error() should create a valid
+        EventError object with schema and revision set, extracted
+        via a regex out of the raw_event.
+        """
+
+        invalid_raw_event = '?%7B%22event%22%3A%7B%22mobileMode%22%3A' \
+            '%22stable%22%2C%22name%22%3A%22home%22%2C%22destination%22%3A' \
+            '%22%2Fwiki%2FPagina_principale%22%7D%2C%22revision%22%3A' \
+            '11568715%2C%22schema%22%3A' \
+            '%22MobileWebMainMenuClickTracking%22%2C' \
+            '%22webHost%22%3A%12345terfdit.m.wikipedia.org%22%2C%22wiki%22' \
+            '%3A%22itwiki%22%7D;	cp3013.esams.wmnet	4724275	' \
+            '2015-09-21T21:55:27	1.2.3.4	"Mozilla"'
+
+        print(invalid_raw_event)
+        error_message = "This is just a test."
+        error_code = "processor"
+
+        event_error = eventlogging.create_event_error(
+            invalid_raw_event,
+            error_message,
+            error_code,
+        )
+        # Test that this event validates against the EventError schema.
+        self.assertIsValid(event_error)
+        self.assertEqual(
+            event_error['schema'],
+            eventlogging.schema.ERROR_SCID[0]
+        )
+        self.assertEqual(
+            event_error['revision'],
+            eventlogging.schema.ERROR_SCID[1]
+        )
+        self.assertEqual(
+            event_error['event']['rawEvent'],
+            invalid_raw_event
+        )
+        self.assertEqual(
+            event_error['event']['message'],
+            error_message
+        )
+        # assert that schema and revision the same as in the invalid raw event
+        self.assertEqual(
+            event_error['event']['schema'],
+            'MobileWebMainMenuClickTracking'
+        )
+        self.assertEqual(
+            event_error['event']['revision'],
+            11568715
         )

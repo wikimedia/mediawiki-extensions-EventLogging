@@ -122,14 +122,30 @@ if args.sid:
     args.input = uri_append_query_items(args.input, {'identity': args.sid})
 
 
-def write_event_error(writer, raw_event, error_message, error_code):
+def write_event_error(
+    writer,
+    raw_event,
+    error_message,
+    error_code,
+    parsed_event=None
+):
+    """
+    Constructs an EventError object and sends it to writer.
+    """
     try:
-        event_error = create_event_error(raw_event, error_message, error_code)
+        writer.send(
+            create_event_error(
+                raw_event,
+                error_message,
+                error_code,
+                parsed_event
+            )
+        )
     except Exception as e:
         logging.error('Unable to create EventError object: %s' % e.message)
-    writer.send(event_error)
 
 for raw_event in get_reader(args.input):
+    event = None
     try:
         event = parser.parse(raw_event)
         event.pop('clientValidated', None)
@@ -141,14 +157,14 @@ for raw_event in get_reader(args.input):
         logging.error('Unable to validate: %s (%s)', raw_event, e.message)
         if writer_invalid:
             write_event_error(
-                writer_invalid, raw_event, e.message, 'validation'
+                writer_invalid, raw_event, e.message, 'validation', event
             )
 
     except Exception as e:
         logging.error('Unable to process: %s (%s)', raw_event, e.message)
         if writer_invalid:
             write_event_error(
-                writer_invalid, raw_event, e.message, 'processor'
+                writer_invalid, raw_event, e.message, 'processor', event
             )
 
     else:

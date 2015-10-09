@@ -73,14 +73,22 @@ _schemas = {
                 'type': 'string',
                 'required': True
             },
-            "code": {
-                "type": "string",
-                "required": True,
-                "enum": [
-                    "processor",
-                    "consumer",
-                    "validation"
+            'code': {
+                'type': 'string',
+                'required': True,
+                'enum': [
+                    'processor',
+                    'consumer',
+                    'validation'
                 ],
+            },
+            'schema': {
+                'type': 'string',
+                'required': True
+            },
+            'revision': {
+                'type': 'integer',
+                'required': True
             }
         }
     },

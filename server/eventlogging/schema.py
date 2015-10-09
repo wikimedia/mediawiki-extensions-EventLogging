@@ -29,7 +29,16 @@ __all__ = (
 
 
 # Regular expression which matches valid schema names.
-SCHEMA_RE = re.compile(r'^[a-zA-Z0-9_-]{1,63}$')
+SCHEMA_RE_PATTERN = r'[a-zA-Z0-9_-]{1,63}'
+SCHEMA_RE = re.compile(r'^{0}$'.format(SCHEMA_RE_PATTERN))
+
+# These REs will be used when constructing an ErrorEvent
+# to extract the schema and revision out of a raw event
+# string in the case it cannot be parsed as JSON.
+RAW_SCHEMA_RE = re.compile(
+    r'%22schema%22%3A%22({0})%22'.format(SCHEMA_RE_PATTERN)
+)
+RAW_REVISION_RE = re.compile(r'%22revision%22%3A(\d+)')
 
 # URL of index.php on the schema wiki (same as
 # '$wgEventLoggingSchemaApiUri').
@@ -47,7 +56,7 @@ schema_cache = {}
 CAPSULE_SCID = ('EventCapsule', 10981547)
 
 # TODO:
-ERROR_SCID = ('EventError', 12407995)
+ERROR_SCID = ('EventError', 14035058)
 
 
 def get_schema(scid, encapsulate=False):
@@ -105,11 +114,38 @@ def validate(capsule):
     jsonschema.Draft3Validator(schema).validate(capsule)
 
 
-def create_event_error(raw_event, error_message, error_code):
+def create_event_error(
+    raw_event,
+    error_message,
+    error_code,
+    parsed_event=None
+):
     """
-    Creates an EventError around this
-    unparsed and unvalidated raw_event string.
+    Creates an EventError around this raw_event string.
+    If parsed_event is provided, The raw event's schema and revision
+    will be included in the ErrorEvent as event.schema and event.revision.
+    Otherwise these will be attempted to be extracted from the raw_event via
+    a regex.  If this still fails, these will be set to 'unknown' and -1.
     """
+    errored_schema = 'unknown'
+    errored_revision = -1
+
+    # If we've got a parsed event, then we can just get the schema
+    # and revision out of the object.
+    if parsed_event:
+        errored_schema = parsed_event.get('schema', 'unknown')
+        errored_revision = int(parsed_event.get('revision', -1))
+
+    # otherwise attempt to get them out of the raw_event with a regex
+    else:
+        schema_match = RAW_SCHEMA_RE.search(raw_event)
+        if schema_match:
+            errored_schema = schema_match.group(1)
+
+        revision_match = RAW_REVISION_RE.search(raw_event)
+        if revision_match:
+            errored_revision = int(revision_match.group(1))
+
     return {
         'schema': ERROR_SCID[0],
         'revision': ERROR_SCID[1],
@@ -120,6 +156,8 @@ def create_event_error(raw_event, error_message, error_code):
         'event': {
             'rawEvent': raw_event,
             'message': error_message,
-            'code': error_code
+            'code': error_code,
+            'schema': errored_schema,
+            'revision': errored_revision
         }
     }
