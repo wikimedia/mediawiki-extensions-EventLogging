@@ -169,7 +169,9 @@ class JsonSchemaContent extends JsonContent {
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
 			$html = Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-glyph' ), '&#xe714;' ) .
 				Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-samples' ), $html );
-			$out->setText( $html . $out->mText );
+			$out->setIndicator( 'schema-code-samples', $html );
+			$out->addModules( 'ext.eventLogging.jsonSchema' );
+			$out->addModuleStyles( 'ext.eventLogging.jsonSchema.styles' );
 		}
 
 		return $out;

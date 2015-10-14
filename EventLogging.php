@@ -198,10 +198,16 @@ $wgResourceModules[ 'ext.eventLogging.subscriber' ] = array(
 
 $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 	'scripts'       => 'modules/ext.eventLogging.jsonSchema.js',
-	'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
+);
+
+$wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = array(
+		'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
+		'localBasePath' => __DIR__,
+		'remoteExtPath' => 'EventLogging',
+		'position'      => 'top',
 );
 
 // Hooks

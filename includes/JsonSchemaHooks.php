@@ -77,7 +77,7 @@ class JsonSchemaHooks {
 	}
 
 	/**
-	 * Adds CSS for pretty-printing schema on NS_SCHEMA pages.
+	 * Add the revision id as the subtitle on NS_SCHEMA pages.
 	 * @param OutputPage &$out
 	 * @param Skin &$skin
 	 * @return bool
@@ -86,16 +86,12 @@ class JsonSchemaHooks {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
-		if ( $title->inNamespace( NS_SCHEMA ) ) {
-			$out->addModules( 'ext.eventLogging.jsonSchema' );
-
-			if ( $revId !== null ) {
-				$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
-					// We use 'rawParams' rather than 'numParams' to make it
-					// easy to copy/paste the value into code.
-					->rawParams( $revId )
-					->escaped() );
-			}
+		if ( $title->inNamespace( NS_SCHEMA ) && $revId !== null ) {
+			$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
+				// We use 'rawParams' rather than 'numParams' to make it
+				// easy to copy/paste the value into code.
+				->rawParams( $revId )
+				->escaped() );
 		}
 		return true;
 	}

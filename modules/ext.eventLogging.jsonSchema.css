@@ -16,7 +16,6 @@
 	padding: 1.4em;
 	box-shadow: rgba(0, 0, 0, 0.3) 0.3em 0.3em 1em;
 	right: 0;
-	top: 1em;
 }
 
 .client-nojs .mw-json-schema-code-glyph {
@@ -28,7 +27,6 @@
 	font-size: 3em;
 	background: #f55b65;
 	color: #fff;
-	position: absolute;
 	right: 0;
 	top: -.9em;
 	padding: 0.1em;
