@@ -156,21 +156,20 @@ class JsonSchemaContent extends JsonContent {
 		if ( $revId !== null && class_exists( 'SyntaxHighlight_GeSHi' ) ) {
 			$html = '';
 			$highlighter = new SyntaxHighlight_GeSHi();
-			foreach( self::getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
+			foreach ( self::getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
 				$lang = $sample['language'];
 				$code = $sample['code'];
-				$geshi = $highlighter->prepare( $code, $lang );
-				$out->addHeadItem( $highlighter::buildHeadItem( $geshi ), "source-$lang" );
+				$highlighted = $highlighter->highlight( $code, $lang )->getValue();
 				$html .= Html::element( 'h2',
 					array(),
 					wfMessage( $sample['header'] )->text()
-				) . $geshi->parse_code();
+				) . $highlighted;
 			}
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
 			$html = Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-glyph' ), '&#xe714;' ) .
 				Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-samples' ), $html );
 			$out->setIndicator( 'schema-code-samples', $html );
-			$out->addModules( 'ext.eventLogging.jsonSchema' );
+			$out->addModules( array( 'ext.eventLogging.jsonSchema', 'ext.pygments' ) );
 			$out->addModuleStyles( 'ext.eventLogging.jsonSchema.styles' );
 		}
 
