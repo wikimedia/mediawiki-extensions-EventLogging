@@ -270,11 +270,18 @@ def sql_writer(uri, replace=False, statsd_host=''):
             # that the connection is alive, and reconnect if necessary.
             dbapi_connection.ping(True)
     try:
-        batch_size = 400
+        batch_size = 5000
         batch_time = 300  # in seconds
+        # Max number of batches pending insertion.
+        queue_size = 1000
+        sleep_seconds = 5
         # Link the main thread to the worker thread so we
         # don't keep filling the queue if the worker died.
         while worker.is_alive():
+            # If the queue is too big, wait for the worker to empty it.
+            while len(events_batch) > queue_size:
+                logger.info('Sleeping %d seconds', sleep_seconds)
+                time.sleep(sleep_seconds)
             event = (yield)
             # Break the event stream by schema (and revision)
             scid = (event['schema'], event['revision'])
