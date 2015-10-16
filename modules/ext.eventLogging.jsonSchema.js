@@ -1,4 +1,4 @@
-/**
+/*!
  * JavaScript enhancements of JSON Schema article pages.
  *
  * @module ext.eventLogging.jsonSchema

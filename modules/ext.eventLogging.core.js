@@ -1,14 +1,5 @@
 /*!
- * This module implements EventLogging's API for logging events from
- * client-side JavaScript code. Instances of `ResourceLoaderSchemaModule`
- * indicate a dependency on this module and declare themselves via its
- * 'declareSchema' method.
- *
- * Developers should not load this module directly, but work with schema
- * modules instead. Schema modules will load this module as a
- * dependency.
- *
- * @module ext.eventLogging.core.js
+ * @module ext.eventLogging.core
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function ( mw, $ ) {
@@ -24,12 +15,16 @@
 	/**
 	 * Client-side EventLogging API.
 	 *
-	 * The public API consists of a single function, `mw.eventLog.logEvent`.
-	 * Other methods represent internal functionality, which is exposed only
-	 * to ease debugging code and writing tests.
+	 * The main API is `mw.eventLog.logEvent`. Most other methods represent internal
+	 * functionality, which is exposed only to ease debugging code and writing tests.
 	 *
+	 * Instances of `ResourceLoaderSchemaModule` indicate a dependency on this module and
+	 * declare themselves via the declareSchema method.
 	 *
-	 * @class eventLog
+	 * Developers should not load this module directly, but work with schema modules instead.
+	 * Schema modules will load this module as a dependency.
+	 *
+	 * @class mw.eventLog
 	 * @singleton
 	 */
 	self = mw.eventLog = {
@@ -39,6 +34,7 @@
 		 * `eventLog.declareSchema` or implicitly by being referenced in an
 		 * `eventLog.logEvent` call are stored in this object.
 		 *
+		 * @private
 		 * @property schemas
 		 * @type Object
 		 */
@@ -53,6 +49,7 @@
 		 * - varnishlog (shm_reclen)
 		 * - varnishkafka
 		 *
+		 * @private
 		 * @property maxUrlSize
 		 * @type Number
 		 */
@@ -62,6 +59,7 @@
 		 * Load a schema from the schema registry.
 		 * If the schema does not exist, it will be initialised.
 		 *
+		 * @private
 		 * @param {string} schemaName Name of schema.
 		 * @return {Object} Schema object.
 		 */
@@ -77,6 +75,7 @@
 		 * `ResourceLoaderSchemaModule` instances generate JavaScript code that
 		 * invokes this method.
 		 *
+		 * @private
 		 * @param {string} schemaName Name of schema.
 		 * @param {Object} meta An object describing a schema:
 		 * @param {number} meta.revision Revision ID.
@@ -91,6 +90,7 @@
 		 * Checks whether a JavaScript value conforms to a specified
 		 * JSON Schema type.
 		 *
+		 * @private
 		 * @param {Object} value Object to test.
 		 * @param {string} type JSON Schema type.
 		 * @return {boolean} Whether value is instance of type.
@@ -112,6 +112,7 @@
 		/**
 		 * Check whether a JavaScript object conforms to a JSON Schema.
 		 *
+		 * @private
 		 * @param {Object} obj Object to validate.
 		 * @param {Object} schema JSON Schema object.
 		 * @return {Array} An array of validation errors (empty if valid).
@@ -179,6 +180,7 @@
 		 * properties and by encapsulating the event object in an object which
 		 * contains metadata about the event itself.
 		 *
+		 * @private
 		 * @param {string} schemaName Canonical schema name.
 		 * @param {Object} eventData Event instance.
 		 * @return {Object} Encapsulated event.
@@ -205,6 +207,7 @@
 		 * Constructs the EventLogging URI based on the base URI and the
 		 * encoded and stringified data.
 		 *
+		 * @private
 		 * @param {Object} data Payload to send
 		 * @return {string|boolean} The URI to log the event.
 		 */
@@ -217,6 +220,7 @@
 		 * Checks whether a beacon url is short enough,
 		 * so that it does not get truncated by varnishncsa.
 		 *
+		 * @private
 		 * @param {string} schemaName Canonical schema name.
 		 * @param {string} url Beacon url.
 		 * @return {string|undefined} The error message in case of error.

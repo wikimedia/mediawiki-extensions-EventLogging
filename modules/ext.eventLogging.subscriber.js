@@ -17,6 +17,8 @@
 	/**
 	 * Convert the first letter of a string to uppercase.
 	 *
+	 * @ignore
+	 * @private
 	 * @param {string} word
 	 * @return {string}
 	 */
@@ -25,8 +27,10 @@
 	}
 
 	/**
-	 * mw#track handler for EventLogging events.
+	 * mw.track handler for EventLogging events.
 	 *
+	 * @ignore
+	 * @private
 	 * @param {string} topic Topic name ('event.*').
 	 * @param {Object} event
 	 */

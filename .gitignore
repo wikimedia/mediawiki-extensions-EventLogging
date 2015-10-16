@@ -6,9 +6,7 @@
 *~
 .*.swp
 .pylintrc
-.svn
 .tox
-Makefile
 __pycache__
 server/build
 server/dist
@@ -17,3 +15,4 @@ server/.coverage
 tests/suite.php
 .deploy
 node_modules/
+docs/
