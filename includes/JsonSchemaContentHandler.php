@@ -15,6 +15,10 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 		parent::__construct( $modelId, array( CONTENT_FORMAT_JSON ) );
 	}
 
+	public function canBeUsedOn ( Title $title ) {
+		return $title->inNamespace( NS_SCHEMA );
+	}
+
 	protected function getContentClass() {
 		return 'JsonSchemaContent';
 	}
