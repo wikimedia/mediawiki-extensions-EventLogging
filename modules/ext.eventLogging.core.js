@@ -27,7 +27,7 @@
 	 * @class mw.eventLog
 	 * @singleton
 	 */
-	self = mw.eventLog = {
+	self = {
 
 		/**
 		 * Schema registry. Schemas that have been declared explicitly via
@@ -297,5 +297,7 @@
 	mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
 		mw.log.error( error );
 	} );
+
+	$.extend( mw.eventLog, self );
 
 }( mediaWiki, jQuery ) );

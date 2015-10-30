@@ -180,6 +180,12 @@ $wgExtensionMessagesFiles += array(
 );
 
 // Modules
+$wgResourceModules[ 'ext.eventLogging.init' ] = array(
+	'scripts'       => 'modules/ext.eventLogging.init.js',
+	'localBasePath' => __DIR__,
+	'remoteExtPath' => 'EventLogging',
+	'targets'       => array( 'desktop', 'mobile' ),
+);
 
 $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'scripts'       => 'modules/ext.eventLogging.core.js',
@@ -187,6 +193,7 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array(
 		'json',
+		'ext.eventLogging.init'
 	),
 	'targets'       => array( 'desktop', 'mobile' ),
 );
@@ -210,6 +217,17 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = array(
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
+);
+
+$wgResourceModules[ 'ext.eventLogging.Schema' ] = array(
+	'scripts'       => 'modules/ext.eventLogging.Schema.js',
+	'localBasePath' => __DIR__,
+	'remoteExtPath' => 'EventLogging',
+	'dependencies'  => array(
+		'mediawiki.user',
+		'ext.eventLogging.init'
+	),
+	'targets'       => array( 'desktop', 'mobile' ),
 );
 
 // Hooks
