@@ -1,6 +1,7 @@
 *.egg
 *.egg-info
 *.kate-swp
+*.pyo
 *.pyc
 *~
 .*.swp
