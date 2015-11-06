@@ -185,7 +185,9 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'scripts'       => 'modules/ext.eventLogging.core.js',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
-	'dependencies'  => array( 'json', 'mediawiki.util' ),
+	'dependencies'  => array(
+		'json',
+	),
 	'targets'       => array( 'desktop', 'mobile' ),
 );
 
@@ -204,10 +206,10 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
 );
 
 $wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = array(
-		'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
-		'localBasePath' => __DIR__,
-		'remoteExtPath' => 'EventLogging',
-		'position'      => 'top',
+	'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
+	'localBasePath' => __DIR__,
+	'remoteExtPath' => 'EventLogging',
+	'position'      => 'top',
 );
 
 // Hooks
