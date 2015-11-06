@@ -1,3 +1,4 @@
 server/.tox
 modules/out
 node_modules
+docs
