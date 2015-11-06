@@ -24,7 +24,8 @@
 	 * Developers should not load this module directly, but work with schema modules instead.
 	 * Schema modules will load this module as a dependency.
 	 *
-	 * @class mw.eventLog
+	 * @private
+	 * @class mw.eventLog.Core
 	 * @singleton
 	 */
 	self = {
@@ -298,6 +299,10 @@
 		mw.log.error( error );
 	} );
 
+	/**
+	 * @class mw.eventLog
+	 * @mixins mw.eventLog.Core
+	 */
 	$.extend( mw.eventLog, self );
 
 }( mediaWiki, jQuery ) );

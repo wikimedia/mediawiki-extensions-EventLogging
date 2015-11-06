@@ -180,12 +180,6 @@ $wgExtensionMessagesFiles += array(
 );
 
 // Modules
-$wgResourceModules[ 'ext.eventLogging.init' ] = array(
-	'scripts'       => 'modules/ext.eventLogging.init.js',
-	'localBasePath' => __DIR__,
-	'remoteExtPath' => 'EventLogging',
-	'targets'       => array( 'desktop', 'mobile' ),
-);
 
 $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'scripts'       => 'modules/ext.eventLogging.core.js',
@@ -193,15 +187,27 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array(
 		'json',
-		'ext.eventLogging.init'
+		'ext.eventLogging.subscriber',
 	),
 	'targets'       => array( 'desktop', 'mobile' ),
 );
 
 $wgResourceModules[ 'ext.eventLogging.subscriber' ] = array(
-	'scripts'       => 'modules/ext.eventLogging.subscriber.js',
+	'scripts'       => array(
+		'modules/ext.eventLogging.subscriber.js',
+		'modules/ext.eventLogging.Schema.js',
+	),
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
+	'dependencies'  => array( 'mediawiki.user' ),
+	'targets'       => array( 'desktop', 'mobile' ),
+);
+
+// Back-compatibility alias for subscriber
+$wgResourceModules[ 'ext.eventLogging.Schema' ] = array(
+	'dependencies'  => array(
+		'ext.eventLogging.subscriber'
+	),
 	'targets'       => array( 'desktop', 'mobile' ),
 );
 
@@ -217,17 +223,6 @@ $wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = array(
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
-);
-
-$wgResourceModules[ 'ext.eventLogging.Schema' ] = array(
-	'scripts'       => 'modules/ext.eventLogging.Schema.js',
-	'localBasePath' => __DIR__,
-	'remoteExtPath' => 'EventLogging',
-	'dependencies'  => array(
-		'mediawiki.user',
-		'ext.eventLogging.init'
-	),
-	'targets'       => array( 'desktop', 'mobile' ),
 );
 
 // Hooks
