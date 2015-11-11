@@ -102,6 +102,23 @@
 		} );
 	} );
 
+	QUnit.test( 'inSample', 2, function ( assert ) {
+		assert.strictEqual( mw.eventLog.inSample( 0 ), false );
+		assert.strictEqual( mw.eventLog.inSample( 1 ), true );
+
+		// Test the rest using randomTokenMatch() since we don't
+		// want consistency in this case
+	} );
+
+	QUnit.test( 'randomTokenMatch', 2, function ( assert ) {
+		var i, results = { 'true': 0, 'false': 0 };
+		for ( i = 0; i < 100; i++ ) {
+			results[ mw.eventLog.randomTokenMatch( 10 ) ]++;
+		}
+		assert.ok( results['true'] > 0 && results['true'] < 20, 'True: ' + results['true'] );
+		assert.ok( results['false'] > 80 && results['false'] < 100, 'False: ' + results['false'] );
+	} );
+
 	QUnit.asyncTest( 'logEvent', 1, function ( assert ) {
 		var event = {
 			epicenter: 'Valdivia',
