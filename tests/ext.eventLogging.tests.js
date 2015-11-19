@@ -115,8 +115,8 @@
 		for ( i = 0; i < 100; i++ ) {
 			results[ mw.eventLog.randomTokenMatch( 10 ) ]++;
 		}
-		assert.ok( results['true'] > 0 && results['true'] < 20, 'True: ' + results['true'] );
-		assert.ok( results['false'] > 80 && results['false'] < 100, 'False: ' + results['false'] );
+		assert.ok( results[ 'true' ] > 0 && results[ 'true' ] < 20, 'True: ' + results[ 'true' ] );
+		assert.ok( results[ 'false' ] > 80 && results[ 'false' ] < 100, 'False: ' + results[ 'false' ] );
 	} );
 
 	QUnit.asyncTest( 'logEvent', 1, function ( assert ) {
