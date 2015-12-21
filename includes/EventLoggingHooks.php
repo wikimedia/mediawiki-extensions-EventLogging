@@ -53,21 +53,31 @@ class EventLoggingHooks {
 	 * hook simply never fires. To log events for schemas that have been
 	 * declared in this fashion, use mw#track.
 	 *
-	 * @example
-	 * <code>
+	 * @par Example using a hook
+	 * @code
 	 * $wgHooks[ 'EventLoggingRegisterSchemas' ][] = function ( &$schemas ) {
 	 *     $schemas[ 'MultimediaViewerNetworkPerformance' ] = 7917896;
 	 * };
-	 * </code>
+	 * @endcode
+	 * @par Example using extension.json
+	 * @code
+	 * {
+	 *     "EventLoggingSchemas": {
+	 *         "MultimediaViewerNetworkPerformance": 7917896
+	 *     }
+	 * }
+	 * @endcode
 	 *
 	 * @param ResourceLoader &$resourceLoader
 	 */
 	public static function onResourceLoaderRegisterModules( ResourceLoader &$resourceLoader ) {
 		global $wgEventLoggingSchemas;
 
-		$schemas = array();
+		$extRegistry = ExtensionRegistry::getInstance();
+
+		$schemas = $extRegistry->getAttribute( 'EventLoggingSchemas' ) + $wgEventLoggingSchemas;
+
 		Hooks::run( 'EventLoggingRegisterSchemas', array( &$schemas ) );
-		$schemas = array_merge( $wgEventLoggingSchemas, $schemas );
 
 		$modules = array();
 		foreach ( $schemas as $schemaName => $rev ) {
