@@ -133,6 +133,7 @@ class RemoteSchema implements JsonSerializable {
 			'action' => 'jsonschema',
 			'revid'  => $this->revision,
 			'formatversion' => 2,
+			'format' => 'json',
 		] );
 	}
 }
