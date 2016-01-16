@@ -17,20 +17,6 @@
  */
 class ApiJsonSchema extends ApiBase {
 
-	/**
-	 * Restrict the set of valid formatters to just 'json' and 'jsonfm'.  Other
-	 * requested formatters are instead treated as 'json'.
-	 * @return ApiFormatJson
-	 */
-	public function getCustomPrinter() {
-		if ( $this->getMain()->getVal( 'format' ) === 'jsonfm' ) {
-			$format = 'jsonfm';
-		} else {
-			$format = 'json';
-		}
-		return $this->getMain()->createPrinterByName( $format );
-	}
-
 	public function getAllowedParams() {
 		return [
 			'revid' => [
