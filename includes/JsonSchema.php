@@ -61,10 +61,25 @@ class JsonUtil {
 		elseif ( is_string( $var ) ) {
 			return preg_replace( '/[^a-z0-9\-_:\.]/i', '', $var );
 		} else {
-			$msg = JsonUtil::uiMessage( 'jsonschema-idconvert', print_r( $var, true ) );
+			$msg = JsonUtil::uiMessage( 'jsonschema-idconvert', JsonUtil::encodeForMsg( $var ) );
 			throw new JsonSchemaException( $msg );
 		}
 
+	}
+
+	/*
+	 * Converts data to JSON format with pretty-formatting, but limited to a single line and escaped
+	 * to be suitable for wikitext message parameters.
+	 */
+	public static function encodeForMsg( $data ) {
+		if ( class_exists( 'FormatJson' ) && function_exists( 'wfEscapeWikiText' ) ) {
+			$json = FormatJson::encode( $data, "\t", FormatJson::ALL_OK );
+			// Literal newlines can't appear in JSON string values, so this neatly folds the formatting
+			$json = preg_replace( "/\n\t+/", ' ', $json );
+			return wfEscapeWikiText( $json );
+		} else {
+			return json_encode( $data );
+		}
 	}
 
 	/*
