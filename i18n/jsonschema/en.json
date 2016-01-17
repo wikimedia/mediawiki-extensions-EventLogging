@@ -10,7 +10,7 @@
 	"jsonschema-invalidempty": "Empty data structure not valid with this schema",
 	"jsonschema-invalidnode": "Invalid node: expecting \"$1\", got \"$2\". Path: \"$3\"",
 	"jsonschema-invalid-missingfield": "Missing required field \"$1\"",
-	"jsonschema-invalid-notinenum": "Value \"$1\" not in enum for property $2",
+	"jsonschema-invalid-notinenum": "Value <code>$1</code> not in enum for property $2",
 	"apihelp-jsonschema-description": "Retrieve a JSON Schema page.",
 	"apihelp-jsonschema-param-revid": "Schema revision ID.",
 	"apihelp-jsonschema-param-title": "Schema name.",
