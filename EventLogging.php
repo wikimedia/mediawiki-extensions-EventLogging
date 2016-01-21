@@ -186,7 +186,6 @@ $wgResourceModules[ 'ext.eventLogging' ] = array(
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => array(
-		'json',
 		'ext.eventLogging.subscriber',
 	),
 	'targets'       => array( 'desktop', 'mobile' ),
