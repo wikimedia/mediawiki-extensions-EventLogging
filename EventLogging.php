@@ -164,12 +164,16 @@ $wgExtensionMessagesFiles += [
 // Modules
 
 $wgResourceModules[ 'ext.eventLogging' ] = [
-	'scripts'       => 'modules/ext.eventLogging.core.js',
+	'scripts'       => [
+		'modules/ext.eventLogging.core.js',
+		'modules/ext.eventLogging.debug.js',
+	],
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'dependencies'  => [
 		'json',
 		'ext.eventLogging.subscriber',
+		'user.options',
 	],
 	'targets'       => [ 'desktop', 'mobile' ],
 ];
@@ -216,10 +220,14 @@ $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoad
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
 $wgHooks[ 'ResourceLoaderRegisterModules' ][] = (
 	'EventLoggingHooks::onResourceLoaderRegisterModules' );
+$wgHooks[ 'GetPreferences' ][] = 'EventLoggingHooks::onGetPreferences';
 
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
 $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
+
+// Hidden option for users to see EventLogging as it happens
+$wgDefaultUserOptions['eventlogging-display-web'] = 0;
 
 // Unit Tests
 
