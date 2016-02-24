@@ -26,7 +26,6 @@ class EventLoggingHooks {
 		foreach ( array(
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingDBname',
-			'wgEventLoggingFile',
 			'wgEventLoggingSchemaApiUri'
 		) as $configVar ) {
 			if ( !isset( $GLOBALS[ $configVar ] ) || $GLOBALS[ $configVar ] === false ) {

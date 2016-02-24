@@ -1,6 +1,4 @@
 <?php
-
-use MediaWiki\Logger\LegacyLogger;
 /**
  * PHP API for logging events
  *
@@ -17,13 +15,22 @@ class EventLogging {
 	const OMIT_USER_AGENT = 2;
 
 	/**
-	 * Writes an event to a file descriptor or socket.
-	 * Takes an event ID and an event, encodes it as query string,
-	 * and writes it to the UDP / TCP address or file specified by
-	 * $wgEventLoggingFile. If $wgEventLoggingFile is not set, returns
-	 * false without logging anything.
+	 * Transfer small data asynchronously using an HTTP POST.
+	 * This is meant to match the Navigator.sendBeacon() API.
 	 *
-	 * @see LegacyLogger::emit
+	 * @see https://w3c.github.io/beacon/#sec-sendBeacon-method
+	 */
+	public static function sendBeacon( $url, array $data = [] ) {
+		DeferredUpdates::addCallableUpdate( function() use ( $url, $data ) {
+			$options = $data ? [ 'postData' => $data ] : [];
+			return Http::post( $url, $options );
+		} );
+
+		return true;
+	}
+
+	/**
+	 * Emit an event via a sendBeacon POST to the event beacon endpoint.
 	 *
 	 * @param string $schemaName Schema name.
 	 * @param int $revId revision ID of schema.
@@ -32,9 +39,9 @@ class EventLogging {
 	 * @return bool: Whether the event was logged.
 	 */
 	static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
-		global $wgDBname, $wgEventLoggingFile;
+		global $wgEventLoggingBaseUri;
 
-		if ( !$wgEventLoggingFile ) {
+		if ( !$wgEventLoggingBaseUri ) {
 			return false;
 		}
 
@@ -53,22 +60,17 @@ class EventLogging {
 			'revision'         => $revId,
 			'clientValidated'  => $isValid,
 			'wiki'             => $wgDBname,
-			'recvFrom'         => gethostname(),
-			'timestamp'        => $_SERVER[ 'REQUEST_TIME' ],
 		);
 		if ( isset( $_SERVER[ 'HTTP_HOST' ] ) ) {
 			$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
 		}
-
 		if ( !( $options & self::OMIT_USER_AGENT ) && !empty( $_SERVER[ 'HTTP_USER_AGENT' ] ) ) {
 			$encapsulated[ 'userAgent' ] = $_SERVER[ 'HTTP_USER_AGENT' ];
 		}
 
 		$json = static::serializeEvent( $encapsulated );
-
-		LegacyLogger::emit( $json . "\n", $wgEventLoggingFile );
-
-		return true;
+		$url = $wgEventLoggingBaseUri . '?' . rawurlencode( $json ) . ';';
+		return self::sendBeacon( $url );
 	}
 
 	/**

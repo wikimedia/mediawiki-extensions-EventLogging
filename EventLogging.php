@@ -60,22 +60,6 @@ $wgNamespaceProtection[ NS_SCHEMA ] = array( 'autoconfirmed' );
 $wgEventLoggingBaseUri = false;
 
 /**
- * @var bool|string: File name or UDP address; false if not set.
- * Server-side events will be logged to this location.
- *
- * The syntax for UDP addresses is `udp://host:port/prefix`. The prefix
- * (followed by a space) is included at the start of each message. By
- * convention it specifies which log bucket the message should be routed
- * to. It is best if the prefix is simply "EventLogging".
- *
- * @see MWLoggerLegacyLogger::emit()
- *
- * @example string: 'udp://127.0.0.1:9000/EventLogging'
- * @example string: '/var/log/mediawiki/events.log'
- */
-$wgEventLoggingFile = false;
-
-/**
  * @var bool|string: URI or false if not set.
  * URI of api.php on schema wiki.
  *
