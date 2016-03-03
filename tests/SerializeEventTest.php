@@ -19,10 +19,10 @@ class SerializeEventTest extends MediaWikiTestCase {
 	* Empty event should be returned as an object.
 	**/
 	function testSerializeEventEmptyEvent() {
-		$encapsulatedEvent = array(
-			'event'            => array(),
+		$encapsulatedEvent = [
+			'event'            => [],
 			'other'            => 'some',
-		);
+		];
 		$expectedJson = "{\"event\":{},\"other\":\"some\"}";
 		$json = EventLogging::serializeEvent( $encapsulatedEvent );
 		$this->assertEquals( $expectedJson, $json,
@@ -34,12 +34,12 @@ class SerializeEventTest extends MediaWikiTestCase {
 	* Event should be returned without modifications
 	**/
 	function testSerializeEventHappyCase() {
-		$event = array();
+		$event = [];
 		$event['prop1'] = 'blah';
-		$encapsulatedEvent = array(
+		$encapsulatedEvent = [
 			'event'            => $event,
 			'other'            => 'some',
-		);
+		];
 		$expectedJson = "{\"event\":{\"prop1\":\"blah\"},\"other\":\"some\"}";
 		$json = EventLogging::serializeEvent( $encapsulatedEvent );
 		$this->assertEquals( $expectedJson, $json,

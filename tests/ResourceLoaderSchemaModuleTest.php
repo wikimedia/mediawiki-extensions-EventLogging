@@ -34,19 +34,18 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	function getMockSchemaModule( $title, $revid ) {
 		$schema = $this
 			->getMockBuilder( 'RemoteSchema' )
-			->setConstructorArgs( array( $title, $revid ) )
+			->setConstructorArgs( [ $title, $revid ] )
 			->getMock();
 
-		$module = new ResourceLoaderSchemaModule( array(
+		$module = new ResourceLoaderSchemaModule( [
 			'schema'   => $title,
 			'revision' => $revid
-		) );
+		] );
 
 		// Inject mock
 		$module->schema = $schema;
 		return $module;
 	}
-
 
 	/**
 	 * When the RemoteSchema dependency can be loaded, the modified time
@@ -54,8 +53,6 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	 * @covers ResourceLoaderSchemaModule::getModifiedTime
 	 */
 	function testModuleVersion() {
-		global $wgCacheEpoch;
-
 		$version1 = $this->module->getVersionHash( $this->context );
 
 		$module2 = self::getMockSchemaModule( self::TITLE, self::REV + 1 );

@@ -23,11 +23,11 @@ class EventLoggingHooks {
 			wfDebugLog( 'EventLogging', 'No suitable memcached driver found.' );
 		}
 
-		foreach ( array(
+		foreach ( [
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingDBname',
 			'wgEventLoggingSchemaApiUri'
-		) as $configVar ) {
+		] as $configVar ) {
 			if ( !isset( $GLOBALS[ $configVar ] ) || $GLOBALS[ $configVar ] === false ) {
 				wfDebugLog( 'EventLogging', "$configVar has not been configured." );
 			}
@@ -39,7 +39,7 @@ class EventLoggingHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
-		$out->addModules( array( 'ext.eventLogging.subscriber' ) );
+		$out->addModules( [ 'ext.eventLogging.subscriber' ] );
 	}
 
 	/**
@@ -76,15 +76,15 @@ class EventLoggingHooks {
 
 		$schemas = $extRegistry->getAttribute( 'EventLoggingSchemas' ) + $wgEventLoggingSchemas;
 
-		Hooks::run( 'EventLoggingRegisterSchemas', array( &$schemas ) );
+		Hooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ] );
 
-		$modules = array();
+		$modules = [];
 		foreach ( $schemas as $schemaName => $rev ) {
-			$modules[ "schema.$schemaName" ] = array(
+			$modules[ "schema.$schemaName" ] = [
 				'class'    => 'ResourceLoaderSchemaModule',
 				'schema'   => $schemaName,
 				'revision' => $rev,
-			);
+			];
 		}
 		$resourceLoader->register( $modules );
 	}
@@ -106,12 +106,12 @@ class EventLoggingHooks {
 	 * @return bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
-		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = array(
-			'scripts'       => array( 'tests/ext.eventLogging.tests.js' ),
-			'dependencies'  => array( 'ext.eventLogging' ),
+		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = [
+			'scripts'       => [ 'tests/ext.eventLogging.tests.js' ],
+			'dependencies'  => [ 'ext.eventLogging' ],
 			'localBasePath' => __DIR__ . '/..',
 			'remoteExtPath' => 'EventLogging',
-		);
+		];
 		return true;
 	}
 }

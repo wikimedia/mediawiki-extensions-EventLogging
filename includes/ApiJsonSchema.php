@@ -32,25 +32,25 @@ class ApiJsonSchema extends ApiBase {
 	}
 
 	public function getAllowedParams() {
-		return array(
-			'revid' => array(
+		return [
+			'revid' => [
 				ApiBase::PARAM_TYPE => 'integer',
 				ApiBase::PARAM_REQUIRED => true,
-			),
-			'title' => array(
+			],
+			'title' => [
 				ApiBase::PARAM_TYPE => 'string',
-			),
-		);
+			],
+		];
 	}
 
 	/**
 	 * @deprecated since MediaWiki core 1.25
 	 */
 	public function getParamDescription() {
-		return array(
+		return [
 			'revid' => 'Schema revision ID',
 			'title' => 'Schema name',
-		);
+		];
 	}
 
 	/**
@@ -64,17 +64,17 @@ class ApiJsonSchema extends ApiBase {
 	 * @deprecated since MediaWiki core 1.25
 	 */
 	public function getExamples() {
-		return array( 'api.php?action=jsonschema&revid=1234'  => 'Retrieve schema for revision 1234' );
+		return [ 'api.php?action=jsonschema&revid=1234'  => 'Retrieve schema for revision 1234' ];
 	}
 
 	/**
 	 * @see ApiBase::getExamplesMessages()
 	 */
 	protected function getExamplesMessages() {
-		return array(
+		return [
 			'action=jsonschema&revid=1234'
 				=> 'apihelp-jsonschema-example-1',
-		);
+		];
 	}
 
 	/**
@@ -95,7 +95,7 @@ class ApiJsonSchema extends ApiBase {
 	 * HTTP 400 ('Bad Request') status code.
 	 * @param array|string: user error array
 	 */
-	public function dieUsageMsg(  $error ) {
+	public function dieUsageMsg( $error ) {
 		$parsed = $this->parseMsg( (array)$error );
 		$this->dieUsage( $parsed['info'], $parsed['code'], 400 );
 	}
@@ -105,26 +105,26 @@ class ApiJsonSchema extends ApiBase {
 		$rev = Revision::newFromID( $params['revid'] );
 
 		if ( !$rev ) {
-			$this->dieUsageMsg( array( 'nosuchrevid', $params['revid'] ) );
+			$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
 		}
 
 		$title = $rev->getTitle();
 		if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
-			$this->dieUsageMsg( array( 'invalidtitle', $title ) );
+			$this->dieUsageMsg( [ 'invalidtitle', $title ] );
 		}
 
 		/** @var JsonSchemaContent $content */
 		$content = $rev->getContent();
 		if ( !$content ) {
-			$this->dieUsageMsg( array( 'nosuchrevid', $params['revid'] ) );
+			$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
 		}
 
 		// We use the revision ID for lookup; the 'title' parameter is
 		// optional. If present, it is used to assert that the specified
 		// revision ID is indeed a revision of a page with the specified
 		// title. (Bug 46174)
-		if ( $params['title']  && !$title->equals( Title::newFromText( $params['title'], NS_SCHEMA ) ) ) {
-			$this->dieUsageMsg( array( 'revwrongpage', $params['revid'], $params['title'] ) );
+		if ( $params['title'] && !$title->equals( Title::newFromText( $params['title'], NS_SCHEMA ) ) ) {
+			$this->dieUsageMsg( [ 'revwrongpage', $params['revid'], $params['title'] ] );
 		}
 
 		$this->markCacheable( $rev );
@@ -135,7 +135,7 @@ class ApiJsonSchema extends ApiBase {
 		foreach ( $schema as $k => &$v ) {
 			if ( $k === 'properties' ) {
 				foreach ( $v as &$properties ) {
-					$properties[ApiResult::META_BC_BOOLS] = array( 'required' );
+					$properties[ApiResult::META_BC_BOOLS] = [ 'required' ];
 				}
 			}
 			$result->addValue( null, $k, $v );

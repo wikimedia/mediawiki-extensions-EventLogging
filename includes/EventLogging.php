@@ -54,13 +54,13 @@ class EventLogging {
 			$isValid = false;
 		}
 
-		$encapsulated = array(
+		$encapsulated = [
 			'event'            => $event,
 			'schema'           => $schemaName,
 			'revision'         => $revId,
 			'clientValidated'  => $isValid,
 			'wiki'             => $wgDBname,
-		);
+		];
 		if ( isset( $_SERVER[ 'HTTP_HOST' ] ) ) {
 			$encapsulated[ 'webHost' ] = $_SERVER[ 'HTTP_HOST' ];
 		}
@@ -80,7 +80,7 @@ class EventLogging {
 	 * @param array $encapsulatedEvent Encapsulated event
 	 * @return string $json
 	**/
-	static function serializeEvent($encapsulatedEvent) {
+	static function serializeEvent( $encapsulatedEvent ) {
 
 		$event = $encapsulatedEvent['event'];
 

@@ -37,7 +37,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @param array $args
 	 */
 	function __construct( $args ) {
-		foreach( array( 'schema', 'revision' ) as $key ) {
+		foreach ( [ 'schema', 'revision' ] as $key ) {
 			if ( !isset( $args[ $key ] ) ) {
 				throw new Exception( "ResourceLoaderSchemaModule params must set '$key' key." );
 			}
@@ -51,7 +51,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 		}
 
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
-		$this->targets = array( 'desktop', 'mobile' );
+		$this->targets = [ 'desktop', 'mobile' ];
 	}
 
 	/**
@@ -59,7 +59,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * @return array Module names
 	 */
 	public function getDependencies( ResourceLoaderContext $context = null ) {
-		return array( 'ext.eventLogging' );
+		return [ 'ext.eventLogging' ];
 	}
 
 	/**
@@ -70,9 +70,9 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 */
 	public function getDefinitionSummary( ResourceLoaderContext $context ) {
 		$summary = parent::getDefinitionSummary( $context );
-		$summary[] = array(
+		$summary[] = [
 			'revision' => $this->schema->revision,
-		);
+		];
 		return $summary;
 	}
 
@@ -87,7 +87,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	public function getScript( ResourceLoaderContext $context ) {
 		$schema = $this->schema->jsonSerialize();
 		efStripKeyRecursive( $schema, 'description' );
-		$params = array( $this->schema->title, $schema );
+		$params = [ $this->schema->title, $schema ];
 		return Xml::encodeJsCall( 'mediaWiki.eventLog.declareSchema', $params );
 	}
 }

@@ -16,3 +16,5 @@ tests/suite.php
 .deploy
 node_modules/
 docs/
+composer.lock
+vendor

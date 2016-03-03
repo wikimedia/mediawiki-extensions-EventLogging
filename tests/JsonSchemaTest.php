@@ -19,7 +19,6 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	const VALID_JSON_SCHEMA = '{"properties":{"valid":{"type":"boolean","required":true}}}';
 	const EVIL_JSON = '{"title":"<script>alert(document.cookie);</script>"}';
 
-
 	/**
 	 * Tests handling of invalid JSON.
 	 * @covers JsonSchemaContent::isValid
@@ -28,7 +27,6 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		$content = new JsonSchemaContent( self::INVALID_JSON );
 		$this->assertFalse( $content->isValid(), 'Malformed JSON should be detected.' );
 	}
-
 
 	/**
 	 * Tests handling of valid JSON that is not valid JSON Schema.
@@ -39,7 +37,6 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		$this->assertFalse( $content->isValid(), 'Malformed JSON Schema should be detected.' );
 	}
 
-
 	/**
 	 * Tests successful validation of well-formed JSON Schema.
 	 * @covers JsonSchemaContent::isValid
@@ -48,7 +45,6 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		$content = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$this->assertTrue( $content->isValid(), 'Valid JSON Schema should be recognized as valid.' );
 	}
-
 
 	/**
 	 * Tests JSON pretty-printing.
@@ -66,7 +62,6 @@ class JsonSchemaTest extends MediaWikiTestCase {
 			'Beautification does not alter JSON value.'
 		);
 	}
-
 
 	/**
 	 * Tests JSON->HTML representation.

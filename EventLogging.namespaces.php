@@ -7,9 +7,9 @@
  * @ingroup Extensions
  */
 
-$namespaceNames = array();
+$namespaceNames = [];
 
-$namespaceNames['en'] = array(
+$namespaceNames['en'] = [
 	470 => 'Schema',
 	471 => 'Schema_talk',
-);
+];

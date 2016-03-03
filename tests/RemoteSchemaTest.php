@@ -21,7 +21,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	/** @var RemoteSchema */
 	private $schema;
 
-	public $statusSchema = array( 'status' => array( 'type' => 'string' ) );
+	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
 	function setUp() {
 		parent::setUp();
@@ -31,10 +31,9 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->http = $this->getMock( 'stdClass', array( 'get' ) );
+		$this->http = $this->getMock( 'stdClass', [ 'get' ] );
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
 	}
-
 
 	/**
 	 * Tests behavior when content is in memcached.
@@ -63,7 +62,6 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 	}
 
-
 	/**
 	 * Calling get() multiple times should not result in multiple
 	 * memcached calls; instead, once the content is retrieved, it
@@ -79,7 +77,6 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->schema->get();
 		$this->schema->get();
 	}
-
 
 	/**
 	 * Tests behavior when content is missing from memcached and has to
@@ -109,15 +106,14 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 			->method( 'get' )
 			->with(
 				$this->stringContains( '?' ),
-				$this->equalTo( array(
+				$this->equalTo( [
 					'timeout' => RemoteSchema::LOCK_TIMEOUT * 0.8
-				) )
+				] )
 			)
 			->will( $this->returnValue( FormatJson::encode( $this->statusSchema ) ) );
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 	}
-
 
 	/**
 	 * Tests behavior when content is missing from memcached and an

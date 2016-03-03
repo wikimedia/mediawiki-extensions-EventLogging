@@ -138,7 +138,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	**/
 	function testEventNonMandatoryProperties() {
 		$valid = efSchemaValidate(
-			json_decode(  '{"Happy": "true"}', true ),
+			json_decode( '{"Happy": "true"}', true ),
 			json_decode( self::VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES, true )
 		);
 		$this->assertTrue( $valid, 'Event with non mandatory properties validates' );
@@ -165,32 +165,4 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		$this->assertTrue( $valid, 'Empty event like [] should validate if event has only
 			optional properties' );
 	}
-
-	/**
-	* Empty event like [] should not validate if event has mandatory properties
-	* Test failing -> prefixing with "_"
-	* bug : https://bugzilla.wikimedia.org/show_bug.cgi?id=65607
-
-	* @expectedException JsonSchemaException
-	**/
-	function _testEmptyEventForEventWithMandatoryPropertiesIsNotValidBadSerialization() {
-			$valid = efSchemaValidate(
-				json_decode( '[]', true ),
-				json_decode( self::VALID_JSON_SCHEMA_MANDATORY_EVENT_PROPERTIES, true )
-			);
-	}
-	/**
-	* Empty event like {} should not validate if event has mandatory properties
-	* Test failing -> prefixing with "_"
-	* bug : https://bugzilla.wikimedia.org/show_bug.cgi?id=65607
-	* @covers efSchemaValidate
-	* @expectedException JsonSchemaException
-	**/
-	function _testEmptyEventForEventWithMandatoryPropertiesIsNotValid() {
-		$valid = efSchemaValidate(
-			json_decode( '{}', true ),
-			json_decode( self::VALID_JSON_SCHEMA_MANDATORY_EVENT_PROPERTIES, true )
-		);
-	}
-
 }

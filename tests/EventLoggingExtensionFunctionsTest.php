@@ -16,15 +16,15 @@
 class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 
 	/** @var array: a basic JSON schema, decoded to associative array. **/
-	static $validSchema = array(
-		'properties' => array(
-			'valid' => array(
+	private static $validSchema = [
+		'properties' => [
+			'valid' => [
 				'type' => 'boolean',
 				'required' => true,
-			),
-			'action' => array(
+			],
+			'action' => [
 				'type' => 'string',
-				'enum' => array(
+				'enum' => [
 					'delete',
 					'edit',
 					'history',
@@ -32,19 +32,18 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 					'purge',
 					'submit',
 					'view',
-				),
-			),
-		)
-	);
+				],
+			],
+		]
+	];
 
 	/** @var array: conforms to $validSchema. **/
-	static $validObject = array( 'valid' => true, 'action' => 'history' );
+	private static $validObject = [ 'valid' => true, 'action' => 'history' ];
 
 	/** @var array: does not conform to $validSchema. **/
-	static $invalidObject = array( 'valid' => true, 'action' => 'cache' );
+	private static $invalidObject = [ 'valid' => true, 'action' => 'cache' ];
 
 	const UGLY_JSON = '{"nested":{"value":"{}"}}';
-
 
 	/**
 	 * Tests validation of objects against schema.
@@ -62,7 +61,6 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 		$this->assertTrue( efSchemaValidate( self::$validSchema ),
 			'efSchemaValidate() defaults to validating against the schema schema.' );
 	}
-
 
 	/**
 	 * Tests invalidation of objects that deviate from schema.

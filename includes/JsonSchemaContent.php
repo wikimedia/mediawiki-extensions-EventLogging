@@ -37,7 +37,8 @@ class JsonSchemaContent extends JsonContent {
 	 * @param int $recursionLimit Maximum recursion limit
 	 * @return array Expanded schema object
 	 */
-	public static function expand( $schema, $recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
+	public static function expand( $schema,
+			$recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
 		return array_map( function ( $value ) use( $recursionLimit ) {
 			if ( is_array( $value ) && $recursionLimit > 0 ) {
 				if ( isset( $value['$ref'] ) ) {
@@ -94,12 +95,12 @@ class JsonSchemaContent extends JsonContent {
 			if ( !isset( $valParts[1] ) ) {
 				$revId = $valParts[1];
 				$title = Revision::newFromId( $revId )->getTitle();
-				$link = Linker::link( $title, htmlspecialchars( $val ), array(),
-					array( 'oldid' => $revId ) );
+				$link = Linker::link( $title, htmlspecialchars( $val ), [],
+					[ 'oldid' => $revId ] );
 
-				$th = Xml::elementClean( 'th', array(), $key );
-				$td = Xml::tags( 'td', array( 'class' => 'value' ), $link );
-				return Html::rawElement( 'tr', array(), $th . $td );
+				$th = Xml::elementClean( 'th', [], $key );
+				$td = Xml::tags( 'td', [ 'class' => 'value' ], $link );
+				return Html::rawElement( 'tr', [], $th . $td );
 			}
 		}
 
@@ -115,23 +116,21 @@ class JsonSchemaContent extends JsonContent {
 	 *  (message key), and code
 	 */
 	public function getCodeSamples( $dbKey, $revId ) {
-		return array(
-			array(
+		return [
+			[
 				'language' => 'php',
 				'header' => 'eventlogging-code-sample-logging-on-server-side',
 				'code' => "EventLogging::logEvent( '$dbKey', $revId, \$event );",
-			),
-			array(
+			], [
 				'language' => 'php',
 				'header' => 'eventlogging-code-sample-module-setup',
 				'code' => "\$wgEventLoggingSchemas[ '{$dbKey}' ] = {$revId};",
-			),
-			array(
+			], [
 				'language' => 'javascript',
 				'header' => 'eventlogging-code-sample-logging-on-client-side',
 				'code' => "mw.eventLog.logEvent( '{$dbKey}', { /* ... */ } );",
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -161,15 +160,15 @@ class JsonSchemaContent extends JsonContent {
 				$code = $sample['code'];
 				$highlighted = $highlighter->highlight( $code, $lang )->getValue();
 				$html .= Html::element( 'h2',
-					array(),
+					[],
 					wfMessage( $sample['header'] )->text()
 				) . $highlighted;
 			}
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
-			$html = Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-glyph' ), '&#xe714;' ) .
-				Xml::tags( 'div', array( 'class' => 'mw-json-schema-code-samples' ), $html );
+			$html = Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-glyph' ], '&#xe714;' ) .
+				Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-samples' ], $html );
 			$out->setIndicator( 'schema-code-samples', $html );
-			$out->addModules( array( 'ext.eventLogging.jsonSchema', 'ext.pygments' ) );
+			$out->addModules( [ 'ext.eventLogging.jsonSchema', 'ext.pygments' ] );
 			$out->addModuleStyles( 'ext.eventLogging.jsonSchema.styles' );
 		}
 

@@ -14,20 +14,20 @@
 
 // Credits
 
-$wgExtensionCredits[ 'other' ][] = array(
+$wgExtensionCredits[ 'other' ][] = [
 	'path'   => __FILE__,
 	'name'   => 'EventLogging',
-	'author' => array(
+	'author' => [
 		'Ori Livneh',
 		'Timo Tijhof',
 		'S Page',
 		'Matthew Flaschen',
-	),
+	],
 	'version' => '0.8.0',
 	'url'     => 'https://www.mediawiki.org/wiki/Extension:EventLogging',
 	'descriptionmsg' => 'eventlogging-desc',
 	'license-name' => 'GPL-2.0+'
-);
+];
 
 // Namespaces
 define( 'NS_SCHEMA', 470 );
@@ -44,9 +44,7 @@ $wgHooks[ 'CanonicalNamespaces' ][] = function ( &$namespaces ) {
 };
 $wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
 $wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
-$wgNamespaceProtection[ NS_SCHEMA ] = array( 'autoconfirmed' );
-
-
+$wgNamespaceProtection[ NS_SCHEMA ] = [ 'autoconfirmed' ];
 
 // Configuration
 
@@ -77,7 +75,7 @@ $wgEventLoggingDBname = 'metawiki';
  * @var array: A map of event schema names to revision IDs.
  * @example array: array( 'MultimediaViewerNetworkPerformance' => 7917896 );
  */
-$wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchemas : array();
+$wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchemas : [];
 
 // Helpers
 
@@ -89,8 +87,8 @@ $wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchema
  * @param array $schema Schema to validate against (default: JSON Schema).
  * @return bool: True.
  */
-function efSchemaValidate( $object, $schema = NULL ) {
-	if ( $schema === NULL ) {
+function efSchemaValidate( $object, $schema = null ) {
+	if ( $schema === null ) {
 		// Default to JSON Schema
 		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
 		$schema = FormatJson::decode( $json, true );
@@ -118,7 +116,7 @@ function efSchemaValidate( $object, $schema = NULL ) {
  */
 function efStripKeyRecursive( &$array, $key ) {
 	unset( $array[ $key ] );
-	foreach( $array as $k => &$v ) {
+	foreach ( $array as $k => &$v ) {
 		if ( is_array( $v ) ) {
 			efStripKeyRecursive( $v, $key );
 		}
@@ -127,7 +125,7 @@ function efStripKeyRecursive( &$array, $key ) {
 
 // Classes
 
-$wgAutoloadClasses += array(
+$wgAutoloadClasses += [
 	'EventLogging' => __DIR__ . '/includes/EventLogging.php',
 
 	// Hooks
@@ -151,63 +149,63 @@ $wgAutoloadClasses += array(
 
 	// API
 	'ApiJsonSchema' => __DIR__ . '/includes/ApiJsonSchema.php',
-);
+];
 
 // Messages
 
 $wgMessagesDirs['EventLogging'] = __DIR__ . '/i18n/core';
 $wgMessagesDirs['JsonSchema'] = __DIR__ . '/i18n/jsonschema';
-$wgExtensionMessagesFiles += array(
+$wgExtensionMessagesFiles += [
 	'EventLogging'           => __DIR__ . '/EventLogging.i18n.php',
 	'EventLoggingNamespaces' => __DIR__ . '/EventLogging.namespaces.php',
 	'JsonSchema'             => __DIR__ . '/includes/JsonSchema.i18n.php',
-);
+];
 
 // Modules
 
-$wgResourceModules[ 'ext.eventLogging' ] = array(
+$wgResourceModules[ 'ext.eventLogging' ] = [
 	'scripts'       => 'modules/ext.eventLogging.core.js',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
-	'dependencies'  => array(
+	'dependencies'  => [
 		'json',
 		'ext.eventLogging.subscriber',
-	),
-	'targets'       => array( 'desktop', 'mobile' ),
-);
+	],
+	'targets'       => [ 'desktop', 'mobile' ],
+];
 
-$wgResourceModules[ 'ext.eventLogging.subscriber' ] = array(
-	'scripts'       => array(
+$wgResourceModules[ 'ext.eventLogging.subscriber' ] = [
+	'scripts'       => [
 		'modules/ext.eventLogging.subscriber.js',
 		'modules/ext.eventLogging.Schema.js',
-	),
+	],
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
-	'dependencies'  => array( 'mediawiki.user' ),
-	'targets'       => array( 'desktop', 'mobile' ),
-);
+	'dependencies'  => [ 'mediawiki.user' ],
+	'targets'       => [ 'desktop', 'mobile' ],
+];
 
 // Back-compatibility alias for subscriber
-$wgResourceModules[ 'ext.eventLogging.Schema' ] = array(
-	'dependencies'  => array(
+$wgResourceModules[ 'ext.eventLogging.Schema' ] = [
+	'dependencies'  => [
 		'ext.eventLogging.subscriber'
-	),
-	'targets'       => array( 'desktop', 'mobile' ),
-);
+	],
+	'targets'       => [ 'desktop', 'mobile' ],
+];
 
-$wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = array(
+$wgResourceModules[ 'ext.eventLogging.jsonSchema' ] = [
 	'scripts'       => 'modules/ext.eventLogging.jsonSchema.js',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
-);
+];
 
-$wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = array(
+$wgResourceModules[ 'ext.eventLogging.jsonSchema.styles' ] = [
 	'styles'        => 'modules/ext.eventLogging.jsonSchema.css',
 	'localBasePath' => __DIR__,
 	'remoteExtPath' => 'EventLogging',
 	'position'      => 'top',
-);
+];
 
 // Hooks
 
@@ -216,7 +214,8 @@ $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 $wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
-$wgHooks[ 'ResourceLoaderRegisterModules' ][] = 'EventLoggingHooks::onResourceLoaderRegisterModules';
+$wgHooks[ 'ResourceLoaderRegisterModules' ][] = (
+	'EventLoggingHooks::onResourceLoaderRegisterModules' );
 
 // Registers hook and content handlers for JSON schema content iff
 // running on the MediaWiki instance housing the schemas.
