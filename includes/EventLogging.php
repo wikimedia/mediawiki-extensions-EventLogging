@@ -39,7 +39,7 @@ class EventLogging {
 	 * @return bool: Whether the event was logged.
 	 */
 	static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
-		global $wgEventLoggingBaseUri;
+		global $wgDBname, $wgEventLoggingBaseUri;
 
 		if ( !$wgEventLoggingBaseUri ) {
 			return false;
