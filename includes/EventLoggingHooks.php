@@ -94,9 +94,10 @@ class EventLoggingHooks {
 	 * @return bool
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
-		global $wgEventLoggingBaseUri;
+		global $wgEventLoggingBaseUri, $wgEventLoggingSchemaApiUri;
 
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
+		$vars[ 'wgEventLoggingSchemaApiUri' ] = $wgEventLoggingSchemaApiUri;
 		return true;
 	}
 
@@ -113,5 +114,15 @@ class EventLoggingHooks {
 			'remoteExtPath' => 'EventLogging',
 		];
 		return true;
+	}
+
+	/**
+	 * @param User $user
+	 * @param array &$preferences
+	 */
+	public static function onGetPreferences( User $user, array &$preferences ) {
+		$preferences['eventlogging-display-web'] = [
+			'type' => 'api',
+		];
 	}
 }
