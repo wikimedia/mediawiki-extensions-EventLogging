@@ -155,11 +155,7 @@ $wgAutoloadClasses += [
 
 $wgMessagesDirs['EventLogging'] = __DIR__ . '/i18n/core';
 $wgMessagesDirs['JsonSchema'] = __DIR__ . '/i18n/jsonschema';
-$wgExtensionMessagesFiles += [
-	'EventLogging'           => __DIR__ . '/EventLogging.i18n.php',
-	'EventLoggingNamespaces' => __DIR__ . '/EventLogging.namespaces.php',
-	'JsonSchema'             => __DIR__ . '/includes/JsonSchema.i18n.php',
-];
+$wgExtensionMessagesFiles['EventLoggingNamespaces'] = __DIR__ . '/EventLogging.namespaces.php';
 
 // Modules
 
