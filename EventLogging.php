@@ -33,15 +33,8 @@ $wgExtensionCredits[ 'other' ][] = [
 define( 'NS_SCHEMA', 470 );
 define( 'NS_SCHEMA_TALK', 471 );
 
-$wgHooks[ 'CanonicalNamespaces' ][] = function ( &$namespaces ) {
-	global $wgDBname, $wgEventLoggingDBname;
-	if ( $wgEventLoggingDBname === $wgDBname ) {
-		$namespaces[ NS_SCHEMA ] = 'Schema';
-		$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
-	}
+$wgHooks[ 'CanonicalNamespaces' ][] = 'EventLoggingHooks::onCanonicalNamespaces';
 
-	return true;
-};
 $wgContentHandlers[ 'JsonSchema' ] = 'JsonSchemaContentHandler';
 $wgNamespaceContentModels[ NS_SCHEMA ] = 'JsonSchema';
 $wgNamespaceProtection[ NS_SCHEMA ] = [ 'autoconfirmed' ];
@@ -214,8 +207,8 @@ $wgExtensionFunctions[] = 'EventLoggingHooks::onSetup';
 $wgHooks[ 'BeforePageDisplay' ][] = 'EventLoggingHooks::onBeforePageDisplay';
 $wgHooks[ 'ResourceLoaderGetConfigVars' ][] = 'EventLoggingHooks::onResourceLoaderGetConfigVars';
 $wgHooks[ 'ResourceLoaderTestModules' ][] = 'EventLoggingHooks::onResourceLoaderTestModules';
-$wgHooks[ 'ResourceLoaderRegisterModules' ][] = (
-	'EventLoggingHooks::onResourceLoaderRegisterModules' );
+$wgHooks[ 'ResourceLoaderRegisterModules' ][] =
+	'EventLoggingHooks::onResourceLoaderRegisterModules';
 $wgHooks[ 'GetPreferences' ][] = 'EventLoggingHooks::onGetPreferences';
 
 // Registers hook and content handlers for JSON schema content iff
@@ -226,8 +219,4 @@ $wgExtensionFunctions[] = 'JsonSchemaHooks::registerHandlers';
 $wgDefaultUserOptions['eventlogging-display-web'] = 0;
 
 // Unit Tests
-
-$wgHooks[ 'UnitTestsList' ][] = function ( &$files ) {
-	$files = array_merge( $files, glob( __DIR__ . '/tests/*Test.php' ) );
-	return true;
-};
+$wgHooks[ 'UnitTestsList' ][] = 'EventLoggingHooks::onUnitTestsList';
