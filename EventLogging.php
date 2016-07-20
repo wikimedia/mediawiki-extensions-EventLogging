@@ -107,22 +107,6 @@ function efSchemaValidate( $object, $schema = null ) {
 	return $root->validate();
 }
 
-/**
- * Recursively remove a key from an array and all its subarray members.
- * Does not detect cycles.
- *
- * @param array &$array Array from which key should be stripped.
- * @param string $key Key to remove.
- */
-function efStripKeyRecursive( &$array, $key ) {
-	unset( $array[ $key ] );
-	foreach ( $array as $k => &$v ) {
-		if ( is_array( $v ) ) {
-			efStripKeyRecursive( $v, $key );
-		}
-	}
-}
-
 // Classes
 
 $wgAutoloadClasses += [

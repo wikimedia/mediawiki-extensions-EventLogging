@@ -86,8 +86,24 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 */
 	public function getScript( ResourceLoaderContext $context ) {
 		$schema = $this->schema->jsonSerialize();
-		efStripKeyRecursive( $schema, 'description' );
+		$this->stripKeyRecursive( $schema, 'description' );
 		$params = [ $this->schema->title, $schema ];
 		return Xml::encodeJsCall( 'mediaWiki.eventLog.declareSchema', $params );
+	}
+
+	/**
+	 * Recursively remove a key from an array and all its subarray members.
+	 * Does not detect cycles.
+	 *
+	 * @param array &$array Array from which key should be stripped.
+	 * @param string $key Key to remove.
+	 */
+	private function stripKeyRecursive( &$array, $key ) {
+		unset( $array[ $key ] );
+		foreach ( $array as $k => &$v ) {
+			if ( is_array( $v ) ) {
+				$this->stripKeyRecursive( $v, $key );
+			}
+		}
 	}
 }
