@@ -68,7 +68,7 @@ class JsonSchemaContent extends JsonContent {
 		if ( !is_array( $schema ) ) {
 			throw new JsonSchemaException( wfMessage( 'eventlogging-invalid-json' )->parse() );
 		}
-		return efSchemaValidate( $schema );
+		return EventLogging::schemaValidate( $schema );
 	}
 
 	/**

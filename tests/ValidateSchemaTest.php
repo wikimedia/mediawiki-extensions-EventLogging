@@ -109,10 +109,10 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 
 	/**
 	* A valid event should, ahem, validate
-	* @covers efSchemaValidate
+	* @covers EventLogging::schemaValidate
 	**/
 	function testValidEvent() {
-		$valid = efSchemaValidate(
+		$valid = EventLogging::schemaValidate(
 			json_decode( self::VALID_EVENT, true ),
 			json_decode( self::VALID_JSON_SCHEMA, true )
 		);
@@ -121,11 +121,11 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 
 	/**
 	*
-	* @covers efSchemaValidate
+	* @covers EventLogging::schemaValidate
 	* @expectedException JsonSchemaException
 	**/
 	function testInvalidEvent() {
-		$valid = efSchemaValidate(
+		$valid = EventLogging::schemaValidate(
 			json_decode( self::INVALID_EVENT_MISSING_REQUIRED_FIELD, true ),
 			json_decode( self::VALID_JSON_SCHEMA, true )
 		);
@@ -134,10 +134,10 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 
 	/**
 	* Event with non mandatory properties validates
-	* @covers efSchemaValidate
+	* @covers EventLogging::schemaValidate
 	**/
 	function testEventNonMandatoryProperties() {
-		$valid = efSchemaValidate(
+		$valid = EventLogging::schemaValidate(
 			json_decode( '{"Happy": "true"}', true ),
 			json_decode( self::VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES, true )
 		);
@@ -146,10 +146,10 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	/**
 	* An empty event should validate if event does not have
 	* mandatory properties
-	* @covers efSchemaValidate
+	* @covers EventLogging::schemaValidate
 	**/
 	function testEmptyEventForSchemaWithOptionalOnlyPropertiesIsValid() {
-		$valid = efSchemaValidate(
+		$valid = EventLogging::schemaValidate(
 			json_decode( '{}', true ),
 			json_decode(
 				self::VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES, true )
@@ -158,7 +158,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 			optional properties' );
 
 		# now test event serialized to []
-		$valid = efSchemaValidate(
+		$valid = EventLogging::schemaValidate(
 			json_decode( '[]', true ),
 			json_decode( self::VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES, true )
 		);
@@ -166,3 +166,4 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 			optional properties' );
 	}
 }
+

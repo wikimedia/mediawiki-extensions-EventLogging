@@ -11,7 +11,7 @@
 
 /**
  * @group EventLogging
- * @covers efSchemaValidate
+ * @covers EventLogging::schemaValidate
  */
 class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 
@@ -53,21 +53,21 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	 * perform only a basic, high-level sanity-check on object and
 	 * schema validation.
 	 *
-	 * @covers efSchemaValidate
+	 * @covers EventLogging::schemaValidate
 	 */
 	function testSchemaValidate() {
-		$this->assertTrue( efSchemaValidate( self::$validObject, self::$validSchema ),
-			'efSchemaValidate() returns true when object validates successfully.' );
-		$this->assertTrue( efSchemaValidate( self::$validSchema ),
-			'efSchemaValidate() defaults to validating against the schema schema.' );
+		$this->assertTrue( EventLogging::schemaValidate( self::$validObject, self::$validSchema ),
+			'EventLogging::schemaValidate() returns true when object validates successfully.' );
+		$this->assertTrue( EventLogging::schemaValidate( self::$validSchema ),
+			'EventLogging::schemaValidate() defaults to validating against the schema schema.' );
 	}
 
 	/**
 	 * Tests invalidation of objects that deviate from schema.
-	 * @covers efSchemaValidate
+	 * @covers EventLogging::schemaValidate
 	 */
 	function testSchemaInvalidate() {
 		$this->setExpectedException( 'JsonSchemaException' );
-		efSchemaValidate( self::$invalidObject, self::$validSchema );
+		EventLogging::schemaValidate( self::$invalidObject, self::$validSchema );
 	}
 }

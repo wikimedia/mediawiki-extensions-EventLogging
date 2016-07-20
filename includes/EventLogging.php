@@ -49,7 +49,7 @@ class EventLogging {
 		$schema = $remoteSchema->get();
 
 		try {
-			$isValid = is_array( $schema ) && efSchemaValidate( $event, $schema );
+			$isValid = is_array( $schema ) && self::schemaValidate( $event, $schema );
 		} catch ( JsonSchemaException $e ) {
 			$isValid = false;
 		}
@@ -97,5 +97,33 @@ class EventLogging {
 		$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulatedEvent ) );
 
 		return $json;
+	}
+
+	/**
+	 * Validates object against JSON Schema.
+	 *
+	 * @throws JsonSchemaException: If the object fails to validate.
+	 * @param array $object Object to be validated.
+	 * @param array $schema Schema to validate against (default: JSON Schema).
+	 * @return bool: True.
+	 */
+	public static function schemaValidate( $object, $schema = null ) {
+		if ( $schema === null ) {
+			// Default to JSON Schema
+			$json = file_get_contents( dirname( __DIR__ ) . '/schemas/schemaschema.json' );
+			$schema = FormatJson::decode( $json, true );
+		}
+
+		// We depart from the JSON Schema specification in disallowing by default
+		// additional event fields not mentioned in the schema.
+		// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> and
+		// <https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
+		if ( !array_key_exists( 'additionalProperties', $schema ) ) {
+			$schema[ 'additionalProperties' ] = false;
+		}
+
+		$root = new JsonTreeRef( $object );
+		$root->attachSchema( $schema );
+		return $root->validate();
 	}
 }
