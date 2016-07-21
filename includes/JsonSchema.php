@@ -364,11 +364,11 @@ class JsonTreeRef {
 			// additionalProperties can *either* be a boolean or can be
 			// defined as a schema (an object)
 			if ( gettype( $snode['additionalProperties'] ) == "boolean" ) {
-			    if ( !$snode['additionalProperties'] ) {
-			        $msg = JsonUtil::uiMessage( 'jsonschema-invalidkey',
-			                                    $key, $this->getDataPathTitles() );
-			        throw new JsonSchemaException( $msg );
-			    }
+				if ( !$snode['additionalProperties'] ) {
+					$msg = JsonUtil::uiMessage( 'jsonschema-invalidkey',
+												$key, $this->getDataPathTitles() );
+					throw new JsonSchemaException( $msg );
+				}
 			} else {
 				$schemadata = $snode['additionalProperties'];
 				$nodename = $key;
