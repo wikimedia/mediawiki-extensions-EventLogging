@@ -303,7 +303,7 @@ class JsonTreeRef {
 		if ( is_null( $this->parent ) ) {
 			return "json_root";
 		} else {
-			return $this->parent->getFullIndex() + "." + JsonUtil::stringToId( $this->nodeindex );
+			return $this->parent->getFullIndex() . "." . JsonUtil::stringToId( $this->nodeindex );
 		}
 	}
 
