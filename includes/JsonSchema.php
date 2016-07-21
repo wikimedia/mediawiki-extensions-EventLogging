@@ -49,7 +49,7 @@ class JsonSchemaException extends Exception {
 }
 
 class JsonUtil {
-	/*
+	/**
 	 * Converts the string into something safe for an HTML id.
 	 * performs the easiest transformation to safe id, but is lossy
 	 */
@@ -65,7 +65,7 @@ class JsonUtil {
 
 	}
 
-	/*
+	/**
 	 * Converts data to JSON format with pretty-formatting, but limited to a single line and escaped
 	 * to be suitable for wikitext message parameters.
 	 */
@@ -80,7 +80,7 @@ class JsonUtil {
 		}
 	}
 
-	/*
+	/**
 	 * Given a type (e.g. 'object', 'integer', 'string'), return the default/empty
 	 * value for that type.
 	 */
@@ -110,7 +110,7 @@ class JsonUtil {
 		return $newvalue;
 	}
 
-	/*
+	/**
 	 * Return a JSON-schema type for arbitrary data $foo
 	 */
 	public static function getType( $foo ) {
@@ -145,7 +145,7 @@ class JsonUtil {
 
 	}
 
-	/*
+	/**
 	 * Generate a schema from a data example ($parent)
 	 */
 	public static function getSchemaArray( $parent ) {
@@ -168,7 +168,7 @@ class JsonUtil {
 		return $schema;
 	}
 
-	/*
+	/**
 	 * User interface messages suitable for translation.
 	 * Note: this merely acts as a passthrough to MediaWiki's wfMessage call.
 	 */
@@ -192,11 +192,10 @@ class JsonUtil {
  *    nodes, as well as pointers to parent refs
  */
 
-/*
+/**
  * Structure for representing a generic tree which each node is aware of its
  * context (can refer to its parent).  Used for schema refs.
  */
-
 class TreeRef {
 	public $node;
 	public $parent;
@@ -210,11 +209,10 @@ class TreeRef {
 	}
 }
 
-/*
+/**
  * Structure for representing a data tree, where each node (ref) is aware of its
  * context and associated schema.
  */
-
 class JsonTreeRef {
 	public function __construct( $node, $parent = null, $nodeindex = null,
 			$nodename = null, $schemaref = null ) {
@@ -230,7 +228,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 * Associate the relevant node of the JSON schema to this node in the JSON
 	 */
 	public function attachSchema( $schema = null ) {
@@ -244,7 +242,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 *  Return the title for this ref, typically defined in the schema as the
 	 *  user-friendly string for this node.
 	 */
@@ -258,7 +256,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 * Rename a user key.  Useful for interactive editing/modification, but not
 	 * so helpful for static interpretation.
 	 */
@@ -271,7 +269,7 @@ class JsonTreeRef {
 		unset( $this->parent->node[$oldindex] );
 	}
 
-	/*
+	/**
 	 * Return the type of this node as specified in the schema.  If "any",
 	 * infer it from the data.
 	 */
@@ -294,7 +292,7 @@ class JsonTreeRef {
 
 	}
 
-	/*
+	/**
 	 * Return a unique identifier that may be used to find a node.  This
 	 * is only as robust as stringToId is (i.e. not that robust), but is
 	 * good enough for many cases.
@@ -307,7 +305,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 *  Get a path to the element in the array.  if $foo['a'][1] would load the
 	 *  node, then the return value of this would be array('a',1)
 	 */
@@ -321,7 +319,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 *  Return path in something that looks like an array path.  For example,
 	 *  for this data: [{'0a':1,'0b':{'0ba':2,'0bb':3}},{'1a':4}]
 	 *  the leaf node with a value of 4 would have a data path of '[1]["1a"]',
@@ -336,7 +334,7 @@ class JsonTreeRef {
 		return $retval;
 	}
 
-	/*
+	/**
 	 *  Return data path in user-friendly terms.  This will use the same
 	 *  terminology as used in the user interface (1-indexed arrays)
 	 */
@@ -349,7 +347,7 @@ class JsonTreeRef {
 		}
 	}
 
-	/*
+	/**
 	 * Return the child ref for $this ref associated with a given $key
 	 */
 	public function getMappingChildRef( $key ) {
@@ -380,7 +378,7 @@ class JsonTreeRef {
 		return $jsoni;
 	}
 
-	/*
+	/**
 	 * Return the child ref for $this ref associated with a given index $i
 	 */
 	public function getSequenceChildRef( $i ) {
@@ -397,7 +395,7 @@ class JsonTreeRef {
 		return $jsoni;
 	}
 
-	/*
+	/**
 	 * Validate the JSON node in this ref against the attached schema ref.
 	 * Return true on success, and throw a JsonSchemaException on failure.
 	 */
@@ -447,7 +445,7 @@ class JsonTreeRef {
 		return true;
 	}
 
-	/*
+	/**
 	 */
 	private function validateObjectChildren() {
 		if ( array_key_exists( 'properties', $this->schemaref->node ) ) {
@@ -480,7 +478,7 @@ class JsonTreeRef {
 	}
 }
 
-/*
+/**
  * The JsonSchemaIndex object holds all schema refs with an "id", and is used
  * to resolve an idref to a schema ref.  This also holds the root of the schema
  * tree.  This also serves as sort of a class factory for schema refs.
@@ -488,7 +486,7 @@ class JsonTreeRef {
 class JsonSchemaIndex {
 	public $root;
 	public $idtable;
-	/*
+	/**
 	 * The whole tree is indexed on instantiation of this class.
 	 */
 	public function __construct( $schema ) {
@@ -502,7 +500,7 @@ class JsonSchemaIndex {
 		$this->indexSubtree( $this->root );
 	}
 
-	/*
+	/**
 	 * Recursively find all of the ids in this schema, and store them in the
 	 * index.
 	 */
@@ -530,9 +528,9 @@ class JsonSchemaIndex {
 		}
 	}
 
-	/*
-	 *  Generate a new schema ref, or return an existing one from the index if
-	 *  the node is an idref.
+	/**
+	 * Generate a new schema ref, or return an existing one from the index if
+	 * the node is an idref.
 	 */
 	public function newRef( $node, $parent, $nodeindex, $nodename ) {
 		if ( array_key_exists( '$ref', $node ) ) {
