@@ -70,36 +70,6 @@ $wgEventLoggingDBname = 'metawiki';
  */
 $wgEventLoggingSchemas = isset( $wgEventLoggingSchemas ) ? $wgEventLoggingSchemas : [];
 
-// Helpers
-
-/**
- * Validates object against JSON Schema.
- *
- * @throws JsonSchemaException: If the object fails to validate.
- * @param array $object Object to be validated.
- * @param array $schema Schema to validate against (default: JSON Schema).
- * @return bool: True.
- */
-function efSchemaValidate( $object, $schema = null ) {
-	if ( $schema === null ) {
-		// Default to JSON Schema
-		$json = file_get_contents( __DIR__ . '/schemas/schemaschema.json' );
-		$schema = FormatJson::decode( $json, true );
-	}
-
-	// We depart from the JSON Schema specification in disallowing by default
-	// additional event fields not mentioned in the schema.
-	// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> and
-	// <https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
-	if ( !array_key_exists( 'additionalProperties', $schema ) ) {
-		$schema[ 'additionalProperties' ] = false;
-	}
-
-	$root = new JsonTreeRef( $object );
-	$root->attachSchema( $schema );
-	return $root->validate();
-}
-
 // Classes
 
 $wgAutoloadClasses += [
