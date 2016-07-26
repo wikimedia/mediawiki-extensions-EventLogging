@@ -125,4 +125,19 @@ class EventLoggingHooks {
 			'type' => 'api',
 		];
 	}
+
+	public static function onCanonicalNamespaces( &$namespaces ) {
+		global $wgDBname, $wgEventLoggingDBname;
+		if ( $wgEventLoggingDBname === $wgDBname ) {
+			$namespaces[ NS_SCHEMA ] = 'Schema';
+			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
+		}
+
+		return true;
+	}
+
+	public static function onUnitTestsList( &$files ) {
+		$files = array_merge( $files, glob( __DIR__ . '/tests/*Test.php' ) );
+		return true;
+	}
 }
