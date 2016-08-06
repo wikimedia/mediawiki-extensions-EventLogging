@@ -17,12 +17,14 @@
 			"constant": "NS_SCHEMA",
 			"name": "Schema",
 			"defaultcontentmodel": "JsonSchema",
-			"protection": ["autoconfirmed"]
+			"protection": ["autoconfirmed"],
+			"conditional": true
 		},
 		{
 			"id": 471,
 			"constant": "NS_SCHEMA_TALK",
-			"name": "Schema_talk"
+			"name": "Schema_talk",
+			"conditional": true
 		}
 	],
 	"DefaultUserOptions": {
@@ -133,16 +135,6 @@
 		]
 	},
 	"config": {
-		"NamespaceContentModels": {
-			"470": "JsonSchema",
-			"_merge_strategy": "array_plus"
-		},
-		"NamespaceProtection": {
-			"470": [
-				"autoconfirmed"
-			],
-			"_merge_strategy": "array_plus_2d"
-		},
 		"EventLoggingBaseUri": false,
 		"EventLoggingSchemaApiUri": "https://meta.wikimedia.org/w/api.php",
 		"EventLoggingDBname": "metawiki",
