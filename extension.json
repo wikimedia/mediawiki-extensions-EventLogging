@@ -34,8 +34,7 @@
 		"JsonSchema": "JsonSchemaContentHandler"
 	},
 	"ExtensionFunctions": [
-		"EventLoggingHooks::onSetup",
-		"JsonSchemaHooks::registerHandlers"
+		"EventLoggingHooks::onSetup"
 	],
 	"MessagesDirs": {
 		"EventLogging": [
@@ -119,7 +118,8 @@
 			"EventLoggingHooks::onCanonicalNamespaces"
 		],
 		"BeforePageDisplay": [
-			"EventLoggingHooks::onBeforePageDisplay"
+			"EventLoggingHooks::onBeforePageDisplay",
+			"JsonSchemaHooks::onBeforePageDisplay"
 		],
 		"ResourceLoaderGetConfigVars": [
 			"EventLoggingHooks::onResourceLoaderGetConfigVars"
@@ -132,7 +132,11 @@
 		],
 		"GetPreferences": [
 			"EventLoggingHooks::onGetPreferences"
-		]
+		],
+		"CodeEditorGetPageLanguage": "JsonSchemaHooks::onCodeEditorGetPageLanguage",
+		"EditFilterMerged": "JsonSchemaHooks::onEditFilterMerged",
+		"MovePageIsValidMove": "JsonSchemaHooks::onMovePageIsValidMove",
+		"ApiMain::moduleManager": "JsonSchemaHooks::onApiMainModuleManager"
 	},
 	"config": {
 		"EventLoggingBaseUri": false,

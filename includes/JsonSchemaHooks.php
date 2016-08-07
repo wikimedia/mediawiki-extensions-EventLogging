@@ -12,22 +12,31 @@
 class JsonSchemaHooks {
 
 	/**
-	 * Registers API module and hooks which should only run if the JSON
-	 * Schema namespace is enabled for this wiki.
-	 * @return bool: Whether hooks and handler were registered.
+	 * Convenience function to determine whether the
+	 * Schema namespace is enabled
+	 *
+	 * @return bool
 	 */
-	static function registerHandlers() {
-		global $wgAPIModules, $wgHooks, $wgEventLoggingDBname, $wgDBname;
+	public static function isSchemaNamespaceEnabled() {
+		global $wgEventLoggingDBname, $wgDBname;
 
-		if ( $wgEventLoggingDBname === $wgDBname ) {
-			$wgHooks[ 'BeforePageDisplay' ][] = 'JsonSchemaHooks::onBeforePageDisplay';
-			$wgHooks[ 'EditFilterMerged' ][] = 'JsonSchemaHooks::onEditFilterMerged';
-			$wgHooks[ 'CodeEditorGetPageLanguage' ][] = 'JsonSchemaHooks::onCodeEditorGetPageLanguage';
-			$wgHooks[ 'MovePageIsValidMove' ][] = 'JsonSchemaHooks::onMovePageIsValidMove';
-			$wgAPIModules[ 'jsonschema' ] = 'ApiJsonSchema';
-			return true;
+		return $wgEventLoggingDBname === $wgDBname;
+	}
+
+	/**
+	 * ApiMain::moduleManager hook to register jsonschema
+	 * API module only if the Schema namespace is enabled
+	 *
+	 * @param ApiModuleManager $moduleManager
+	 */
+	public static function onApiMainModuleManager( ApiModuleManager $moduleManager ) {
+		if ( self::isSchemaNamespaceEnabled() ) {
+			$moduleManager->addModule(
+				'jsonschema',
+				'action',
+				ApiJsonSchema::class
+			);
 		}
-		return false;
 	}
 
 	/**
@@ -38,7 +47,9 @@ class JsonSchemaHooks {
 	 * @return bool
 	 */
 	static function onCodeEditorGetPageLanguage( $title, &$lang ) {
-		if ( $title->inNamespace( NS_SCHEMA ) ) {
+		if ( self::isSchemaNamespaceEnabled()
+			&& $title->inNamespace( NS_SCHEMA )
+		) {
 			$lang = 'json';
 		}
 		return true;
@@ -56,7 +67,9 @@ class JsonSchemaHooks {
 	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
 		$title = $editor->getTitle();
 
-		if ( $title->getNamespace() !== NS_SCHEMA ) {
+		if ( !self::isSchemaNamespaceEnabled()
+			|| !$title->inNamespace( NS_SCHEMA )
+		) {
 			return true;
 		}
 
@@ -86,7 +99,9 @@ class JsonSchemaHooks {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
-		if ( $title->inNamespace( NS_SCHEMA ) && $revId !== null ) {
+		if ( self::isSchemaNamespaceEnabled()
+			&& $title->inNamespace( NS_SCHEMA ) && $revId !== null
+		) {
 			$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
 				// We use 'rawParams' rather than 'numParams' to make it
 				// easy to copy/paste the value into code.
@@ -103,9 +118,13 @@ class JsonSchemaHooks {
 	 * @param Title $currentTitle
 	 * @param Title $newTitle
 	 * @param Status $status
+	 * @return bool
 	 */
 	static function onMovePageIsValidMove( Title $currentTitle, Title $newTitle, Status $status ) {
-		if ( $currentTitle->inNamespace( NS_SCHEMA ) ) {
+		if ( !self::isSchemaNamespaceEnabled() ) {
+			// Namespace isn't even enabled
+			return true;
+		} elseif ( $currentTitle->inNamespace( NS_SCHEMA ) ) {
 			$status->fatal( 'eventlogging-error-move-source' );
 			return false;
 		} elseif ( $newTitle->inNamespace( NS_SCHEMA ) ) {

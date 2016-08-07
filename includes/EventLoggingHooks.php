@@ -127,8 +127,7 @@ class EventLoggingHooks {
 	}
 
 	public static function onCanonicalNamespaces( &$namespaces ) {
-		global $wgDBname, $wgEventLoggingDBname;
-		if ( $wgEventLoggingDBname === $wgDBname ) {
+		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 		}
