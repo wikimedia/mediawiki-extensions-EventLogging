@@ -2,9 +2,8 @@
 /**
  * Represents a schema revision on a remote wiki.
  * Handles retrieval (via HTTP) and local caching.
- * @note When we switch to PHP 5.4, add 'implements JsonSerializable'
  */
-class RemoteSchema {
+class RemoteSchema implements JsonSerializable {
 
 	const LOCK_TIMEOUT = 20;
 
@@ -56,11 +55,10 @@ class RemoteSchema {
 
 	/**
 	 * Returns an object containing serializable properties.
-	 * @implements JsonSerializable
 	 */
 	public function jsonSerialize() {
 		return [
-			'schema'   => $this->get() ?: new StdClass(),
+			'schema'   => $this->get() ?: new stdClass(),
 			'revision' => $this->revision
 		];
 	}
