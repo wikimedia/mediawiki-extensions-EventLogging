@@ -122,9 +122,9 @@ class JsonSchemaContent extends JsonContent {
 				'header' => 'eventlogging-code-sample-logging-on-server-side',
 				'code' => "EventLogging::logEvent( '$dbKey', $revId, \$event );",
 			], [
-				'language' => 'php',
-				'header' => 'eventlogging-code-sample-module-setup',
-				'code' => "\$wgEventLoggingSchemas[ '{$dbKey}' ] = {$revId};",
+				'language' => 'json',
+				'header' => 'eventlogging-code-sample-module-setup-json',
+				'code' => "{\n\t\"EventLoggingSchemas\": {\n\t\t\"$dbKey\": $revId\n\t}\n}",
 			], [
 				'language' => 'javascript',
 				'header' => 'eventlogging-code-sample-logging-on-client-side',
