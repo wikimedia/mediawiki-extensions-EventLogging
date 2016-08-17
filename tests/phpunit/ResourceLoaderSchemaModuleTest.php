@@ -48,9 +48,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	}
 
 	/**
-	 * When the RemoteSchema dependency can be loaded, the modified time
-	 * should be set to sum of $wgCacheEpoch (in UNIX time) and the revision number.
-	 * @covers ResourceLoaderSchemaModule::getModifiedTime
+	 * @covers ResourceLoaderSchemaModule::getDefinitionSummary
 	 */
 	function testModuleVersion() {
 		$version1 = $this->module->getVersionHash( $this->context );
