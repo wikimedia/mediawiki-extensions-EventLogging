@@ -128,7 +128,7 @@ class ApiJsonSchema extends ApiBase {
 		}
 
 		$this->markCacheable( $rev );
-		$schema = $content->getJsonData( true );
+		$schema = $content->getJsonData();
 
 		$result = $this->getResult();
 		$result->addValue( null, 'title', $title->getText() );
