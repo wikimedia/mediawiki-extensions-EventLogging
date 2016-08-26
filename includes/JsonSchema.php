@@ -44,8 +44,25 @@
  */
 
 class JsonSchemaException extends Exception {
+
+	/**
+	 * Arguments for the message
+	 *
+	 * @var array
+	 */
+	public $args;
+
+	/**
+	 * @var string 'validate-fail' or 'validate-fail-null'
+	 */
 	public $subtype;
-	// subtypes: "validate-fail", "validate-fail-null"
+
+	public function __construct( $code /* ... */ ) {
+		parent::__construct( $code );
+		$this->code = $code;
+		$this->args = func_get_args();
+		array_shift( $this->args );
+	}
 }
 
 class JsonUtil {
@@ -59,8 +76,7 @@ class JsonUtil {
 		} elseif ( is_string( $var ) ) {
 			return preg_replace( '/[^a-z0-9\-_:\.]/i', '', $var );
 		} else {
-			$msg = JsonUtil::uiMessage( 'jsonschema-idconvert', JsonUtil::encodeForMsg( $var ) );
-			throw new JsonSchemaException( $msg );
+			throw new JsonSchemaException( 'jsonschema-idconvert', JsonUtil::encodeForMsg( $var ) );
 		}
 
 	}
@@ -166,21 +182,6 @@ class JsonUtil {
 		}
 
 		return $schema;
-	}
-
-	/**
-	 * User interface messages suitable for translation.
-	 * Note: this merely acts as a passthrough to MediaWiki's wfMessage call.
-	 */
-	public static function uiMessage() {
-		if ( function_exists( 'wfMessage' ) ) {
-			return call_user_func_array( 'wfMessage', $params = func_get_args() );
-		} else {
-			// TODO: replace this with a real solution that works without
-			// MediaWiki
-			$params = func_get_args();
-			return implode( " ", $params );
-		}
 	}
 }
 
@@ -363,9 +364,8 @@ class JsonTreeRef {
 			// defined as a schema (an object)
 			if ( gettype( $snode['additionalProperties'] ) == "boolean" ) {
 				if ( !$snode['additionalProperties'] ) {
-					$msg = JsonUtil::uiMessage( 'jsonschema-invalidkey',
+					throw new JsonSchemaException( 'jsonschema-invalidkey',
 												$key, $this->getDataPathTitles() );
-					throw new JsonSchemaException( $msg );
 				}
 			} else {
 				$schemadata = $snode['additionalProperties'];
@@ -402,9 +402,8 @@ class JsonTreeRef {
 	public function validate() {
 		if ( array_key_exists( 'enum', $this->schemaref->node ) &&
 			!in_array( $this->node, $this->schemaref->node['enum'] ) ) {
-			$msg = JsonUtil::uiMessage( 'jsonschema-invalid-notinenum',
+			$e = new JsonSchemaException( 'jsonschema-invalid-notinenum',
 				JsonUtil::encodeForMsg( $this->node ), $this->getDataPathTitles() );
-			$e = new JsonSchemaException( $msg );
 			$e->subtype = "validate-fail";
 			throw( $e );
 		}
@@ -421,15 +420,13 @@ class JsonTreeRef {
 		}
 		if ( $datatype != $schematype ) {
 			if ( is_null( $datatype ) && !is_object( $this->parent ) ) {
-				$msg = JsonUtil::uiMessage( 'jsonschema-invalidempty' );
-				$e = new JsonSchemaException( $msg );
+				$e = new JsonSchemaException( 'jsonschema-invalidempty' );
 				$e->subtype = "validate-fail-null";
 				throw( $e );
 			} else {
 				$datatype = is_null( $datatype ) ? "null" : $datatype;
-				$msg = JsonUtil::uiMessage( 'jsonschema-invalidnode',
+				$e = new JsonSchemaException( 'jsonschema-invalidnode',
 					$schematype, $datatype, $this->getDataPathTitles() );
-				$e = new JsonSchemaException( $msg );
 				$e->subtype = "validate-fail";
 				throw( $e );
 			}
@@ -452,8 +449,7 @@ class JsonTreeRef {
 			foreach ( $this->schemaref->node['properties'] as $skey => $svalue ) {
 				$keyRequired = array_key_exists( 'required', $svalue ) ? $svalue['required'] : false;
 				if ( $keyRequired && !array_key_exists( $skey, $this->node ) ) {
-					$msg = JsonUtil::uiMessage( 'jsonschema-invalid-missingfield', $skey );
-					$e = new JsonSchemaException( $msg );
+					$e = new JsonSchemaException( 'jsonschema-invalid-missingfield', $skey );
 					$e->subtype = "validate-fail-missingfield";
 					throw( $e );
 				}
@@ -535,16 +531,14 @@ class JsonSchemaIndex {
 	public function newRef( $node, $parent, $nodeindex, $nodename ) {
 		if ( array_key_exists( '$ref', $node ) ) {
 			if ( strspn( $node['$ref'], '#' ) != 1 ) {
-				$error = JsonUtil::uiMessage( 'jsonschema-badidref', $node['$ref'] );
-				throw new JsonSchemaException( $error );
+				throw new JsonSchemaException( 'jsonschema-badidref', $node['$ref'] );
 			}
 			$idref = $node['$ref'];
 			try {
 				$node = $this->idtable[$idref];
 			}
 			catch ( Exception $e ) {
-				$error = JsonUtil::uiMessage( 'jsonschema-badidref', $node['$ref'] );
-				throw new JsonSchemaException( $error );
+				throw new JsonSchemaException( 'jsonschema-badidref', $node['$ref'] );
 			}
 		}
 

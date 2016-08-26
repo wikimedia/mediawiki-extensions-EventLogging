@@ -83,7 +83,7 @@ class JsonSchemaHooks {
 		try {
 			$content->validate();
 		} catch ( JsonSchemaException $e ) {
-			$error = $e->getMessage();
+			$error = wfMessage( $e->getCode(), $e->args )->parse();
 		}
 
 		return true;
