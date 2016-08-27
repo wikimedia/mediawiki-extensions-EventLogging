@@ -134,7 +134,7 @@
 			"EventLoggingHooks::onGetPreferences"
 		],
 		"CodeEditorGetPageLanguage": "JsonSchemaHooks::onCodeEditorGetPageLanguage",
-		"EditFilterMerged": "JsonSchemaHooks::onEditFilterMerged",
+		"EditFilterMergedContent": "JsonSchemaHooks::onEditFilterMergedContent",
 		"MovePageIsValidMove": "JsonSchemaHooks::onMovePageIsValidMove",
 		"ApiMain::moduleManager": "JsonSchemaHooks::onApiMainModuleManager"
 	},

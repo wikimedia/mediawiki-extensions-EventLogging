@@ -58,14 +58,18 @@ class JsonSchemaHooks {
 	/**
 	 * Validates that the revised contents are valid JSON.
 	 * If not valid, rejects edit with error message.
-	 * @param EditPage $editor
-	 * @param string $text Content of the revised article.
-	 * @param string &$error Error message to return.
-	 * @param string $summary Edit summary provided for edit.
+	 * @param IContextSource $context
+	 * @param Content $content
+	 * @param Status $status
+	 * @param string $summary
+	 * @param User $user
+	 * @param bool $minoredit
 	 * @return True
 	 */
-	static function onEditFilterMerged( $editor, $text, &$error, $summary ) {
-		$title = $editor->getTitle();
+	static function onEditFilterMergedContent( $context, $content, $status, $summary,
+		$user, $minoredit
+	) {
+		$title = $context->getTitle();
 
 		if ( !self::isSchemaNamespaceEnabled()
 			|| !$title->inNamespace( NS_SCHEMA )
@@ -74,16 +78,18 @@ class JsonSchemaHooks {
 		}
 
 		if ( !preg_match( '/^[a-zA-Z0-9_-]{1,63}$/', $title->getText() ) ) {
-			$error = wfMessage( 'badtitle' )->text();
+			$status->fatal( 'badtitle' );
 			return true;
 		}
 
-		$content = new JsonSchemaContent( $text );
+		if ( !$content instanceof JsonSchemaContent ) {
+			return true;
+		}
 
 		try {
 			$content->validate();
 		} catch ( JsonSchemaException $e ) {
-			$error = wfMessage( $e->getCode(), $e->args )->parse();
+			$status->fatal( $context->msg( $e->getCode(), $e->args ) );
 		}
 
 		return true;
