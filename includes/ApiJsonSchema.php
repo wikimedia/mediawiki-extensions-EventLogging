@@ -44,30 +44,6 @@ class ApiJsonSchema extends ApiBase {
 	}
 
 	/**
-	 * @deprecated since MediaWiki core 1.25
-	 */
-	public function getParamDescription() {
-		return [
-			'revid' => 'Schema revision ID',
-			'title' => 'Schema name',
-		];
-	}
-
-	/**
-	 * @deprecated since MediaWiki core 1.25
-	 */
-	public function getDescription() {
-		return 'Retrieve a JSON Schema page';
-	}
-
-	/**
-	 * @deprecated since MediaWiki core 1.25
-	 */
-	public function getExamples() {
-		return [ 'api.php?action=jsonschema&revid=1234'  => 'Retrieve schema for revision 1234' ];
-	}
-
-	/**
 	 * @see ApiBase::getExamplesMessages()
 	 */
 	protected function getExamplesMessages() {
