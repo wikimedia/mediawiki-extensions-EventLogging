@@ -69,7 +69,6 @@
 				"modules/ext.eventLogging.debug.js"
 			],
 			"dependencies": [
-				"json",
 				"ext.eventLogging.subscriber",
 				"user.options"
 			],
