@@ -81,18 +81,30 @@ class ApiJsonSchema extends ApiBase {
 		$rev = Revision::newFromID( $params['revid'] );
 
 		if ( !$rev ) {
-			$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
+			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
+				$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
+			} else {
+				$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
+			}
 		}
 
 		$title = $rev->getTitle();
 		if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
-			$this->dieUsageMsg( [ 'invalidtitle', $title ] );
+			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
+				$this->dieWithError( [ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400 );
+			} else {
+				$this->dieUsageMsg( [ 'invalidtitle', $title ] );
+			}
 		}
 
 		/** @var JsonSchemaContent $content */
 		$content = $rev->getContent();
 		if ( !$content ) {
-			$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
+			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
+				$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
+			} else {
+				$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
+			}
 		}
 
 		// We use the revision ID for lookup; the 'title' parameter is
@@ -100,7 +112,14 @@ class ApiJsonSchema extends ApiBase {
 		// revision ID is indeed a revision of a page with the specified
 		// title. (Bug 46174)
 		if ( $params['title'] && !$title->equals( Title::newFromText( $params['title'], NS_SCHEMA ) ) ) {
-			$this->dieUsageMsg( [ 'revwrongpage', $params['revid'], $params['title'] ] );
+			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
+				$this->dieWithError(
+					[ 'apierror-revwrongpage', $params['revid'], wfEscapeWikiText( $params['title'] ) ],
+					null, null, 400
+				);
+			} else {
+				$this->dieUsageMsg( [ 'revwrongpage', $params['revid'], $params['title'] ] );
+			}
 		}
 
 		$this->markCacheable( $rev );
