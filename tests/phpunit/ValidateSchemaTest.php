@@ -166,4 +166,3 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 			optional properties' );
 	}
 }
-

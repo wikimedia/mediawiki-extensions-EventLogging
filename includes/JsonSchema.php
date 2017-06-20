@@ -78,7 +78,6 @@ class JsonUtil {
 		} else {
 			throw new JsonSchemaException( 'jsonschema-idconvert', JsonUtil::encodeForMsg( $var ) );
 		}
-
 	}
 
 	/**
@@ -158,7 +157,6 @@ class JsonUtil {
 				return null;
 				break;
 		}
-
 	}
 
 	/**
@@ -290,7 +288,6 @@ class JsonTreeRef {
 		} else {
 			return $nodetype;
 		}
-
 	}
 
 	/**

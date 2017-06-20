@@ -21,7 +21,7 @@ class EventLogging {
 	 * @see https://w3c.github.io/beacon/#sec-sendBeacon-method
 	 */
 	public static function sendBeacon( $url, array $data = [] ) {
-		DeferredUpdates::addCallableUpdate( function() use ( $url, $data ) {
+		DeferredUpdates::addCallableUpdate( function () use ( $url, $data ) {
 			$options = $data ? [ 'postData' => $data ] : [];
 			return Http::post( $url, $options );
 		} );
@@ -81,7 +81,6 @@ class EventLogging {
 	 * @return string $json
 	**/
 	static function serializeEvent( $encapsulatedEvent ) {
-
 		$event = $encapsulatedEvent['event'];
 
 		if ( count( $event ) === 0 ) {
