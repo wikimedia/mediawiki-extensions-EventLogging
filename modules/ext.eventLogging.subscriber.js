@@ -87,7 +87,13 @@
 
 	};
 
-	$( window ).on( 'load', function () {
+	// Avoid the logging of duplicate events (T170018).
+	//
+	// The load event must only fire once. However, Firefox 51 introduced a
+	// bug that causes the event to fire again when returning from the
+	// "Back-Forward cache" (BFCache) under certain circumstances (see
+	// https://bugzilla.mozilla.org/show_bug.cgi?id=1379762).
+	$( window ).one( 'load', function () {
 		mw.trackSubscribe( 'event.', handleTrackedEvent );
 	} );
 
