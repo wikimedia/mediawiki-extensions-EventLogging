@@ -76,7 +76,7 @@ class JsonUtil {
 		} elseif ( is_string( $var ) ) {
 			return preg_replace( '/[^a-z0-9\-_:\.]/i', '', $var );
 		} else {
-			throw new JsonSchemaException( 'jsonschema-idconvert', JsonUtil::encodeForMsg( $var ) );
+			throw new JsonSchemaException( 'jsonschema-idconvert', self::encodeForMsg( $var ) );
 		}
 	}
 
@@ -164,18 +164,18 @@ class JsonUtil {
 	 */
 	public static function getSchemaArray( $parent ) {
 		$schema = [];
-		$schema['type'] = JsonUtil::getType( $parent );
+		$schema['type'] = self::getType( $parent );
 		switch ( $schema['type'] ) {
 			case 'object':
 				$schema['properties'] = [];
 				foreach ( $parent as $name ) {
-					$schema['properties'][$name] = JsonUtil::getSchemaArray( $parent[$name] );
+					$schema['properties'][$name] = self::getSchemaArray( $parent[$name] );
 				}
 
 				break;
 			case 'array':
 				$schema['items'] = [];
-				$schema['items'][0] = JsonUtil::getSchemaArray( $parent[0] );
+				$schema['items'][0] = self::getSchemaArray( $parent[0] );
 				break;
 		}
 

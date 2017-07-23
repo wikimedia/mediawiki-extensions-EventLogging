@@ -38,7 +38,7 @@ class JsonSchemaContent extends JsonContent {
 	 * @return array Expanded schema object
 	 */
 	public static function expand( $schema,
-			$recursionLimit = JsonSchemaContent::DEFAULT_RECURSION_LIMIT ) {
+			$recursionLimit = self::DEFAULT_RECURSION_LIMIT ) {
 		return array_map( function ( $value ) use( $recursionLimit ) {
 			if ( is_array( $value ) && $recursionLimit > 0 ) {
 				if ( isset( $value['$ref'] ) ) {
