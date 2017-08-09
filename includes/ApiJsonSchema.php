@@ -45,6 +45,7 @@ class ApiJsonSchema extends ApiBase {
 
 	/**
 	 * @see ApiBase::getExamplesMessages()
+	 * @return array
 	 */
 	protected function getExamplesMessages() {
 		return [
@@ -69,7 +70,7 @@ class ApiJsonSchema extends ApiBase {
 	/**
 	 * Emit an error response. Like ApiBase::dieUsageMsg, but sets
 	 * HTTP 400 ('Bad Request') status code.
-	 * @param array|string: user error array
+	 * @param array|string $error user error array
 	 */
 	public function dieUsageMsg( $error ) {
 		$parsed = $this->parseMsg( (array)$error );

@@ -69,6 +69,9 @@ class JsonUtil {
 	/**
 	 * Converts the string into something safe for an HTML id.
 	 * performs the easiest transformation to safe id, but is lossy
+	 * @param int|string $var
+	 * @return string
+	 * @throws JsonSchemaException
 	 */
 	public static function stringToId( $var ) {
 		if ( is_int( $var ) ) {
@@ -83,6 +86,8 @@ class JsonUtil {
 	/**
 	 * Converts data to JSON format with pretty-formatting, but limited to a single line and escaped
 	 * to be suitable for wikitext message parameters.
+	 * @param array $data
+	 * @return string
 	 */
 	public static function encodeForMsg( $data ) {
 		if ( class_exists( 'FormatJson' ) && function_exists( 'wfEscapeWikiText' ) ) {
@@ -98,6 +103,8 @@ class JsonUtil {
 	/**
 	 * Given a type (e.g. 'object', 'integer', 'string'), return the default/empty
 	 * value for that type.
+	 * @param string $thistype
+	 * @return mixed
 	 */
 	public static function getNewValueForType( $thistype ) {
 		switch ( $thistype ) {
@@ -127,6 +134,8 @@ class JsonUtil {
 
 	/**
 	 * Return a JSON-schema type for arbitrary data $foo
+	 * @param mixed $foo
+	 * @return mixed
 	 */
 	public static function getType( $foo ) {
 		if ( is_null( $foo ) ) {
@@ -161,6 +170,8 @@ class JsonUtil {
 
 	/**
 	 * Generate a schema from a data example ($parent)
+	 * @param mixed $parent
+	 * @return array
 	 */
 	public static function getSchemaArray( $parent ) {
 		$schema = [];
@@ -229,6 +240,7 @@ class JsonTreeRef {
 
 	/**
 	 * Associate the relevant node of the JSON schema to this node in the JSON
+	 * @param null|string $schema
 	 */
 	public function attachSchema( $schema = null ) {
 		if ( !is_null( $schema ) ) {
@@ -244,6 +256,7 @@ class JsonTreeRef {
 	/**
 	 *  Return the title for this ref, typically defined in the schema as the
 	 *  user-friendly string for this node.
+	 * @return string
 	 */
 	public function getTitle() {
 		if ( isset( $this->nodename ) ) {
@@ -258,6 +271,7 @@ class JsonTreeRef {
 	/**
 	 * Rename a user key.  Useful for interactive editing/modification, but not
 	 * so helpful for static interpretation.
+	 * @param string $newindex
 	 */
 	public function renamePropname( $newindex ) {
 		$oldindex = $this->nodeindex;
@@ -271,6 +285,7 @@ class JsonTreeRef {
 	/**
 	 * Return the type of this node as specified in the schema.  If "any",
 	 * infer it from the data.
+	 * @return mixed
 	 */
 	public function getType() {
 		if ( array_key_exists( 'type', $this->schemaref->node ) ) {
@@ -294,6 +309,7 @@ class JsonTreeRef {
 	 * Return a unique identifier that may be used to find a node.  This
 	 * is only as robust as stringToId is (i.e. not that robust), but is
 	 * good enough for many cases.
+	 * @return string
 	 */
 	public function getFullIndex() {
 		if ( is_null( $this->parent ) ) {
@@ -306,6 +322,7 @@ class JsonTreeRef {
 	/**
 	 *  Get a path to the element in the array.  if $foo['a'][1] would load the
 	 *  node, then the return value of this would be array('a',1)
+	 * @return array
 	 */
 	public function getDataPath() {
 		if ( !is_object( $this->parent ) ) {
@@ -323,6 +340,7 @@ class JsonTreeRef {
 	 *  the leaf node with a value of 4 would have a data path of '[1]["1a"]',
 	 *  while the leaf node with a value of 2 would have a data path of
 	 *  '[0]["0b"]["oba"]'
+	 * @return string
 	 */
 	public function getDataPathAsString() {
 		$retval = "";
@@ -335,6 +353,7 @@ class JsonTreeRef {
 	/**
 	 *  Return data path in user-friendly terms.  This will use the same
 	 *  terminology as used in the user interface (1-indexed arrays)
+	 * @return string
 	 */
 	public function getDataPathTitles() {
 		if ( !is_object( $this->parent ) ) {
@@ -347,6 +366,9 @@ class JsonTreeRef {
 
 	/**
 	 * Return the child ref for $this ref associated with a given $key
+	 * @param string $key
+	 * @return JsonTreeRef
+	 * @throws JsonSchemaException
 	 */
 	public function getMappingChildRef( $key ) {
 		$snode = $this->schemaref->node;
@@ -377,6 +399,8 @@ class JsonTreeRef {
 
 	/**
 	 * Return the child ref for $this ref associated with a given index $i
+	 * @param int $i
+	 * @return JsonTreeRef
 	 */
 	public function getSequenceChildRef( $i ) {
 		// TODO: make this conform to draft-03 by also allowing single object
@@ -395,6 +419,7 @@ class JsonTreeRef {
 	/**
 	 * Validate the JSON node in this ref against the attached schema ref.
 	 * Return true on success, and throw a JsonSchemaException on failure.
+	 * @return bool
 	 */
 	public function validate() {
 		if ( array_key_exists( 'enum', $this->schemaref->node ) &&
@@ -481,6 +506,8 @@ class JsonSchemaIndex {
 	public $idtable;
 	/**
 	 * The whole tree is indexed on instantiation of this class.
+	 * @param string $schema
+	 * @return null|void
 	 */
 	public function __construct( $schema ) {
 		$this->root = $schema;
@@ -496,6 +523,7 @@ class JsonSchemaIndex {
 	/**
 	 * Recursively find all of the ids in this schema, and store them in the
 	 * index.
+	 * @param string $schemanode
 	 */
 	public function indexSubtree( $schemanode ) {
 		if ( !array_key_exists( 'type', $schemanode ) ) {
@@ -524,6 +552,12 @@ class JsonSchemaIndex {
 	/**
 	 * Generate a new schema ref, or return an existing one from the index if
 	 * the node is an idref.
+	 * @param string $node
+	 * @param string $parent
+	 * @param int $nodeindex
+	 * @param string $nodename
+	 * @return TreeRef
+	 * @throws JsonSchemaException
 	 */
 	public function newRef( $node, $parent, $nodeindex, $nodename ) {
 		if ( array_key_exists( '$ref', $node ) ) {

@@ -19,6 +19,9 @@ class EventLogging {
 	 * This is meant to match the Navigator.sendBeacon() API.
 	 *
 	 * @see https://w3c.github.io/beacon/#sec-sendBeacon-method
+	 * @param string $url
+	 * @param array $data
+	 * @return bool
 	 */
 	public static function sendBeacon( $url, array $data = [] ) {
 		DeferredUpdates::addCallableUpdate( function () use ( $url, $data ) {

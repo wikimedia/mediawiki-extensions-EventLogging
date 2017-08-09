@@ -17,7 +17,7 @@ class RemoteSchema implements JsonSerializable {
 	/**
 	 * Constructor.
 	 * @param string $title
-	 * @param integer $revision
+	 * @param int $revision
 	 * @param ObjectCache $cache (optional) cache client.
 	 * @param Http $http (optional) HTTP client.
 	 */
@@ -55,6 +55,7 @@ class RemoteSchema implements JsonSerializable {
 
 	/**
 	 * Returns an object containing serializable properties.
+	 * @return array
 	 */
 	public function jsonSerialize() {
 		return [
@@ -65,7 +66,7 @@ class RemoteSchema implements JsonSerializable {
 
 	/**
 	 * Retrieves content from memcached.
-	 * @return array:bool Schema or false if not in cache.
+	 * @return array|bool Schema or false if not in cache.
 	 */
 	protected function memcGet() {
 		return $this->cache->get( $this->key );
@@ -73,6 +74,7 @@ class RemoteSchema implements JsonSerializable {
 
 	/**
 	 * Store content in memcached.
+	 * @return bool
 	 */
 	protected function memcSet() {
 		return $this->cache->set( $this->key, $this->content );

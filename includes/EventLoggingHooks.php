@@ -103,7 +103,7 @@ class EventLoggingHooks {
 
 	/**
 	 * @param array &$testModules
-	 * @param ResourceLoader $resourceLoader
+	 * @param ResourceLoader &$resourceLoader
 	 * @return bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
