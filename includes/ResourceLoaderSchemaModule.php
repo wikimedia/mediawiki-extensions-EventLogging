@@ -82,7 +82,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	 * when run in the browser, adds it to mw.eventLog.schemas. Adds an
 	 * empty schema if the schema could not be retrieved.
 	 * @param ResourceLoaderContext $context
-	 * @return string: JavaScript code.
+	 * @return string JavaScript code.
 	 */
 	public function getScript( ResourceLoaderContext $context ) {
 		$schema = $this->schema->jsonSerialize();

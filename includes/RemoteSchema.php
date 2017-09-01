@@ -33,7 +33,7 @@ class RemoteSchema implements JsonSerializable {
 
 	/**
 	 * Retrieves schema content.
-	 * @return array|bool: Schema or false if irretrievable.
+	 * @return array|bool Schema or false if irretrievable.
 	 */
 	public function get() {
 		if ( $this->content ) {

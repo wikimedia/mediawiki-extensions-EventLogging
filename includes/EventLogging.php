@@ -39,7 +39,7 @@ class EventLogging {
 	 * @param int $revId revision ID of schema.
 	 * @param array $event Map of event keys/vals.
 	 * @param int $options Bitmask consisting of EventLogging::OMIT_USER_AGENT.
-	 * @return bool: Whether the event was logged.
+	 * @return bool Whether the event was logged.
 	 */
 	static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
 		global $wgDBname, $wgEventLoggingBaseUri;
@@ -107,7 +107,7 @@ class EventLogging {
 	 * @throws JsonSchemaException: If the object fails to validate.
 	 * @param array $object Object to be validated.
 	 * @param array $schema Schema to validate against (default: JSON Schema).
-	 * @return bool: True.
+	 * @return bool True.
 	 */
 	public static function schemaValidate( $object, $schema = null ) {
 		if ( $schema === null ) {
