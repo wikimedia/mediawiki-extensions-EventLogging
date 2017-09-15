@@ -124,7 +124,10 @@ class JsonSchemaContent extends JsonContent {
 			], [
 				'language' => 'json',
 				'header' => 'eventlogging-code-sample-module-setup-json',
-				'code' => "{\n\t\"EventLoggingSchemas\": {\n\t\t\"$dbKey\": $revId\n\t}\n}",
+				'code' => FormatJson::encode( [
+					'attributes' => [ 'EventLogging' => [
+						'Schemas' => [ $dbKey => $revId, ] ]
+					] ], "\t" ),
 			], [
 				'language' => 'javascript',
 				'header' => 'eventlogging-code-sample-logging-on-client-side',

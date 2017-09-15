@@ -58,11 +58,15 @@ class EventLoggingHooks {
 	 *     $schemas[ 'MultimediaViewerNetworkPerformance' ] = 7917896;
 	 * };
 	 * @endcode
-	 * @par Example using extension.json
+	 * @par Example using extension.json (manifest_version 2)
 	 * @code
 	 * {
-	 *     "EventLoggingSchemas": {
-	 *         "MultimediaViewerNetworkPerformance": 7917896
+	 *     "attributes": {
+	 *         "EventLogging": {
+	 *             "Schemas": {
+	 *                 "MultimediaViewerNetworkPerformance": 7917896
+	 *             }
+	 *         }
 	 *     }
 	 * }
 	 * @endcode
