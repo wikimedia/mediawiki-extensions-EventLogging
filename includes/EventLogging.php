@@ -82,7 +82,7 @@ class EventLogging {
 	 *
 	 * @param array $encapsulatedEvent Encapsulated event
 	 * @return string $json
-	**/
+	 */
 	static function serializeEvent( $encapsulatedEvent ) {
 		$event = $encapsulatedEvent['event'];
 
