@@ -83,11 +83,13 @@
 		}
 	} ) );
 
-	QUnit.test( 'Configuration', 1, function ( assert ) {
+	QUnit.test( 'Configuration', function ( assert ) {
 		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
 	} );
 
-	QUnit.test( 'validate', validationCases.length + 1, function ( assert ) {
+	QUnit.test( 'validate', function ( assert ) {
+		assert.expect( validationCases.length + 1 );
+
 		var meta = mw.eventLog.getSchema( 'earthquake' ),
 			errors = mw.eventLog.validate( {
 				epicenter: 'Valdivia',
@@ -102,7 +104,7 @@
 		} );
 	} );
 
-	QUnit.test( 'inSample', 2, function ( assert ) {
+	QUnit.test( 'inSample', function ( assert ) {
 		assert.strictEqual( mw.eventLog.inSample( 0 ), false );
 		assert.strictEqual( mw.eventLog.inSample( 1 ), true );
 
@@ -110,7 +112,7 @@
 		// want consistency in this case
 	} );
 
-	QUnit.test( 'randomTokenMatch', 2, function ( assert ) {
+	QUnit.test( 'randomTokenMatch', function ( assert ) {
 		var i, results = { 'true': 0, 'false': 0 };
 		for ( i = 0; i < 100; i++ ) {
 			results[ mw.eventLog.randomTokenMatch( 10 ) ]++;
@@ -140,7 +142,7 @@
 			expected: 'Url exceeds maximum length'
 		}
 	}, function ( name, params ) {
-		QUnit.test( name, 1, function ( assert ) {
+		QUnit.test( name, function ( assert ) {
 			var url = new Array( params.size + 1 ).join( 'x' ),
 				result = mw.eventLog.checkUrlSize( 'earthquake', url );
 			assert.deepEqual( result, params.expected, name );
@@ -165,7 +167,7 @@
 		.always( assert.async() );
 	} );
 
-	QUnit.test( 'setDefaults', 1, function ( assert ) {
+	QUnit.test( 'setDefaults', function ( assert ) {
 		var prepared;
 
 		mw.eventLog.setDefaults( 'earthquake', {
@@ -213,9 +215,7 @@
 			invalid: [ -1, {}, undefined ]
 		}
 	}, function ( type, cases ) {
-		var asserts = cases.valid.length + cases.invalid.length;
-
-		QUnit.test( type, asserts, function ( assert ) {
+		QUnit.test( type, function ( assert ) {
 			$.each( cases.valid, function ( index, value ) {
 				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), true,
 					JSON.stringify( value ) + ' is a ' + type );
