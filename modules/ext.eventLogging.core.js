@@ -256,11 +256,11 @@
 				// Support: IE 9, IE 10 (navigator.msDoNotTrack)
 				navigator.msDoNotTrack === '1' ||
 				!baseUrl
-			)
-			? $.noop
-			: navigator.sendBeacon
-				? function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} }
-				: function ( url ) { document.createElement( 'img' ).src = url; },
+			) ?
+			$.noop :
+			navigator.sendBeacon ?
+				function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} } :
+				function ( url ) { document.createElement( 'img' ).src = url; },
 
 		/**
 		 * Construct and transmit to a remote server a record of some event

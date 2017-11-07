@@ -44,9 +44,8 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 		}
 
 		if ( !is_int( $args['revision'] ) ) {
-			// Events will not validate on the Python server if this is defined
-			// wrong.  Enforce it here as well, so it can be more easily caught
-			// during local development.
+			// Events will not validate on the EventLogging server if this is defined
+			// wrong. Enforce it here as well, so it can be easily caught during development.
 			throw new Exception( "Revision for schema \"{$args['schema']}\" must be given as an integer" );
 		}
 
