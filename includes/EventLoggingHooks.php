@@ -17,12 +17,6 @@ class EventLoggingHooks {
 	 * configuration variable (if any).
 	 */
 	public static function onSetup() {
-		global $wgMemc;
-
-		if ( get_class( $wgMemc ) === 'EmptyBagOStuff' ) {
-			wfDebugLog( 'EventLogging', 'No suitable memcached driver found.' );
-		}
-
 		foreach ( [
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingDBname',
