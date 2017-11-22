@@ -14,7 +14,7 @@
  */
 class RemoteSchemaTest extends MediaWikiTestCase {
 
-	/** @var PHPUnit_Framework_MockObject_MockObject */
+	/** @var BagOStuff|PHPUnit_Framework_MockObject_MockObject */
 	private $cache;
 	/** @var PHPUnit_Framework_MockObject_MockObject */
 	private $http;
@@ -24,14 +24,26 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
 	function setUp() {
+		global $wgEventLoggingSchemaApiUri;
+
 		parent::setUp();
 
 		$this->cache = $this
-			->getMockBuilder( 'MemcachedPhpBagOStuff' )
+			->getMockBuilder( MemcachedPhpBagOStuff::class )
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->http = $this->getMock( 'stdClass', [ 'get' ] );
+		$this->cache
+			->expects( $this->once() )
+			->method( 'makeGlobalKey' )
+			->with(
+				'eventlogging-schema',
+				$wgEventLoggingSchemaApiUri,
+				99
+			)
+			->willReturn( 'eventlogging-schema:--:99' );
+
+		$this->http = $this->getMock( stdClass::class, [ 'get' ] );
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
 	}
 
@@ -40,13 +52,11 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * This is the most common scenario.
 	 */
 	function testSchemaInCache() {
-		global $wgEventLoggingDBname;
-
 		// If the revision was in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
+			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
 			->will( $this->returnValue( $this->statusSchema ) );
 
 		// ...no HTTP call will need to be made
@@ -83,20 +93,18 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * be retrieved via HTTP instead.
 	 */
 	function testSchemaNotInCacheDoUpdate() {
-		global $wgEventLoggingDBname;
-
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
+			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
 			->will( $this->returnValue( false ) );
 
 		// ...RemoteSchema will attempt to acquire an update lock:
 		$this->cache
 			->expects( $this->any() )
 			->method( 'add' )
-			->with( $this->stringContains( "schema:{$wgEventLoggingDBname}:Test:99" ) )
+			->with( $this->equalTo( 'eventlogging-schema:--:99:lock' ) )
 			->will( $this->returnValue( true ) );
 
 		// With the lock acquired, we'll see an HTTP request
@@ -120,13 +128,11 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * update lock cannot be acquired.
 	 */
 	function testSchemaNotInCacheNoUpdate() {
-		global $wgEventLoggingDBname;
-
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
 			->method( 'get' )
-			->with( $this->equalTo( "schema:{$wgEventLoggingDBname}:Test:99" ) )
+			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
 			->will( $this->returnValue( false ) );
 
 		// ...we'll see an attempt to acquire update lock,
@@ -134,7 +140,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->cache
 			->expects( $this->once() )
 			->method( 'add' )
-			->with( "schema:{$wgEventLoggingDBname}:Test:99:lock" )
+			->with( $this->equalTo( 'eventlogging-schema:--:99:lock' ) )
 			->will( $this->returnValue( false ) );
 
 		// Without a lock, no HTTP requests will be made:

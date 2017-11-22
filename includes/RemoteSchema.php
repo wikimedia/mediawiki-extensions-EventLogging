@@ -22,13 +22,17 @@ class RemoteSchema implements JsonSerializable {
 	 * @param Http $http (optional) HTTP client.
 	 */
 	public function __construct( $title, $revision, $cache = null, $http = null ) {
-		global $wgEventLoggingDBname;
+		global $wgEventLoggingSchemaApiUri;
 
 		$this->title = $title;
 		$this->revision = $revision;
 		$this->cache = $cache ?: wfGetCache( CACHE_ANYTHING );
 		$this->http = $http ?: new Http();
-		$this->key = "schema:{$wgEventLoggingDBname}:{$title}:{$revision}";
+		$this->key = $this->cache->makeGlobalKey(
+			'eventlogging-schema',
+			$wgEventLoggingSchemaApiUri,
+			$revision
+		);
 	}
 
 	/**
