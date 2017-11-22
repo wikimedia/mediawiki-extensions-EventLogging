@@ -19,10 +19,9 @@ class EventLoggingHooks {
 	public static function onSetup() {
 		foreach ( [
 			'wgEventLoggingBaseUri',
-			'wgEventLoggingDBname',
-			'wgEventLoggingSchemaApiUri'
+			'wgEventLoggingSchemaApiUri',
 		] as $configVar ) {
-			if ( !isset( $GLOBALS[ $configVar ] ) || $GLOBALS[ $configVar ] === false ) {
+			if ( $GLOBALS[ $configVar ] === false ) {
 				wfDebugLog( 'EventLogging', "$configVar has not been configured." );
 			}
 		}

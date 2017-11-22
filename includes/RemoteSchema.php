@@ -18,7 +18,7 @@ class RemoteSchema implements JsonSerializable {
 	 * Constructor.
 	 * @param string $title
 	 * @param int $revision
-	 * @param ObjectCache $cache (optional) cache client.
+	 * @param BagOStuff $cache (optional) cache client.
 	 * @param Http $http (optional) HTTP client.
 	 */
 	public function __construct( $title, $revision, $cache = null, $http = null ) {
