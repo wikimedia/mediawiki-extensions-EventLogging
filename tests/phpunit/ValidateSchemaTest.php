@@ -10,7 +10,6 @@
 
 /**
  * @group EventLogging
- * @covers JsonSchema
  */
 class ValidateSchemaTest extends MediaWikiTestCase {
 

@@ -10,7 +10,7 @@
 
 /**
  * @group EventLogging
- * @covers JsonSchema
+ * @covers EventLogging::serializeEvent
  */
 class SerializeEventTest extends MediaWikiTestCase {
 

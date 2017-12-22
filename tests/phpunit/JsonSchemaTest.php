@@ -10,7 +10,7 @@
 
 /**
  * @group EventLogging
- * @covers JsonSchema
+ * @covers JsonSchemaContent
  */
 class JsonSchemaTest extends MediaWikiTestCase {
 
