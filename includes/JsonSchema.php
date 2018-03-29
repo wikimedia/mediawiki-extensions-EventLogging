@@ -35,7 +35,7 @@
  *
  * @author Rob Lanphier <robla@wikimedia.org>
  * @copyright © 2011-2012 Rob Lanphier
- * @licence http://jsonwidget.org/LICENSE BSD 3-clause
+ * @license http://jsonwidget.org/LICENSE BSD 3-clause
  */
 
 /*
