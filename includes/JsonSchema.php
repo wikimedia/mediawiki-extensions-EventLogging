@@ -254,8 +254,8 @@ class JsonTreeRef {
 	}
 
 	/**
-	 *  Return the title for this ref, typically defined in the schema as the
-	 *  user-friendly string for this node.
+	 * Return the title for this ref, typically defined in the schema as the
+	 * user-friendly string for this node.
 	 * @return string
 	 */
 	public function getTitle() {
@@ -320,8 +320,8 @@ class JsonTreeRef {
 	}
 
 	/**
-	 *  Get a path to the element in the array.  if $foo['a'][1] would load the
-	 *  node, then the return value of this would be array('a',1)
+	 * Get a path to the element in the array.  if $foo['a'][1] would load the
+	 * node, then the return value of this would be array('a',1)
 	 * @return array
 	 */
 	public function getDataPath() {
@@ -335,11 +335,11 @@ class JsonTreeRef {
 	}
 
 	/**
-	 *  Return path in something that looks like an array path.  For example,
-	 *  for this data: [{'0a':1,'0b':{'0ba':2,'0bb':3}},{'1a':4}]
-	 *  the leaf node with a value of 4 would have a data path of '[1]["1a"]',
-	 *  while the leaf node with a value of 2 would have a data path of
-	 *  '[0]["0b"]["oba"]'
+	 * Return path in something that looks like an array path.  For example,
+	 * for this data: [{'0a':1,'0b':{'0ba':2,'0bb':3}},{'1a':4}]
+	 * the leaf node with a value of 4 would have a data path of '[1]["1a"]',
+	 * while the leaf node with a value of 2 would have a data path of
+	 * '[0]["0b"]["oba"]'
 	 * @return string
 	 */
 	public function getDataPathAsString() {
@@ -351,8 +351,8 @@ class JsonTreeRef {
 	}
 
 	/**
-	 *  Return data path in user-friendly terms.  This will use the same
-	 *  terminology as used in the user interface (1-indexed arrays)
+	 * Return data path in user-friendly terms.  This will use the same
+	 * terminology as used in the user interface (1-indexed arrays)
 	 * @return string
 	 */
 	public function getDataPathTitles() {
@@ -464,8 +464,6 @@ class JsonTreeRef {
 		return true;
 	}
 
-	/**
-	 */
 	private function validateObjectChildren() {
 		if ( array_key_exists( 'properties', $this->schemaref->node ) ) {
 			foreach ( $this->schemaref->node['properties'] as $skey => $svalue ) {
@@ -485,8 +483,6 @@ class JsonTreeRef {
 		return true;
 	}
 
-	/*
-	 */
 	private function validateArrayChildren() {
 		$length = count( $this->node );
 		for ( $i = 0; $i < $length; $i++ ) {

@@ -16,7 +16,7 @@
  */
 class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 
-	/** @var RemoteSchema $schema **/
+	/** @var RemoteSchema **/
 	public $schema;
 
 	/**
@@ -54,7 +54,7 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	}
 
 	/**
-	 * @param ResourceLoaderContext $context
+	 * @param ResourceLoaderContext|null $context
 	 * @return array Module names
 	 */
 	public function getDependencies( ResourceLoaderContext $context = null ) {

@@ -104,7 +104,7 @@ class EventLogging {
 	/**
 	 * Validates object against JSON Schema.
 	 *
-	 * @throws JsonSchemaException: If the object fails to validate.
+	 * @throws JsonSchemaException If the object fails to validate.
 	 * @param array $object Object to be validated.
 	 * @param array $schema Schema to validate against (default: JSON Schema).
 	 * @return bool True.
