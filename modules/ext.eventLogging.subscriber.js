@@ -67,16 +67,13 @@
 		/**
 		 * Randomise inclusion based on population size and 64-bit random token.
 		 *
-		 * Use #inSample instead.
-		 *
-		 * @private
 		 * @param {number} populationSize One in how should return true.
-		 * @param {string} [token] 64-bit integer in HEX format
+		 * @param {string} [explicitToken] 64-bit integer in HEX format
 		 * @return {boolean}
 		 */
-		randomTokenMatch: function ( populationSize, token ) {
-			token = token || mw.user.generateRandomSessionId();
-			var rand = parseInt( token.slice( 0, 8 ), 16 );
+		randomTokenMatch: function ( populationSize, explicitToken ) {
+			var token = explicitToken || mw.user.generateRandomSessionId(),
+				rand = parseInt( token.slice( 0, 8 ), 16 );
 			return rand % populationSize === 0;
 		},
 
