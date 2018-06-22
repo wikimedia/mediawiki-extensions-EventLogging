@@ -22,21 +22,12 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 	/**
 	 * Constructor; invoked by ResourceLoader.
 	 * Ensures that the 'schema' and 'revision' keys were set on the
-	 * $wgResourceModules member array representing this module.
-	 *
-	 * Example:
-	 * @code
-	 *  $wgResourceModules[ 'schema.person' ] = array(
-	 *      'class'    => 'ResourceLoaderSchemaModule',
-	 *      'schema'   => 'Person',
-	 *      'revision' => 4703006,
-	 *  );
-	 * @endcode
+	 * module definition.
 	 *
 	 * @throws Exception if 'schema' or 'revision' keys are missing.
 	 * @param array $args
 	 */
-	function __construct( $args ) {
+	public function __construct( array $args ) {
 		foreach ( [ 'schema', 'revision' ] as $key ) {
 			if ( !isset( $args[ $key ] ) ) {
 				throw new Exception( "ResourceLoaderSchemaModule params must set '$key' key." );
@@ -51,6 +42,16 @@ class ResourceLoaderSchemaModule extends ResourceLoaderModule {
 
 		$this->schema = new RemoteSchema( $args['schema'], $args['revision'] );
 		$this->targets = [ 'desktop', 'mobile' ];
+
+		if ( !isset( $args['internal'] ) ) {
+			// Set by EventLoggingHooks::onResourceLoaderRegisterModules, won't be
+			// by any callers that register the module directly.
+			wfWarn(
+				'Registering ResourceLoaderSchemaModule instances directly will not be ' .
+				'supported in the future; use the EventLoggingSchemas attribute in ' .
+				'extension.json instead.'
+			);
+		}
 	}
 
 	/**

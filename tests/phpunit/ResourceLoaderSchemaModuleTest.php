@@ -39,7 +39,8 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 
 		$module = new ResourceLoaderSchemaModule( [
 			'schema'   => $title,
-			'revision' => $revid
+			'revision' => $revid,
+			'internal' => true,
 		] );
 
 		// Inject mock

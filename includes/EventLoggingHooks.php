@@ -70,9 +70,10 @@ class EventLoggingHooks {
 		$modules = [];
 		foreach ( $schemas as $schemaName => $rev ) {
 			$modules[ "schema.$schemaName" ] = [
-				'class'    => 'ResourceLoaderSchemaModule',
+				'class'    => ResourceLoaderSchemaModule::class,
 				'schema'   => $schemaName,
 				'revision' => $rev,
+				'internal' => true,
 			];
 		}
 		$resourceLoader->register( $modules );
