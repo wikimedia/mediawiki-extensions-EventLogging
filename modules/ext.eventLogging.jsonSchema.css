@@ -13,9 +13,25 @@
 	min-width: 30em;
 	position: absolute;
 	background: #fff;
-	padding: 1.4em;
+	padding: 0 1.4em;
 	box-shadow: rgba( 0, 0, 0, 0.3 ) 0.3em 0.3em 1em;
 	right: 0;
+}
+
+/* Avoid setting padding-top/bottom on the outer element.
+   Padding doesn't collapse with margin, and this element will
+   start and end with <h2> and <pre> elements which already
+   have their own margins. Setting padding-top/bottom would
+   cause it to have more padding than visually makes sense.
+   Instead, apply that spacing through margin. However,
+   one cannot apply margin within border and background area,
+   so we instead apply this margin to an extra pseudo element
+   that will be the first and last child. See T198269. */
+.mw-json-schema-code-samples:before,
+.mw-json-schema-code-samples:after {
+	content: '';
+	display: block;
+	margin-top: 1.4em;
 }
 
 .client-nojs .mw-json-schema-code-glyph {
