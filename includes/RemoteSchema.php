@@ -1,4 +1,7 @@
 <?php
+
+use MediaWiki\Logger\LoggerFactory;
+
 /**
  * Represents a schema revision on a remote wiki.
  * Handles retrieval (via HTTP) and local caching.
@@ -90,16 +93,23 @@ class RemoteSchema implements JsonSerializable {
 	 * @return array|bool Schema or false if unable to fetch.
 	 */
 	protected function httpGet() {
+		$uri = $this->getUri();
 		if ( !$this->lock() ) {
+			LoggerFactory::getInstance( 'EventLogging' )->warning(
+				'Failed to get lock for requesting {schema_uri}.',
+				[ 'schema_uri' => $uri ]
+			);
 			return false;
 		}
-		$uri = $this->getUri();
 		$raw = $this->http->get( $uri, [
 			'timeout' => self::LOCK_TIMEOUT * 0.8
 		] );
 		$content = FormatJson::decode( $raw, true );
 		if ( !$content ) {
-			wfDebugLog( 'EventLogging', "Request to $uri failed." );
+			LoggerFactory::getInstance( 'EventLogging' )->error(
+				'Request to {schema_uri} failed.',
+				[ 'schema_uri' => $uri ]
+			);
 		}
 		return $content ?: false;
 	}
