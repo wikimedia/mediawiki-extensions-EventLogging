@@ -90,15 +90,6 @@
 				"mobile"
 			]
 		},
-		"ext.eventLogging.Schema": {
-			"dependencies": [
-				"ext.eventLogging.subscriber"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
-			]
-		},
 		"ext.eventLogging.jsonSchema": {
 			"scripts": "modules/ext.eventLogging.jsonSchema.js",
 			"position": "top"
