@@ -65,8 +65,8 @@
 	"ResourceModules": {
 		"ext.eventLogging": {
 			"scripts": [
-				"modules/ext.eventLogging.core.js",
-				"modules/ext.eventLogging.debug.js"
+				"modules/ext.eventLogging/core.js",
+				"modules/ext.eventLogging/debug.js"
 			],
 			"dependencies": [
 				"ext.eventLogging.subscriber",
@@ -79,8 +79,8 @@
 		},
 		"ext.eventLogging.subscriber": {
 			"scripts": [
-				"modules/ext.eventLogging.subscriber.js",
-				"modules/ext.eventLogging.Schema.js"
+				"modules/ext.eventLogging.subscriber/subscriber.js",
+				"modules/ext.eventLogging.subscriber/Schema.js"
 			],
 			"dependencies": [
 				"mediawiki.user"
@@ -91,11 +91,11 @@
 			]
 		},
 		"ext.eventLogging.jsonSchema": {
-			"scripts": "modules/ext.eventLogging.jsonSchema.js",
+			"scripts": "modules/ext.eventLogging.jsonSchema/jsonSchema.js",
 			"position": "top"
 		},
 		"ext.eventLogging.jsonSchema.styles": {
-			"styles": "modules/ext.eventLogging.jsonSchema.css",
+			"styles": "modules/ext.eventLogging.jsonSchema.styles/jsonSchema.css",
 			"position": "top"
 		}
 	},
