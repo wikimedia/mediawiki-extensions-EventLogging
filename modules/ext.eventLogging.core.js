@@ -5,7 +5,7 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var self,
+	var self, baseUrl;
 
 	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
 	// in EventLogging.php. If the default value of 'false' has not
@@ -65,7 +65,7 @@
 		 * @return {Object} Schema object.
 		 */
 		getSchema: function ( schemaName ) {
-			if ( !self.schemas.hasOwnProperty( schemaName ) ) {
+			if ( !Object.hasOwnProperty.call( self.schemas, schemaName ) ) {
 				self.schemas[ schemaName ] = { schema: { title: schemaName } };
 			}
 			return self.schemas[ schemaName ];
@@ -99,14 +99,14 @@
 		isInstanceOf: function ( value, type ) {
 			var jsType = $.type( value );
 			switch ( type ) {
-			case 'integer':
-				return jsType === 'number' && value % 1 === 0;
-			case 'number':
-				return jsType === 'number' && isFinite( value );
-			case 'timestamp':
-				return jsType === 'date' || ( jsType === 'number' && value >= 0 && value % 1 === 0 );
-			default:
-				return jsType === type;
+				case 'integer':
+					return jsType === 'number' && value % 1 === 0;
+				case 'number':
+					return jsType === 'number' && isFinite( value );
+				case 'timestamp':
+					return jsType === 'date' || ( jsType === 'number' && value >= 0 && value % 1 === 0 );
+				default:
+					return jsType === type;
 			}
 		},
 
@@ -128,7 +128,7 @@
 			}
 
 			for ( key in obj ) {
-				if ( !schema.properties.hasOwnProperty( key ) ) {
+				if ( !Object.hasOwnProperty.call( schema.properties, key ) ) {
 					errors.push( mw.format( 'Undeclared property "$1"', key ) );
 				}
 			}
@@ -136,7 +136,7 @@
 			for ( key in schema.properties ) {
 				prop = schema.properties[ key ];
 
-				if ( !obj.hasOwnProperty( key ) ) {
+				if ( !Object.hasOwnProperty.call( obj, key ) ) {
 					if ( prop.required ) {
 						errors.push( mw.format( 'Missing property "$1"', key ) );
 					}
@@ -152,10 +152,10 @@
 					continue;
 				}
 
-				if ( prop[ 'enum' ] && $.inArray( val, prop[ 'enum' ] ) === -1 ) {
+				if ( prop.enum && $.inArray( val, prop.enum ) === -1 ) {
 					errors.push( mw.format(
 						'Value $1 for property "$2" is not one of $3',
-						JSON.stringify( val ), key, JSON.stringify( prop[ 'enum' ] )
+						JSON.stringify( val ), key, JSON.stringify( prop.enum )
 					) );
 				}
 			}
@@ -256,7 +256,7 @@
 				// Support: IE 9, IE 10 (navigator.msDoNotTrack)
 				navigator.msDoNotTrack === '1' ||
 				!baseUrl
-			) ?
+		) ?
 			$.noop :
 			navigator.sendBeacon ?
 				function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} } :

@@ -1,4 +1,4 @@
-/*global QUnit:false */
+/* eslint-env qunit */
 ( function ( mw, $ ) {
 	'use strict';
 
@@ -88,13 +88,14 @@
 	} );
 
 	QUnit.test( 'validate', function ( assert ) {
+		var meta, errors;
 		assert.expect( validationCases.length + 1 );
 
-		var meta = mw.eventLog.getSchema( 'earthquake' ),
-			errors = mw.eventLog.validate( {
-				epicenter: 'Valdivia',
-				magnitude: 9.5
-			}, meta.schema );
+		meta = mw.eventLog.getSchema( 'earthquake' );
+		errors = mw.eventLog.validate( {
+			epicenter: 'Valdivia',
+			magnitude: 9.5
+		}, meta.schema );
 
 		assert.propEqual( errors, [], 'Non-required fields may be omitted' );
 
@@ -117,8 +118,8 @@
 		for ( i = 0; i < 100; i++ ) {
 			results[ mw.eventLog.randomTokenMatch( 10 ) ]++;
 		}
-		assert.ok( results[ 'true' ] > 0 && results[ 'true' ] < 25, 'True: ' + results[ 'true' ] );
-		assert.ok( results[ 'false' ] > 75 && results[ 'false' ] < 100, 'False: ' + results[ 'false' ] );
+		assert.ok( results.true > 0 && results.true < 25, 'True: ' + results.true );
+		assert.ok( results.false > 75 && results.false < 100, 'False: ' + results.false );
 	} );
 
 	QUnit.test( 'logEvent', function ( assert ) {
@@ -157,14 +158,14 @@
 		};
 
 		mw.eventLog.logEvent( 'earthquake', event )
-		.done( function () {
-			assert.ok( false, 'Expected an error' );
-		} )
-		.fail( function ( e, error ) {
-			assert.deepEqual( error, 'Url exceeds maximum length',
-				'logEvent promise resolves with error' );
-		} )
-		.always( assert.async() );
+			.done( function () {
+				assert.ok( false, 'Expected an error' );
+			} )
+			.fail( function ( e, error ) {
+				assert.deepEqual( error, 'Url exceeds maximum length',
+					'logEvent promise resolves with error' );
+			} )
+			.always( assert.async() );
 	} );
 
 	QUnit.test( 'setDefaults', function ( assert ) {

@@ -1,6 +1,9 @@
 ( function ( mw, $ ) {
 	'use stict';
 
+	var dialogPromise,
+		logEvent = mw.eventLog.logEvent;
+
 	if ( Number( mw.user.options.get( 'eventlogging-display-web' ) ) !== 1 ) {
 		return;
 	}
@@ -8,7 +11,7 @@
 	function initDialogPromise() {
 		return mw.loader.using( 'oojs-ui-windows' )
 			.then( function () {
-				/*global OO */
+				/* global OO */
 				var wm = new OO.ui.WindowManager(),
 					dialog = new OO.ui.MessageDialog();
 
@@ -30,9 +33,6 @@
 				};
 			} );
 	}
-
-	var dialogPromise,
-		logEvent = mw.eventLog.logEvent;
 
 	mw.eventLog.logEvent = function ( schemaName, eventData ) {
 		return logEvent( schemaName, eventData ).then( function ( event ) {
