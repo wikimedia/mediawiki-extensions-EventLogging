@@ -1,12 +1,24 @@
+/*!
+ * Inspect events on page views.
+ *
+ * To enable, run the following from the browser console:
+ *
+ *     mw.loader.using( 'mediawiki.api' ).then( function () {
+ *         new mw.Api().saveOption( 'eventlogging-display-web', '1' );
+ *     } );
+ *
+ * To disable:
+ *
+ *     mw.loader.using( 'mediawiki.api' ).then( function () {
+ *         new mw.Api().saveOption( 'eventlogging-display-web', '0' );
+ *     } );
+ *
+ * See EventLoggingHooks.php for the module loading, and user option registation.
+ */
 ( function ( mw, $ ) {
 	'use stict';
 
-	var dialogPromise,
-		logEvent = mw.eventLog.logEvent;
-
-	if ( Number( mw.user.options.get( 'eventlogging-display-web' ) ) !== 1 ) {
-		return;
-	}
+	var dialogPromise;
 
 	function initDialogPromise() {
 		return mw.loader.using( 'oojs-ui-windows' )
@@ -34,9 +46,9 @@
 			} );
 	}
 
-	mw.eventLog.logEvent = function ( schemaName, eventData ) {
-		return logEvent( schemaName, eventData ).then( function ( event ) {
-			mw.loader.using( [ 'json', 'mediawiki.notification' ] ).then( function () {
+	mw.trackSubscribe( 'eventlogging.debug', function ( topic, event ) {
+		mw.loader.using( [ 'json', 'mediawiki.notification' ] )
+			.then( function () {
 				var baseUrl = mw.config.get( 'wgEventLoggingSchemaApiUri' ).replace( 'api.php', 'index.php' ),
 					json = JSON.stringify( event, null, 2 ),
 					formatted = mw.format(
@@ -64,8 +76,5 @@
 				mw.log( json );
 				mw.notification.notify( content, { autoHide: true } );
 			} );
-
-			return event;
-		} );
-	};
+	} );
 }( mediaWiki, jQuery ) );

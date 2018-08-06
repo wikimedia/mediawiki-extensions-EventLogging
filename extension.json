@@ -65,8 +65,7 @@
 	"ResourceModules": {
 		"ext.eventLogging": {
 			"scripts": [
-				"modules/ext.eventLogging/core.js",
-				"modules/ext.eventLogging/debug.js"
+				"modules/ext.eventLogging/core.js"
 			],
 			"dependencies": [
 				"ext.eventLogging.subscriber",
@@ -84,6 +83,15 @@
 			],
 			"dependencies": [
 				"mediawiki.user"
+			],
+			"targets": [
+				"desktop",
+				"mobile"
+			]
+		},
+		"ext.eventLogging.debug": {
+			"scripts": [
+				"modules/ext.eventLogging.debug/debug.js"
 			],
 			"targets": [
 				"desktop",

@@ -33,6 +33,10 @@ class EventLoggingHooks {
 	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
 		$out->addModules( [ 'ext.eventLogging.subscriber' ] );
+
+		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
+			$out->addModules( 'ext.eventLogging.debug' );
+		}
 	}
 
 	/**
@@ -111,6 +115,7 @@ class EventLoggingHooks {
 	 * @param array &$preferences
 	 */
 	public static function onGetPreferences( User $user, array &$preferences ) {
+		// See 'ext.eventLogging.debug' module.
 		$preferences['eventlogging-display-web'] = [
 			'type' => 'api',
 		];

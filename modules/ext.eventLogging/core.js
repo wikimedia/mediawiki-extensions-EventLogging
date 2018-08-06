@@ -5,12 +5,15 @@
 ( function ( mw, $ ) {
 	'use strict';
 
-	var self, baseUrl;
+	var self, baseUrl, debugMode;
 
 	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
 	// in EventLogging.php. If the default value of 'false' has not
 	// been overridden, events will not be sent to the server.
 	baseUrl = mw.config.get( 'wgEventLoggingBaseUri' );
+
+	// Support both 1 or "1" (T54542)
+	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
 
 	/**
 	 * Client-side EventLogging API.
@@ -281,6 +284,9 @@
 
 			if ( !sizeError ) {
 				self.sendBeacon( url );
+				if ( debugMode ) {
+					mw.track( 'eventlogging.debug', event );
+				}
 				deferred.resolveWith( event, [ event ] );
 			} else {
 				deferred.rejectWith( event, [ event, sizeError ] );
