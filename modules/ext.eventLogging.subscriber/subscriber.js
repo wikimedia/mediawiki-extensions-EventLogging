@@ -7,7 +7,7 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function ( mw, $ ) {
-	var pageViewToken = mw.user.generateRandomSessionId();
+	var pageviewToken = mw.user.generateRandomSessionId();
 
 	/**
 	 * Convert the first letter of a string to uppercase.
@@ -87,9 +87,24 @@
 		inSample: function ( populationSize ) {
 			// Use the same unique random identifier within the same page load
 			// to allow correlation between multiple events.
-			return this.randomTokenMatch( populationSize, pageViewToken );
-		}
+			return this.randomTokenMatch( populationSize, pageviewToken );
+		},
 
+		/**
+		 * Returns the token associated with the current pageview. A "pageview" is an instance of a
+		 * user loading a page. The same token is returned when called multiple times in the context
+		 * of a single pageview.
+		 *
+		 * Do not make assumptions about the contents of this token except that it is a randomly
+		 * generated nonempty string.
+		 *
+		 * See https://wikipedia.org/wiki/Pageview
+		 *
+		 * @return {string}
+		 */
+		getPageviewToken: function () {
+			return pageviewToken;
+		}
 	};
 
 	// It's possible for this code to run after the "load" event has already fired.
