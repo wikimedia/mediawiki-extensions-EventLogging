@@ -40,12 +40,29 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * ResourceLoaderRegisterModules hook handler.
-	 * Allows extensions to register schema modules client side. To log events for
-	 * schemas that have been declared in this fashion, use mw#track.
+	 * Return all schemas with the requested revision id
+	 * TODO: what happens when two extensions register the same schema with a different revision?
 	 *
 	 * @since 1.32 the EventLoggingRegisterSchemas hook is deprecated. Register
 	 * schemas in the extension.json file for your extension instead.
+	 *
+	 * @return array
+	 */
+	private static function getSchemas() {
+		global $wgEventLoggingSchemas;
+
+		$extRegistry = ExtensionRegistry::getInstance();
+		$schemas = $extRegistry->getAttribute( 'EventLoggingSchemas' ) + $wgEventLoggingSchemas;
+
+		Hooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
+
+		return $schemas;
+	}
+
+	/**
+	 * ResourceLoaderRegisterModules hook handler.
+	 * Allows extensions to register schema modules client side. To log events for
+	 * schemas that have been declared in this fashion, use mw#track.
 	 *
 	 * @par Example using extension.json (manifest_version 2)
 	 * @code
@@ -63,13 +80,7 @@ class EventLoggingHooks {
 	 * @param ResourceLoader &$resourceLoader
 	 */
 	public static function onResourceLoaderRegisterModules( ResourceLoader &$resourceLoader ) {
-		global $wgEventLoggingSchemas;
-
-		$extRegistry = ExtensionRegistry::getInstance();
-
-		$schemas = $extRegistry->getAttribute( 'EventLoggingSchemas' ) + $wgEventLoggingSchemas;
-
-		Hooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
+		$schemas = self::getSchemas();
 
 		$modules = [];
 		foreach ( $schemas as $schemaName => $rev ) {
@@ -91,6 +102,7 @@ class EventLoggingHooks {
 
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		$vars[ 'wgEventLoggingSchemaApiUri' ] = $wgEventLoggingSchemaApiUri;
+		$vars[ 'wgEventLoggingSchemaRevision' ] = self::getSchemas();
 	}
 
 	/**
@@ -99,8 +111,14 @@ class EventLoggingHooks {
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = [
-			'scripts'       => [ 'tests/ext.eventLogging.tests.js' ],
-			'dependencies'  => [ 'ext.eventLogging' ],
+			'scripts'       => [
+				'tests/ext.eventLogging.tests.js',
+				'tests/ext.eventLogging.debug.tests.js'
+			],
+			'dependencies'  => [
+				'ext.eventLogging',
+				'ext.eventLogging.debug'
+			],
 			'localBasePath' => __DIR__ . '/..',
 			'remoteExtPath' => 'EventLogging',
 		];

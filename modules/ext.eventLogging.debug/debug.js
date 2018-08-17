@@ -1,5 +1,6 @@
 /**
- * EventLogging client-side debug mode: Inspect events on page views.
+ * EventLogging client-side debug mode: Inspect events and validation errors on
+ * calls to mw.eventLog.logEvent
  *
  * To enable, run the following from the browser console:
  *
@@ -88,10 +89,35 @@
 		mw.notification.notify( content, { autoHide: true, autoHideSeconds: 'long' } );
 	}
 
-	mw.trackSubscribe( 'eventlogging.debug', function ( topic, event ) {
+	function validateAndDisplay( topic, event ) {
+		// TODO: put validation errors directly in the dialog box
+		var schema = mw.eventLog.getSchema( event.schema ),
+			errors = mw.eventLog.validate( event.event, schema.schema );
+
+		while ( errors.length ) {
+			mw.track( 'eventlogging.error', mw.format( '[$1] $2', event.schema, errors.pop() ) );
+		}
+
 		mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( function () {
 			displayLoggedEvent( event );
 		} );
+	}
+
+	mw.trackSubscribe( 'eventlogging.debug', function ( topic, event ) {
+		// TODO: load this directly from meta in the next change
+		mw.loader.using( mw.format( 'schema.$1', event.schema ) ).then(
+			function () {
+				validateAndDisplay( topic, event );
+			},
+			function () {
+				mw.track( 'eventlogging.error', mw.format( 'Could not load schema: $1', event.schema ) );
+			}
+		);
+	} );
+
+	// Output validation errors to the browser console, if available.
+	mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
+		mw.log.error( mw.format( '$1: $2', 'EventLogging Validation', error ) );
 	} );
 
 }() );

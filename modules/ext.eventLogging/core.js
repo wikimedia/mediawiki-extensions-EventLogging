@@ -22,7 +22,8 @@
 	 * functionality, which is exposed only to ease debugging code and writing tests.
 	 *
 	 * Instances of `ResourceLoaderSchemaModule` indicate a dependency on this module and
-	 * declare themselves via the declareSchema method.
+	 * declare themselves via the declareSchema method.  This mechanism is DEPRECATED now,
+	 * in the future these schema modules will be empty but continue to depend on this module
 	 *
 	 * Developers should not load this module directly, but work with schema modules instead.
 	 * Schema modules will load this module as a dependency.
@@ -120,6 +121,8 @@
 		 * @param {Object} obj Object to validate.
 		 * @param {Object} schema JSON Schema object.
 		 * @return {Array} An array of validation errors (empty if valid).
+		 *
+		 * TODO: use an npm library to do this, or is that discouraged?
 		 */
 		validate: function ( obj, schema ) {
 			var key, val, prop,
@@ -167,16 +170,14 @@
 		},
 
 		/**
-		 * Sets default property values for events belonging to a particular schema.
-		 * If default values have already been declared, the new defaults are merged
-		 * on top.
+		 * Get the configured revision id to use with events in a particular schema
 		 *
-		 * @param {string} schemaName The name of the schema.
-		 * @param {Object} schemaDefaults A map of property names to default values.
-		 * @return {Object} Combined defaults for schema.
+		 * @private
+		 * @param {string} schemaName Canonical schema name.
+		 * @return {Number} the revision id configured for this schema by instrumentation.
 		 */
-		setDefaults: function ( schemaName, schemaDefaults ) {
-			return self.declareSchema( schemaName, { defaults: schemaDefaults } );
+		getRevision: function ( schemaName ) {
+			return mw.config.get( 'wgEventLoggingSchemaRevision' )[ schemaName ] || -1;
 		},
 
 		/**
@@ -190,17 +191,9 @@
 		 * @return {Object} Encapsulated event.
 		 */
 		prepare: function ( schemaName, eventData ) {
-			var schema = self.getSchema( schemaName ),
-				event = $.extend( true, {}, schema.defaults, eventData ),
-				errors = self.validate( event, schema.schema );
-
-			while ( errors.length ) {
-				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, errors.pop() ) );
-			}
-
 			return {
-				event: event,
-				revision: schema.revision || -1,
+				event: eventData,
+				revision: self.getRevision( schemaName ),
 				schema: schemaName,
 				webHost: location.hostname,
 				wiki: mw.config.get( 'wgDBname' )
@@ -309,11 +302,6 @@
 		}
 
 	};
-
-	// Output validation errors to the browser console, if available.
-	mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
-		mw.log.error( error );
-	} );
 
 	/**
 	 * @class mw.eventLog

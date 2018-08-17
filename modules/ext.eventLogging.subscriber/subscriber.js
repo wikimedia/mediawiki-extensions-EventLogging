@@ -29,7 +29,7 @@
 	 */
 	function handleTrackedEvent( topic, event ) {
 		var schema = titleCase( topic.slice( topic.indexOf( '.' ) + 1 ) ),
-			dependencies = [ 'ext.eventLogging', 'schema.' + schema ];
+			dependencies = [ 'ext.eventLogging' ];
 
 		mw.loader.using( dependencies, function () {
 			mw.eventLog.logEvent( schema, event );
