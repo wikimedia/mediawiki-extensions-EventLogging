@@ -7,8 +7,6 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function ( mw, $ ) {
-	var pageViewToken = mw.user.generateRandomSessionId();
-
 	/**
 	 * Convert the first letter of a string to uppercase.
 	 *
@@ -87,7 +85,7 @@
 		inSample: function ( populationSize ) {
 			// Use the same unique random identifier within the same page load
 			// to allow correlation between multiple events.
-			return this.randomTokenMatch( populationSize, pageViewToken );
+			return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 		}
 
 	};
