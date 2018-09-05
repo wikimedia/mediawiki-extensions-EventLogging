@@ -131,7 +131,7 @@ class JsonSchemaContent extends JsonContent {
 			], [
 				'language' => 'javascript',
 				'header' => 'eventlogging-code-sample-logging-on-client-side',
-				'code' => "mw.eventLog.logEvent( '{$dbKey}', { /* ... */ } );",
+				'code' => "mw.track( 'event.{$dbKey}', { /* ... */ } );",
 			],
 		];
 	}
