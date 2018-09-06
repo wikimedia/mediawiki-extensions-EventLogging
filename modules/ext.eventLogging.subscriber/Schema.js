@@ -1,4 +1,4 @@
-( function ( mw, $ ) {
+( function () {
 	'use strict';
 
 	/**
@@ -56,4 +56,4 @@
 
 	mw.eventLog.Schema = Schema;
 
-}( mediaWiki, jQuery ) );
+}() );

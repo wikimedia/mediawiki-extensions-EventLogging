@@ -19,7 +19,7 @@
  * @class mw.eventLog.Debug
  * @singleton
  */
-( function ( mw, $ ) {
+( function () {
 	'use stict';
 
 	var dialogPromise;
@@ -94,4 +94,4 @@
 		} );
 	} );
 
-}( mediaWiki, jQuery ) );
+}() );

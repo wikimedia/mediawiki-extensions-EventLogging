@@ -4,7 +4,7 @@
  * @module ext.eventLogging.jsonSchema
  * @author Ori Livneh <ori@wikimedia.org>
  */
-( function ( $ ) {
+( function () {
 	'use strict';
 
 	$( function () {
@@ -25,4 +25,4 @@
 		} );
 
 	} );
-}( jQuery ) );
+}() );

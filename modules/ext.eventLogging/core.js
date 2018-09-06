@@ -2,7 +2,7 @@
  * @module ext.eventLogging.core
  * @author Ori Livneh <ori@wikimedia.org>
  */
-( function ( mw, $ ) {
+( function () {
 	'use strict';
 
 	var self, baseUrl, debugMode;
@@ -321,4 +321,4 @@
 	 */
 	$.extend( mw.eventLog, self );
 
-}( mediaWiki, jQuery ) );
+}() );

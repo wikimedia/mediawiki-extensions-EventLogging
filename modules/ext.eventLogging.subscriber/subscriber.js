@@ -6,7 +6,7 @@
  *
  * @author Ori Livneh <ori@wikimedia.org>
  */
-( function ( mw, $ ) {
+( function () {
 	/**
 	 * Convert the first letter of a string to uppercase.
 	 *
@@ -103,4 +103,4 @@
 		$( window ).one( 'load', init );
 	}
 
-}( mediaWiki, jQuery ) );
+}() );

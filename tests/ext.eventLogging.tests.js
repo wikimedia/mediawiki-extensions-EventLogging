@@ -1,5 +1,5 @@
 /* eslint-env qunit */
-( function ( mw, $ ) {
+( function () {
 	'use strict';
 
 	var earthquakeSchema = {
@@ -228,4 +228,4 @@
 		} );
 	} );
 
-}( mediaWiki, jQuery ) );
+}() );
