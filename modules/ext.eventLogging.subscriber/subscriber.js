@@ -63,10 +63,20 @@
 	mw.eventLog = {
 
 		/**
-		 * Randomise inclusion based on population size and 64-bit random token.
+		 * Randomise inclusion based on population size and random token.
 		 *
-		 * @param {number} populationSize One in how should return true.
-		 * @param {string} [explicitToken] 64-bit integer in HEX format
+		 * Use #eventInSample  or #sessionInSample
+		 * Randomise inclusion based on population size and random token.
+
+		 * Note that token is coerced into 32 bits before calculating its mod  with
+		 * the population size, while this does not make possible to sample in a rate below
+		 * 1/2^32 and our token space is 2^80 this in practice is not a problem
+		 * as schemas that are sampled sparsely are so  with ratios like 1/10,000
+		 * so our "sampling space" is in practice quite smaller than  the token
+		 * "random space"
+		 * @private
+		 * @param {number} populationSize One in how many should return true.
+		 * @param {string} [token] at least 32 bit integer in HEX format
 		 * @return {boolean}
 		 */
 		randomTokenMatch: function ( populationSize, explicitToken ) {
@@ -76,13 +86,36 @@
 		},
 
 		/**
-		 * Determine whether the current page view falls in a random sampling.
+		 * Determine whether the current sessionId is sampled given a sampling ratio.
+		 * This method is deterministic given same sampling rate and sessionId,
+		 * so sampling is sticky given a session and a sampling rate
 		 *
-		 * @param {number} populationSize One in how should be included.
+		 * @param {number} populationSize One in how many should be included.
 		 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
 		 * @return {boolean}
 		 */
+		sessionInSample: function ( populationSize ) {
+			// Use the same unique random identifier within the same  session
+			// to allow correlation between multiple events.
+			return this.randomTokenMatch( populationSize, mw.user.sessionId() );
+		},
+
+		/*
+		* @deprecated, use eventInSample
+		*/
 		inSample: function ( populationSize ) {
+			return this.eventInSample( populationSize );
+		},
+
+		/**
+		 * Determine whether the current event is sampled given a sampling ratio
+		 * per pageview
+		 *
+		 * @param {number} populationSize One in how many should be included.
+		 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
+		 * @return {boolean}
+		 */
+		eventInSample: function ( populationSize ) {
 			// Use the same unique random identifier within the same page load
 			// to allow correlation between multiple events.
 			return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
