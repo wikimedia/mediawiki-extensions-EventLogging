@@ -151,20 +151,15 @@ class JsonUtil {
 					}
 				}
 				return $retval;
-				break;
 			case "integer":
 			case "double":
 				return "number";
-				break;
 			case "boolean":
 				return "boolean";
-				break;
 			case "string":
 				return "string";
-				break;
 			default:
 				return null;
-				break;
 		}
 	}
 
