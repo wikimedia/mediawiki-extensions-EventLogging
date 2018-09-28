@@ -2,7 +2,8 @@
 ( function () {
 	'use strict';
 
-	var earthquakeSchema = {
+	var eventLogDebug = require( 'ext.eventLogging.debug' ),
+		earthquakeSchema = {
 			revision: 123,
 			schema: {
 				description: 'Record of a history earthquake',
@@ -74,34 +75,31 @@
 	QUnit.module( 'ext.eventLogging.debug', QUnit.newMwEnvironment( {
 		setup: function () {
 			this.suppressWarnings();
-			mw.eventLog.declareSchema( 'earthquake', earthquakeSchema );
 			mw.config.set( 'wgEventLoggingBaseUri', '#' );
 		},
 		teardown: function () {
-			mw.eventLog.schemas = {};
 			this.restoreWarnings();
 		}
 	} ) );
 
 	QUnit.test( 'validate', function ( assert ) {
-		var meta, errors;
+		var errors;
 		assert.expect( validationCases.length + 1 );
 
-		meta = mw.eventLog.getSchema( 'earthquake' );
-		errors = mw.eventLog.validate( {
+		errors = eventLogDebug.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
-		}, meta.schema );
+		}, earthquakeSchema.schema );
 
 		assert.propEqual( errors, [], 'Non-required fields may be omitted' );
 
 		$.each( validationCases, function ( _, vCase ) {
-			errors = mw.eventLog.validate( vCase.args, meta.schema );
+			errors = eventLogDebug.validate( vCase.args, earthquakeSchema.schema );
 			assert.ok( errors.join( '' ).match( vCase.regex ), vCase.msg );
 		} );
 	} );
 
-	QUnit.module( 'ext.eventLogging: isInstanceOf()' );
+	QUnit.module( 'ext.eventLogging.debug: isInstanceOf()' );
 
 	$.each( {
 		'boolean': {
@@ -131,11 +129,11 @@
 	}, function ( type, cases ) {
 		QUnit.test( type, function ( assert ) {
 			$.each( cases.valid, function ( index, value ) {
-				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), true,
+				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), true,
 					JSON.stringify( value ) + ' is a ' + type );
 			} );
 			$.each( cases.invalid, function ( index, value ) {
-				assert.strictEqual( mw.eventLog.isInstanceOf( value, type ), false,
+				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), false,
 					JSON.stringify( value ) + ' is not a ' + type );
 			} );
 		} );

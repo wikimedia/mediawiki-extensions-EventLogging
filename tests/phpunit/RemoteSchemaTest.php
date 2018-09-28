@@ -149,7 +149,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 			->method( 'get' );
 
 		// When unable to retrieve from memcached or acquire an update
-		// lock to retrieve via HTTP, getSchema() will return false.
+		// lock to retrieve via HTTP, get() will return false.
 		$this->assertFalse( $this->schema->get() );
 	}
 }

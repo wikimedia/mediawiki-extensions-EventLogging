@@ -21,29 +21,11 @@
 	 * The main API is `mw.eventLog.logEvent`. Most other methods represent internal
 	 * functionality, which is exposed only to ease debugging code and writing tests.
 	 *
-	 * Instances of `ResourceLoaderSchemaModule` indicate a dependency on this module and
-	 * declare themselves via the declareSchema method.  This mechanism is DEPRECATED now,
-	 * in the future these schema modules will be empty but continue to depend on this module
-	 *
-	 * Developers should not load this module directly, but work with schema modules instead.
-	 * Schema modules will load this module as a dependency.
-	 *
 	 * @private
 	 * @class mw.eventLog.Core
 	 * @singleton
 	 */
 	self = {
-
-		/**
-		 * Schema registry. Schemas that have been declared explicitly via
-		 * `eventLog.declareSchema` or implicitly by being referenced in an
-		 * `eventLog.logEvent` call are stored in this object.
-		 *
-		 * @private
-		 * @property schemas
-		 * @type Object
-		 */
-		schemas: {},
 
 		/**
 		 * Maximum length in chars that a beacon URL can have.
@@ -59,115 +41,6 @@
 		 * @type Number
 		 */
 		maxUrlSize: 2000,
-
-		/**
-		 * Load a schema from the schema registry.
-		 * If the schema does not exist, it will be initialised.
-		 *
-		 * @private
-		 * @param {string} schemaName Name of schema.
-		 * @return {Object} Schema object.
-		 */
-		getSchema: function ( schemaName ) {
-			if ( !Object.hasOwnProperty.call( self.schemas, schemaName ) ) {
-				self.schemas[ schemaName ] = { schema: { title: schemaName } };
-			}
-			return self.schemas[ schemaName ];
-		},
-
-		/**
-		 * Register a schema so that it can be used to validate events.
-		 * `ResourceLoaderSchemaModule` instances generate JavaScript code that
-		 * invokes this method.
-		 *
-		 * @private
-		 * @param {string} schemaName Name of schema.
-		 * @param {Object} meta An object describing a schema:
-		 * @param {number} meta.revision Revision ID.
-		 * @param {Object} meta.schema The schema itself.
-		 * @return {Object} The registered schema.
-		 */
-		declareSchema: function ( schemaName, meta ) {
-			return $.extend( true, self.getSchema( schemaName ), meta );
-		},
-
-		/**
-		 * Checks whether a JavaScript value conforms to a specified
-		 * JSON Schema type.
-		 *
-		 * @private
-		 * @param {Object} value Object to test.
-		 * @param {string} type JSON Schema type.
-		 * @return {boolean} Whether value is instance of type.
-		 */
-		isInstanceOf: function ( value, type ) {
-			var jsType = $.type( value );
-			switch ( type ) {
-				case 'integer':
-					return jsType === 'number' && value % 1 === 0;
-				case 'number':
-					return jsType === 'number' && isFinite( value );
-				case 'timestamp':
-					return jsType === 'date' || ( jsType === 'number' && value >= 0 && value % 1 === 0 );
-				default:
-					return jsType === type;
-			}
-		},
-
-		/**
-		 * Check whether a JavaScript object conforms to a JSON Schema.
-		 *
-		 * @private
-		 * @param {Object} obj Object to validate.
-		 * @param {Object} schema JSON Schema object.
-		 * @return {Array} An array of validation errors (empty if valid).
-		 *
-		 * TODO: use an npm library to do this, or is that discouraged?
-		 */
-		validate: function ( obj, schema ) {
-			var key, val, prop,
-				errors = [];
-
-			if ( !schema || !schema.properties ) {
-				errors.push( 'Missing or empty schema' );
-				return errors;
-			}
-
-			for ( key in obj ) {
-				if ( !Object.hasOwnProperty.call( schema.properties, key ) ) {
-					errors.push( mw.format( 'Undeclared property "$1"', key ) );
-				}
-			}
-
-			for ( key in schema.properties ) {
-				prop = schema.properties[ key ];
-
-				if ( !Object.hasOwnProperty.call( obj, key ) ) {
-					if ( prop.required ) {
-						errors.push( mw.format( 'Missing property "$1"', key ) );
-					}
-					continue;
-				}
-				val = obj[ key ];
-
-				if ( !( self.isInstanceOf( val, prop.type ) ) ) {
-					errors.push( mw.format(
-						'Value $1 is the wrong type for property "$2" ($3 expected)',
-						JSON.stringify( val ), key, prop.type
-					) );
-					continue;
-				}
-
-				if ( prop.enum && $.inArray( val, prop.enum ) === -1 ) {
-					errors.push( mw.format(
-						'Value $1 for property "$2" is not one of $3',
-						JSON.stringify( val ), key, JSON.stringify( prop.enum )
-					) );
-				}
-			}
-
-			return errors;
-		},
 
 		/**
 		 * Get the configured revision id to use with events in a particular schema

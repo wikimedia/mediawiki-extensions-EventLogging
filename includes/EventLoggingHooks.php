@@ -85,10 +85,9 @@ class EventLoggingHooks {
 		$modules = [];
 		foreach ( $schemas as $schemaName => $rev ) {
 			$modules[ "schema.$schemaName" ] = [
-				'class'    => ResourceLoaderSchemaModule::class,
-				'schema'   => $schemaName,
-				'revision' => $rev,
-				'internal' => true,
+				'deprecated'   => 'See https://phabricator.wikimedia.org/T205744 for migration info.',
+				'dependencies' => 'ext.eventLogging',
+				'targets'      => [ 'desktop', 'mobile' ],
 			];
 		}
 		$resourceLoader->register( $modules );

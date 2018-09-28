@@ -57,7 +57,6 @@
 		"JsonSchemaContent": "includes/JsonSchemaContent.php",
 		"JsonSchemaContentHandler": "includes/JsonSchemaContentHandler.php",
 		"RemoteSchema": "includes/RemoteSchema.php",
-		"ResourceLoaderSchemaModule": "includes/ResourceLoaderSchemaModule.php",
 		"JsonSchemaException": "includes/JsonSchema.php",
 		"JsonUtil": "includes/JsonSchema.php",
 		"TreeRef": "includes/JsonSchema.php",
