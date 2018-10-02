@@ -85,20 +85,17 @@ class EventLoggingHooks {
 
 	/**
 	 * @param array &$vars
-	 * @return bool
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
 		global $wgEventLoggingBaseUri, $wgEventLoggingSchemaApiUri;
 
 		$vars[ 'wgEventLoggingBaseUri' ] = $wgEventLoggingBaseUri;
 		$vars[ 'wgEventLoggingSchemaApiUri' ] = $wgEventLoggingSchemaApiUri;
-		return true;
 	}
 
 	/**
 	 * @param array &$testModules
 	 * @param ResourceLoader &$resourceLoader
-	 * @return bool
 	 */
 	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
 		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = [
@@ -107,7 +104,6 @@ class EventLoggingHooks {
 			'localBasePath' => __DIR__ . '/..',
 			'remoteExtPath' => 'EventLogging',
 		];
-		return true;
 	}
 
 	/**
@@ -126,7 +122,5 @@ class EventLoggingHooks {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 		}
-
-		return true;
 	}
 }
