@@ -67,45 +67,23 @@ class ApiJsonSchema extends ApiBase {
 		$main->getRequest()->response()->header( "Last-Modified: $lastModified" );
 	}
 
-	/**
-	 * Emit an error response. Like ApiBase::dieUsageMsg, but sets
-	 * HTTP 400 ('Bad Request') status code.
-	 * @param array|string $error user error array
-	 */
-	public function dieUsageMsg( $error ) {
-		$parsed = $this->parseMsg( (array)$error );
-		$this->dieUsage( $parsed['info'], $parsed['code'], 400 );
-	}
-
 	public function execute() {
 		$params = $this->extractRequestParams();
 		$rev = Revision::newFromID( $params['revid'] );
 
 		if ( !$rev ) {
-			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
-				$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
-			} else {
-				$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
-			}
+			$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
 		}
 
 		$title = $rev->getTitle();
 		if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
-			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
-				$this->dieWithError( [ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400 );
-			} else {
-				$this->dieUsageMsg( [ 'invalidtitle', $title ] );
-			}
+			$this->dieWithError( [ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400 );
 		}
 
 		/** @var JsonSchemaContent $content */
 		$content = $rev->getContent();
 		if ( !$content ) {
-			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
-				$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
-			} else {
-				$this->dieUsageMsg( [ 'nosuchrevid', $params['revid'] ] );
-			}
+			$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
 		}
 
 		// We use the revision ID for lookup; the 'title' parameter is
@@ -113,14 +91,10 @@ class ApiJsonSchema extends ApiBase {
 		// revision ID is indeed a revision of a page with the specified
 		// title. (Bug 46174)
 		if ( $params['title'] && !$title->equals( Title::newFromText( $params['title'], NS_SCHEMA ) ) ) {
-			if ( is_callable( [ $this, 'dieWithError' ] ) ) {
-				$this->dieWithError(
-					[ 'apierror-revwrongpage', $params['revid'], wfEscapeWikiText( $params['title'] ) ],
-					null, null, 400
-				);
-			} else {
-				$this->dieUsageMsg( [ 'revwrongpage', $params['revid'], $params['title'] ] );
-			}
+			$this->dieWithError(
+				[ 'apierror-revwrongpage', $params['revid'], wfEscapeWikiText( $params['title'] ) ],
+				null, null, 400
+			);
 		}
 
 		$this->markCacheable( $rev );
