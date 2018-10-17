@@ -128,4 +128,15 @@ class EventLogging {
 		$root->attachSchema( $schema );
 		return $root->validate();
 	}
+
+	/**
+	 * Randomise inclusion based on population size and a session ID.
+	 * @param int $populationSize Return true one in this many times. This is 1/samplingRate.
+	 * @param string $sessionId Hexadecimal value, only the first 8 characters are used
+	 * @return bool True if the event should be included (sampled in), false if not (sampled out)
+	 */
+	public static function sessionInSample( $populationSize, $sessionId ) {
+		$decimal = base_convert( substr( $sessionId, 0, 8 ), 16, 10 );
+		return $decimal % $populationSize === 0;
+	}
 }
