@@ -93,7 +93,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	 * Tests schema we are using for tests is, indeed, valid
 	 * @covers JsonSchemaContent::isValid
 	 */
-	function testValidJson() {
+	public function testValidJson() {
 		$content = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$this->assertTrue( $content->isValid(), 'Well-formed JSON schema' );
 		$content = new JsonSchemaContent(
@@ -110,7 +110,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	* A valid event should, ahem, validate
 	* @covers EventLogging::schemaValidate
 	**/
-	function testValidEvent() {
+	public function testValidEvent() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( self::VALID_EVENT, true ),
 			json_decode( self::VALID_JSON_SCHEMA, true )
@@ -123,7 +123,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	* @covers EventLogging::schemaValidate
 	* @expectedException JsonSchemaException
 	**/
-	function testInvalidEvent() {
+	public function testInvalidEvent() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( self::INVALID_EVENT_MISSING_REQUIRED_FIELD, true ),
 			json_decode( self::VALID_JSON_SCHEMA, true )
@@ -135,7 +135,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	* Event with non mandatory properties validates
 	* @covers EventLogging::schemaValidate
 	**/
-	function testEventNonMandatoryProperties() {
+	public function testEventNonMandatoryProperties() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( '{"Happy": "true"}', true ),
 			json_decode( self::VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES, true )
@@ -147,7 +147,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	* mandatory properties
 	* @covers EventLogging::schemaValidate
 	**/
-	function testEmptyEventForSchemaWithOptionalOnlyPropertiesIsValid() {
+	public function testEmptyEventForSchemaWithOptionalOnlyPropertiesIsValid() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( '{}', true ),
 			json_decode(

@@ -22,7 +22,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	/** @var ResourceLoaderSchemaModule */
 	private $module;
 
-	function setUp() {
+	protected function setUp() {
 		parent::setUp();
 
 		$this->context = new ResourceLoaderContext(
@@ -31,7 +31,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 		$this->module = self::getMockSchemaModule( self::TITLE, self::REV );
 	}
 
-	function getMockSchemaModule( $title, $revid ) {
+	public function getMockSchemaModule( $title, $revid ) {
 		$schema = $this
 			->getMockBuilder( 'RemoteSchema' )
 			->setConstructorArgs( [ $title, $revid ] )
@@ -51,7 +51,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	/**
 	 * @covers ResourceLoaderSchemaModule::getDefinitionSummary
 	 */
-	function testModuleVersion() {
+	public function testModuleVersion() {
 		$version1 = $this->module->getVersionHash( $this->context );
 
 		$module2 = self::getMockSchemaModule( self::TITLE, self::REV + 1 );
@@ -68,7 +68,7 @@ class ResourceLoaderSchemaModuleMemcachedTest extends MediaWikiTestCase {
 	 * implementation correctly delegates to the 'targets' property on
 	 * ResourceLoaderSchemaModule.
 	 */
-	function testGetTargets() {
+	public function testGetTargets() {
 		$targets = $this->module->getTargets();
 		$this->assertContains( 'mobile', $targets );
 		$this->assertContains( 'desktop', $targets );

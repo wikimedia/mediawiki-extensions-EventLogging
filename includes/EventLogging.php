@@ -41,7 +41,7 @@ class EventLogging {
 	 * @param int $options Bitmask consisting of EventLogging::OMIT_USER_AGENT.
 	 * @return bool Whether the event was logged.
 	 */
-	static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
+	public static function logEvent( $schemaName, $revId, $event, $options = 0 ) {
 		global $wgDBname, $wgEventLoggingBaseUri;
 
 		if ( !$wgEventLoggingBaseUri ) {
@@ -83,7 +83,7 @@ class EventLogging {
 	 * @param array $encapsulatedEvent Encapsulated event
 	 * @return string $json
 	 */
-	static function serializeEvent( $encapsulatedEvent ) {
+	public static function serializeEvent( $encapsulatedEvent ) {
 		$event = $encapsulatedEvent['event'];
 
 		if ( count( $event ) === 0 ) {

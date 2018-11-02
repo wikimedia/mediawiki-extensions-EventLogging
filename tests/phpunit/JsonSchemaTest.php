@@ -23,7 +23,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests handling of invalid JSON.
 	 * @covers JsonSchemaContent::isValid
 	 */
-	function testInvalidJson() {
+	public function testInvalidJson() {
 		$content = new JsonSchemaContent( self::INVALID_JSON );
 		$this->assertFalse( $content->isValid(), 'Malformed JSON should be detected.' );
 	}
@@ -32,7 +32,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests handling of valid JSON that is not valid JSON Schema.
 	 * @covers JsonSchemaContent::isValid
 	 */
-	function testInvalidJsonSchema() {
+	public function testInvalidJsonSchema() {
 		$content = new JsonSchemaContent( self::INVALID_JSON_SCHEMA );
 		$this->assertFalse( $content->isValid(), 'Malformed JSON Schema should be detected.' );
 	}
@@ -41,7 +41,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests successful validation of well-formed JSON Schema.
 	 * @covers JsonSchemaContent::isValid
 	 */
-	function testValidJsonSchema() {
+	public function testValidJsonSchema() {
 		$content = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$this->assertTrue( $content->isValid(), 'Valid JSON Schema should be recognized as valid.' );
 	}
@@ -50,7 +50,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests JSON pretty-printing.
 	 * @covers JsonSchemaContent::preSaveTransform
 	 */
-	function testPreSaveTransform() {
+	public function testPreSaveTransform() {
 		$transformed = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$prettyJson = $transformed->preSaveTransform(
 			new Title(), new User(), new ParserOptions() )->getNativeData();
@@ -67,7 +67,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 * Tests JSON->HTML representation.
 	 * @covers JsonSchemaContent::getHighlightHtml
 	 */
-	function testGetHighlightHtml() {
+	public function testGetHighlightHtml() {
 		$content = new JsonSchemaContent( self::EVIL_JSON );
 		$out = $content->getParserOutput(
 			Title::newFromText( 'Test' ),

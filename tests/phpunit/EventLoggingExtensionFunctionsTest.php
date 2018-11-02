@@ -55,7 +55,7 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	 *
 	 * @covers EventLogging::schemaValidate
 	 */
-	function testSchemaValidate() {
+	public function testSchemaValidate() {
 		$this->assertTrue( EventLogging::schemaValidate( self::$validObject, self::$validSchema ),
 			'EventLogging::schemaValidate() returns true when object validates successfully.' );
 		$this->assertTrue( EventLogging::schemaValidate( self::$validSchema ),
@@ -66,7 +66,7 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	 * Tests invalidation of objects that deviate from schema.
 	 * @covers EventLogging::schemaValidate
 	 */
-	function testSchemaInvalidate() {
+	public function testSchemaInvalidate() {
 		$this->setExpectedException( 'JsonSchemaException' );
 		EventLogging::schemaValidate( self::$invalidObject, self::$validSchema );
 	}

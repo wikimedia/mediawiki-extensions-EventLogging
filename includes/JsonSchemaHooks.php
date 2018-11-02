@@ -46,7 +46,7 @@ class JsonSchemaHooks {
 	 * @param string &$lang Page language.
 	 * @return bool
 	 */
-	static function onCodeEditorGetPageLanguage( $title, &$lang ) {
+	public static function onCodeEditorGetPageLanguage( $title, &$lang ) {
 		if ( self::isSchemaNamespaceEnabled()
 			&& $title->inNamespace( NS_SCHEMA )
 		) {
@@ -66,7 +66,7 @@ class JsonSchemaHooks {
 	 * @param bool $minoredit
 	 * @return True
 	 */
-	static function onEditFilterMergedContent( $context, $content, $status, $summary,
+	public static function onEditFilterMergedContent( $context, $content, $status, $summary,
 		$user, $minoredit
 	) {
 		$title = $context->getTitle();
@@ -101,7 +101,7 @@ class JsonSchemaHooks {
 	 * @param Skin &$skin
 	 * @return bool
 	 */
-	static function onBeforePageDisplay( &$out, &$skin ) {
+	public static function onBeforePageDisplay( &$out, &$skin ) {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
@@ -126,7 +126,9 @@ class JsonSchemaHooks {
 	 * @param Status $status
 	 * @return bool
 	 */
-	static function onMovePageIsValidMove( Title $currentTitle, Title $newTitle, Status $status ) {
+	public static function onMovePageIsValidMove(
+		Title $currentTitle, Title $newTitle, Status $status
+	) {
 		if ( !self::isSchemaNamespaceEnabled() ) {
 			// Namespace isn't even enabled
 			return true;

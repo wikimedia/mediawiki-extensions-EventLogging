@@ -23,7 +23,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
-	function setUp() {
+	protected function setUp() {
 		global $wgEventLoggingSchemaApiUri;
 
 		parent::setUp();
@@ -51,7 +51,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * Tests behavior when content is in memcached.
 	 * This is the most common scenario.
 	 */
-	function testSchemaInCache() {
+	public function testSchemaInCache() {
 		// If the revision was in memcached...
 		$this->cache
 			->expects( $this->once() )
@@ -78,7 +78,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * should be stored locally as an object attribute.
 	 * @covers RemoteSchema::get
 	 */
-	function testContentLocallyCached() {
+	public function testContentLocallyCached() {
 		$this->cache
 			->expects( $this->once() )  // <-- the assert
 			->method( 'get' )
@@ -92,7 +92,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * Tests behavior when content is missing from memcached and has to
 	 * be retrieved via HTTP instead.
 	 */
-	function testSchemaNotInCacheDoUpdate() {
+	public function testSchemaNotInCacheDoUpdate() {
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
@@ -127,7 +127,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * Tests behavior when content is missing from memcached and an
 	 * update lock cannot be acquired.
 	 */
-	function testSchemaNotInCacheNoUpdate() {
+	public function testSchemaNotInCacheNoUpdate() {
 		// If the revision was not in memcached...
 		$this->cache
 			->expects( $this->once() )
