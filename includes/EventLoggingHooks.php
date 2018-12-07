@@ -32,7 +32,7 @@ class EventLoggingHooks {
 	 * @param Skin &$skin
 	 */
 	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
-		$out->addModules( [ 'ext.eventLogging.subscriber' ] );
+		$out->addModules( [ 'ext.eventLogging' ] );
 
 		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
 			$out->addModules( 'ext.eventLogging.debug' );

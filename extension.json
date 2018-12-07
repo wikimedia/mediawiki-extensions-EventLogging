@@ -67,10 +67,12 @@
 	"ResourceModules": {
 		"ext.eventLogging": {
 			"scripts": [
-				"modules/ext.eventLogging/core.js"
+				"modules/ext.eventLogging/core.js",
+				"modules/ext.eventLogging/subscriber.js",
+				"modules/ext.eventLogging/Schema.js"
 			],
 			"dependencies": [
-				"ext.eventLogging.subscriber",
+				"mediawiki.user",
 				"user.options"
 			],
 			"targets": [
@@ -79,12 +81,9 @@
 			]
 		},
 		"ext.eventLogging.subscriber": {
-			"scripts": [
-				"modules/ext.eventLogging.subscriber/subscriber.js",
-				"modules/ext.eventLogging.subscriber/Schema.js"
-			],
+			"scripts": [],
 			"dependencies": [
-				"mediawiki.user"
+				"ext.eventLogging"
 			],
 			"targets": [
 				"desktop",

@@ -21,7 +21,7 @@
  * @singleton
  */
 ( function () {
-	'use stict';
+	'use strict';
 
 	var dialogPromise,
 		schemaApiQueryUrl,

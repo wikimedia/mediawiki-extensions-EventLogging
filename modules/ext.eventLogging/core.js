@@ -1,5 +1,5 @@
 /*!
- * @module ext.eventLogging.core
+ * EventLogging client
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function () {
@@ -16,13 +16,14 @@
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
 
 	/**
-	 * Client-side EventLogging API.
+	 * Client-side EventLogging API, including pub/sub subscriber functionality.
 	 *
-	 * The main API is `mw.eventLog.logEvent`. Most other methods represent internal
-	 * functionality, which is exposed only to ease debugging code and writing tests.
+	 * The main API is `mw.eventLog.logEvent`.  This is set up as a listener for
+	 * `event`-namespace topics in `mw.track`. Sampling utility methods are available
+	 * in two flavors.  Other methods represent internal functionality, exposed only
+	 * to ease debugging code and writing tests.
 	 *
-	 * @private
-	 * @class mw.eventLog.Core
+	 * @class mw.eventLog
 	 * @singleton
 	 */
 	self = {
@@ -172,14 +173,68 @@
 			// Record this failure as a simple counter. By default "counter.*" goes nowhere.
 			// The WikimediaEvents extension sends it to statsd.
 			mw.track( 'counter.eventlogging.client_errors.' + schemaName + '.' + errorCode );
-		}
+		},
 
+		/**
+		 * Randomise inclusion based on population size and random token.
+		 *
+		 * Use #eventInSample  or #sessionInSample
+		 * Randomise inclusion based on population size and random token.
+
+		 * Note that token is coerced into 32 bits before calculating its mod  with
+		 * the population size, while this does not make possible to sample in a rate below
+		 * 1/2^32 and our token space is 2^80 this in practice is not a problem
+		 * as schemas that are sampled sparsely are so  with ratios like 1/10,000
+		 * so our "sampling space" is in practice quite smaller than  the token
+		 * "random space"
+		 * @private
+		 * @param {number} populationSize One in how many should return true.
+		 * @param {string} [token] at least 32 bit integer in HEX format
+		 * @return {boolean}
+		 */
+		randomTokenMatch: function ( populationSize, explicitToken ) {
+			var token = explicitToken || mw.user.generateRandomSessionId(),
+				rand = parseInt( token.slice( 0, 8 ), 16 );
+			return rand % populationSize === 0;
+		},
+
+		/**
+		 * Determine whether the current sessionId is sampled given a sampling ratio.
+		 * This method is deterministic given same sampling rate and sessionId,
+		 * so sampling is sticky given a session and a sampling rate
+		 *
+		 * @param {number} populationSize One in how many should be included.
+		 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
+		 * @return {boolean}
+		 */
+		sessionInSample: function ( populationSize ) {
+			// Use the same unique random identifier within the same  session
+			// to allow correlation between multiple events.
+			return this.randomTokenMatch( populationSize, mw.user.sessionId() );
+		},
+
+		/*
+		* @deprecated, use eventInSample
+		*/
+		inSample: function ( populationSize ) {
+			return this.eventInSample( populationSize );
+		},
+
+		/**
+		 * Determine whether the current event is sampled given a sampling ratio
+		 * per pageview
+		 *
+		 * @param {number} populationSize One in how many should be included.
+		 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
+		 * @return {boolean}
+		 */
+		eventInSample: function ( populationSize ) {
+			// Use the same unique random identifier within the same page load
+			// to allow correlation between multiple events.
+			return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
+		}
 	};
 
-	/**
-	 * @class mw.eventLog
-	 * @mixins mw.eventLog.Core
-	 */
-	$.extend( mw.eventLog, self );
+	mw.eventLog = self;
 
 }() );
