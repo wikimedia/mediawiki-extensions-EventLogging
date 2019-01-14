@@ -52,6 +52,7 @@
 	 * @return {boolean} Whether value is instance of type.
 	 */
 	function isInstanceOf( value, type ) {
+		// eslint-disable-next-line jquery/no-type
 		var jsType = $.type( value );
 		switch ( type ) {
 			case 'integer':
@@ -107,7 +108,7 @@
 				continue;
 			}
 
-			if ( prop.enum && $.inArray( val, prop.enum ) === -1 ) {
+			if ( prop.enum && prop.enum.indexOf( val ) === -1 ) {
 				errors.push( mw.format(
 					'Value $1 for property "$2" is not one of $3',
 					JSON.stringify( val ), key, JSON.stringify( prop.enum )
@@ -127,7 +128,7 @@
 			/* global OO */
 			var manager = new OO.ui.WindowManager(),
 				dialog = new OO.ui.MessageDialog();
-			$( 'body' ).append( manager.$element );
+			$( document.body ).append( manager.$element );
 			manager.addWindows( [ dialog ] );
 
 			return function openDialog( args ) {
@@ -201,7 +202,7 @@
 	}
 
 	handleEventLoggingDebug = !schemaApiQueryUrl ?
-		$.noop :
+		function () {} :
 		function ( topic, event ) {
 			$.ajax( {
 				url: schemaApiQueryUrl,

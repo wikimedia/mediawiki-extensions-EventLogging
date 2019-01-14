@@ -127,9 +127,13 @@
 				navigator.msDoNotTrack === '1' ||
 				!baseUrl
 		) ?
-			$.noop :
+			function () {} :
 			navigator.sendBeacon ?
-				function ( url ) { try { navigator.sendBeacon( url ); } catch ( e ) {} } :
+				function ( url ) {
+					try {
+						navigator.sendBeacon( url );
+					} catch ( e ) {}
+				} :
 				function ( url ) { document.createElement( 'img' ).src = url; },
 
 		/**

@@ -10,7 +10,7 @@
 				properties: {
 					epicenter: {
 						type: 'string',
-						'enum': [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
+						enum: [ 'Valdivia', 'Sumatra', 'Kamchatka' ],
 						required: true
 					},
 					magnitude: {
@@ -93,7 +93,7 @@
 
 		assert.propEqual( errors, [], 'Non-required fields may be omitted' );
 
-		$.each( validationCases, function ( _, vCase ) {
+		validationCases.forEach( function ( vCase ) {
 			errors = eventLogDebug.validate( vCase.args, earthquakeSchema.schema );
 			assert.ok( errors.join( '' ).match( vCase.regex ), vCase.msg );
 		} );
@@ -101,8 +101,9 @@
 
 	QUnit.module( 'ext.eventLogging.debug: isInstanceOf()' );
 
+	// eslint-disable-next-line jquery/no-each-util
 	$.each( {
-		'boolean': {
+		boolean: {
 			valid: [ true, false ],
 			invalid: [ undefined, null, 0, -1, 1, 'false' ]
 		},
@@ -128,11 +129,11 @@
 		}
 	}, function ( type, cases ) {
 		QUnit.test( type, function ( assert ) {
-			$.each( cases.valid, function ( index, value ) {
+			cases.valid.forEach( function ( value ) {
 				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), true,
 					JSON.stringify( value ) + ' is a ' + type );
 			} );
-			$.each( cases.invalid, function ( index, value ) {
+			cases.invalid.forEach( function ( value ) {
 				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), false,
 					JSON.stringify( value ) + ' is not a ' + type );
 			} );

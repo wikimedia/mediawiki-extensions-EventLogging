@@ -39,6 +39,7 @@
 }
 
 .mw-json-schema-code-glyph {
+	/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 	font-family: 'entypo';
 	font-size: 3em;
 	background: #f55b65;
