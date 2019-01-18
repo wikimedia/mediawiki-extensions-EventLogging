@@ -138,10 +138,18 @@
 		"ApiMain::moduleManager": "JsonSchemaHooks::onApiMainModuleManager"
 	},
 	"config": {
-		"EventLoggingBaseUri": false,
-		"EventLoggingSchemaApiUri": "https://meta.wikimedia.org/w/api.php",
-		"EventLoggingDBname": "metawiki",
-		"EventLoggingSchemas": []
+		"EventLoggingBaseUri": {
+			"value": false
+		},
+		"EventLoggingSchemaApiUri": {
+			"value": "https://meta.wikimedia.org/w/api.php"
+		},
+		"EventLoggingDBname": {
+			"value": "metawiki"
+		},
+		"EventLoggingSchemas": {
+			"value": []
+		}
 	},
-	"manifest_version": 1
+	"manifest_version": 2
 }
