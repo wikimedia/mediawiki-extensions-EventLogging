@@ -121,11 +121,9 @@
 		sendBeacon: (
 			// Support: Firefox < 32 (yes/no)
 			/1|yes/.test( navigator.doNotTrack ) ||
-				// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
-				window.doNotTrack === '1' ||
-				// Support: IE 9, IE 10 (navigator.msDoNotTrack)
-				navigator.msDoNotTrack === '1' ||
-				!baseUrl
+			// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
+			window.doNotTrack === '1' ||
+			!baseUrl
 		) ?
 			function () {} :
 			navigator.sendBeacon ?
