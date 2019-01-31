@@ -203,10 +203,24 @@ class JsonUtil {
  * context (can refer to its parent).  Used for schema refs.
  */
 class TreeRef {
+	/** @var array */
 	public $node;
+
+	/** @var TreeRef|null */
 	public $parent;
+
+	/** @var int */
 	public $nodeindex;
+
+	/** @var string */
 	public $nodename;
+
+	/**
+	 * @param array $node
+	 * @param TreeRef|null $parent
+	 * @param int $nodeindex
+	 * @param string $nodename
+	 */
 	public function __construct( $node, $parent, $nodeindex, $nodename ) {
 		$this->node = $node;
 		$this->parent = $parent;
@@ -220,8 +234,45 @@ class TreeRef {
  * context and associated schema.
  */
 class JsonTreeRef {
-	public function __construct( $node, $parent = null, $nodeindex = null,
-			$nodename = null, $schemaref = null ) {
+
+	/** @var mixed|null */
+	public $node;
+
+	/** @var JsonTreeRef|null */
+	public $parent;
+
+	/** @var int|null */
+	public $nodeindex;
+
+	/** @var string|null */
+	public $nodename;
+
+	/** @var TreeRef|null */
+	public $schemaref;
+
+	/** @var string */
+	public $fullindex;
+
+	/** @var array */
+	public $datapath;
+
+	/** @var JsonSchemaIndex */
+	public $schemaindex;
+
+	/**
+	 * @param mixed|null $node
+	 * @param JsonTreeRef|null $parent
+	 * @param int|null $nodeindex
+	 * @param string|null $nodename
+	 * @param TreeRef|null $schemaref
+	 */
+	public function __construct(
+		$node,
+		$parent = null,
+		$nodeindex = null,
+		$nodename = null,
+		$schemaref = null
+	) {
 		$this->node = $node;
 		$this->parent = $parent;
 		$this->nodeindex = $nodeindex;
@@ -236,7 +287,7 @@ class JsonTreeRef {
 
 	/**
 	 * Associate the relevant node of the JSON schema to this node in the JSON
-	 * @param null|string $schema
+	 * @param null|array $schema
 	 */
 	public function attachSchema( $schema = null ) {
 		if ( $schema !== null ) {
@@ -492,12 +543,13 @@ class JsonTreeRef {
  * tree.  This also serves as sort of a class factory for schema refs.
  */
 class JsonSchemaIndex {
+	/** @var array|null */
 	public $root;
+	/** @var array */
 	public $idtable;
 	/**
 	 * The whole tree is indexed on instantiation of this class.
-	 * @param string $schema
-	 * @return void
+	 * @param array|null $schema
 	 */
 	public function __construct( $schema ) {
 		$this->root = $schema;
@@ -513,7 +565,7 @@ class JsonSchemaIndex {
 	/**
 	 * Recursively find all of the ids in this schema, and store them in the
 	 * index.
-	 * @param string $schemanode
+	 * @param array $schemanode
 	 */
 	public function indexSubtree( $schemanode ) {
 		if ( !array_key_exists( 'type', $schemanode ) ) {
@@ -542,8 +594,8 @@ class JsonSchemaIndex {
 	/**
 	 * Generate a new schema ref, or return an existing one from the index if
 	 * the node is an idref.
-	 * @param string $node
-	 * @param string $parent
+	 * @param array $node
+	 * @param TreeRef|null $parent
 	 * @param int $nodeindex
 	 * @param string $nodename
 	 * @return TreeRef
