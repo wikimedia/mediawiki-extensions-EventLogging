@@ -12,7 +12,7 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.32.0"
+		"MediaWiki": ">= 1.33.0"
 	},
 	"namespaces": [
 		{
@@ -112,6 +112,18 @@
 		"localBasePath": "",
 		"remoteExtPath": "EventLogging"
 	},
+	"QUnitTestModule": {
+		"localBasePath": "",
+		"remoteExtPath": "EventLogging",
+		"scripts": [
+			"tests/ext.eventLogging.tests.js",
+			"tests/ext.eventLogging.debug.tests.js"
+		],
+		"dependencies": [
+			"ext.eventLogging",
+			"ext.eventLogging.debug"
+		]
+	},
 	"Hooks": {
 		"CanonicalNamespaces": [
 			"EventLoggingHooks::onCanonicalNamespaces"
@@ -122,9 +134,6 @@
 		],
 		"ResourceLoaderGetConfigVars": [
 			"EventLoggingHooks::onResourceLoaderGetConfigVars"
-		],
-		"ResourceLoaderTestModules": [
-			"EventLoggingHooks::onResourceLoaderTestModules"
 		],
 		"ResourceLoaderRegisterModules": [
 			"EventLoggingHooks::onResourceLoaderRegisterModules"

@@ -105,25 +105,6 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param array &$testModules
-	 * @param ResourceLoader &$resourceLoader
-	 */
-	public static function onResourceLoaderTestModules( &$testModules, &$resourceLoader ) {
-		$testModules[ 'qunit' ][ 'ext.eventLogging.tests' ] = [
-			'scripts'       => [
-				'tests/ext.eventLogging.tests.js',
-				'tests/ext.eventLogging.debug.tests.js'
-			],
-			'dependencies'  => [
-				'ext.eventLogging',
-				'ext.eventLogging.debug'
-			],
-			'localBasePath' => __DIR__ . '/..',
-			'remoteExtPath' => 'EventLogging',
-		];
-	}
-
-	/**
 	 * @param User $user
 	 * @param array &$preferences
 	 */
