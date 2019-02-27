@@ -17,5 +17,6 @@
 	"apihelp-jsonschema-summary": "{{doc-apihelp-summary|jsonschema}}",
 	"apihelp-jsonschema-param-revid": "{{doc-apihelp-param|jsonschema|revid}}",
 	"apihelp-jsonschema-param-title": "{{doc-apihelp-param|jsonschema|title}}",
-	"apihelp-jsonschema-example-1": "{{doc-apihelp-example|jsonschema}}"
+	"apihelp-jsonschema-example-1": "{{doc-apihelp-example|jsonschema}}",
+	"apihelp-jsonschema-example-2": "{{doc-apihelp-example|jsonschema}}"
 }
