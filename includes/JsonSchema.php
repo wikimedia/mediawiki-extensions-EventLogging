@@ -76,11 +76,12 @@ class JsonUtil {
 	public static function stringToId( $var ) {
 		if ( is_int( $var ) ) {
 			return (string)$var;
-		} elseif ( is_string( $var ) ) {
-			return preg_replace( '/[^a-z0-9\-_:\.]/i', '', $var );
-		} else {
-			throw new JsonSchemaException( 'jsonschema-idconvert', self::encodeForMsg( $var ) );
 		}
+		if ( is_string( $var ) ) {
+			return preg_replace( '/[^a-z0-9\-_:\.]/i', '', $var );
+		}
+
+		throw new JsonSchemaException( 'jsonschema-idconvert', self::encodeForMsg( $var ) );
 	}
 
 	/**
@@ -95,9 +96,9 @@ class JsonUtil {
 			// Literal newlines can't appear in JSON string values, so this neatly folds the formatting
 			$json = preg_replace( "/\n\t+/", ' ', $json );
 			return wfEscapeWikiText( $json );
-		} else {
-			return json_encode( $data );
 		}
+
+		return json_encode( $data );
 	}
 
 	/**
@@ -119,7 +120,7 @@ class JsonUtil {
 					$newvalue = 0;
 					break;
 				case 'string':
-					$newvalue = "";
+					$newvalue = '';
 					break;
 				case 'boolean':
 					$newvalue = false;
@@ -138,26 +139,26 @@ class JsonUtil {
 	 * @return mixed
 	 */
 	public static function getType( $foo ) {
-		if ( is_null( $foo ) ) {
+		if ( $foo === null ) {
 			return null;
 		}
 
 		switch ( gettype( $foo ) ) {
-			case "array":
-				$retval = "array";
+			case 'array':
+				$retval = 'array';
 				foreach ( array_keys( $foo ) as $key ) {
 					if ( !is_int( $key ) ) {
-						$retval = "object";
+						$retval = 'object';
 					}
 				}
 				return $retval;
-			case "integer":
-			case "double":
-				return "number";
-			case "boolean":
-				return "boolean";
-			case "string":
-				return "string";
+			case 'integer':
+			case 'double':
+				return 'number';
+			case 'boolean':
+				return 'boolean';
+			case 'string':
+				return 'string';
 			default:
 				return null;
 		}
@@ -228,7 +229,7 @@ class JsonTreeRef {
 		$this->schemaref = $schemaref;
 		$this->fullindex = $this->getFullIndex();
 		$this->datapath = [];
-		if ( !is_null( $schemaref ) ) {
+		if ( $schemaref !== null ) {
 			$this->attachSchema();
 		}
 	}
@@ -238,12 +239,12 @@ class JsonTreeRef {
 	 * @param null|string $schema
 	 */
 	public function attachSchema( $schema = null ) {
-		if ( !is_null( $schema ) ) {
+		if ( $schema !== null ) {
 			$this->schemaindex = new JsonSchemaIndex( $schema );
 			$this->nodename =
-				isset( $schema['title'] ) ? $schema['title'] : "Root node";
+				isset( $schema['title'] ) ? $schema['title'] : 'Root node';
 			$this->schemaref = $this->schemaindex->newRef( $schema, null, null, $this->nodename );
-		} elseif ( !is_null( $this->parent ) ) {
+		} elseif ( $this->parent !== null ) {
 			$this->schemaindex = $this->parent->schemaindex;
 		}
 	}
@@ -256,11 +257,12 @@ class JsonTreeRef {
 	public function getTitle() {
 		if ( isset( $this->nodename ) ) {
 			return $this->nodename;
-		} elseif ( isset( $this->node['title'] ) ) {
-			return $this->node['title'];
-		} else {
-			return $this->nodeindex;
 		}
+		if ( isset( $this->node['title'] ) ) {
+			return $this->node['title'];
+		}
+
+		return $this->nodeindex;
 	}
 
 	/**
@@ -289,15 +291,14 @@ class JsonTreeRef {
 			$nodetype = 'any';
 		}
 
-		if ( $nodetype == 'any' ) {
+		if ( $nodetype === 'any' ) {
 			if ( $this->node === null ) {
 				return null;
-			} else {
-				return JsonUtil::getType( $this->node );
 			}
-		} else {
-			return $nodetype;
+			return JsonUtil::getType( $this->node );
 		}
+
+		return $nodetype;
 	}
 
 	/**
@@ -307,11 +308,11 @@ class JsonTreeRef {
 	 * @return string
 	 */
 	public function getFullIndex() {
-		if ( is_null( $this->parent ) ) {
-			return "json_root";
-		} else {
-			return $this->parent->getFullIndex() . "." . JsonUtil::stringToId( $this->nodeindex );
+		if ( $this->parent === null ) {
+			return 'json_root';
 		}
+
+		return $this->parent->getFullIndex() . '.' . JsonUtil::stringToId( $this->nodeindex );
 	}
 
 	/**
@@ -322,11 +323,10 @@ class JsonTreeRef {
 	public function getDataPath() {
 		if ( !is_object( $this->parent ) ) {
 			return [];
-		} else {
-			$retval = $this->parent->getDataPath();
-			$retval[] = $this->nodeindex;
-			return $retval;
 		}
+		$retval = $this->parent->getDataPath();
+		$retval[] = $this->nodeindex;
+		return $retval;
 	}
 
 	/**
@@ -338,7 +338,7 @@ class JsonTreeRef {
 	 * @return string
 	 */
 	public function getDataPathAsString() {
-		$retval = "";
+		$retval = '';
 		foreach ( $this->getDataPath() as $item ) {
 			$retval .= '[' . json_encode( $item ) . ']';
 		}
@@ -353,10 +353,10 @@ class JsonTreeRef {
 	public function getDataPathTitles() {
 		if ( !is_object( $this->parent ) ) {
 			return $this->getTitle();
-		} else {
-			return $this->parent->getDataPathTitles() . ' -> '
-				. $this->getTitle();
 		}
+
+		return $this->parent->getDataPathTitles() . ' -> '
+			. $this->getTitle();
 	}
 
 	/**
@@ -376,7 +376,7 @@ class JsonTreeRef {
 		} elseif ( array_key_exists( 'additionalProperties', $snode ) ) {
 			// additionalProperties can *either* be a boolean or can be
 			// defined as a schema (an object)
-			if ( gettype( $snode['additionalProperties'] ) == "boolean" ) {
+			if ( gettype( $snode['additionalProperties'] ) === 'boolean' ) {
 				if ( !$snode['additionalProperties'] ) {
 					throw new JsonSchemaException( 'jsonschema-invalidkey',
 												$key, $this->getDataPathTitles() );
@@ -388,8 +388,8 @@ class JsonTreeRef {
 		}
 		$value = $this->node[$key];
 		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, $key );
-		$jsoni = new JsonTreeRef( $value, $this, $key, $nodename, $schemai );
-		return $jsoni;
+
+		return new JsonTreeRef( $value, $this, $key, $nodename, $schemai );
 	}
 
 	/**
@@ -407,8 +407,8 @@ class JsonTreeRef {
 		$itemname = isset( $schemanode['title'] ) ? $schemanode['title'] : "Item";
 		$nodename = $itemname . " #" . ( (string)$i + 1 );
 		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, $i );
-		$jsoni = new JsonTreeRef( $this->node[$i], $this, $i, $nodename, $schemai );
-		return $jsoni;
+
+		return new JsonTreeRef( $this->node[$i], $this, $i, $nodename, $schemai );
 	}
 
 	/**
@@ -421,32 +421,31 @@ class JsonTreeRef {
 			!in_array( $this->node, $this->schemaref->node['enum'] ) ) {
 			$e = new JsonSchemaException( 'jsonschema-invalid-notinenum',
 				JsonUtil::encodeForMsg( $this->node ), $this->getDataPathTitles() );
-			$e->subtype = "validate-fail";
-			throw( $e );
+			$e->subtype = 'validate-fail';
+			throw $e;
 		}
 		$datatype = JsonUtil::getType( $this->node );
 		$schematype = $this->getType();
-		if ( $datatype == 'array' && $schematype == 'object' ) {
+		if ( $datatype === 'array' && $schematype === 'object' ) {
 			// PHP datatypes are kinda loose, so we'll fudge
 			$datatype = 'object';
 		}
-		if ( $datatype == 'number' && $schematype == 'integer' &&
+		if ( $datatype === 'number' && $schematype === 'integer' &&
 			 $this->node == (int)$this->node ) {
 			// Alright, it'll work as an int
 			$datatype = 'integer';
 		}
 		if ( $datatype != $schematype ) {
-			if ( is_null( $datatype ) && !is_object( $this->parent ) ) {
+			if ( $datatype === null && !is_object( $this->parent ) ) {
 				$e = new JsonSchemaException( 'jsonschema-invalidempty' );
-				$e->subtype = "validate-fail-null";
-				throw( $e );
-			} else {
-				$datatype = is_null( $datatype ) ? "null" : $datatype;
-				$e = new JsonSchemaException( 'jsonschema-invalidnode',
-					$schematype, $datatype, $this->getDataPathTitles() );
-				$e->subtype = "validate-fail";
-				throw( $e );
+				$e->subtype = 'validate-fail-null';
+				throw $e;
 			}
+			$datatype = $datatype ?: 'null';
+			$e = new JsonSchemaException( 'jsonschema-invalidnode',
+				$schematype, $datatype, $this->getDataPathTitles() );
+			$e->subtype = 'validate-fail';
+			throw $e;
 		}
 		switch ( $schematype ) {
 			case 'object':
@@ -465,8 +464,8 @@ class JsonTreeRef {
 				$keyRequired = array_key_exists( 'required', $svalue ) ? $svalue['required'] : false;
 				if ( $keyRequired && !array_key_exists( $skey, $this->node ) ) {
 					$e = new JsonSchemaException( 'jsonschema-invalid-missingfield', $skey );
-					$e->subtype = "validate-fail-missingfield";
-					throw( $e );
+					$e->subtype = 'validate-fail-missingfield';
+					throw $e;
 				}
 			}
 		}
@@ -498,14 +497,14 @@ class JsonSchemaIndex {
 	/**
 	 * The whole tree is indexed on instantiation of this class.
 	 * @param string $schema
-	 * @return null|void
+	 * @return void
 	 */
 	public function __construct( $schema ) {
 		$this->root = $schema;
 		$this->idtable = [];
 
-		if ( is_null( $this->root ) ) {
-			return null;
+		if ( $this->root === null ) {
+			return;
 		}
 
 		$this->indexSubtree( $this->root );

@@ -28,10 +28,10 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * @param OutputPage &$out
-	 * @param Skin &$skin
+	 * @param OutputPage $out
+	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage &$out, Skin &$skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
 		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
@@ -77,9 +77,9 @@ class EventLoggingHooks {
 	 * }
 	 * @endcode
 	 *
-	 * @param ResourceLoader &$resourceLoader
+	 * @param ResourceLoader $resourceLoader
 	 */
-	public static function onResourceLoaderRegisterModules( ResourceLoader &$resourceLoader ) {
+	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
 		$schemas = self::getSchemas();
 
 		$modules = [];

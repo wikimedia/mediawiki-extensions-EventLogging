@@ -45,9 +45,8 @@ class JsonSchemaContent extends JsonContent {
 					$value = JsonSchemaContent::resolve( $value['$ref'] );
 				}
 				return JsonSchemaContent::expand( $value, $recursionLimit - 1 );
-			} else {
-				return $value;
 			}
+			return $value;
 		}, $schema );
 	}
 
@@ -158,7 +157,7 @@ class JsonSchemaContent extends JsonContent {
 		if ( $revId !== null && class_exists( 'SyntaxHighlight_GeSHi' ) ) {
 			$html = '';
 			$highlighter = new SyntaxHighlight_GeSHi();
-			foreach ( self::getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
+			foreach ( $this->getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
 				$lang = $sample['language'];
 				$code = $sample['code'];
 				$highlighted = $highlighter->highlight( $code, $lang )->getValue();

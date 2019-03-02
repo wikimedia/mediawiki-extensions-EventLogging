@@ -69,7 +69,7 @@ class ApiJsonSchema extends ApiBase {
 
 	public function execute() {
 		$params = $this->extractRequestParams();
-		$rev = Revision::newFromID( $params['revid'] );
+		$rev = Revision::newFromId( $params['revid'] );
 
 		if ( !$rev ) {
 			$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );

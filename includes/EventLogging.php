@@ -96,9 +96,7 @@ class EventLogging {
 		// To make the resultant JSON easily extracted from a row of
 		// space-separated values, we replace literal spaces with unicode
 		// escapes. This is permitted by the JSON specs.
-		$json = str_replace( ' ', '\u0020', FormatJson::encode( $encapsulatedEvent ) );
-
-		return $json;
+		return str_replace( ' ', '\u0020', FormatJson::encode( $encapsulatedEvent ) );
 	}
 
 	/**
