@@ -17,5 +17,6 @@
 	"apihelp-jsonschema-summary": "Récupérer une page schéma JSON.",
 	"apihelp-jsonschema-param-revid": "ID de révision de schéma.",
 	"apihelp-jsonschema-param-title": "Nom du schéma.",
-	"apihelp-jsonschema-example-1": "Récupérer le schéma pour la révision 1234"
+	"apihelp-jsonschema-example-1": "Récupérer le schéma pour la révision 1234",
+	"apihelp-jsonschema-example-2": "Récupérer le schéma pour la dernière version de Schema:Test"
 }

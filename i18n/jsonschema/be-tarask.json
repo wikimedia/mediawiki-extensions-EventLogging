@@ -17,5 +17,6 @@
 	"apihelp-jsonschema-summary": "Атрымаць старонку JSON-схемы.",
 	"apihelp-jsonschema-param-revid": "ID вэрсіі схемы.",
 	"apihelp-jsonschema-param-title": "Назва схемы.",
-	"apihelp-jsonschema-example-1": "Атрымаць схему для вэрсіі 1234"
+	"apihelp-jsonschema-example-1": "Атрымаць схему для вэрсіі 1234",
+	"apihelp-jsonschema-example-2": "Атрымаць схему для апошняй вэрсіі Schema:Test"
 }

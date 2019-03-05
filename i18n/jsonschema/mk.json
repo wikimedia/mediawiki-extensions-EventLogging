@@ -16,5 +16,6 @@
 	"apihelp-jsonschema-summary": "Дај страница со JSON-шема.",
 	"apihelp-jsonschema-param-revid": "Назнака на преработка на шемата.",
 	"apihelp-jsonschema-param-title": "Назив на шемата.",
-	"apihelp-jsonschema-example-1": "Дај шема за преработката 1234"
+	"apihelp-jsonschema-example-1": "Дај шема за преработката 1234",
+	"apihelp-jsonschema-example-2": "Дај шема за последната преработка на Шема:Проба"
 }

@@ -17,5 +17,6 @@
 	"apihelp-jsonschema-summary": "檢索 JSON 架構頁面。",
 	"apihelp-jsonschema-param-revid": "架構修訂 ID。",
 	"apihelp-jsonschema-param-title": "架構名稱。",
-	"apihelp-jsonschema-example-1": "檢索修訂版本 1234 的架構"
+	"apihelp-jsonschema-example-1": "檢索修訂版本 1234 的架構",
+	"apihelp-jsonschema-example-2": "檢索 Schema:Test 最新修訂的架構"
 }
