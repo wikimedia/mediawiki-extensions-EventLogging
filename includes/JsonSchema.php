@@ -57,11 +57,14 @@ class JsonSchemaException extends Exception {
 	 */
 	public $subtype;
 
-	public function __construct( $code /* ... */ ) {
+	/**
+	 * @param string $code
+	 * @param string ...$args
+	 */
+	public function __construct( $code, ...$args ) {
 		parent::__construct( $code );
 		$this->code = $code;
-		$this->args = func_get_args();
-		array_shift( $this->args );
+		$this->args = $args;
 	}
 }
 
