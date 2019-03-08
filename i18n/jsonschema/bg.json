@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Vlad5250"
+			"Vlad5250",
+			"StanProg"
 		]
 	},
-	"apihelp-jsonschema-example-2": "Даване на схема за последната версия на Схема:Проба"
+	"apihelp-jsonschema-example-2": "Извличане на схема за последната версия на Schema:Test"
 }
