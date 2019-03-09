@@ -12,7 +12,7 @@
 class JsonSchemaContentHandler extends JsonContentHandler {
 
 	public function __construct( $modelId = 'JsonSchema' ) {
-		parent::__construct( $modelId, [ CONTENT_FORMAT_JSON ] );
+		parent::__construct( $modelId );
 	}
 
 	public function canBeUsedOn( Title $title ) {
