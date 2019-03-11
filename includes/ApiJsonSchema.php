@@ -71,7 +71,7 @@ class ApiJsonSchema extends ApiBase {
 	public function execute() {
 		$params = $this->extractRequestParams();
 
-		if ( !array_key_exists( 'revid', $params ) && !array_key_exists( 'title', $params ) ) {
+		if ( !isset( $params['revid'] ) && !isset( $params['title'] ) ) {
 			$this->dieWithError(
 				[ 'apierror-missingparam-at-least-one-of', 'revid', 'title' ],
 				null, null, 400
@@ -80,7 +80,7 @@ class ApiJsonSchema extends ApiBase {
 
 		// If we are given revid, then look up Revision and
 		// verify that $params['title'] (if given) matches.
-		if ( array_key_exists( 'revid', $params ) ) {
+		if ( isset( $params['revid'] ) ) {
 			$rev = Revision::newFromId( $params['revid'] );
 			if ( !$rev ) {
 				$this->dieWithError(
@@ -111,18 +111,19 @@ class ApiJsonSchema extends ApiBase {
 		// Else use $params['title'] and get the latest revision
 		} else {
 			$title = Title::newFromText( $params['title'], NS_SCHEMA );
-			if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
+			if ( !$title || !$title->exists() || !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
 					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400
 				);
 			}
+
 			$rev = Revision::newFromId( $title->getLatestRevID() );
 		}
 
 		/** @var JsonSchemaContent $content */
 		$content = $rev->getContent();
 		if ( !$content ) {
-			$this->dieWithError( [ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400 );
+			$this->dieWithError( [ 'apierror-nosuchrevid', $rev->getId() ], null, null, 400 );
 		}
 
 		$this->markCacheable( $rev );
