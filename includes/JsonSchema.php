@@ -295,8 +295,7 @@ class JsonTreeRef {
 	public function attachSchema( $schema = null ) {
 		if ( $schema !== null ) {
 			$this->schemaindex = new JsonSchemaIndex( $schema );
-			$this->nodename =
-				isset( $schema['title'] ) ? $schema['title'] : 'Root node';
+			$this->nodename = $schema['title'] ?? 'Root node';
 			$this->schemaref = $this->schemaindex->newRef( $schema, null, null, $this->nodename );
 		} elseif ( $this->parent !== null ) {
 			$this->schemaindex = $this->parent->schemaindex;
@@ -426,7 +425,7 @@ class JsonTreeRef {
 		if ( array_key_exists( 'properties', $snode ) &&
 			array_key_exists( $key, $snode['properties'] ) ) {
 			$schemadata = $snode['properties'][$key];
-			$nodename = isset( $schemadata['title'] ) ? $schemadata['title'] : $key;
+			$nodename = $schemadata['title'] ?? $key;
 		} elseif ( array_key_exists( 'additionalProperties', $snode ) ) {
 			// additionalProperties can *either* be a boolean or can be
 			// defined as a schema (an object)
@@ -458,7 +457,7 @@ class JsonTreeRef {
 		} else {
 			$schemanode = [];
 		}
-		$itemname = isset( $schemanode['title'] ) ? $schemanode['title'] : "Item";
+		$itemname = $schemanode['title'] ?? "Item";
 		$nodename = $itemname . " #" . ( (string)$i + 1 );
 		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, $i );
 
