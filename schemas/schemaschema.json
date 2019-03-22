@@ -22,7 +22,7 @@
       "desc_enum":
       {
         "object":"Nested mapping of key/value pairs (a.k.a. 'properties').  You may also have a 'properties' property which is itself a sequence containing a single schema definition",
-        "array":"Nested sequence of items ('array' in many languages).  You must also have a 'sequence' property which is itself a sequence containing a single schema definition",
+        "array":"Nested sequence of items ('array' in many languages).  You must also have a 'items' property which itself is a single schema definition",
         "integer":"Integer number",
         "number":"Any number (floating point or integer)",
         "boolean":"Boolean (true or false) value",
@@ -67,12 +67,9 @@
       "description":"Enumerated sequence of valid values for this property.",
       "title":"Enumeration (enum)",
       "type":"array",
-      "items":
-      [
-        {
-          "type":"any"
-        }
-      ]
+      "items": {
+        "type":"any"
+      }
     },
     "desc_enum":
     {
@@ -112,16 +109,13 @@
     },
     "items":
     {
-      "description":"A list containing the subschemas for validating list items.  Currently limited to just one.",
+      "description":"A subschema for validating array items.  All array items must have the same type.",
       "title":"Items (items)",
-      "type":"array",
-      "items":
-      [
-        {
-          "$ref":"#schemanode"
-        }
-      ]
+      "type": "object",
+      "additionalProperties": true,
+      "properties":{}
     }
   },
   "additionalProperties":false
 }
+
