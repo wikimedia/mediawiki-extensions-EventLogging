@@ -4,11 +4,12 @@
 			"DCamer",
 			"Okras",
 			"Macofe",
-			"Facenapalm"
+			"Facenapalm",
+			"Diralik"
 		]
 	},
 	"jsonschema-badidref": "Неверный idref: \"$1\"",
-	"jsonschema-idconvert": "Не удается преобразовать var в id: <code>$1</code>",
+	"jsonschema-idconvert": "Не удаётся преобразовать var в id: <code>$1</code>",
 	"jsonschema-invalidkey": "Недействительный ключ \"$1\" в \"$2\"",
 	"jsonschema-invalidempty": "Пустая структура данные недопустима для этой схемы",
 	"jsonschema-invalidnode": "Недопустимый узел: ожидался «$1», получен «$2». Путь: «$3»",

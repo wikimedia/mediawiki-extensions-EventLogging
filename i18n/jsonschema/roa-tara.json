@@ -16,5 +16,6 @@
 	"apihelp-jsonschema-summary": "Pigghie 'u JSON d'a pàgene de scheme.",
 	"apihelp-jsonschema-param-revid": "ID d'a revisione d'u scheme.",
 	"apihelp-jsonschema-param-title": "Nome d'u scheme.",
-	"apihelp-jsonschema-example-1": "Pigghie 'u scheme pa revisione 1234"
+	"apihelp-jsonschema-example-1": "Pigghie 'u scheme pa revisione 1234",
+	"apihelp-jsonschema-example-2": "Pigghie 'u scheme pe l'urtema revisione de Schema:Test"
 }
