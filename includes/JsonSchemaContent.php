@@ -55,7 +55,7 @@ class JsonSchemaContent extends JsonContent {
 	 * @return array Schema array
 	 */
 	public function getJsonData() {
-		return FormatJson::decode( $this->getNativeData(), true );
+		return FormatJson::decode( $this->getText(), true );
 	}
 
 	/**
