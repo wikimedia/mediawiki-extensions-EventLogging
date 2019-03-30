@@ -29,7 +29,7 @@ class RemoteSchema implements JsonSerializable {
 
 		$this->title = $title;
 		$this->revision = $revision;
-		$this->cache = $cache ?: wfGetCache( CACHE_ANYTHING );
+		$this->cache = $cache ?: ObjectCache::getInstance( CACHE_ANYTHING );
 		$this->http = $http ?: new Http();
 		$this->key = $this->cache->makeGlobalKey(
 			'eventlogging-schema',
