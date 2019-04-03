@@ -52,7 +52,7 @@
 	 * @return {boolean} Whether value is instance of type.
 	 */
 	function isInstanceOf( value, type ) {
-		// eslint-disable-next-line jquery/no-type
+		// eslint-disable-next-line no-jquery/no-type
 		var jsType = $.type( value );
 		switch ( type ) {
 			case 'integer':

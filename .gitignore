@@ -5,3 +5,4 @@
 /docs/
 /composer.lock
 /vendor
+.eslintcache

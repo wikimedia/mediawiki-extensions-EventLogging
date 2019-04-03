@@ -58,7 +58,7 @@
 		} );
 	} );
 
-	// eslint-disable-next-line jquery/no-each-util
+	// eslint-disable-next-line no-jquery/no-each-util
 	$.each( {
 		'URL size is ok': {
 			size: mw.eventLog.maxUrlSize,

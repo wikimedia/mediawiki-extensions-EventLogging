@@ -101,7 +101,7 @@
 
 	QUnit.module( 'ext.eventLogging.debug: isInstanceOf()' );
 
-	// eslint-disable-next-line jquery/no-each-util
+	// eslint-disable-next-line no-jquery/no-each-util
 	$.each( {
 		boolean: {
 			valid: [ true, false ],
