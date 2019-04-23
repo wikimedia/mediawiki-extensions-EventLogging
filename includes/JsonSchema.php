@@ -453,7 +453,7 @@ class JsonTreeRef {
 	public function getSequenceChildRef( $i ) {
 		// TODO: make this conform to draft-03 by also allowing single object
 		if ( array_key_exists( 'items', $this->schemaref->node ) ) {
-			$schemanode = $this->schemaref->node['items'][0];
+			$schemanode = $this->schemaref->node['items'];
 		} else {
 			$schemanode = [];
 		}
@@ -582,10 +582,7 @@ class JsonSchemaIndex {
 
 				break;
 			case 'array':
-				foreach ( $schemanode['items'] as $value ) {
-					$this->indexSubtree( $value );
-				}
-
+				$this->indexSubtree( $schemanode['items'] );
 				break;
 		}
 		if ( isset( $schemanode['id'] ) ) {
