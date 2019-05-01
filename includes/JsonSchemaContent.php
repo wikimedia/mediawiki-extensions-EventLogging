@@ -138,7 +138,7 @@ class JsonSchemaContent extends JsonContent {
 	/**
 	 * Wraps HTML representation of content.
 	 *
-	 * If the schema already exists and if the SyntaxHiglight GeSHi
+	 * If the schema already exists and if the SyntaxHighlight
 	 * extension is installed, use it to render code snippets
 	 * showing how to use schema.
 	 *
@@ -154,13 +154,12 @@ class JsonSchemaContent extends JsonContent {
 		ParserOptions $options = null, $generateHtml = true ) {
 		$out = parent::getParserOutput( $title, $revId, $options, $generateHtml );
 
-		if ( $revId !== null && class_exists( 'SyntaxHighlight_GeSHi' ) ) {
+		if ( $revId !== null && ExtensionRegistry::getInstance()->isLoaded( 'SyntaxHighlight' ) ) {
 			$html = '';
-			$highlighter = new SyntaxHighlight_GeSHi();
 			foreach ( $this->getCodeSamples( $title->getDBkey(), $revId ) as $sample ) {
 				$lang = $sample['language'];
 				$code = $sample['code'];
-				$highlighted = $highlighter->highlight( $code, $lang )->getValue();
+				$highlighted = SyntaxHighlight::highlight( $code, $lang )->getValue();
 				$html .= Html::element( 'h2',
 					[],
 					wfMessage( $sample['header'] )->text()
