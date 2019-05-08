@@ -7,10 +7,9 @@
 
 	var core, baseUrl, debugMode;
 
-	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
-	// in EventLogging.php. If the default value of 'false' has not
-	// been overridden, events will not be sent to the server.
-	baseUrl = mw.config.get( 'wgEventLoggingBaseUri' );
+	// This corresponds to the $wgEventLoggingBaseUri configuration in PHP.
+	// If set to false (default), then events will not be logged.
+	baseUrl = require( './data.json' ).baseUrl;
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
