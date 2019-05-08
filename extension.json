@@ -66,10 +66,12 @@
 	},
 	"ResourceModules": {
 		"ext.eventLogging": {
-			"scripts": [
-				"modules/ext.eventLogging/core.js",
-				"modules/ext.eventLogging/subscriber.js",
-				"modules/ext.eventLogging/Schema.js"
+			"localBasePath": "modules/ext.eventLogging/",
+			"remoteExtPath": "EventLogging/modules/ext.eventLogging/",
+			"packageFiles": [
+				"subscriber.js",
+				"core.js",
+				"Schema.js"
 			],
 			"dependencies": [
 				"mediawiki.user",
