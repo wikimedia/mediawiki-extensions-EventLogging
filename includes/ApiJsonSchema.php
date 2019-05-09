@@ -113,6 +113,7 @@ class ApiJsonSchema extends ApiBase {
 		}
 
 		$this->markCacheable( $rev );
+		'@phan-var JsonSchemaContent $content';
 		$schema = $content->getJsonData();
 
 		$result = $this->getResult();
