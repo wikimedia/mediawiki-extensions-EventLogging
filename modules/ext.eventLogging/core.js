@@ -5,7 +5,7 @@
 ( function () {
 	'use strict';
 
-	var self, baseUrl, debugMode;
+	var core, baseUrl, debugMode;
 
 	// `baseUrl` corresponds to $wgEventLoggingBaseUri, as declared
 	// in EventLogging.php. If the default value of 'false' has not
@@ -26,7 +26,7 @@
 	 * @class mw.eventLog
 	 * @singleton
 	 */
-	self = {
+	core = {
 
 		/**
 		 * Maximum length in chars that a beacon URL can have.
@@ -67,7 +67,7 @@
 		prepare: function ( schemaName, eventData ) {
 			return {
 				event: eventData,
-				revision: self.getRevision( schemaName ),
+				revision: core.getRevision( schemaName ),
 				schema: schemaName,
 				webHost: location.hostname,
 				wiki: mw.config.get( 'wgDBname' )
@@ -98,7 +98,7 @@
 		 */
 		checkUrlSize: function ( schemaName, url ) {
 			var message;
-			if ( url.length > self.maxUrlSize ) {
+			if ( url.length > core.maxUrlSize ) {
 				message = 'Url exceeds maximum length';
 				mw.eventLog.logFailure( schemaName, 'urlSize' );
 				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, message ) );
@@ -146,13 +146,13 @@
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
 		logEvent: function ( schemaName, eventData ) {
-			var event = self.prepare( schemaName, eventData ),
-				url = self.makeBeaconUrl( event ),
-				sizeError = self.checkUrlSize( schemaName, url ),
+			var event = core.prepare( schemaName, eventData ),
+				url = core.makeBeaconUrl( event ),
+				sizeError = core.checkUrlSize( schemaName, url ),
 				deferred = $.Deferred();
 
 			if ( !sizeError ) {
-				self.sendBeacon( url );
+				core.sendBeacon( url );
 				if ( debugMode ) {
 					mw.track( 'eventlogging.debug', event );
 				}
@@ -237,6 +237,6 @@
 		}
 	};
 
-	mw.eventLog = self;
+	module.exports = core;
 
 }() );

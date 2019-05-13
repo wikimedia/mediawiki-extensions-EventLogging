@@ -54,6 +54,6 @@
 		}
 	};
 
-	mw.eventLog.Schema = Schema;
+	module.exports = Schema;
 
 }() );

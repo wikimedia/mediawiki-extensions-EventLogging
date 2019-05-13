@@ -1,17 +1,12 @@
 /*!
- * Subscribes to the 'event'-namespaced topics in `mw.track`, for example:
- *
- *   `mw.track( 'event.YourSchema', eventData )`
- *
- * Because subscribers to mw#track receive the full backlog of events
- * matching the subscription, event processing can be safely deferred
- * until the window's load event has fired. This keeps the impact of
- * analytic instrumentation on page load times to a minimum.
- *
  * @author Ori Livneh <ori@wikimedia.org>
  */
 ( function () {
 	'use strict';
+
+	// Expose publicly
+	mw.eventLog = require( './core.js' );
+	mw.eventLog.Schema = require( './Schema.js' );
 
 	/**
 	 * Convert the first letter of a string to uppercase.
@@ -40,6 +35,15 @@
 	}
 
 	/**
+	 * Subscribe to any 'event'-namespaced topics from mw.track, for example:
+	 *
+	 *   `mw.track( 'event.YourSchema', eventData )`
+	 *
+	 * Because subscribers to mw#track receive the full backlog of events
+	 * matching the subscription, event processing can be safely deferred
+	 * until the window's load event has fired. This keeps the impact of
+	 * analytic instrumentation on page load times to a minimum.
+	 *
 	 * @private
 	 * @ignore
 	 */
