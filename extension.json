@@ -71,7 +71,10 @@
 			"packageFiles": [
 				"subscriber.js",
 				"core.js",
-				"Schema.js"
+				"Schema.js",
+				{ "name": "data.json", "config": {
+					"baseUrl": "EventLoggingBaseUri"
+				} }
 			],
 			"dependencies": [
 				"mediawiki.user",
