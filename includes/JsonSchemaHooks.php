@@ -42,9 +42,9 @@ class JsonSchemaHooks {
 	/**
 	 * Declares JSON as the code editor language for Schema: pages.
 	 * This hook only runs if the CodeEditor extension is enabled.
+	 *
 	 * @param Title $title
 	 * @param string &$lang Page language.
-	 * @return bool
 	 */
 	public static function onCodeEditorGetPageLanguage( $title, &$lang ) {
 		if ( self::isSchemaNamespaceEnabled()
@@ -52,38 +52,42 @@ class JsonSchemaHooks {
 		) {
 			$lang = 'json';
 		}
-		return true;
 	}
 
 	/**
 	 * Validates that the revised contents are valid JSON.
 	 * If not valid, rejects edit with error message.
+	 *
 	 * @param IContextSource $context
 	 * @param Content $content
 	 * @param Status $status
 	 * @param string $summary
 	 * @param User $user
 	 * @param bool $minoredit
-	 * @return True
 	 */
-	public static function onEditFilterMergedContent( $context, $content, $status, $summary,
-		$user, $minoredit
+	public static function onEditFilterMergedContent(
+		$context,
+		$content,
+		$status,
+		$summary,
+		$user,
+		$minoredit
 	) {
 		$title = $context->getTitle();
 
 		if ( !self::isSchemaNamespaceEnabled()
 			|| !$title->inNamespace( NS_SCHEMA )
 		) {
-			return true;
+			return;
 		}
 
 		if ( !preg_match( '/^[a-zA-Z0-9_-]{1,63}$/', $title->getText() ) ) {
 			$status->fatal( 'badtitle' );
-			return true;
+			return;
 		}
 
 		if ( !$content instanceof JsonSchemaContent ) {
-			return true;
+			return;
 		}
 
 		try {
@@ -91,22 +95,21 @@ class JsonSchemaHooks {
 		} catch ( JsonSchemaException $e ) {
 			$status->fatal( $context->msg( $e->getCode(), $e->args ) );
 		}
-
-		return true;
 	}
 
 	/**
 	 * Add the revision id as the subtitle on NS_SCHEMA pages.
-	 * @param OutputPage &$out
-	 * @param Skin &$skin
-	 * @return bool
+	 *
+	 * @param OutputPage $out
+	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( &$out, &$skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, $skin ) {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
 		if ( self::isSchemaNamespaceEnabled()
-			&& $title->inNamespace( NS_SCHEMA ) && $revId !== null
+			&& $title->inNamespace( NS_SCHEMA )
+			&& $revId !== null
 		) {
 			$out->addSubtitle( $out->msg( 'eventlogging-revision-id' )
 				// We use 'rawParams' rather than 'numParams' to make it
@@ -114,7 +117,6 @@ class JsonSchemaHooks {
 				->rawParams( $revId )
 				->escaped() );
 		}
-		return true;
 	}
 
 	/**
