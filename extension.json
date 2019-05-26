@@ -53,18 +53,18 @@
 		"EventLoggingNamespaces": "EventLogging.namespaces.php"
 	},
 	"AutoloadClasses": {
+		"ApiJsonSchema": "includes/ApiJsonSchema.php",
 		"EventLogging": "includes/EventLogging.php",
 		"EventLoggingHooks": "includes/EventLoggingHooks.php",
-		"JsonSchemaHooks": "includes/JsonSchemaHooks.php",
 		"JsonSchemaContent": "includes/JsonSchemaContent.php",
 		"JsonSchemaContentHandler": "includes/JsonSchemaContentHandler.php",
+		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
+		"JsonSchemaHooks": "includes/JsonSchemaHooks.php",
+		"JsonSchemaIndex": "includes/Libs/JsonSchemaValidation/JsonSchemaIndex.php",
+		"JsonTreeRef": "includes/Libs/JsonSchemaValidation/JsonTreeRef.php",
+		"JsonUtil": "includes/Libs/JsonSchemaValidation/JsonUtil.php",
 		"RemoteSchema": "includes/RemoteSchema.php",
-		"JsonSchemaException": "includes/JsonSchema.php",
-		"JsonUtil": "includes/JsonSchema.php",
-		"TreeRef": "includes/JsonSchema.php",
-		"JsonTreeRef": "includes/JsonSchema.php",
-		"JsonSchemaIndex": "includes/JsonSchema.php",
-		"ApiJsonSchema": "includes/ApiJsonSchema.php"
+		"TreeRef": "includes/Libs/JsonSchemaValidation/TreeRef.php"
 	},
 	"ResourceModules": {
 		"ext.eventLogging": {
