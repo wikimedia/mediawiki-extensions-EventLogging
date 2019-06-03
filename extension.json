@@ -20,7 +20,9 @@
 			"constant": "NS_SCHEMA",
 			"name": "Schema",
 			"defaultcontentmodel": "JsonSchema",
-			"protection": ["autoconfirmed"],
+			"protection": [
+				"autoconfirmed"
+			],
 			"conditional": true
 		},
 		{
@@ -72,9 +74,12 @@
 				"subscriber.js",
 				"core.js",
 				"Schema.js",
-				{ "name": "data.json", "config": {
-					"baseUrl": "EventLoggingBaseUri"
-				} }
+				{
+					"name": "data.json",
+					"config": {
+						"baseUrl": "EventLoggingBaseUri"
+					}
+				}
 			],
 			"dependencies": [
 				"mediawiki.user",
@@ -105,12 +110,10 @@
 			]
 		},
 		"ext.eventLogging.jsonSchema": {
-			"scripts": "modules/ext.eventLogging.jsonSchema/jsonSchema.js",
-			"position": "top"
+			"scripts": "modules/ext.eventLogging.jsonSchema/jsonSchema.js"
 		},
 		"ext.eventLogging.jsonSchema.styles": {
-			"styles": "modules/ext.eventLogging.jsonSchema.styles/jsonSchema.css",
-			"position": "top"
+			"styles": "modules/ext.eventLogging.jsonSchema.styles/jsonSchema.css"
 		}
 	},
 	"ResourceFileModulePaths": {
