@@ -90,16 +90,6 @@
 				"mobile"
 			]
 		},
-		"ext.eventLogging.subscriber": {
-			"scripts": [],
-			"dependencies": [
-				"ext.eventLogging"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
-			]
-		},
 		"ext.eventLogging.debug": {
 			"scripts": [
 				"modules/ext.eventLogging.debug/debug.js"
