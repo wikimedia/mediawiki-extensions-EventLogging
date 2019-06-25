@@ -133,9 +133,6 @@
 		"ResourceLoaderGetConfigVars": [
 			"EventLoggingHooks::onResourceLoaderGetConfigVars"
 		],
-		"ResourceLoaderRegisterModules": [
-			"EventLoggingHooks::onResourceLoaderRegisterModules"
-		],
 		"GetPreferences": [
 			"EventLoggingHooks::onGetPreferences"
 		],

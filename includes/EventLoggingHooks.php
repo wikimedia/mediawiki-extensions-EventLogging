@@ -60,40 +60,6 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * ResourceLoaderRegisterModules hook handler.
-	 * Allows extensions to register schema modules client side. To log events for
-	 * schemas that have been declared in this fashion, use mw#track.
-	 *
-	 * @par Example using extension.json (manifest_version 2)
-	 * @code
-	 * {
-	 *     "attributes": {
-	 *         "EventLogging": {
-	 *             "Schemas": {
-	 *                 "MultimediaViewerNetworkPerformance": 7917896
-	 *             }
-	 *         }
-	 *     }
-	 * }
-	 * @endcode
-	 *
-	 * @param ResourceLoader $resourceLoader
-	 */
-	public static function onResourceLoaderRegisterModules( ResourceLoader $resourceLoader ) {
-		$schemas = self::getSchemas();
-
-		$modules = [];
-		foreach ( $schemas as $schemaName => $rev ) {
-			$modules[ "schema.$schemaName" ] = [
-				'deprecated'   => 'See https://phabricator.wikimedia.org/T205744 for migration info.',
-				'dependencies' => 'ext.eventLogging',
-				'targets'      => [ 'desktop', 'mobile' ],
-			];
-		}
-		$resourceLoader->register( $modules );
-	}
-
-	/**
 	 * @param array &$vars
 	 */
 	public static function onResourceLoaderGetConfigVars( &$vars ) {
