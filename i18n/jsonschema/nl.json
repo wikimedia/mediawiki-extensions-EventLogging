@@ -3,7 +3,8 @@
 		"authors": [
 			"Siebrand",
 			"Esketti",
-			"Macofe"
+			"Macofe",
+			"Mainframe98"
 		]
 	},
 	"jsonschema-badidref": "Onjuiste idref: \"$1\"",
@@ -15,6 +16,6 @@
 	"jsonschema-invalid-notinenum": "Waarde <code>$1</code> staat niet in de lijst voor eigenschap \"$2\"",
 	"apihelp-jsonschema-description": "Het ophalen van een JSON-Schema pagina.",
 	"apihelp-jsonschema-param-revid": "Schema herziening ID.",
-	"apihelp-jsonschema-param-title": "Schema naam.",
+	"apihelp-jsonschema-param-title": "Schemanaam.",
 	"apihelp-jsonschema-example-1": "Ophalen schema voor herziening 1234"
 }
