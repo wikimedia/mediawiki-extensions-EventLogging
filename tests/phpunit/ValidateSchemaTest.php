@@ -142,6 +142,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		);
 		$this->assertTrue( $valid, 'Event with non mandatory properties validates' );
 	}
+
 	/**
 	* An empty event should validate if event does not have
 	* mandatory properties

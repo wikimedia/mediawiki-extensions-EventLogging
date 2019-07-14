@@ -48,6 +48,7 @@ class JsonSchemaIndex {
 	public $root;
 	/** @var array */
 	public $idtable;
+
 	/**
 	 * The whole tree is indexed on instantiation of this class.
 	 * @param array|null $schema
