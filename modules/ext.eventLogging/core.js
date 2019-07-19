@@ -10,10 +10,24 @@
 		// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
 		//            If set to false (default), then events will not be logged.
 		// - schemaRevision: Object mapping schema names to revision IDs
-		config = require( './data.json' );
+		config = require( './data.json' ),
+		BackgroundQueue = require( './BackgroundQueue.js' ),
+		queue = ( new BackgroundQueue() ),
+		isDntEnabled;
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
+
+	isDntEnabled = (
+		// Support: Firefox < 32 (yes/no)
+		/1|yes/.test( navigator.doNotTrack ) ||
+		// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
+		window.doNotTrack === '1'
+	);
+
+	if ( isDntEnabled ) {
+		mw.log.warn( 'DNT is on, logging disabled' );
+	}
 
 	/**
 	 * Client-side EventLogging API, including pub/sub subscriber functionality.
@@ -100,31 +114,31 @@
 			var message;
 			if ( url.length > core.maxUrlSize ) {
 				message = 'Url exceeds maximum length';
-				mw.eventLog.logFailure( schemaName, 'urlSize' );
+				core.logFailure( schemaName, 'urlSize' );
 				mw.track( 'eventlogging.error', mw.format( '[$1] $2', schemaName, message ) );
 				return message;
 			}
 		},
 
 		/**
-		 * Transfer data to a remote server by making a lightweight HTTP
-		 * request to the specified URL.
-		 *
-		 * If the user expressed a preference not to be tracked, or if
-		 * $wgEventLoggingBaseUri is unset, this method is a no-op.
+		 * Whether the user expressed a preference to not be tracked
 		 *
 		 * See https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack
+		 *
+		 * @property isDntEnabled
+		 * @type boolean
+		 */
+		isDntEnabled: isDntEnabled,
+
+		/**
+		 * Makes a lightweight HTTP request to a specified URL, using the best means
+		 * available to this user agent.  Respects DNT and falls back to creating an img
+		 * element on user agents without navigator.sendBeacon.
 		 *
 		 * @param {string} url URL to request from the server.
 		 * @return undefined
 		 */
-		sendBeacon: (
-			// Support: Firefox < 32 (yes/no)
-			/1|yes/.test( navigator.doNotTrack ) ||
-			// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
-			window.doNotTrack === '1' ||
-			!config.baseUrl
-		) ?
+		sendBeacon: isDntEnabled ?
 			function () {} :
 			navigator.sendBeacon ?
 				function ( url ) {
@@ -133,6 +147,14 @@
 					} catch ( e ) {}
 				} :
 				function ( url ) { document.createElement( 'img' ).src = url; },
+
+		/**
+		 * Add a pending callback to be flushed at a later time by the background queue
+		 *
+		 * @param {Function} callback to enqueue and run when the queue is processed
+		 * @return undefined
+		 */
+		enqueue: queue.add,
 
 		/**
 		 * Construct and transmit to a remote server a record of some event
@@ -152,10 +174,17 @@
 				deferred = $.Deferred();
 
 			if ( !sizeError ) {
-				core.sendBeacon( url );
+				if ( config.baseUrl || debugMode ) {
+					core.enqueue( function () {
+						core.sendBeacon( url );
+					} );
+				}
+
 				if ( debugMode ) {
 					mw.track( 'eventlogging.debug', event );
 				}
+				// TODO: deprecate the signature of this method by returning a meaningless
+				// promise and moving the sizeError checking into debug mode
 				deferred.resolveWith( event, [ event ] );
 			} else {
 				deferred.rejectWith( event, [ event, sizeError ] );
@@ -244,6 +273,7 @@
 			config = $.extend( {}, config, opts );
 			return oldConfig;
 		};
+		core.BackgroundQueue = BackgroundQueue;
 	}
 
 	module.exports = core;
