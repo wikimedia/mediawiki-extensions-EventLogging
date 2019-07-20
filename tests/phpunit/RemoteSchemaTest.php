@@ -8,6 +8,8 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use Wikimedia\TestingAccessWrapper;
+
 /**
  * @group EventLogging
  * @covers RemoteSchema
@@ -24,24 +26,13 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
 	protected function setUp() {
-		global $wgEventLoggingSchemaApiUri;
+		$this->setMwGlobals( [
+			'wgEventLoggingSchemaApiUri' => 'https://schema.test/api',
+		] );
 
 		parent::setUp();
 
-		$this->cache = $this
-			->getMockBuilder( MemcachedPhpBagOStuff::class )
-			->disableOriginalConstructor()
-			->getMock();
-
-		$this->cache
-			->expects( $this->once() )
-			->method( 'makeGlobalKey' )
-			->with(
-				'eventlogging-schema',
-				$wgEventLoggingSchemaApiUri,
-				99
-			)
-			->willReturn( 'eventlogging-schema:--:99' );
+		$this->cache = new HashBagOStuff();
 
 		$this->http = $this->getMock( stdClass::class, [ 'get' ] );
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
@@ -52,22 +43,13 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * This is the most common scenario.
 	 */
 	public function testSchemaInCache() {
-		// If the revision was in memcached...
-		$this->cache
-			->expects( $this->once() )
-			->method( 'get' )
-			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
-			->will( $this->returnValue( $this->statusSchema ) );
+		// The revision is in cache...
+		$this->cache->set( $this->schema->key, $this->statusSchema );
 
-		// ...no HTTP call will need to be made
+		// No HTTP call will be made
 		$this->http
 			->expects( $this->never() )
 			->method( 'get' );
-
-		// ...so no lock will be acquired
-		$this->cache
-			->expects( $this->never() )
-			->method( 'add' );
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 	}
@@ -79,13 +61,18 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * @covers RemoteSchema::get
 	 */
 	public function testContentLocallyCached() {
-		$this->cache
-			->expects( $this->once() )  // <-- the assert
-			->method( 'get' )
-			->will( $this->returnValue( $this->statusSchema ) );
-		$this->schema->get();
-		$this->schema->get();
-		$this->schema->get();
+		// The revision is in cache...
+		$this->cache->set( $this->schema->key, $this->statusSchema );
+
+		// The cache is loaded into the class
+		$this->assertEquals( $this->statusSchema, $this->schema->get(), 'first' );
+
+		// On repeat calls, it will neither use the cache nor the HTTP,
+		// rather keep the value we stored locally in the object.
+		$this->cache->clear();
+
+		$this->assertEquals( $this->statusSchema, $this->schema->get(), 'second repeat' );
+		$this->assertEquals( $this->statusSchema, $this->schema->get(), 'third repeat' );
 	}
 
 	/**
@@ -93,22 +80,10 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * be retrieved via HTTP instead.
 	 */
 	public function testSchemaNotInCacheDoUpdate() {
-		// If the revision was not in memcached...
-		$this->cache
-			->expects( $this->once() )
-			->method( 'get' )
-			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
-			->will( $this->returnValue( false ) );
+		// If the revision is not in cache...
+		$this->cache->clear();
 
-		// ...RemoteSchema will attempt to acquire an update lock:
-		$this->cache
-			->expects( $this->any() )
-			->method( 'add' )
-			->with( $this->equalTo( 'eventlogging-schema:--:99:lock' ) )
-			->will( $this->returnValue( true ) );
-
-		// With the lock acquired, we'll see an HTTP request
-		// for the revision:
+		// ... we'll see an HTTP request for the revision
 		$this->http
 			->expects( $this->once() )
 			->method( 'get' )
@@ -128,22 +103,14 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	 * update lock cannot be acquired.
 	 */
 	public function testSchemaNotInCacheNoUpdate() {
-		// If the revision was not in memcached...
-		$this->cache
-			->expects( $this->once() )
-			->method( 'get' )
-			->with( $this->equalTo( 'eventlogging-schema:--:99' ) )
-			->will( $this->returnValue( false ) );
+		// If the revision is not in cache...
+		$this->cache->clear();
 
-		// ...we'll see an attempt to acquire update lock,
-		// which we'll deny:
-		$this->cache
-			->expects( $this->once() )
-			->method( 'add' )
-			->with( $this->equalTo( 'eventlogging-schema:--:99:lock' ) )
-			->will( $this->returnValue( false ) );
+		// ... and the key is locked by another request,
+		$wschema = TestingAccessWrapper::newFromObject( $this->schema );
+		$wschema->lock();
 
-		// Without a lock, no HTTP requests will be made:
+		// then no HTTP request will be made:
 		$this->http
 			->expects( $this->never() )
 			->method( 'get' );
