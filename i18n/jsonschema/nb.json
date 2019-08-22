@@ -15,5 +15,6 @@
 	"apihelp-jsonschema-summary": "Hent ei JSON Schema-side.",
 	"apihelp-jsonschema-param-revid": "Skjemaets revisjons-ID.",
 	"apihelp-jsonschema-param-title": "Skjemanavn.",
-	"apihelp-jsonschema-example-1": "Hent skjema for revisjon 1234"
+	"apihelp-jsonschema-example-1": "Hent skjema for revisjon 1234",
+	"apihelp-jsonschema-example-2": "Hent skjema for den siste revisjonen av Schema:Test"
 }
