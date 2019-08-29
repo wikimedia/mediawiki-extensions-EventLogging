@@ -59,14 +59,11 @@ class EventLoggingHooks {
 		return $schemas;
 	}
 
-	/**
-	 * @param array &$vars
-	 */
-	public static function onResourceLoaderGetConfigVars( &$vars ) {
-		global $wgEventLoggingSchemaApiUri;
-
-		$vars[ 'wgEventLoggingSchemaApiUri' ] = $wgEventLoggingSchemaApiUri;
-		$vars[ 'wgEventLoggingSchemaRevision' ] = self::getSchemas();
+	public static function getModuleData( ResourceLoaderContext $context, Config $config ) {
+		return [
+			'baseUrl' => $config->get( 'EventLoggingBaseUri' ),
+			'schemaRevision' => self::getSchemas(),
+		];
 	}
 
 	/**

@@ -29,7 +29,7 @@
 		baseUrl,
 		handleEventLoggingDebug;
 
-	schemaApiQueryUrl = mw.config.get( 'wgEventLoggingSchemaApiUri' );
+	schemaApiQueryUrl = require( './data.json' ).EventLoggingSchemaApiUri;
 	schemaApiQueryParams = {
 		action: 'query',
 		prop: 'revisions',
