@@ -3,7 +3,8 @@
 		"authors": [
 			"Andriykopanytsia",
 			"Ата",
-			"Piramidion"
+			"Piramidion",
+			"Movses"
 		]
 	},
 	"jsonschema-badidref": "Неправильне посилання на id: \"$1\"",
@@ -17,5 +18,6 @@
 	"apihelp-jsonschema-summary": "Отримати сторінку JSON-схеми.",
 	"apihelp-jsonschema-param-revid": "ID версії схеми.",
 	"apihelp-jsonschema-param-title": "Назва схеми.",
-	"apihelp-jsonschema-example-1": "Отримати схему для версії 1234"
+	"apihelp-jsonschema-example-1": "Отримати схему для версії 1234",
+	"apihelp-jsonschema-example-2": "Отримати схему для останньої версії Schema:Test"
 }
