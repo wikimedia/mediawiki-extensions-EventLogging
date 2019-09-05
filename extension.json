@@ -76,9 +76,7 @@
 				"Schema.js",
 				{
 					"name": "data.json",
-					"config": {
-						"baseUrl": "EventLoggingBaseUri"
-					}
+					"callback": "EventLoggingHooks::getModuleData"
 				}
 			],
 			"dependencies": [
@@ -91,8 +89,14 @@
 			]
 		},
 		"ext.eventLogging.debug": {
-			"scripts": [
-				"modules/ext.eventLogging.debug/debug.js"
+			"localBasePath": "modules/ext.eventLogging.debug/",
+			"remoteExtPath": "EventLogging/modules/ext.eventLogging.debug/",
+			"packageFiles": [
+				"debug.js",
+				{
+					"name": "data.json",
+					"config": [ "EventLoggingSchemaApiUri" ]
+				}
 			],
 			"targets": [
 				"desktop",
@@ -129,9 +133,6 @@
 		"BeforePageDisplay": [
 			"EventLoggingHooks::onBeforePageDisplay",
 			"JsonSchemaHooks::onBeforePageDisplay"
-		],
-		"ResourceLoaderGetConfigVars": [
-			"EventLoggingHooks::onResourceLoaderGetConfigVars"
 		],
 		"GetPreferences": [
 			"EventLoggingHooks::onGetPreferences"

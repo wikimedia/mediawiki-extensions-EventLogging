@@ -5,11 +5,12 @@
 ( function () {
 	'use strict';
 
-	var core, baseUrl, debugMode;
-
-	// This corresponds to the $wgEventLoggingBaseUri configuration in PHP.
-	// If set to false (default), then events will not be logged.
-	baseUrl = require( './data.json' ).baseUrl;
+	var core, debugMode,
+		// config contains:
+		// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
+		//            If set to false (default), then events will not be logged.
+		// - schemaRevision: Object mapping schema names to revision IDs
+		config = require( './data.json' );
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
@@ -50,7 +51,7 @@
 		 * @return {Number} the revision id configured for this schema by instrumentation.
 		 */
 		getRevision: function ( schemaName ) {
-			return mw.config.get( 'wgEventLoggingSchemaRevision' )[ schemaName ] || -1;
+			return config.schemaRevision[ schemaName ] || -1;
 		},
 
 		/**
@@ -83,7 +84,7 @@
 		 */
 		makeBeaconUrl: function ( data ) {
 			var queryString = encodeURIComponent( JSON.stringify( data ) );
-			return baseUrl + '?' + queryString + ';';
+			return config.baseUrl + '?' + queryString + ';';
 		},
 
 		/**
@@ -122,7 +123,7 @@
 			/1|yes/.test( navigator.doNotTrack ) ||
 			// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
 			window.doNotTrack === '1' ||
-			!baseUrl
+			!config.baseUrl
 		) ?
 			function () {} :
 			navigator.sendBeacon ?
@@ -235,6 +236,15 @@
 			return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 		}
 	};
+
+	// Not allowed outside unit tests
+	if ( window.QUnit ) {
+		core.setOptionsForTest = function ( opts ) {
+			var oldConfig = config;
+			config = $.extend( {}, config, opts );
+			return oldConfig;
+		};
+	}
 
 	module.exports = core;
 

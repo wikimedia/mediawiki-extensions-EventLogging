@@ -5,18 +5,15 @@
 	QUnit.module( 'ext.eventLogging', QUnit.newMwEnvironment( {
 		setup: function () {
 			this.suppressWarnings();
-			mw.config.set( 'wgEventLoggingBaseUri', '#' );
-			mw.config.set( 'wgEventLoggingSchemaRevision', { earthquake: 123 } );
+			mw.eventLog.setOptionsForTest( {
+				baseUrl: '#',
+				schemaRevision: { earthquake: 123 }
+			} );
 		},
 		teardown: function () {
 			this.restoreWarnings();
 		}
 	} ) );
-
-	QUnit.test( 'Configuration', function ( assert ) {
-		assert.ok( mw.config.exists( 'wgEventLoggingBaseUri' ), 'Global config var "wgEventLoggingBaseUri" exists' );
-		assert.ok( mw.config.exists( 'wgEventLoggingSchemaRevision' ), 'Global config var "wgEventLoggingSchemaRevision" exists' );
-	} );
 
 	QUnit.test( 'eventInSample', function ( assert ) {
 		assert.strictEqual( mw.eventLog.eventInSample( 0 ), false );
