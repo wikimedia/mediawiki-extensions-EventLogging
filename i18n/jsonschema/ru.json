@@ -5,7 +5,8 @@
 			"Okras",
 			"Macofe",
 			"Facenapalm",
-			"Diralik"
+			"Diralik",
+			"Movses"
 		]
 	},
 	"jsonschema-badidref": "Неверный idref: \"$1\"",
@@ -19,5 +20,6 @@
 	"apihelp-jsonschema-summary": "Получить страницу JSON-схемы.",
 	"apihelp-jsonschema-param-revid": "Идентификатор версии схемы.",
 	"apihelp-jsonschema-param-title": "Имя схемы.",
-	"apihelp-jsonschema-example-1": "Получить схему для версии 1234"
+	"apihelp-jsonschema-example-1": "Получить схему для версии 1234",
+	"apihelp-jsonschema-example-2": "Получить схему для самой последней версии Schema:Test"
 }
