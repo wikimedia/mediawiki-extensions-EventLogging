@@ -191,7 +191,7 @@
 		 * "random space"
 		 * @private
 		 * @param {number} populationSize One in how many should return true.
-		 * @param {string} [token] at least 32 bit integer in HEX format
+		 * @param {string} [explicitToken] at least 32 bit integer in HEX format
 		 * @return {boolean}
 		 */
 		randomTokenMatch: function ( populationSize, explicitToken ) {

@@ -46,7 +46,7 @@
 		// Convert rate to population size
 		var pop = samplingRate !== undefined ? ( 1 / samplingRate ) : this.populationSize;
 
-		if ( mw.eventLog.inSample( pop ) ) {
+		if ( mw.eventLog.eventInSample( pop ) ) {
 			mw.track(
 				'event.' + this.name,
 				$.extend( {}, this.defaults, data )
