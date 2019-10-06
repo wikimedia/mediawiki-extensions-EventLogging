@@ -8,6 +8,7 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use PHPUnit\Framework\MockObject\MockObject;
 use Wikimedia\TestingAccessWrapper;
 
 /**
@@ -16,9 +17,9 @@ use Wikimedia\TestingAccessWrapper;
  */
 class RemoteSchemaTest extends MediaWikiTestCase {
 
-	/** @var BagOStuff|PHPUnit_Framework_MockObject_MockObject */
+	/** @var BagOStuff|MockObject */
 	private $cache;
-	/** @var PHPUnit_Framework_MockObject_MockObject */
+	/** @var MockObject */
 	private $http;
 	/** @var RemoteSchema */
 	private $schema;
