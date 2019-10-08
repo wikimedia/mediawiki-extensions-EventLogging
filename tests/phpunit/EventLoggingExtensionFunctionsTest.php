@@ -67,7 +67,7 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	 * @covers EventLogging::schemaValidate
 	 */
 	public function testSchemaInvalidate() {
-		$this->setExpectedException( 'JsonSchemaException' );
+		$this->expectException( JsonSchemaException::class );
 		EventLogging::schemaValidate( self::$invalidObject, self::$validSchema );
 	}
 }
