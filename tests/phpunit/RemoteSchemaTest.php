@@ -26,7 +26,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
-	protected function setUp() {
+	protected function setUp() : void {
 		$this->setMwGlobals( [
 			'wgEventLoggingSchemaApiUri' => 'https://schema.test/api',
 		] );

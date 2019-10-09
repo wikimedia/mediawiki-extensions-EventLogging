@@ -121,9 +121,9 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	/**
 	*
 	* @covers EventLogging::schemaValidate
-	* @expectedException JsonSchemaException
 	**/
 	public function testInvalidEvent() {
+		$this->expectException( JsonSchemaException::class );
 		$valid = EventLogging::schemaValidate(
 			json_decode( self::INVALID_EVENT_MISSING_REQUIRED_FIELD, true ),
 			json_decode( self::VALID_JSON_SCHEMA, true )
