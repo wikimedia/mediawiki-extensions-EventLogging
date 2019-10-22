@@ -35,7 +35,9 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 		$this->cache = new HashBagOStuff();
 
-		$this->http = $this->getMock( stdClass::class, [ 'get' ] );
+		$this->http = $this->getMockBuilder( stdClass::class )
+			->setMethods( [ 'get' ] )
+			->getMock();
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
 	}
 
