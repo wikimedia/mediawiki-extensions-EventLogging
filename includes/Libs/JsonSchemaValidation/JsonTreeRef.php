@@ -245,6 +245,7 @@ class JsonTreeRef {
 				$nodename = $key;
 			}
 		}
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		$value = $this->node[$key];
 		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, $key );
 
@@ -267,6 +268,7 @@ class JsonTreeRef {
 		$nodename = $itemname . " #" . ( (string)$i + 1 );
 		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, $i );
 
+		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		return new JsonTreeRef( $this->node[$i], $this, $i, $nodename, $schemai );
 	}
 

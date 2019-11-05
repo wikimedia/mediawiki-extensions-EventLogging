@@ -111,7 +111,7 @@ class JsonSchemaContent extends JsonContent {
 	 * use a schema.
 	 * @param string $dbKey DB key of schema article
 	 * @param int $revId Revision ID of schema article
-	 * @return array Nested array with each sub-array having a language, header
+	 * @return array[] Nested array with each sub-array having a language, header
 	 *  (message key), and code
 	 */
 	public function getCodeSamples( $dbKey, $revId ) {
