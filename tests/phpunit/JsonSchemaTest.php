@@ -65,9 +65,9 @@ class JsonSchemaTest extends MediaWikiTestCase {
 
 	/**
 	 * Tests JSON->HTML representation.
-	 * @covers JsonSchemaContent::getHighlightHtml
+	 * @covers JsonSchemaContent::getText
 	 */
-	public function testGetHighlightHtml() {
+	public function testGetText() {
 		$content = new JsonSchemaContent( self::EVIL_JSON );
 		$out = $content->getParserOutput(
 			Title::newFromText( 'Test' ),
