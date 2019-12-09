@@ -14,8 +14,9 @@
 	"jsonschema-invalidnode": "Ongeldige node: \"$1\" werd verwacht, \"$2\" is waargenomen. Pad: \"$3\"",
 	"jsonschema-invalid-missingfield": "Het verplichte veld \"$1\" ontbreekt",
 	"jsonschema-invalid-notinenum": "Waarde <code>$1</code> staat niet in de lijst voor eigenschap \"$2\"",
-	"apihelp-jsonschema-description": "Het ophalen van een JSON-Schema pagina.",
-	"apihelp-jsonschema-param-revid": "Schema herziening ID.",
+	"apihelp-jsonschema-description": "Een JSON-Schema pagina ophalen.",
+	"apihelp-jsonschema-summary": "Een JSON-Schema pagina ophalen.",
+	"apihelp-jsonschema-param-revid": "Schema versie ID.",
 	"apihelp-jsonschema-param-title": "Schemanaam.",
-	"apihelp-jsonschema-example-1": "Ophalen schema voor herziening 1234"
+	"apihelp-jsonschema-example-1": "Schema ophalen voor versie 1234"
 }
