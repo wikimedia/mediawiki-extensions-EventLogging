@@ -53,7 +53,7 @@ class JsonSchemaException extends Exception {
 	public $subtype;
 
 	/**
-	 * @param string $code
+	 * @param string|int $code
 	 * @param string ...$args
 	 */
 	public function __construct( $code, ...$args ) {

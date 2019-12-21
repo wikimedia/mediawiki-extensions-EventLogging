@@ -55,7 +55,7 @@ class TreeRef {
 	/** @var TreeRef|null */
 	public $parent;
 
-	/** @var int */
+	/** @var int|null */
 	public $nodeindex;
 
 	/** @var string */
@@ -64,7 +64,7 @@ class TreeRef {
 	/**
 	 * @param array $node
 	 * @param TreeRef|null $parent
-	 * @param int $nodeindex
+	 * @param int|null $nodeindex
 	 * @param string $nodename
 	 */
 	public function __construct( $node, $parent, $nodeindex, $nodename ) {

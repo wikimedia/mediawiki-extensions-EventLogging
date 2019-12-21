@@ -95,7 +95,7 @@ class JsonSchemaIndex {
 	 * the node is an idref.
 	 * @param array $node
 	 * @param TreeRef|null $parent
-	 * @param int $nodeindex
+	 * @param int|null $nodeindex
 	 * @param string $nodename
 	 * @return TreeRef
 	 * @throws JsonSchemaException

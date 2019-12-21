@@ -76,7 +76,7 @@ class ApiJsonSchema extends ApiBase {
 			$title = $rev->getTitle();
 			if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
-					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400
+					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ?: '' ) ], null, null, 400
 				);
 			}
 
@@ -99,7 +99,7 @@ class ApiJsonSchema extends ApiBase {
 			$title = Title::newFromText( $params['title'], NS_SCHEMA );
 			if ( !$title || !$title->exists() || !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
-					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ) ], null, null, 400
+					[ 'apierror-invalidtitle', wfEscapeWikiText( $params['title'] ) ], null, null, 400
 				);
 			}
 
@@ -112,6 +112,7 @@ class ApiJsonSchema extends ApiBase {
 			$this->dieWithError( [ 'apierror-nosuchrevid', $rev->getId() ], null, null, 400 );
 		}
 
+		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 		$this->markCacheable( $rev );
 		'@phan-var JsonSchemaContent $content';
 		$schema = $content->getJsonData();

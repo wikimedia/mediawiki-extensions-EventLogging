@@ -121,19 +121,19 @@ class JsonTreeRef {
 			return $this->node['title'];
 		}
 
-		return $this->nodeindex;
+		return (string)$this->nodeindex;
 	}
 
 	/**
 	 * Rename a user key.  Useful for interactive editing/modification, but not
 	 * so helpful for static interpretation.
-	 * @param string $newindex
+	 * @param int $newindex
 	 */
 	public function renamePropname( $newindex ) {
 		$oldindex = $this->nodeindex;
 		$this->parent->node[$newindex] = $this->node;
 		$this->nodeindex = $newindex;
-		$this->nodename = $newindex;
+		$this->nodename = (string)$newindex;
 		$this->fullindex = $this->getFullIndex();
 		unset( $this->parent->node[$oldindex] );
 	}
@@ -220,7 +220,7 @@ class JsonTreeRef {
 
 	/**
 	 * Return the child ref for $this ref associated with a given $key
-	 * @param string $key
+	 * @param int $key
 	 * @return JsonTreeRef
 	 * @throws JsonSchemaException
 	 */
@@ -238,7 +238,7 @@ class JsonTreeRef {
 			if ( gettype( $snode['additionalProperties'] ) === 'boolean' ) {
 				if ( !$snode['additionalProperties'] ) {
 					throw new JsonSchemaException( 'jsonschema-invalidkey',
-						$key, $this->getDataPathTitles() );
+						(string)$key, $this->getDataPathTitles() );
 				}
 			} else {
 				$schemadata = $snode['additionalProperties'];
@@ -247,7 +247,7 @@ class JsonTreeRef {
 		}
 		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		$value = $this->node[$key];
-		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, $key );
+		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, (string)$key );
 
 		return new JsonTreeRef( $value, $this, $key, $nodename, $schemai );
 	}
@@ -265,8 +265,8 @@ class JsonTreeRef {
 			$schemanode = [];
 		}
 		$itemname = $schemanode['title'] ?? "Item";
-		$nodename = $itemname . " #" . ( (string)$i + 1 );
-		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, $i );
+		$nodename = $itemname . " #" . ( (string)( $i + 1 ) );
+		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, (string)$i );
 
 		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
 		return new JsonTreeRef( $this->node[$i], $this, $i, $nodename, $schemai );

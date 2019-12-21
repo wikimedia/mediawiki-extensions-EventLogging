@@ -134,7 +134,7 @@ class EventLogging {
 	 * @return bool True if the event should be included (sampled in), false if not (sampled out)
 	 */
 	public static function sessionInSample( $populationSize, $sessionId ) {
-		$decimal = base_convert( substr( $sessionId, 0, 8 ), 16, 10 );
+		$decimal = (int)base_convert( substr( $sessionId, 0, 8 ), 16, 10 );
 		return $decimal % $populationSize === 0;
 	}
 }

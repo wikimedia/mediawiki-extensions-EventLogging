@@ -27,7 +27,7 @@ class JsonSchemaContent extends JsonContent {
 	 */
 	public static function resolve( $ref ) {
 		list( $title, $revId ) = explode( '/', $ref );
-		$rs = new RemoteSchema( $title, $revId );
+		$rs = new RemoteSchema( $title, (int)$revId );
 		return $rs->get();
 	}
 
@@ -92,7 +92,7 @@ class JsonSchemaContent extends JsonContent {
 		if ( $key === '$ref' ) {
 			$valParts = explode( '/', $val, 2 );
 			if ( !isset( $valParts[1] ) ) {
-				$revId = $valParts[1];
+				$revId = (int)$valParts[1];
 				$title = Revision::newFromId( $revId )->getTitle();
 				$link = Linker::link( $title, htmlspecialchars( $val ), [],
 					[ 'oldid' => $revId ] );
