@@ -10,6 +10,7 @@
 		"mw": false
 	},
 	"rules": {
-		"valid-jsdoc": 0
+		"valid-jsdoc": 0,
+		"no-jquery/variable-pattern": "warn"
 	}
 }
