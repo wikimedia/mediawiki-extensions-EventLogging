@@ -15,7 +15,7 @@
  */
 class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 
-	/** @var array: a basic JSON schema, decoded to associative array. **/
+	/** @var array: a basic JSON schema, decoded to associative array. */
 	private static $validSchema = [
 		'properties' => [
 			'valid' => [
@@ -37,10 +37,10 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 		]
 	];
 
-	/** @var array: conforms to $validSchema. **/
+	/** @var array: conforms to $validSchema. */
 	private static $validObject = [ 'valid' => true, 'action' => 'history' ];
 
-	/** @var array: does not conform to $validSchema. **/
+	/** @var array: does not conform to $validSchema. */
 	private static $invalidObject = [ 'valid' => true, 'action' => 'cache' ];
 
 	const UGLY_JSON = '{"nested":{"value":"{}"}}';

@@ -15,9 +15,8 @@
 class SerializeEventTest extends MediaWikiTestCase {
 
 	/**
-	*
-	* Empty event should be returned as an object.
-	**/
+	 * Empty event should be returned as an object.
+	 */
 	public function testSerializeEventEmptyEvent() {
 		$encapsulatedEvent = [
 			'event'            => [],
@@ -30,9 +29,8 @@ class SerializeEventTest extends MediaWikiTestCase {
 	}
 
 	/**
-	*
-	* Event should be returned without modifications
-	**/
+	 * Event should be returned without modifications
+	 */
 	public function testSerializeEventHappyCase() {
 		$event = [];
 		$event['prop1'] = 'blah';

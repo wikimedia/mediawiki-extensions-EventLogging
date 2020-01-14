@@ -107,9 +107,9 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	}
 
 	/**
-	* A valid event should, ahem, validate
-	* @covers EventLogging::schemaValidate
-	**/
+	 * A valid event should, ahem, validate
+	 * @covers EventLogging::schemaValidate
+	 */
 	public function testValidEvent() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( self::VALID_EVENT, true ),
@@ -119,9 +119,8 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	}
 
 	/**
-	*
-	* @covers EventLogging::schemaValidate
-	**/
+	 * @covers EventLogging::schemaValidate
+	 */
 	public function testInvalidEvent() {
 		$this->expectException( JsonSchemaException::class );
 		$valid = EventLogging::schemaValidate(
@@ -132,9 +131,9 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	}
 
 	/**
-	* Event with non mandatory properties validates
-	* @covers EventLogging::schemaValidate
-	**/
+	 * Event with non mandatory properties validates
+	 * @covers EventLogging::schemaValidate
+	 */
 	public function testEventNonMandatoryProperties() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( '{"Happy": "true"}', true ),
@@ -144,10 +143,10 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 	}
 
 	/**
-	* An empty event should validate if event does not have
-	* mandatory properties
-	* @covers EventLogging::schemaValidate
-	**/
+	 * An empty event should validate if event does not have
+	 * mandatory properties
+	 * @covers EventLogging::schemaValidate
+	 */
 	public function testEmptyEventForSchemaWithOptionalOnlyPropertiesIsValid() {
 		$valid = EventLogging::schemaValidate(
 			json_decode( '{}', true ),
