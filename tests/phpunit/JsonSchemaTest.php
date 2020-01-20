@@ -55,7 +55,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 		$prettyJson = $transformed->preSaveTransform(
 			new Title(), new User(), new ParserOptions() )->getNativeData();
 
-		$this->assertContains( "\n", $prettyJson, 'Transformed JSON is beautified.' );
+		$this->assertStringContainsString( "\n", $prettyJson, 'Transformed JSON is beautified.' );
 		$this->assertEquals(
 			FormatJson::decode( $prettyJson ),
 			FormatJson::decode( self::VALID_JSON_SCHEMA ),
@@ -75,6 +75,10 @@ class JsonSchemaTest extends MediaWikiTestCase {
 			null,
 			/* html */ true
 		);
-		$this->assertContains( '&lt;script>', $out->getText(), 'HTML output should be escaped' );
+		$this->assertStringContainsString(
+			'&lt;script>',
+			$out->getText(),
+			'HTML output should be escaped'
+		);
 	}
 }
