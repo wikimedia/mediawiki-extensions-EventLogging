@@ -1,8 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Yekrats"
+			"Yekrats",
+			"Robin van der Vliet"
 		]
 	},
-	"eventlogging-invalid-json": "Malvalida JSON"
+	"eventlogging-invalid-json": "Nevalida JSON"
 }
