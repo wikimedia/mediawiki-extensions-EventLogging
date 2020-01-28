@@ -74,6 +74,7 @@
 				"subscriber.js",
 				"core.js",
 				"Schema.js",
+				"BackgroundQueue.js",
 				{
 					"name": "data.json",
 					"callback": "EventLoggingHooks::getModuleData"
