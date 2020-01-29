@@ -220,7 +220,7 @@ class JsonTreeRef {
 
 	/**
 	 * Return the child ref for $this ref associated with a given $key
-	 * @param int $key
+	 * @param int|string $key
 	 * @return JsonTreeRef
 	 * @throws JsonSchemaException
 	 */
