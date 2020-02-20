@@ -12,7 +12,7 @@
 		// - schemaRevision: Object mapping schema names to revision IDs
 		config = require( './data.json' ),
 		BackgroundQueue = require( './BackgroundQueue.js' ),
-		queue = ( new BackgroundQueue() ),
+		queue = ( new BackgroundQueue( config.queueLingerSeconds ) ),
 		isDntEnabled;
 
 	// Support both 1 or "1" (T54542)
@@ -266,6 +266,98 @@
 		}
 	};
 
+	// ////////////////////////////////////////////////////////////////////
+	// MEP Upgrade Zone
+	//
+	// As we upgrade EventLogging to use MEP components, we will refactor
+	// code from above to here. https://phabricator.wikimedia.org/T238544
+	// ////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Submit an event according to the given stream's configuration.
+	 * If DNT is enabled, this method does nothing.
+	 *
+	 * @param {string} streamName name of the stream to send eventData to
+	 * @param {Object} eventData data to send to streamName
+	 */
+	core.submit = isDntEnabled ? function () {} : function ( streamName, eventData ) {
+		if ( !config.streamConfigs[ streamName ] ) {
+			//
+			// If no stream configuration has been loaded
+			// for streamName, we assume the client is
+			// misconfigured. Rather than produce potentially
+			// inconsistent data, the event submission does
+			// not proceed.
+			//
+			return;
+		}
+
+		if ( !eventData || !eventData.$schema ) {
+			//
+			// If the caller has not provided a $schema field
+			// in eventData, the event submission does not
+			// proceed.
+			//
+			// The $schema field represents the (versioned)
+			// schema which the caller expects eventData
+			// will validate against (once the appropriate
+			// additions have been made by this client).
+			//
+			mw.log.warn(
+				'submit( ' + streamName + ', eventData ) called with eventData ' +
+				'missing required field "$schema". No event will issue.'
+			);
+			return;
+		}
+
+		eventData.meta = eventData.meta || {};
+		eventData.meta.stream = streamName;
+		//
+		// The 'meta.dt' field is reserved for the internal
+		// use of this library, and should not be set by any
+		// other caller.
+		//
+		// If 'meta.dt' is provided, its value is not modified.
+		// If 'meta.dt' is not provided, a new value is computed.
+		//
+		eventData.meta.dt = eventData.meta.dt || new Date().toISOString();
+
+		//
+		// Send the processed event to be produced.
+		//
+		if ( config.serviceUri ) {
+			core.enqueue( function () {
+				navigator.sendBeacon(
+					config.serviceUri,
+					JSON.stringify( eventData )
+				);
+			} );
+		}
+	};
+
+	/**
+	 * Returns the configuration object of the given stream name.
+	 *
+	 * Modifications to the returned object will not change the actual
+	 * configuration. If there's no configuration for the passed stream,
+	 * undefined is returned.
+	 *
+	 * @private
+	 * @param {string} streamName name of the stream to return config for
+	 * @return {Object} stream configuration for the given streamName, or
+	 *                  undefined if the given streamName has no config.
+	 */
+	core.streamConfig = function ( streamName ) {
+		var streamConfig = config.streamConfigs[ streamName ];
+		if ( !streamConfig ) {
+			// In case no config has been assigned to the given streamName,
+			// return undefined, so that the developer can discern between
+			// a stream that is not configured, and a stream with config = {}.
+			return undefined;
+		}
+		return $.extend( true, {}, streamConfig );
+	};
+
 	// Not allowed outside unit tests
 	if ( window.QUnit ) {
 		core.setOptionsForTest = function ( opts ) {
@@ -274,6 +366,7 @@
 			return oldConfig;
 		};
 		core.BackgroundQueue = BackgroundQueue;
+		core.streamConfigs = config.streamConfigs;
 	}
 
 	module.exports = core;

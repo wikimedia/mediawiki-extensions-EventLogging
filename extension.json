@@ -12,7 +12,10 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.33.0"
+		"MediaWiki": ">= 1.33.0",
+		"extensions": {
+			"EventStreamConfig": "*"
+		}
 	},
 	"namespaces": [
 		{
@@ -155,6 +158,15 @@
 		},
 		"EventLoggingSchemas": {
 			"value": []
+		},
+		"EventLoggingServiceUri": {
+			"value": false
+		},
+		"EventLoggingStreamNames": {
+			"value": []
+		},
+		"EventLoggingQueueLingerSeconds": {
+			"value": 30
 		}
 	},
 	"manifest_version": 2
