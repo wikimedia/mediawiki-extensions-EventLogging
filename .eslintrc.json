@@ -2,15 +2,14 @@
 	"root": true,
 	"extends": [
 		"wikimedia/client",
-		"wikimedia/jquery"
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
 	],
 	"globals": {
-		"module": false,
-		"require": false,
-		"mw": false
+		"module": "readonly",
+		"require": "readonly"
 	},
 	"rules": {
-		"valid-jsdoc": 0,
-		"no-jquery/variable-pattern": "warn"
+		"valid-jsdoc": "off"
 	}
 }

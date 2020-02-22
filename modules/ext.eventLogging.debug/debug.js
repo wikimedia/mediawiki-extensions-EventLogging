@@ -170,9 +170,9 @@
 					JSON.stringify( event.event, null, 1 ).slice( 0, 100 ) + '...'
 				)
 			),
-			content = $( '<p>' ).html( formatted );
+			$content = $( '<p>' ).html( formatted );
 
-		content.on( 'click', function () {
+		$content.on( 'click', function () {
 			dialogPromise = dialogPromise || makeDialogPromise();
 			dialogPromise.then( function ( openDialog ) {
 				openDialog( {
@@ -186,7 +186,8 @@
 		if ( window.console && console.info ) {
 			console.info( event.schema, event );
 		}
-		mw.notification.notify( content, { autoHide: true, autoHideSeconds: 'long' } );
+		/* eslint-enable no-console */
+		mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
 	}
 
 	function validateAndDisplay( event, schema ) {
