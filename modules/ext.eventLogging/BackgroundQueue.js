@@ -21,6 +21,7 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 		pendingCallbacks = [],
 		getVisibilityChanged,
 		visibilityEvent,
+		discardingPage,
 		queue = this;
 
 	intervalSecs = intervalSecs || 30;
@@ -31,6 +32,12 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 	 * @param {Function} callback to add
 	 */
 	queue.add = function ( fn ) {
+		if ( discardingPage ) {
+			// If we're in the middle of discarding this page, every add will
+			// immediately run the callback to avoid losing data.
+			fn();
+			return;
+		}
 		pendingCallbacks.push( fn );
 		if ( !timer ) {
 			timer = setTimeout( queue.flush, intervalSecs * 1000 );
@@ -71,11 +78,25 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 		visibilityEvent = 'webkitvisibilitychange';
 	}
 
+	// Record when the page is in the process of being discarded.
+	function discardPage() {
+		discardingPage = true;
+		queue.flush();
+	}
+
 	// If the user navigates to another page or closes the tab/window/application,
 	// then send any queued events.
 	// Listen to the pagehide and visibilitychange events as Safari 12 and Mobile Safari 11
 	// don't appear to support the Page Visbility API yet.
-	window.addEventListener( 'pagehide', queue.flush );
+	window.addEventListener( 'pagehide', discardPage );
+
+	// If the page was just suspended and gets reactivated, re-enable queuing.
+	window.addEventListener( 'pageshow', function () {
+		discardingPage = false;
+	} );
+
+	// In case pageshow isn't supported, give a last-ditch attempt onunload.
+	window.addEventListener( 'unload', discardPage );
 
 	if ( getVisibilityChanged ) {
 		document.addEventListener( visibilityEvent, function () {
