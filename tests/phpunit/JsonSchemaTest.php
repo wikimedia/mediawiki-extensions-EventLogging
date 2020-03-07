@@ -53,7 +53,10 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	public function testPreSaveTransform() {
 		$transformed = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
 		$prettyJson = $transformed->preSaveTransform(
-			new Title(), new User(), new ParserOptions() )->getNativeData();
+			$this->createMock( Title::class ),
+			new User(),
+			new ParserOptions()
+		)->getNativeData();
 
 		$this->assertStringContainsString( "\n", $prettyJson, 'Transformed JSON is beautified.' );
 		$this->assertEquals(
