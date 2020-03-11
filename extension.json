@@ -128,16 +128,12 @@
 		]
 	},
 	"Hooks": {
-		"CanonicalNamespaces": [
-			"EventLoggingHooks::onCanonicalNamespaces"
-		],
+		"CanonicalNamespaces": "EventLoggingHooks::onCanonicalNamespaces",
 		"BeforePageDisplay": [
 			"EventLoggingHooks::onBeforePageDisplay",
 			"JsonSchemaHooks::onBeforePageDisplay"
 		],
-		"GetPreferences": [
-			"EventLoggingHooks::onGetPreferences"
-		],
+		"GetPreferences": "EventLoggingHooks::onGetPreferences",
 		"CodeEditorGetPageLanguage": "JsonSchemaHooks::onCodeEditorGetPageLanguage",
 		"EditFilterMergedContent": "JsonSchemaHooks::onEditFilterMergedContent",
 		"MovePageIsValidMove": "JsonSchemaHooks::onMovePageIsValidMove",
