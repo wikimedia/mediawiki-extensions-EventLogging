@@ -10,6 +10,8 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\MediaWikiServices;
+
 class EventLoggingHooks {
 
 	/**
@@ -63,6 +65,9 @@ class EventLoggingHooks {
 		return [
 			'baseUrl' => $config->get( 'EventLoggingBaseUri' ),
 			'schemaRevision' => self::getSchemas(),
+			'serviceUri' => $config->get( 'EventLoggingServiceUri' ),
+			'queueLingerSeconds' => $config->get( 'EventLoggingQueueLingerSeconds' ),
+			'streamConfigs' => self::loadEventStreamConfigs( $config )
 		];
 	}
 
@@ -82,5 +87,49 @@ class EventLoggingHooks {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
 		}
+	}
+
+	/**
+	 * Uses the EventStreamConfig extension to return a stream configs map
+	 * (stream name -> config).  The target stream configs to export are
+	 * selected using the $wgEventLoggingStreamNames MW config variable.
+	 * This is expected to be a list of stream names that are defined
+	 * in $wgEventStreams.
+	 *
+	 * EventLogging uses this within the ./data.json data file
+	 * from which it loads and configures all of the streams and stream
+	 * configs to which it is allowed to submit events.
+	 *
+	 * This function returns an array mapping explicit stream names
+	 * to their configurations.
+	 *
+	 * NOTE: We need a list of target streams to get configs for.
+	 * $wgEventStreams may not explicitly define all stream names;
+	 * it supports matching stream names by regexes.  We need to
+	 * give the EventStreamConfig StreamConfigs->get function
+	 * a list of streams to search for in $wgEventStreams.
+	 * $wgEventLoggingStreamNames is that list.
+	 *
+	 * @param \Config $config
+	 *
+	 * @return array Selected stream name -> stream configs
+	 */
+	private static function loadEventStreamConfigs(
+		\Config $config
+	): array {
+		$streamConfigs = MediaWikiServices::getInstance()->getService(
+			'EventStreamConfig.StreamConfigs'
+		);
+
+		$targetStreams = $config->get( 'EventLoggingStreamNames' );
+
+		if ( !is_array( $targetStreams ) ) {
+			throw new RuntimeException(
+				'Expected $wgEventLoggingStreamNames to be a list of stream names, got ' .
+				$targetStreams
+			);
+		}
+
+		return $streamConfigs->get( $targetStreams, false );
 	}
 }
