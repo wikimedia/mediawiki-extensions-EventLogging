@@ -281,10 +281,11 @@
 	 * @param {Object} eventData data to send to streamName
 	 */
 	core.submit = isDntEnabled ? function () {} : function ( streamName, eventData ) {
-		if ( !config.streamConfigs[ streamName ] ) {
+		if ( !config.streamConfigs[ streamName ] && !debugMode ) {
 			//
 			// If no stream configuration has been loaded
-			// for streamName, we assume the client is
+			// for streamName (and we are not in debugMode),
+			// we assume the client is
 			// misconfigured. Rather than produce potentially
 			// inconsistent data, the event submission does
 			// not proceed.
