@@ -1,6 +1,7 @@
 /**
  * EventLogging client-side debug mode: Inspect events and validation errors on
- * calls to mw.eventLog.logEvent
+ * calls to mw.eventLog.logEvent.  New Event Client code does the same
+ * but for calls to mw.eventLog.submit.
  *
  * To enable, run the following from the browser console:
  *
@@ -27,7 +28,8 @@
 		schemaApiQueryUrl,
 		schemaApiQueryParams,
 		baseUrl,
-		handleEventLoggingDebug;
+		handleEventLoggingDebug,
+		handleEventSubmitDebug;
 
 	schemaApiQueryUrl = require( './data.json' ).EventLoggingSchemaApiUri;
 	schemaApiQueryParams = {
@@ -238,6 +240,45 @@
 	mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
 		mw.log.error( mw.format( '$1: $2', 'EventLogging Validation', error ) );
 	} );
+
+	// ////////////////////////////////////////////////////////////////////
+	// MEP Upgrade Zone
+	//
+	// As we upgrade EventLogging to use MEP components, we will refactor
+	// code from above to here. https://phabricator.wikimedia.org/T238544
+	// ////////////////////////////////////////////////////////////////////
+
+	/**
+	 * @private
+	 * @param {string} streamName name of the stream to submit eventData to
+	 * @param {Object} eventData submitted
+	 */
+	function displaySubmittedEvent( streamName, eventData ) {
+		var
+			formatted = mw.format(
+				mw.html.escape( 'Submitted event to stream $1 $2' ),
+				streamName,
+				mw.html.element( 'tt', {},
+					JSON.stringify( eventData, null, 1 ).slice( 0, 100 ) + '...'
+				)
+			),
+			$content = $( '<p>' ).html( formatted );
+
+		/* eslint-disable no-console */
+		if ( window.console && console.info ) {
+			console.info( eventData );
+		}
+		/* eslint-enable no-console */
+		mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
+	}
+
+	handleEventSubmitDebug = function ( topic, params ) {
+		mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( function () {
+			displaySubmittedEvent( params.streamName, params.eventData );
+		} );
+	};
+
+	mw.trackSubscribe( 'eventlogging.eventSubmitDebug', handleEventSubmitDebug );
 
 	if ( typeof QUnit !== 'undefined' ) {
 		/**

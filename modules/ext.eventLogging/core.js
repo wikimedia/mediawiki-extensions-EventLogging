@@ -323,6 +323,14 @@
 		//
 		eventData.meta.dt = eventData.meta.dt || new Date().toISOString();
 
+		// This will use a MediaWiki notification in the browser to display the event data.
+		if ( debugMode ) {
+			mw.track(
+				'eventlogging.eventSubmitDebug',
+				{ streamName: streamName, eventData: eventData }
+			);
+		}
+
 		//
 		// Send the processed event to be produced.
 		//
