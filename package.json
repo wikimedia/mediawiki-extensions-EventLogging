@@ -14,6 +14,7 @@
 		"stylelint-config-wikimedia": "0.9.0"
 	},
 	"eslintIgnore": [
+		"docs/**",
 		"vendor/**"
 	]
 }
