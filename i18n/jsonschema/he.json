@@ -3,7 +3,8 @@
 		"authors": [
 			"Amire80",
 			"Yona b",
-			"Macofe"
+			"Macofe",
+			"חיים"
 		]
 	},
 	"jsonschema-badidref": "ערך idref שגוי: \"$1\"",
@@ -14,6 +15,7 @@
 	"jsonschema-invalid-missingfield": "חסר השדה הנדרש \"$1\"",
 	"jsonschema-invalid-notinenum": "הערך <code>$1</code> לא נמצא ב־enum של מאפיין $2",
 	"apihelp-jsonschema-description": "אחזור דף סכֵמה ב־JSON",
+	"apihelp-jsonschema-summary": "אחזר דף סכמת JSON.",
 	"apihelp-jsonschema-param-revid": "מזהה גרסה של סכֵמה",
 	"apihelp-jsonschema-param-title": "שם הסכֵמה.",
 	"apihelp-jsonschema-example-1": "אחזור סכֵמה עבור גרסה 1234"
