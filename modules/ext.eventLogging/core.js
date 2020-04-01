@@ -44,8 +44,8 @@
 
 		/**
 		 * Maximum length in chars that a beacon URL can have.
-		 * Relevant:
 		 *
+		 * Relevant:
 		 * - Length that browsers support (http://stackoverflow.com/a/417184/319266)
 		 * - Length that proxies support (e.g. Varnish)
 		 * - varnishlog (shm_reclen)
@@ -58,24 +58,25 @@
 		maxUrlSize: 2000,
 
 		/**
-		 * Get the configured revision id to use with events in a particular schema
+		 * Get the configured revision id to use with events in a particular schema.
 		 *
 		 * @private
 		 * @param {string} schemaName Canonical schema name.
-		 * @return {Number} the revision id configured for this schema by instrumentation.
+		 * @return {Number} The revision id configured for this schema by instrumentation.
 		 */
 		getRevision: function ( schemaName ) {
 			return config.schemaRevision[ schemaName ] || -1;
 		},
 
 		/**
-		 * Prepares an event for dispatch by filling defaults for any missing
-		 * properties and by encapsulating the event object in an object which
-		 * contains metadata about the event itself.
+		 * Prepare an event for dispatch.
+		 *
+		 * This encapsulates the event data in a wrapper object with
+		 * the default metadata for the current wbe page.
 		 *
 		 * @private
 		 * @param {string} schemaName Canonical schema name.
-		 * @param {Object} eventData Event instance.
+		 * @param {Object} eventData Event data.
 		 * @return {Object} Encapsulated event.
 		 */
 		prepare: function ( schemaName, eventData ) {
@@ -89,11 +90,11 @@
 		},
 
 		/**
-		 * Constructs the EventLogging URI based on the base URI and the
+		 * Construct the EventLogging URI based on the base URI and the
 		 * encoded and stringified data.
 		 *
 		 * @private
-		 * @param {Object} data Payload to send
+		 * @param {Object} data Payload to send.
 		 * @return {string|boolean} The URI to log the event.
 		 */
 		makeBeaconUrl: function ( data ) {
@@ -102,8 +103,7 @@
 		},
 
 		/**
-		 * Checks whether a beacon url is short enough,
-		 * so that it does not get truncated by varnishncsa.
+		 * Check whether a beacon url is short enough.
 		 *
 		 * @private
 		 * @param {string} schemaName Canonical schema name.
@@ -131,9 +131,11 @@
 		isDntEnabled: isDntEnabled,
 
 		/**
-		 * Makes a lightweight HTTP request to a specified URL, using the best means
-		 * available to this user agent.  Respects DNT and falls back to creating an img
-		 * element on user agents without navigator.sendBeacon.
+		 * Make a lightweight HTTP request to a specified URL, using the best means
+		 * available to this user agent.
+		 *
+		 * This respect DNT. It falls back to creating an detached image element for
+		 * browsers without `navigator.sendBeacon`.
 		 *
 		 * @param {string} url URL to request from the server.
 		 * @return undefined
@@ -209,9 +211,8 @@
 		/**
 		 * Randomise inclusion based on population size and random token.
 		 *
-		 * Use #eventInSample  or #sessionInSample
-		 * Randomise inclusion based on population size and random token.
-
+		 * Use #eventInSample or #sessionInSample instead.
+		 *
 		 * Note that token is coerced into 32 bits before calculating its mod  with
 		 * the population size, while this does not make possible to sample in a rate below
 		 * 1/2^32 and our token space is 2^80 this in practice is not a problem
@@ -244,9 +245,11 @@
 			return this.randomTokenMatch( populationSize, mw.user.sessionId() );
 		},
 
-		/*
-		* @deprecated, use eventInSample
-		*/
+		/**
+		 * @deprecated Use #eventInSample
+		 * @param {number} populationSize
+		 * @return {boolean}
+		 */
 		inSample: function ( populationSize ) {
 			return this.eventInSample( populationSize );
 		},
@@ -337,7 +340,7 @@
 	};
 
 	/**
-	 * Returns the configuration object of the given stream name.
+	 * Return the configuration object of the given stream name.
 	 *
 	 * Modifications to the returned object will not change the actual
 	 * configuration. If there's no configuration for the passed stream,
@@ -345,8 +348,8 @@
 	 *
 	 * @private
 	 * @param {string} streamName name of the stream to return config for
-	 * @return {Object} stream configuration for the given streamName, or
-	 *                  undefined if the given streamName has no config.
+	 * @return {Object|null} Stream configuration for the given streamName, or
+	 *  undefined if the given stream was not enabled (or not loaded).
 	 */
 	core.streamConfig = function ( streamName ) {
 		var streamConfig = config.streamConfigs[ streamName ];
@@ -354,7 +357,7 @@
 			// In case no config has been assigned to the given streamName,
 			// return undefined, so that the developer can discern between
 			// a stream that is not configured, and a stream with config = {}.
-			return undefined;
+			return null;
 		}
 		return $.extend( true, {}, streamConfig );
 	};
