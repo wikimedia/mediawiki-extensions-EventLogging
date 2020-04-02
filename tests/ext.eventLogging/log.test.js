@@ -6,7 +6,11 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 		this.suppressWarnings();
 		mw.eventLog.setOptionsForTest( {
 			baseUrl: '#',
-			schemaRevision: { earthquake: 123 }
+			schemasInfo: {
+				earthquake: 123,
+				// eruption events will be prepared for POSTing to EventGate.
+				eruption: '/analytics/legacy/eruption/1.0.0'
+			}
 		} );
 	},
 	teardown: function () {
@@ -15,14 +19,46 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 } ) );
 
 QUnit.test( 'logEvent()', function ( assert ) {
-	var event = {
+	var eventData = {
 		epicenter: 'Valdivia',
 		magnitude: 9.5
 	};
 
-	return mw.eventLog.logEvent( 'earthquake', event ).then( function ( e ) {
-		assert.deepEqual( e.event, event, 'logEvent promise resolves with event' );
+	return mw.eventLog.logEvent( 'earthquake', eventData ).then( function ( e ) {
+		assert.deepEqual( e.event, eventData, 'logEvent promise resolves with event' );
 		assert.equal( e.revision, 123, 'logEvent gets the revision id from config' );
+	} );
+} );
+
+QUnit.test( 'logEvent() via submit()', function ( assert ) {
+	var eventData = {
+		volcano: 'Nyiragongo',
+		Explosivity: 1
+	};
+
+	return mw.eventLog.logEvent( 'eruption', eventData ).then( function ( e ) {
+		var expectedEventData = {
+			volcano: 'Nyiragongo',
+			Explosivity: 1
+		};
+
+		assert.deepEqual(
+			e.event,
+			expectedEventData,
+			'logEvent promise resolves with event prepared for EventGate'
+		);
+
+		assert.equal(
+			e.$schema,
+			'/analytics/legacy/eruption/1.0.0',
+			'logEvent builds the $schema url from revision in config'
+		);
+
+		assert.ok( e.dt, 'dt field should be set' );
+		assert.ok( e.meta, 'meta field should be set' );
+		assert.equal( e.meta.dt, e.dt, 'meta.dt should match dt field' );
+		assert.equal( e.meta.domain, e.webHost, 'meta.domain should match webHost field' );
+		assert.strictEqual( e.revision, undefined, 'revision field should be unset' );
 	} );
 } );
 

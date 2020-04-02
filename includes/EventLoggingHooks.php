@@ -42,7 +42,10 @@ class EventLoggingHooks {
 	}
 
 	/**
-	 * Return all schemas with the requested revision id
+	 * Return all schemas registered in extension.json EventLoggingSchemas and
+	 * PHP $wgEventLoggingSchemas.  The returned array will map from schema name
+	 * to either MediaWiki (metawiki) revision id, or to a relative schema URI
+	 * for forward compatibility with Event Platform.
 	 * TODO: what happens when two extensions register the same schema with a different revision?
 	 *
 	 * @since 1.32 the EventLoggingRegisterSchemas hook is deprecated. Register
@@ -64,7 +67,7 @@ class EventLoggingHooks {
 	public static function getModuleData( ResourceLoaderContext $context, Config $config ) {
 		return [
 			'baseUrl' => $config->get( 'EventLoggingBaseUri' ),
-			'schemaRevision' => self::getSchemas(),
+			'schemasInfo' => self::getSchemas(),
 			'serviceUri' => $config->get( 'EventLoggingServiceUri' ),
 			'queueLingerSeconds' => $config->get( 'EventLoggingQueueLingerSeconds' ),
 			'streamConfigs' => self::loadEventStreamConfigs( $config )

@@ -9,7 +9,8 @@
 		// config contains:
 		// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
 		//            If set to false (default), then events will not be logged.
-		// - schemaRevision: Object mapping schema names to revision IDs
+		// - schemasInfo: Object mapping schema names to revision IDs or $schema URIs
+		// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
 		config = require( './data.json' ),
 		BackgroundQueue = require( './BackgroundQueue.js' ),
 		queue = ( new BackgroundQueue( config.queueLingerSeconds ) ),
@@ -27,6 +28,20 @@
 
 	if ( isDntEnabled ) {
 		mw.log.warn( 'DNT is on, logging disabled' );
+	}
+
+	/**
+	 * Construct the streamName for a legacy EventLogging Schema.
+	 *
+	 * Legacy EventLogging Schemas are single use and have only one associated stream.
+	 *
+	 * @ignore
+	 * @private
+	 * @param  {string} schemaName
+	 * @return {string}
+	 */
+	function makeLegacyStreamName( schemaName ) {
+		return 'eventlogging_' + schemaName;
 	}
 
 	/**
@@ -53,26 +68,36 @@
 		 *
 		 * @private
 		 * @property maxUrlSize
-		 * @type Number
+		 * @type number
 		 */
 		maxUrlSize: 2000,
 
 		/**
-		 * Get the configured revision id to use with events in a particular schema.
+		 * Get the configured revision id or $schema URI
+		 * to use with events of a particular (legacy metawiki) EventLogging schema.
 		 *
 		 * @private
 		 * @param {string} schemaName Canonical schema name.
-		 * @return {Number} The revision id configured for this schema by instrumentation.
+		 * @return {number|string}
+		 *         The revision id configured for this schema by instrumentation,
+		 *         or a string $schema URI for use with Event Platform.
 		 */
-		getRevision: function ( schemaName ) {
-			return config.schemaRevision[ schemaName ] || -1;
+		getRevisionOrSchemaUri: function ( schemaName ) {
+			return config.schemasInfo[ schemaName ] || -1;
 		},
 
 		/**
 		 * Prepare an event for dispatch.
 		 *
 		 * This encapsulates the event data in a wrapper object with
-		 * the default metadata for the current wbe page.
+		 * the default metadata for the current web page.
+		 *
+		 * NOTE: for forwards compatibility with Event Platform schemas,
+		 * we hijack the wgEventLoggingSchemas revision to encode the
+		 * $schema URI. If the value for a schema defined in
+		 * EventLoggingSchemas is a string, it is assumed
+		 * to be an Event Platform $schema URI, not a MW revision id.
+		 * In this case, the event will be prepared to be POSTed to EventGate.
 		 *
 		 * @private
 		 * @param {string} schemaName Canonical schema name.
@@ -80,13 +105,41 @@
 		 * @return {Object} Encapsulated event.
 		 */
 		prepare: function ( schemaName, eventData ) {
-			return {
-				event: eventData,
-				revision: core.getRevision( schemaName ),
-				schema: schemaName,
-				webHost: location.hostname,
-				wiki: mw.config.get( 'wgDBname' )
-			};
+			// Wrap eventData in EventLogging's EventCapsule.
+			var
+				event = {
+					event: eventData,
+					schema: schemaName,
+					webHost: location.hostname,
+					wiki: mw.config.get( 'wgDBname' )
+				},
+				revisionOrSchemaUri = core.getRevisionOrSchemaUri( schemaName );
+
+			// Foward compatibilty with Event Platform schemas and EventGate.
+			// If the wgEventLoggingSchemas entry for this schemaName is a string,
+			// assume it is the Event Platform relative $schema URI and that
+			// we want this event POSTed to EventGate.
+			// Make the event data forward compatible.
+			if ( typeof revisionOrSchemaUri === 'string' ) {
+				event.$schema = revisionOrSchemaUri;
+				// Deprecated eventlogging-processor set EventCapsule event.dt.
+				// Set it it here so it continues to be present in data
+				// for backwards compatibiliity.
+				event.dt = new Date().toISOString();
+				event.meta = {
+					// meta.dt should be the same as top level EventCapsule dt.
+					dt: event.dt,
+					// meta.domain should be the same as top level EventCapsule webHost.
+					domain: event.webHost
+				};
+			} else {
+				// Deprecated:
+				// Assume revisionOrSchemaUri is the MW revision id for this
+				// EventLogging schema.
+				event.revision = revisionOrSchemaUri;
+			}
+
+			return event;
 		},
 
 		/**
@@ -170,26 +223,35 @@
 		 * @return {jQuery.Promise} jQuery Promise object for the logging call.
 		 */
 		logEvent: function ( schemaName, eventData ) {
-			var event = core.prepare( schemaName, eventData ),
-				url = core.makeBeaconUrl( event ),
-				sizeError = core.checkUrlSize( schemaName, url ),
+			var url,
+				sizeError,
+				event = core.prepare( schemaName, eventData ),
 				deferred = $.Deferred();
 
-			if ( !sizeError ) {
-				if ( config.baseUrl || debugMode ) {
-					core.enqueue( function () {
-						core.sendBeacon( url );
-					} );
-				}
-
-				if ( debugMode ) {
-					mw.track( 'eventlogging.debug', event );
-				}
-				// TODO: deprecate the signature of this method by returning a meaningless
-				// promise and moving the sizeError checking into debug mode
+			// Assume that if $schema was set by core.prepare(), this
+			// event should be POSTed to EventGate.
+			if ( event.$schema ) {
+				core.submit( makeLegacyStreamName( schemaName ), event );
 				deferred.resolveWith( event, [ event ] );
 			} else {
-				deferred.rejectWith( event, [ event, sizeError ] );
+				url = core.makeBeaconUrl( event );
+				sizeError = core.checkUrlSize( schemaName, url );
+
+				if ( !sizeError ) {
+					if ( config.baseUrl || debugMode ) {
+						core.enqueue( function () {
+							core.sendBeacon( url );
+						} );
+					}
+					if ( debugMode ) {
+						mw.track( 'eventlogging.debug', event );
+					}
+					// TODO: deprecate the signature of this method by returning a meaningless
+					// promise and moving the sizeError checking into debug mode
+					deferred.resolveWith( event, [ event ] );
+				} else {
+					deferred.rejectWith( event, [ event, sizeError ] );
+				}
 			}
 			return deferred.promise();
 		},
@@ -379,6 +441,7 @@
 		};
 		core.BackgroundQueue = BackgroundQueue;
 		core.streamConfigs = config.streamConfigs;
+		core.makeLegacyStreamName = makeLegacyStreamName;
 	}
 
 	module.exports = core;
