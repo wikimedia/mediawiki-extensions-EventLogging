@@ -9,6 +9,10 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionRecord;
+use MediaWiki\Revision\SlotRecord;
+
 /**
  * API module for retrieving JSON Schema.
  * This avoids API result paths and returns HTTP error codes in order to
@@ -43,14 +47,14 @@ class ApiJsonSchema extends ApiBase {
 
 	/**
 	 * Set headers on the pending HTTP response.
-	 * @param Revision $rev
+	 * @param RevisionRecord $revRecord
 	 */
-	protected function markCacheable( Revision $rev ) {
+	private function markCacheable( RevisionRecord $revRecord ) {
 		$main = $this->getMain();
 		$main->setCacheMode( 'public' );
 		$main->setCacheMaxAge( 300 );
 
-		$lastModified = wfTimestamp( TS_RFC2822, $rev->getTimestamp() );
+		$lastModified = wfTimestamp( TS_RFC2822, $revRecord->getTimestamp() );
 		$main->getRequest()->response()->header( "Last-Modified: $lastModified" );
 	}
 
@@ -64,16 +68,17 @@ class ApiJsonSchema extends ApiBase {
 			);
 		}
 
+		$revLookup = MediaWikiServices::getInstance()->getRevisionLookup();
 		// If we are given revid, then look up Revision and
 		// verify that $params['title'] (if given) matches.
 		if ( isset( $params['revid'] ) ) {
-			$rev = Revision::newFromId( $params['revid'] );
-			if ( !$rev ) {
+			$revRecord = $revLookup->getRevisionById( $params['revid'] );
+			if ( !$revRecord ) {
 				$this->dieWithError(
 					[ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400
 				);
 			}
-			$title = $rev->getTitle();
+			$title = Title::newFromLinkTarget( $revRecord->getPageAsLinkTarget() );
 			if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
 					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ?: '' ) ], null, null, 400
@@ -103,17 +108,20 @@ class ApiJsonSchema extends ApiBase {
 				);
 			}
 
-			$rev = Revision::newFromId( $title->getLatestRevID() );
+			$revRecord = $revLookup->getRevisionById( $title->getLatestRevID() );
 		}
 
 		/** @var JsonSchemaContent $content */
-		$content = $rev->getContent();
+		$content = $revRecord->getContent( SlotRecord::MAIN );
 		if ( !$content ) {
-			$this->dieWithError( [ 'apierror-nosuchrevid', $rev->getId() ], null, null, 400 );
+			$this->dieWithError(
+				[ 'apierror-nosuchrevid', $revRecord->getId() ],
+				null, null, 400
+			);
 		}
 
 		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
-		$this->markCacheable( $rev );
+		$this->markCacheable( $revRecord );
 		'@phan-var JsonSchemaContent $content';
 		$schema = $content->getJsonData();
 

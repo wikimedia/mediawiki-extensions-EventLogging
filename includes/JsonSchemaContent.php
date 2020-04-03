@@ -9,6 +9,8 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\MediaWikiServices;
+
 /**
  * Represents the content of a JSON Schema article.
  */
@@ -93,7 +95,10 @@ class JsonSchemaContent extends JsonContent {
 			$valParts = explode( '/', $val, 2 );
 			if ( !isset( $valParts[1] ) ) {
 				$revId = (int)$valParts[1];
-				$title = Revision::newFromId( $revId )->getTitle();
+				$revRecord = MediaWikiServices::getInstance()
+					->getRevisionLookup()
+					->getRevisionById( $revId );
+				$title = $revRecord->getPageAsLinkTarget();
 				$link = Linker::link( $title, htmlspecialchars( $val ), [],
 					[ 'oldid' => $revId ] );
 
