@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Mormegil",
-			"Macofe"
+			"Macofe",
+			"Mormegil"
 		]
 	},
 	"jsonschema-invalid-notinenum": "Výčtový typ pro vlastnost $2 neobsahuje hodnotu <code>$1</code>"

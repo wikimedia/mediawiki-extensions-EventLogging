@@ -2,9 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Andriykopanytsia",
-			"Ата",
+			"Movses",
 			"Piramidion",
-			"Movses"
+			"Ата"
 		]
 	},
 	"jsonschema-badidref": "Неправильне посилання на id: \"$1\"",

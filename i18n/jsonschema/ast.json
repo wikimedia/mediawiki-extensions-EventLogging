@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Xuacu",
-			"Macofe"
+			"Macofe",
+			"Xuacu"
 		]
 	},
 	"jsonschema-badidref": "idref incorreuta: \"$1\"",

@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Fryed-peach",
-			"Shirayuki",
-			"Otokoume"
+			"Otokoume",
+			"Shirayuki"
 		]
 	},
 	"jsonschema-badidref": "idref の誤り:「$1」",

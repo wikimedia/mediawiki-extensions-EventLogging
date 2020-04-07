@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Justincheng12345",
-			"Macofe",
-			"Kly"
+			"Kly",
+			"Macofe"
 		]
 	},
 	"jsonschema-badidref": "錯誤 idref：「$1」",

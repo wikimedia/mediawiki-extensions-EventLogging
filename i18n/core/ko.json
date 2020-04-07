@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"아라",
+			"Revi",
 			"Ykhwong",
-			"Revi"
+			"아라"
 		]
 	},
 	"eventlogging-desc": "클라이언트 측 코드에서 이벤트를 기록하기 위한 프레임워크",

@@ -3,8 +3,8 @@
 		"authors": [
 			"AS",
 			"Base",
-			"Ата",
-			"Piramidion"
+			"Piramidion",
+			"Ата"
 		]
 	},
 	"eventlogging-desc": "Фреймворк, для додання подій до журналу з клієнтського коду",

@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Siebrand",
-			"Mirolith",
 			"Esketti",
-			"Mainframe98"
+			"Mainframe98",
+			"Mirolith",
+			"Siebrand"
 		]
 	},
 	"eventlogging-desc": "Framework voor het vastleggen van gebeurtenissen aan de clientkant",

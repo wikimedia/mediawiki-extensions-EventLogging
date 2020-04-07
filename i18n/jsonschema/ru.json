@@ -2,11 +2,11 @@
 	"@metadata": {
 		"authors": [
 			"DCamer",
-			"Okras",
-			"Macofe",
-			"Facenapalm",
 			"Diralik",
-			"Movses"
+			"Facenapalm",
+			"Macofe",
+			"Movses",
+			"Okras"
 		]
 	},
 	"jsonschema-badidref": "Неверный idref: \"$1\"",

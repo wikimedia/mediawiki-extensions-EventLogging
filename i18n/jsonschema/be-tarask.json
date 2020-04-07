@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Wizardist",
 			"Macofe",
-			"Red Winged Duck"
+			"Red Winged Duck",
+			"Wizardist"
 		]
 	},
 	"jsonschema-badidref": "Благі idref: «$1»",

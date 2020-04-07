@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Michawiki",
-			"Macofe"
+			"Macofe",
+			"Michawiki"
 		]
 	},
 	"jsonschema-badidref": "idref njepłaćiwy: \"$1\"",

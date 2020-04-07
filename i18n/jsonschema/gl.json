@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"Toliño",
 			"Elisardojm",
-			"Macofe"
+			"Macofe",
+			"Toliño"
 		]
 	},
 	"jsonschema-badidref": "idref incorrecto: \"$1\"",

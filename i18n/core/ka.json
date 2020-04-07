@@ -1,8 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Otogi",
-			"David1010"
+			"David1010",
+			"Otogi"
 		]
 	},
 	"eventlogging-invalid-json": "არასწორი JSON",

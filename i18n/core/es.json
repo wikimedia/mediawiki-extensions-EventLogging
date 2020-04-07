@@ -2,9 +2,9 @@
 	"@metadata": {
 		"authors": [
 			"Armando-Martin",
+			"Fitoschido",
 			"Ihojose",
-			"Vivaelcelta",
-			"Fitoschido"
+			"Vivaelcelta"
 		]
 	},
 	"eventlogging-desc": "Marco para registro de eventos del código del lado del cliente",

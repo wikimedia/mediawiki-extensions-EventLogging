@@ -2,8 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Alchimista",
-			"Vitorvicentevalente",
-			"Hamilton Abreu"
+			"Hamilton Abreu",
+			"Vitorvicentevalente"
 		]
 	},
 	"eventlogging-desc": "Estrutura para registar eventos vindos do código do lado do cliente",

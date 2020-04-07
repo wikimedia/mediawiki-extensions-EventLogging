@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
-			"OTAVIO1981",
+			"!Silent",
 			"Araceletorres",
-			"!Silent"
+			"OTAVIO1981"
 		]
 	},
 	"eventlogging-desc": "Estrutura para registro de eventos no código client-Side",

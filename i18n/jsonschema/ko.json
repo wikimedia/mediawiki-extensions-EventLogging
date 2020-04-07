@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"아라",
 			"Macofe",
+			"Revi",
 			"Ykhwong",
-			"Revi"
+			"아라"
 		]
 	},
 	"jsonschema-badidref": "잘못된 idref: \"$1\"",

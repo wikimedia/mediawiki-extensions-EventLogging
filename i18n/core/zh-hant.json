@@ -1,10 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Justincheng12345",
 			"Cwlin0416",
-			"LNDDYL",
-			"Kly"
+			"Justincheng12345",
+			"Kly",
+			"LNDDYL"
 		]
 	},
 	"eventlogging-desc": "可由用戶端程式碼記錄事件的架構",

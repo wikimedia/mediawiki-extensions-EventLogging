@@ -1,9 +1,9 @@
 {
 	"@metadata": {
 		"authors": [
+			"Nemo bis",
 			"Ori Livneh",
-			"Shirayuki",
-			"Nemo bis"
+			"Shirayuki"
 		]
 	},
 	"jsonschema-badidref": "JSON Schema validation error, shown when an id ref field is malformed.\n\nParameters:\n* $1 - ID ref",
