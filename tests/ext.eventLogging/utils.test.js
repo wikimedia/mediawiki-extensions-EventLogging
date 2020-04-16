@@ -29,3 +29,7 @@ QUnit.test( 'randomTokenMatch()', function ( assert ) {
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, n.toString( 16 ) ), true );
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, m.toString( 16 ) ), false );
 } );
+
+QUnit.test( 'makeLegacyStreamName()', function ( assert ) {
+	assert.strictEqual( mw.eventLog.makeLegacyStreamName( 'MySchema' ), 'eventlogging_MySchema' );
+} );
