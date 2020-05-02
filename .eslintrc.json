@@ -8,8 +8,5 @@
 	"globals": {
 		"module": "readonly",
 		"require": "readonly"
-	},
-	"rules": {
-		"valid-jsdoc": "off"
 	}
 }

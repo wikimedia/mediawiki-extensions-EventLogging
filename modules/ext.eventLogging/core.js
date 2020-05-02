@@ -191,7 +191,6 @@
 		 * browsers without `navigator.sendBeacon`.
 		 *
 		 * @param {string} url URL to request from the server.
-		 * @return undefined
 		 */
 		sendBeacon: isDntEnabled ?
 			function () {} :

@@ -29,7 +29,7 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 	/**
 	 * Add a callback to the queue, to be flushed when the timer runs out.
 	 *
-	 * @param {Function} callback to add
+	 * @param {Function} fn Callback to add
 	 */
 	queue.add = function ( fn ) {
 		if ( discardingPage ) {
