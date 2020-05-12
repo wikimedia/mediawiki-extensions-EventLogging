@@ -57,7 +57,7 @@ class EventLoggingHooks {
 		global $wgEventLoggingSchemas;
 
 		$extRegistry = ExtensionRegistry::getInstance();
-		$schemas = $extRegistry->getAttribute( 'EventLoggingSchemas' ) + $wgEventLoggingSchemas;
+		$schemas = $wgEventLoggingSchemas + $extRegistry->getAttribute( 'EventLoggingSchemas' );
 
 		Hooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
 
