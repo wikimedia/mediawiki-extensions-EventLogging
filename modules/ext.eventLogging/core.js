@@ -13,22 +13,10 @@
 		// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
 		config = require( './data.json' ),
 		BackgroundQueue = require( './BackgroundQueue.js' ),
-		queue = ( new BackgroundQueue( config.queueLingerSeconds ) ),
-		isDntEnabled;
+		queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
-
-	isDntEnabled = (
-		// Support: Firefox < 32 (yes/no)
-		/1|yes/.test( navigator.doNotTrack ) ||
-		// Support: IE 11, Safari 7.1.3+ (window.doNotTrack)
-		window.doNotTrack === '1'
-	);
-
-	if ( isDntEnabled ) {
-		mw.log.warn( 'DNT is on, logging disabled' );
-	}
 
 	/**
 	 * Construct the streamName for a legacy EventLogging Schema.
@@ -174,16 +162,6 @@
 		},
 
 		/**
-		 * Whether the user expressed a preference to not be tracked
-		 *
-		 * See https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack
-		 *
-		 * @property isDntEnabled
-		 * @type boolean
-		 */
-		isDntEnabled: isDntEnabled,
-
-		/**
 		 * Make a lightweight HTTP request to a specified URL, using the best means
 		 * available to this user agent.
 		 *
@@ -192,15 +170,15 @@
 		 *
 		 * @param {string} url URL to request from the server.
 		 */
-		sendBeacon: isDntEnabled ?
-			function () {} :
-			navigator.sendBeacon ?
-				function ( url ) {
-					try {
-						navigator.sendBeacon( url );
-					} catch ( e ) {}
-				} :
-				function ( url ) { document.createElement( 'img' ).src = url; },
+		sendBeacon: function ( url ) {
+			if ( navigator.sendBeacon ) {
+				try {
+					navigator.sendBeacon( url );
+				} catch ( e ) {}
+			} else {
+				document.createElement( 'img' ).src = url;
+			}
+		},
 
 		/**
 		 * Add a pending callback to be flushed at a later time by the background queue
@@ -344,7 +322,7 @@
 	 * @param {string} streamName name of the stream to send eventData to
 	 * @param {Object} eventData data to send to streamName
 	 */
-	core.submit = isDntEnabled ? function () {} : function ( streamName, eventData ) {
+	core.submit = function ( streamName, eventData ) {
 		if ( !config.streamConfigs[ streamName ] && !debugMode ) {
 			//
 			// If no stream configuration has been loaded
