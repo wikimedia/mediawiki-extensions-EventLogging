@@ -39,7 +39,7 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 	assert.strictEqual( navigator.sendBeacon.callCount, 1, 'sendBeacon() calls' );
 	jsonString = navigator.sendBeacon.args[ 0 ][ 1 ];
 	data = JSON.parse( jsonString );
-	assert.strictEqual( data.meta.dt, t1, 'dt is valid' );
+	assert.strictEqual( data.client_dt, t1, 'client-side dt is valid' );
 	assert.strictEqual( data.meta.stream, 'test.stream', 'stream is valid' );
 } );
 
