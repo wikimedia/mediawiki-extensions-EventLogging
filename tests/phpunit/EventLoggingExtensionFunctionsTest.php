@@ -43,8 +43,6 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
 	/** @var array: does not conform to $validSchema. */
 	private static $invalidObject = [ 'valid' => true, 'action' => 'cache' ];
 
-	const UGLY_JSON = '{"nested":{"value":"{}"}}';
-
 	/**
 	 * Tests validation of objects against schema.
 	 * EventLogging uses Rob Lanphier's JSON Schema Validation Library,

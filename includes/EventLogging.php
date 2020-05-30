@@ -12,7 +12,7 @@
 class EventLogging {
 
 	/** @var int flag indicating the user-agent should not be logged. */
-	const OMIT_USER_AGENT = 2;
+	public const OMIT_USER_AGENT = 2;
 
 	/**
 	 * Transfer small data asynchronously using an HTTP POST.

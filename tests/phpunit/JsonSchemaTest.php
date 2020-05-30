@@ -14,10 +14,10 @@
  */
 class JsonSchemaTest extends MediaWikiTestCase {
 
-	const INVALID_JSON = '"Malformed, JSON }';
-	const INVALID_JSON_SCHEMA = '{"malformed":true}';  // Valid JSON, invalid JSON Schema.
-	const VALID_JSON_SCHEMA = '{"properties":{"valid":{"type":"boolean","required":true}}}';
-	const EVIL_JSON = '{"title":"<script>alert(document.cookie);</script>"}';
+	private const INVALID_JSON = '"Malformed, JSON }';
+	private const INVALID_JSON_SCHEMA = '{"malformed":true}';  // Valid JSON, invalid JSON Schema.
+	private const VALID_JSON_SCHEMA = '{"properties":{"valid":{"type":"boolean","required":true}}}';
+	private const EVIL_JSON = '{"title":"<script>alert(document.cookie);</script>"}';
 
 	/**
 	 * Tests handling of invalid JSON.

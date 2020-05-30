@@ -13,7 +13,7 @@
  */
 class ValidateSchemaTest extends MediaWikiTestCase {
 
-	const VALID_JSON_SCHEMA = '{
+	private const VALID_JSON_SCHEMA = '{
 		"description": "A wrapper around event objects that encodes generic metadata",
 		"properties": {
 			"event": {
@@ -45,7 +45,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		"additionalProperties": false
 	}';
 
-	const VALID_EVENT = '{
+	private const VALID_EVENT = '{
 		"clientIp": "e6636d0087dde9cc49142955607c17e0b5d3563a",
 		"clientValidated": true,
 		"event": {
@@ -57,7 +57,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		"other": "some"
 	}';
 
-	const INVALID_EVENT_MISSING_REQUIRED_FIELD = '{
+	private const INVALID_EVENT_MISSING_REQUIRED_FIELD = '{
 		"clientIp": "e6636d0087dde9cc49142955607c17e0b5d3563a",
 		"clientValidated": true,
 		"event": {
@@ -67,7 +67,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		}
 	}';
 
-	const VALID_JSON_SCHEMA_MANDATORY_EVENT_PROPERTIES = '{
+	private const VALID_JSON_SCHEMA_MANDATORY_EVENT_PROPERTIES = '{
 		"description": "The event object",
 		"properties":{
 			"Happy":{
@@ -78,7 +78,7 @@ class ValidateSchemaTest extends MediaWikiTestCase {
 		}
 	}';
 
-	const VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES = '{
+	private const VALID_JSON_SCHEMA_NON_MANDATORY_EVENT_PROPERTIES = '{
 		"description": "The event object",
 		"required": true,
 		"properties":{

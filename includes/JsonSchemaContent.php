@@ -16,7 +16,7 @@ use MediaWiki\MediaWikiServices;
  */
 class JsonSchemaContent extends JsonContent {
 
-	const DEFAULT_RECURSION_LIMIT = 3;
+	private const DEFAULT_RECURSION_LIMIT = 3;
 
 	public function __construct( $text, $modelId = 'JsonSchema' ) {
 		parent::__construct( $text, $modelId );

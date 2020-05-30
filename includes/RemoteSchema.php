@@ -8,7 +8,7 @@ use MediaWiki\Logger\LoggerFactory;
  */
 class RemoteSchema implements JsonSerializable {
 
-	const LOCK_TIMEOUT = 20;
+	public const LOCK_TIMEOUT = 20;
 
 	public $title;
 	public $revision;
