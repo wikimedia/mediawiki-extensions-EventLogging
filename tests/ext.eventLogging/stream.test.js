@@ -49,9 +49,70 @@ QUnit.test( 'streamConfig() - disallow modification', function ( assert ) {
 	assert.equal( mw.eventLog.streamConfigs[ 'test.stream' ].field, 'expectedValue' );
 } );
 
-QUnit.test( 'streamConfig() - unknown stream', function ( assert ) {
-	assert.strictEqual(
-		mw.eventLog.streamConfig( 'test.unknown' ),
-		null
-	);
+QUnit.test( 'streamInSample() - perform correct determination', function ( assert ) {
+	mw.eventLog.streamConfigs[ 'test.stream' ] = { some: 'config' };
+	mw.eventLog.streamConfigs[ 'test.virtually_disabled' ] = {
+		sampling: {
+			rate: 0.0
+		}
+	};
+	mw.eventLog.streamConfigs[ 'test.mobile_app' ] = {
+		sampling: {
+			identifier: 'device'
+		}
+	};
+	mw.eventLog.streamConfigs[ 'test.mobile_app.alt' ] = {
+		sampling: {
+			identifier: 'device',
+			rate: 1.0
+		}
+	};
+	assert.equal( mw.eventLog.streamInSample( 'test.stream' ), true );
+	assert.equal( mw.eventLog.streamInSample( 'test.virtually_disabled' ), false );
+	assert.equal( mw.eventLog.streamInSample( 'test.mobile_app' ), false );
+	assert.equal( mw.eventLog.streamInSample( 'test.mobile_app.alt' ), false );
+	assert.equal( mw.eventLog.streamInSample( 'test.nonexistent' ), false );
+} );
+
+QUnit.test( 'streamInSample() - determination is cached', function ( assert ) {
+	var det1, det2, det3, det4;
+	mw.eventLog.streamConfigs[ 'test.stream1' ] = { some: 'config' };
+	mw.eventLog.streamConfigs[ 'test.stream2' ] = {
+		sampling: {
+			rate: 0.5,
+			identifier: 'session'
+		}
+	};
+	mw.eventLog.streamConfigs[ 'test.stream3' ] = {
+		sampling: {
+			rate: 0.5,
+			identifier: 'pageview'
+		}
+	};
+	mw.eventLog.streamConfigs[ 'test.stream4' ] = {
+		sampling: {
+			rate: 1.0
+		}
+	};
+	// Each stream's determination is lazy, cached first time it's requested.
+	// Subsequent calls should be much faster since the cached determination is
+	// supposed to be used.
+	this.clock.tick( 1000 );
+	det1 = mw.eventLog.streamInSample( 'test.stream1' );
+	this.clock.tick( 1000 );
+	det2 = mw.eventLog.streamInSample( 'test.stream2' );
+	this.clock.tick( 1000 );
+	det3 = mw.eventLog.streamInSample( 'test.stream3' );
+	this.clock.tick( 1000 );
+	det4 = mw.eventLog.streamInSample( 'test.stream4' );
+	this.clock.tick( 1000 );
+	assert.equal( mw.eventLog.streamInSample( 'test.stream1' ), det1 );
+	this.clock.tick( 1000 );
+	assert.equal( mw.eventLog.streamInSample( 'test.stream2' ), det2 );
+	this.clock.tick( 1000 );
+	assert.equal( mw.eventLog.streamInSample( 'test.stream3' ), det3 );
+	this.clock.tick( 1000 );
+	assert.equal( mw.eventLog.streamInSample( 'test.stream4' ), det4 );
+	this.clock.tick( 1000 );
+	assert.equal( det1, det4 );
 } );
