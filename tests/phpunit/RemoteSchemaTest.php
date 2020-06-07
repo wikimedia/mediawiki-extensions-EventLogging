@@ -8,6 +8,7 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\Http\HttpRequestFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use Wikimedia\TestingAccessWrapper;
 
@@ -20,7 +21,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 	/** @var BagOStuff|MockObject */
 	private $cache;
 	/** @var MockObject */
-	private $http;
+	private $httpRequestFactory;
 	/** @var RemoteSchema */
 	private $schema;
 
@@ -35,10 +36,11 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 		$this->cache = new HashBagOStuff();
 
-		$this->http = $this->getMockBuilder( stdClass::class )
+		$this->httpRequestFactory = $this->getMockBuilder( HttpRequestFactory::class )
+			->disableOriginalConstructor()
 			->setMethods( [ 'get' ] )
 			->getMock();
-		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->http );
+		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->httpRequestFactory );
 	}
 
 	/**
@@ -50,7 +52,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->cache->set( $this->schema->key, $this->statusSchema );
 
 		// No HTTP call will be made
-		$this->http
+		$this->httpRequestFactory
 			->expects( $this->never() )
 			->method( 'get' );
 
@@ -87,7 +89,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$this->cache->clear();
 
 		// ... we'll see an HTTP request for the revision
-		$this->http
+		$this->httpRequestFactory
 			->expects( $this->once() )
 			->method( 'get' )
 			->with(
@@ -114,7 +116,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 		$wschema->lock();
 
 		// then no HTTP request will be made:
-		$this->http
+		$this->httpRequestFactory
 			->expects( $this->never() )
 			->method( 'get' );
 

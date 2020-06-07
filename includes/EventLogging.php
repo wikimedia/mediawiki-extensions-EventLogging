@@ -9,6 +9,8 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\MediaWikiServices;
+
 class EventLogging {
 
 	/** @var int flag indicating the user-agent should not be logged. */
@@ -24,9 +26,11 @@ class EventLogging {
 	 * @return bool
 	 */
 	public static function sendBeacon( $url, array $data = [] ) {
-		DeferredUpdates::addCallableUpdate( function () use ( $url, $data ) {
+		$fname = __METHOD__;
+		DeferredUpdates::addCallableUpdate( function () use ( $url, $data, $fname ) {
 			$options = $data ? [ 'postData' => $data ] : [];
-			return Http::post( $url, $options );
+			return MediaWikiServices::getInstance()->getHttpRequestFactory()
+				->post( $url, $options, $fname );
 		} );
 
 		return true;

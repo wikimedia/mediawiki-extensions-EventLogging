@@ -1,6 +1,8 @@
 <?php
 
+use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Logger\LoggerFactory;
+use MediaWiki\MediaWikiServices;
 
 /**
  * Represents a schema revision on a remote wiki.
@@ -13,7 +15,7 @@ class RemoteSchema implements JsonSerializable {
 	public $title;
 	public $revision;
 	public $cache;
-	public $http;
+	public $httpRequestFactory;
 	public $key;
 	public $content = false;
 
@@ -22,15 +24,15 @@ class RemoteSchema implements JsonSerializable {
 	 * @param string $title
 	 * @param int $revision
 	 * @param BagOStuff|null $cache (optional) cache client.
-	 * @param Http|null $http (optional) HTTP client.
+	 * @param HttpRequestFactory|null $httpRequestFactory (optional) HttpRequestFactory client.
 	 */
-	public function __construct( $title, $revision, $cache = null, $http = null ) {
+	public function __construct( $title, $revision, $cache = null, $httpRequestFactory = null ) {
 		global $wgEventLoggingSchemaApiUri;
 
 		$this->title = $title;
 		$this->revision = $revision;
 		$this->cache = $cache ?: ObjectCache::getInstance( CACHE_ANYTHING );
-		$this->http = $http ?: new Http();
+		$this->httpRequestFactory = $httpRequestFactory ?: MediaWikiServices::getInstance()->getHttpRequestFactory();
 		$this->key = $this->cache->makeGlobalKey(
 			'eventlogging-schema',
 			$wgEventLoggingSchemaApiUri,
@@ -101,9 +103,9 @@ class RemoteSchema implements JsonSerializable {
 			);
 			return false;
 		}
-		$raw = $this->http->get( $uri, [
+		$raw = $this->httpRequestFactory->get( $uri, [
 			'timeout' => self::LOCK_TIMEOUT * 0.8
-		] );
+		], __METHOD__ );
 		$content = FormatJson::decode( $raw, true );
 		if ( !$content ) {
 			LoggerFactory::getInstance( 'EventLogging' )->error(
