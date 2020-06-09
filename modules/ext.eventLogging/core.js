@@ -114,9 +114,9 @@
 				// Set it it here so it continues to be present in data
 				// for backwards compatibiliity.
 				event.dt = new Date().toISOString();
+				// eslint-disable-next-line
+				event.client_dt = event.dt;
 				event.meta = {
-					// meta.dt should be the same as top level EventCapsule dt.
-					dt: event.dt,
 					// meta.domain should be the same as top level EventCapsule webHost.
 					domain: event.webHost
 				};
@@ -356,14 +356,16 @@
 		eventData.meta = eventData.meta || {};
 		eventData.meta.stream = streamName;
 		//
-		// The 'meta.dt' field is reserved for the internal
-		// use of this library, and should not be set by any
-		// other caller.
+		// The 'client_dt' field is reserved for the internal use of this library,
+		// and should not be set by any other caller. The 'meta.dt' field is
+		// reserved for EventGate and will be set at ingestion to act as a record
+		// of when the event was received.
 		//
-		// If 'meta.dt' is provided, its value is not modified.
-		// If 'meta.dt' is not provided, a new value is computed.
+		// If 'client_dt' is provided, its value is not modified.
+		// If 'client_dt' is not provided, a new value is computed.
 		//
-		eventData.meta.dt = eventData.meta.dt || new Date().toISOString();
+		// eslint-disable-next-line
+		eventData.client_dt = eventData.client_dt || new Date().toISOString();
 
 		// This will use a MediaWiki notification in the browser to display the event data.
 		if ( debugMode ) {
