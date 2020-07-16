@@ -8,5 +8,8 @@
 	"globals": {
 		"module": "readonly",
 		"require": "readonly"
+	},
+	"rules": {
+		"no-redeclare": "warn"
 	}
 }
