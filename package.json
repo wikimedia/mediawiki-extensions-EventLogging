@@ -2,7 +2,8 @@
 	"private": true,
 	"scripts": {
 		"test": "grunt test",
-		"doc": "jsduck"
+		"doc": "jsduck",
+		"eventgate-devserver": "(test -f $(npm bin)/eventgate-wikimedia-dev -a -f $(npm bin)/bunyan || npm install --no-optional) && $(npm bin)/eventgate-wikimedia-dev -c ./devserver/eventgate.config.yaml | $(npm bin)/bunyan"
 	},
 	"devDependencies": {
 		"eslint-config-wikimedia": "0.17.0",
@@ -10,7 +11,14 @@
 		"grunt-banana-checker": "0.9.0",
 		"grunt-eslint": "23.0.0",
 		"grunt-stylelint": "0.15.0",
-		"stylelint-config-wikimedia": "0.10.1"
+		"stylelint-config-wikimedia": "0.10.1",
+		"buynan": "^1.8.12",
+		"eventgate-wikimedia": "git+https://gerrit.wikimedia.org/r/eventgate-wikimedia#536d5ef"
+	},
+	"optionalDependencies": {
+		"@wikimedia/node-rdkafka-factory": "*",
+		"node-rdkafka-statsd": "*",
+		"node-rdkafka": "*"
 	},
 	"eslintIgnore": [
 		"docs/**",
