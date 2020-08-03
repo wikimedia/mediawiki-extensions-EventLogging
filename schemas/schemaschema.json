@@ -38,6 +38,16 @@
       "type":"string",
       "title":"Format (format)"
     },
+    "minimum" : {
+      "description":"Defines the minimum allowed integer",
+      "type" : "number",
+      "title":"Minimum (minimum)"
+    },
+    "maximum" : {
+      "description":"Defines the maximum allowed integer",
+      "type" : "number",
+      "title":"Maximum (maximum)"
+    },
     "title":
     {
       "description":"A user-friendly title for the property",
