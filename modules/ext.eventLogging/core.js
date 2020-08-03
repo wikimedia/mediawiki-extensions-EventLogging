@@ -13,7 +13,11 @@
 		// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
 		config = require( './data.json' ),
 		BackgroundQueue = require( './BackgroundQueue.js' ),
-		queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
+		queue = ( new BackgroundQueue( config.queueLingerSeconds ) ),
+		// samplingCache caches in-sample vs. out-of-sample determinations for
+		// streams, so that the determination only needs to happen the first time an
+		// an event is logged to each stream
+		samplingCache = Object.create( null );
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
@@ -328,10 +332,15 @@
 			//
 			// If no stream configuration has been loaded
 			// for streamName (and we are not in debugMode),
-			// we assume the client is
-			// misconfigured. Rather than produce potentially
-			// inconsistent data, the event submission does
-			// not proceed.
+			// we assume the client is misconfigured. Rather
+			// than produce potentially inconsistent data, the
+			// event submission does not proceed.
+			//
+			// Note for the future: when stream cc-ing feature
+			// is added, the cc-ing needs to happen BEFORE this
+			// step, so that a lack of streamName does not
+			// block submitting an event to streamName.ccStream
+			// and so on.
 			//
 			return;
 		}
@@ -376,6 +385,11 @@
 			);
 		}
 
+		// If stream is not in sample, do not log the event.
+		if ( !core.streamInSample( streamName ) ) {
+			return;
+		}
+
 		//
 		// Send the processed event to be produced.
 		//
@@ -387,6 +401,77 @@
 				);
 			} );
 		}
+	};
+
+	/**
+	 * Return the in-sample/out-of-sample determination of the given stream name.
+	 *
+	 * Refer to https://www.mediawiki.org/wiki/Wikimedia_Product/Analytics_Infrastructure/Stream_configuration#Sampling_settings
+	 * for documentation of the sampling config behavior and how the sampling rate
+	 * works with regards to increases and "widening-the-stationary-net" behavior.
+	 *
+	 * While developing with MediaWiki-Vagrant, streams should still be configured
+	 * in $wgEventStreams and registered with $wgEventLoggingStreamNames inside
+	 * LocalSettings.php for events to be sent. See https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To
+	 * for more information on configuring streams in MediaWiki-Vagrant and in
+	 * production through mediawiki-config.
+	 *
+	 * @private
+	 * @param {string} streamName name of the stream to return config for
+	 * @return {boolean} determination for the given streamName, defaulting to
+	 	false if the stream is not enabled.
+	 */
+	core.streamInSample = function ( streamName ) {
+		var uInt32Max = Math.pow( 2, 32 ) - 1,
+			samplingConfig,
+			samplingRate,
+			samplingId,
+			parsedId;
+
+		// If the determination for the stream has not already been made on this
+		// page load, we need to go through the process of determining whether the
+		// stream is in-sample or out-of-sample based on its 'sampling' config.
+		if ( streamName in samplingCache ) {
+			return samplingCache[ streamName ];
+		}
+
+		// Stream determination not in cache, proceed with making a determination:
+		if ( config.streamConfigs[ streamName ] === undefined ) {
+			// If a stream is NOT DEFINED in the stream config, it is NOT IN SAMPLE.
+			samplingCache[ streamName ] = false;
+			return samplingCache[ streamName ];
+		}
+
+		samplingConfig = config.streamConfigs[ streamName ].sampling;
+		if ( !samplingConfig ) {
+			// Default to 100% (always in-sample) for stream if the stream *is*
+			// configured but its sampling config is not explicitly defined.
+			samplingCache[ streamName ] = true;
+			return samplingCache[ streamName ];
+		}
+
+		samplingRate = samplingConfig.rate;
+		if ( samplingRate === undefined && samplingConfig.identifier !== 'device' ) {
+			// If rate is not provided and stream is not configured to use 'device',
+			// we default to in-sample. Specifying 'device' ID-based sampling disables
+			// the stream on MediaWiki.
+			samplingCache[ streamName ] = true;
+			return samplingCache[ streamName ];
+		} else if ( samplingConfig.identifier === 'pageview' ) {
+			samplingId = mw.user.getPageviewToken();
+		} else if ( samplingConfig.identifier === 'session' || !samplingConfig.identifier ) {
+			// Either the identifier was explicitly set to "session" or it was omitted
+			// from sampling config, in which case we default to "session".
+			samplingId = mw.user.sessionId();
+		} else {
+			// Either the identifier was set to 'device' or it was not recognized.
+			samplingCache[ streamName ] = false;
+			return samplingCache[ streamName ];
+		}
+		parsedId = parseInt( samplingId.slice( 0, 8 ), 16 );
+		samplingCache[ streamName ] = parsedId / uInt32Max < samplingRate;
+		return samplingCache[ streamName ];
+
 	};
 
 	/**
