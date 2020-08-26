@@ -17,6 +17,16 @@ class EventLogging {
 	public const OMIT_USER_AGENT = 2;
 
 	/**
+	 * Submit an event according to the given stream's configuration.
+	 * @param string $streamName
+	 * @param array $eventData
+	 */
+	public static function submit( string $streamName, array $eventData ): void {
+		EventLoggingServices::getInstance()->getEventServiceClient()
+			->submit( $streamName, $eventData );
+	}
+
+	/**
 	 * Transfer small data asynchronously using an HTTP POST.
 	 * This is meant to match the Navigator.sendBeacon() API.
 	 *

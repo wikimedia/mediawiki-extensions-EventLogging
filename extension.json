@@ -59,6 +59,8 @@
 		"ApiJsonSchema": "includes/ApiJsonSchema.php",
 		"EventLogging": "includes/EventLogging.php",
 		"EventLoggingHooks": "includes/EventLoggingHooks.php",
+		"EventLoggingServices": "includes/EventLoggingServices.php",
+		"EventServiceClient": "includes/Libs/EventServiceClient/EventServiceClient.php",
 		"JsonSchemaContent": "includes/JsonSchemaContent.php",
 		"JsonSchemaContentHandler": "includes/JsonSchemaContentHandler.php",
 		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
@@ -173,5 +175,8 @@
 			"description": "Number of seconds EventLogging should wait to batch messages before sending them to the intake service."
 		}
 	},
+	"ServiceWiringFiles": [
+		"ServiceWiring.php"
+	],
 	"manifest_version": 2
 }
