@@ -13,7 +13,12 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 	this.sandbox.stub( mw.log, 'warn', function () {
 		seen.push( 'warn' );
 	} );
-	mw.eventLog.streamConfigs[ 'test.stream' ] = { some: 'config' };
+
+	mw.eventLog.setOptionsForTest( {
+		streamConfigs: {
+			'test.stream': { some: 'config' }
+		}
+	} );
 	mw.eventLog.submit( 'test.stream', {} );
 	assert.deepEqual( [ 'warn' ], seen );
 	assert.strictEqual( mw.eventLog.enqueue.callCount, 0, 'enqueue() calls' );
@@ -30,8 +35,12 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 
 	this.clock.tick( 1000 );
 	t1 = new Date().toISOString();
-	mw.eventLog.setOptionsForTest( { serviceUri: 'testUri' } );
-	mw.eventLog.streamConfigs[ 'test.stream' ] = { some: 'config' };
+	mw.eventLog.setOptionsForTest( {
+		serviceUri: 'testUri',
+		streamConfigs: {
+			'test.stream': { some: 'config' }
+		}
+	} );
 	mw.eventLog.submit( 'test.stream', { $schema: 'test/schema' } );
 	this.clock.tick( 1000 );
 
@@ -44,29 +53,39 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 } );
 
 QUnit.test( 'streamConfig() - disallow modification', function ( assert ) {
-	mw.eventLog.streamConfigs[ 'test.stream' ] = { field: 'expectedValue' };
+	mw.eventLog.setOptionsForTest( {
+		streamConfigs: {
+			'test.stream': { field: 'expectedValue' }
+		}
+	} );
 	mw.eventLog.streamConfig( 'test.stream' ).field = 'otherValue';
-	assert.equal( mw.eventLog.streamConfigs[ 'test.stream' ].field, 'expectedValue' );
+	assert.equal( mw.eventLog.streamConfig( 'test.stream' ).field, 'expectedValue' );
 } );
 
 QUnit.test( 'streamInSample() - perform correct determination', function ( assert ) {
-	mw.eventLog.streamConfigs[ 'test.stream' ] = { some: 'config' };
-	mw.eventLog.streamConfigs[ 'test.virtually_disabled' ] = {
-		sampling: {
-			rate: 0.0
+	mw.eventLog.setOptionsForTest( {
+		streamConfigs: {
+			'test.stream': {
+				some: 'config'
+			},
+			'test.virtually_disabled': {
+				sampling: {
+					rate: 0.0
+				}
+			},
+			'test.mobile_app': {
+				sampling: {
+					identifier: 'device'
+				}
+			},
+			'test.mobile_app.alt': {
+				sampling: {
+					identifier: 'device',
+					rate: 1.0
+				}
+			}
 		}
-	};
-	mw.eventLog.streamConfigs[ 'test.mobile_app' ] = {
-		sampling: {
-			identifier: 'device'
-		}
-	};
-	mw.eventLog.streamConfigs[ 'test.mobile_app.alt' ] = {
-		sampling: {
-			identifier: 'device',
-			rate: 1.0
-		}
-	};
+	} );
 	assert.equal( mw.eventLog.streamInSample( 'test.stream' ), true );
 	assert.equal( mw.eventLog.streamInSample( 'test.virtually_disabled' ), false );
 	assert.equal( mw.eventLog.streamInSample( 'test.mobile_app' ), false );
@@ -76,24 +95,32 @@ QUnit.test( 'streamInSample() - perform correct determination', function ( asser
 
 QUnit.test( 'streamInSample() - determination is cached', function ( assert ) {
 	var det1, det2, det3, det4;
-	mw.eventLog.streamConfigs[ 'test.stream1' ] = { some: 'config' };
-	mw.eventLog.streamConfigs[ 'test.stream2' ] = {
-		sampling: {
-			rate: 0.5,
-			identifier: 'session'
+
+	mw.eventLog.setOptionsForTest( {
+		streamConfigs: {
+			'test.stream1': {
+				some: 'config'
+			},
+			'test.stream2': {
+				sampling: {
+					rate: 0.5,
+					identifier: 'session'
+				}
+			},
+			'test.stream3': {
+				sampling: {
+					rate: 0.5,
+					identifier: 'pageview'
+				}
+			},
+			'test.stream4': {
+				sampling: {
+					rate: 1.0
+				}
+			}
 		}
-	};
-	mw.eventLog.streamConfigs[ 'test.stream3' ] = {
-		sampling: {
-			rate: 0.5,
-			identifier: 'pageview'
-		}
-	};
-	mw.eventLog.streamConfigs[ 'test.stream4' ] = {
-		sampling: {
-			rate: 1.0
-		}
-	};
+	} );
+
 	// Each stream's determination is lazy, cached first time it's requested.
 	// Subsequent calls should be much faster since the cached determination is
 	// supposed to be used.

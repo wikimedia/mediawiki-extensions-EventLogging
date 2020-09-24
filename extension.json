@@ -147,7 +147,8 @@
 	},
 	"config": {
 		"EventLoggingBaseUri": {
-			"value": false
+			"value": false,
+			"description": "Legacy EventLogging GET URI."
 		},
 		"EventLoggingSchemaApiUri": {
 			"value": "https://meta.wikimedia.org/w/api.php"
@@ -156,16 +157,20 @@
 			"value": "metawiki"
 		},
 		"EventLoggingSchemas": {
-			"value": []
+			"value": [],
+			"description": "Legacy schemas EventLogging will produce. This is a mapping from schema name to on-wiki schema revision, or a $schema URI.  If a $schema URI is set, the event will be passed to mw.eventLog.submit and the event intake service at EventLoggingServiceUri will be used."
 		},
 		"EventLoggingServiceUri": {
-			"value": false
+			"value": false,
+			"description": "URI to event intake service.  This should look something like http://localhost:8192/v1/events"
 		},
 		"EventLoggingStreamNames": {
-			"value": []
+			"value": false,
+			"description": "List of stream names to register for use by EventLogging from wgEventStreams.  If this is false, Event Stream Config will not be used, and EventLogging will produce any stream it is given."
 		},
 		"EventLoggingQueueLingerSeconds": {
-			"value": 30
+			"value": 30,
+			"description": "Number of seconds EventLogging should wait to batch messages before sending them to the intake service."
 		}
 	},
 	"manifest_version": 2

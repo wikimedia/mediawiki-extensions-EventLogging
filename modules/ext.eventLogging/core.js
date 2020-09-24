@@ -328,13 +328,16 @@
 	 * @param {Object} eventData data to send to streamName
 	 */
 	core.submit = function ( streamName, eventData ) {
-		if ( !config.streamConfigs[ streamName ] && !debugMode ) {
+
+		if ( !core.streamConfig( streamName ) ) {
 			//
 			// If no stream configuration has been loaded
 			// for streamName (and we are not in debugMode),
 			// we assume the client is misconfigured. Rather
 			// than produce potentially inconsistent data, the
 			// event submission does not proceed.
+			// If config.streamConfigs === false,
+			// this will always return {} and proceed.
 			//
 			// Note for the future: when stream cc-ing feature
 			// is added, the cc-ing needs to happen BEFORE this
@@ -436,13 +439,13 @@
 		}
 
 		// Stream determination not in cache, proceed with making a determination:
-		if ( config.streamConfigs[ streamName ] === undefined ) {
+		if ( core.streamConfig( streamName ) === undefined ) {
 			// If a stream is NOT DEFINED in the stream config, it is NOT IN SAMPLE.
 			samplingCache[ streamName ] = false;
 			return samplingCache[ streamName ];
 		}
 
-		samplingConfig = config.streamConfigs[ streamName ].sampling;
+		samplingConfig = core.streamConfig( streamName ).sampling;
 		if ( !samplingConfig ) {
 			// Default to 100% (always in-sample) for stream if the stream *is*
 			// configured but its sampling config is not explicitly defined.
@@ -487,14 +490,20 @@
 	 *  undefined if the given stream was not enabled (or not loaded).
 	 */
 	core.streamConfig = function ( streamName ) {
-		var streamConfig = config.streamConfigs[ streamName ];
-		if ( !streamConfig ) {
+		// If streamConfigs are false, then
+		// stream config usage is not enabled.
+		// Always return an empty object.
+		if ( config.streamConfigs === false ) {
+			return { };
+		}
+
+		if ( !config.streamConfigs[ streamName ] ) {
 			// In case no config has been assigned to the given streamName,
 			// return undefined, so that the developer can discern between
 			// a stream that is not configured, and a stream with config = {}.
-			return null;
+			return undefined;
 		}
-		return $.extend( true, {}, streamConfig );
+		return $.extend( true, {}, config.streamConfigs[ streamName ] );
 	};
 
 	// Not allowed outside unit tests

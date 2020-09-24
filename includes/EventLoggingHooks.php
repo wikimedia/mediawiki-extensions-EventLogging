@@ -70,6 +70,7 @@ class EventLoggingHooks {
 			'schemasInfo' => self::getSchemas(),
 			'serviceUri' => $config->get( 'EventLoggingServiceUri' ),
 			'queueLingerSeconds' => $config->get( 'EventLoggingQueueLingerSeconds' ),
+			// If this is false, EventLogging will not use stream config.
 			'streamConfigs' => self::loadEventStreamConfigs( $config )
 		];
 	}
@@ -115,16 +116,20 @@ class EventLoggingHooks {
 	 *
 	 * @param \Config $config
 	 *
-	 * @return array Selected stream name -> stream configs
+	 * @return array|bool Selected stream name -> stream configs
 	 */
 	private static function loadEventStreamConfigs(
 		\Config $config
-	): array {
+	) {
 		$streamConfigs = MediaWikiServices::getInstance()->getService(
 			'EventStreamConfig.StreamConfigs'
 		);
 
 		$targetStreams = $config->get( 'EventLoggingStreamNames' );
+
+		if ( $targetStreams === false ) {
+			return false;
+		}
 
 		if ( !is_array( $targetStreams ) ) {
 			throw new RuntimeException(
