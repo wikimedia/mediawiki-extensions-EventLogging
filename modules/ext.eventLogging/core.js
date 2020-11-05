@@ -114,16 +114,16 @@
 			// Make the event data forward compatible.
 			if ( typeof revisionOrSchemaUri === 'string' ) {
 				event.$schema = revisionOrSchemaUri;
-				// Deprecated eventlogging-processor set EventCapsule event.dt.
-				// Set it it here so it continues to be present in data
-				// for backwards compatibiliity.
-				event.dt = new Date().toISOString();
 				// eslint-disable-next-line
-				event.client_dt = event.dt;
+				event.client_dt = new Date().toISOString();
 				event.meta = {
 					// meta.domain should be the same as top level EventCapsule webHost.
 					domain: event.webHost
 				};
+				// Note: some fields will have defaults set by eventgate-wikimedia.
+				// See:
+				// - https://gerrit.wikimedia.org/r/plugins/gitiles/eventgate-wikimedia/+/refs/heads/master/eventgate-wikimedia.js#358
+				// - https://wikitech.wikimedia.org/wiki/Event_Platform/Schemas/Guidelines#Automatically_populated_fields
 			} else {
 				// Deprecated:
 				// Assume revisionOrSchemaUri is the MW revision id for this
