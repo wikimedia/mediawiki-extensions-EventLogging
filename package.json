@@ -3,7 +3,7 @@
 	"scripts": {
 		"test": "grunt test",
 		"doc": "jsduck",
-		"eventgate-devserver": "(test -f $(npm bin)/eventgate-wikimedia-dev -a -f $(npm bin)/bunyan || npm install --no-optional) && $(npm bin)/eventgate-wikimedia-dev -c ./devserver/eventgate.config.yaml | $(npm bin)/bunyan"
+		"eventgate-devserver": "eventgate-wikimedia-dev -c ./devserver/eventgate.config.yaml | bunyan"
 	},
 	"devDependencies": {
 		"eslint-config-wikimedia": "0.17.0",
