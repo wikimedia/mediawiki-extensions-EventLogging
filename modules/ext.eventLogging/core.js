@@ -107,7 +107,7 @@
 				},
 				revisionOrSchemaUri = core.getRevisionOrSchemaUri( schemaName );
 
-			// Foward compatibilty with Event Platform schemas and EventGate.
+			// Forward compatibility with Event Platform schemas and EventGate.
 			// If the wgEventLoggingSchemas entry for this schemaName is a string,
 			// assume it is the Event Platform relative $schema URI and that
 			// we want this event POSTed to EventGate.
@@ -348,6 +348,11 @@
 			return;
 		}
 
+		// If stream is not in sample, do not log the event.
+		if ( !core.streamInSample( streamName ) ) {
+			return;
+		}
+
 		if ( !eventData || !eventData.$schema ) {
 			//
 			// If the caller has not provided a $schema field
@@ -369,16 +374,16 @@
 		eventData.meta = eventData.meta || {};
 		eventData.meta.stream = streamName;
 		//
-		// The 'client_dt' field is reserved for the internal use of this library,
+		// The 'dt' field is reserved for the internal use of this library,
 		// and should not be set by any other caller. The 'meta.dt' field is
 		// reserved for EventGate and will be set at ingestion to act as a record
 		// of when the event was received.
 		//
-		// If 'client_dt' is provided, its value is not modified.
-		// If 'client_dt' is not provided, a new value is computed.
+		// If 'dt' is provided, its value is not modified.
+		// If 'dt' is not provided, a new value is computed.
 		//
 		// eslint-disable-next-line
-		eventData.client_dt = eventData.client_dt || new Date().toISOString();
+		eventData.dt = eventData.dt || new Date().toISOString();
 
 		// This will use a MediaWiki notification in the browser to display the event data.
 		if ( debugMode ) {
@@ -386,11 +391,6 @@
 				'eventlogging.eventSubmitDebug',
 				{ streamName: streamName, eventData: eventData }
 			);
-		}
-
-		// If stream is not in sample, do not log the event.
-		if ( !core.streamInSample( streamName ) ) {
-			return;
 		}
 
 		//
