@@ -64,7 +64,14 @@ class EventLoggingHooks {
 		return $schemas;
 	}
 
-	public static function getModuleData( ResourceLoaderContext $context, Config $config ) {
+	/**
+	 * Returns an object with EventLogging specific configuration extracted from
+	 * MW Config and from extension attributes.
+	 *
+	 * @param Config $config
+	 * @return array
+	 */
+	public static function getEventLoggingConfig( Config $config ) {
 		return [
 			'baseUrl' => $config->get( 'EventLoggingBaseUri' ),
 			'schemasInfo' => self::getSchemas(),
@@ -73,6 +80,17 @@ class EventLoggingHooks {
 			// If this is false, EventLogging will not use stream config.
 			'streamConfigs' => self::loadEventStreamConfigs( $config )
 		];
+	}
+
+	/**
+	 * Wraps getEventLoggingConfig for use with ResourceLoader.
+	 *
+	 * @param ResourceLoaderContext $context
+	 * @param Config $config
+	 * @return array
+	 */
+	public static function getModuleData( ResourceLoaderContext $context, Config $config ) {
+		return self::getEventLoggingConfig( $config );
 	}
 
 	/**
