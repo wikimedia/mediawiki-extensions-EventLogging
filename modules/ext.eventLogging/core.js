@@ -116,10 +116,6 @@
 				event.$schema = revisionOrSchemaUri;
 				// eslint-disable-next-line
 				event.client_dt = new Date().toISOString();
-				event.meta = {
-					// meta.domain should be the same as top level EventCapsule webHost.
-					domain: event.webHost
-				};
 				// Note: some fields will have defaults set by eventgate-wikimedia.
 				// See:
 				// - https://gerrit.wikimedia.org/r/plugins/gitiles/eventgate-wikimedia/+/refs/heads/master/eventgate-wikimedia.js#358
@@ -373,6 +369,7 @@
 
 		eventData.meta = eventData.meta || {};
 		eventData.meta.stream = streamName;
+		eventData.meta.domain = location.hostname;
 		//
 		// The 'dt' field is reserved for the internal use of this library,
 		// and should not be set by any other caller. The 'meta.dt' field is
