@@ -7,7 +7,7 @@
  */
 
 .mw-json-schema-code-samples {
-	border: 1px solid #ddd;
+	border: 1px solid #c8ccd1;
 	display: none;
 	font-size: 120%;
 	min-width: 30em;
@@ -42,7 +42,7 @@
 	/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
 	font-family: 'entypo';
 	font-size: 3em;
-	background: #f55b65;
+	background: #d33;
 	color: #fff;
 	right: 0;
 	top: -0.9em;
@@ -53,7 +53,7 @@
 }
 
 .mw-json-schema-code-glyph:hover {
-	background: #f78088;
+	background: #ff4242;
 }
 
 /*!
