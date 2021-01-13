@@ -19,7 +19,7 @@ return [
 		$client = new EventServiceClient(
 			$services->getHttpRequestFactory(),
 			$streamConfigs,
-			$serviceUri = $config->get( 'EventLoggingServiceUri' )
+			$config->get( 'EventLoggingServiceUri' )
 		);
 		$client->setLogger( LoggerFactory::getInstance( 'EventLogging' ) );
 		return $client;
