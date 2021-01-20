@@ -75,7 +75,7 @@ class EventServiceClient implements LoggerAwareInterface {
 			);
 			return;
 		}
-		if ( !$event || !$event['$schema'] ) {
+		if ( !isset( $event['$schema'] ) ) {
 			$this->logger->warning(
 				__METHOD__ . ' called with event data missing required field "$schema".',
 				[ 'event' => $event ]
