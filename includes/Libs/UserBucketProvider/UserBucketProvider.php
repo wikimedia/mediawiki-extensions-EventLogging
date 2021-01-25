@@ -18,7 +18,7 @@ class UserBucketProvider {
 	 * @param User $user provides raw edit count
 	 * @return string|null Bucket identifier, or null for anonymous users.
 	 */
-	public function getUserEditCountBucket( User $user ): ?string {
+	public static function getUserEditCountBucket( User $user ): ?string {
 		$editCount = $user->getEditCount();
 		if ( $editCount === null ) {
 			return null;

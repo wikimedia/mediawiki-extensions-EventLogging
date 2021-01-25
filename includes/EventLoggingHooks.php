@@ -42,8 +42,8 @@ class EventLoggingHooks {
 
 		if ( $out->getUser()->isRegistered() ) {
 			$out->addJsConfigVars( [
-				'wgUserEditCountBucket' => EventLoggingServices::getInstance()->getUserBucketProvider()
-					->getUserEditCountBucket( $out->getUser() )
+				'wgUserEditCountBucket' =>
+					UserBucketProvider::getUserEditCountBucket( $out->getUser() ),
 			] );
 		}
 	}

@@ -9,7 +9,10 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\Extension\EventBus\EventBus;
+use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use Psr\Log\LoggerInterface;
 
 class EventLogging {
 
@@ -17,11 +20,46 @@ class EventLogging {
 	 * Submit an event according to the given stream's configuration.
 	 * @param string $streamName
 	 * @param array $event
+	 * @param LoggerInterface|null $logger
 	 */
-	public static function submit( string $streamName, array $event ): void {
-		EventLoggingServices::getInstance()
-			->getEventServiceClient()
-			->submit( $streamName, $event );
+	public static function submit(
+		string $streamName,
+		array $event,
+		$logger = null
+	): void {
+		DeferredUpdates::addCallableUpdate( function () use ( $streamName, $event, $logger ) {
+			$services = MediaWikiServices::getInstance();
+			$config = $services->getMainConfig();
+			$eventLoggingStreamNames = $config->get( 'EventLoggingStreamNames' );
+			$logger = $logger ?? LoggerFactory::getInstance( 'EventLogging' );
+
+			if ( $eventLoggingStreamNames === false ) {
+				$streamConfigs = false;
+			} else {
+				$streamConfigs = $services->getService(
+					'EventStreamConfig.StreamConfigs'
+				)->get( $eventLoggingStreamNames, true );
+			}
+
+			if ( $streamConfigs !== false && !array_key_exists( $streamName, $streamConfigs ) ) {
+				$logger->warning(
+					'Event submitted for unregistered stream name "{streamName}".',
+					[ 'streamName' => $streamName ]
+				);
+				return;
+			}
+			if ( !isset( $event['$schema'] ) ) {
+				$logger->warning(
+					'Event data s missing required field "$schema".',
+					[ 'event' => $event ]
+				);
+				return;
+			}
+
+			$event = EventLoggingHelper::prepareEvent( $streamName, $event );
+			// @phan-suppress-next-line PhanUndeclaredClassMethod
+			EventBus::getInstanceForStream( $streamName )->send( [ $event ] );
+		} );
 	}
 
 	/**

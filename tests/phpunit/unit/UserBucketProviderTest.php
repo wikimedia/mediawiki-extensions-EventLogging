@@ -22,7 +22,7 @@ class UserBucketProviderTest extends MediaWikiUnitTestCase {
 		$user->method( 'getEditCount' )
 			->willReturn( $editCount );
 
-		$result = ( new UserBucketProvider() )->getUserEditCountBucket( $user );
+		$result = UserBucketProvider::getUserEditCountBucket( $user );
 
 		$this->assertSame( $expectedBucket, $result );
 	}

@@ -1,15 +1,21 @@
 <?php
 
+use MediaWiki\Extension\EventBus\EventBus;
+use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\MediaWikiServices;
+use Monolog\Logger;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /** @covers EventLogging */
 class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
-	private $mockEventServiceClient;
+	private $mockEventBus;
+	private $mockEventBusFactory;
 	private $mockHttpRequestFactory;
 	private $timestamp;
+	private $mockLogger;
 
 	/**
 	 * This is supposed to be what a user might provide to EventLogging::logEvent
@@ -35,7 +41,27 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
-		// EventLoggging uses HTTP_HOST.  If it isn't set for tests, set a dummy,
+		$this->setMwGlobals( [
+			'wgEventLoggingSchemas' => [
+				'Migrated' => '/test/event/1.0.0',
+				'NotMigrated' => 1337,
+			],
+			'wgEventLoggingBaseUri' => 'https://test.wikipedia.org/beacon/event',
+			'wgServerName' => $this->testHttpHost,
+			'wgEventStreams' => [
+				[
+					'stream' => 'test.event',
+					'schema_title' => 'test/event'
+				],
+				[
+					'stream' => 'eventlogging_Migrated',
+					'schema_title' => 'analytics/legacy/test/migrated'
+				],
+			],
+			'wgEventLoggingStreamNames' => [ 'eventlogging_Migrated' ],
+		] );
+
+		// EventLogging uses HTTP_HOST.  If it isn't set for tests, set a dummy,
 		// Otherwise use the actual value.
 		if ( !isset( $_SERVER['HTTP_HOST'] ) ) {
 			$this->modifiedHttpHost = true;
@@ -44,26 +70,25 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 			$this->testHttpHost = $_SERVER['HTTP_HOST'];
 		}
 
-		$this->mockEventServiceClient = $this->createMock( EventServiceClient::class );
-		$this->setService( 'EventServiceClient', function () {
-			return $this->mockEventServiceClient;
-		} );
-
+		$multiClient = MediaWikiServices::getInstance()->getHttpRequestFactory()
+			->createMultiClient();
 		$this->mockHttpRequestFactory = $this->createMock( HttpRequestFactory::class );
+		$this->mockHttpRequestFactory->method( 'createMultiClient' )
+			->willReturn( $multiClient );
 		$this->setService( 'HttpRequestFactory', function () {
 			return $this->mockHttpRequestFactory;
 		} );
 
-		$this->timestamp = TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class );
+		$this->mockEventBus = $this->createMock( EventBus::class );
+		$this->mockEventBusFactory = $this->createMock( EventBusFactory::class );
+		$this->mockEventBusFactory->method( 'getInstanceForStream' )->willReturn(
+			$this->mockEventBus );
+		$this->setService( 'EventBus.EventBusFactory', function () {
+			return $this->mockEventBusFactory;
+		} );
 
-		$this->setMwGlobals( [
-			'wgEventLoggingSchemas' => [
-				'Migrated' => '/test/event/1.0.0',
-				'NotMigrated' => 1337,
-			],
-			'wgEventLoggingBaseUri' => 'https://test.wikipedia.org/beacon/event',
-			'wgServerName' => $this->testHttpHost,
-		] );
+		$this->timestamp = TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class );
+		$this->mockLogger = $this->createMock( Logger::class );
 	}
 
 	protected function tearDown(): void {
@@ -76,23 +101,23 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testSendMigratedEventLoggingEvent(): void {
-		$this->mockEventServiceClient->expects( $this->once() )
-			->method( 'submit' )
-			->with( 'eventlogging_Migrated', $this->callback( function ( $event ) {
+		$this->mockEventBus->expects( $this->once() )
+			->method( 'send' )
+			->with( $this->callback( function ( $events ) {
+				$event = $events[0];
 				return (
 					$event['$schema'] === '/test/event/1.0.0' &&
-					preg_match( $this->timestamp->regexes['TS_ISO_8601'], $event['client_dt'] ) &&
-					// $eventData['event'] should equal $legacyEvent
-					$event['event']['field_a'] === $this->legacyEvent['field_a']
+					(bool)preg_match( $this->timestamp->regexes['TS_ISO_8601'], $event['dt'] ) &&
+					$event['meta']['stream'] === 'eventlogging_Migrated' &&
+					$event['meta']['domain'] === $this->testHttpHost &&
+					isset( $event['http']['request_headers']['user-agent'] )
 				);
 			} ) );
-		$this->mockHttpRequestFactory->expects( $this->never() )->method( 'post' );
 
 		EventLogging::logEvent( 'Migrated', 1337,  $this->legacyEvent );
 	}
 
 	public function testSendNonMigratedEventLoggingEvent(): void {
-		$this->mockEventServiceClient->expects( $this->never() )->method( 'submit' );
 		$this->mockHttpRequestFactory->expects( $this->once() )
 			->method( 'post' )
 			->with( $this->callback( function ( $url ) {
@@ -125,6 +150,30 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$result = TestingAccessWrapper::newFromClass( EventLogging::class )
 			->getLegacyStreamName( 'Foo' );
 		$this->assertSame( 'eventlogging_Foo', $result );
+	}
+
+	public function testFailIfSchemaNotSpecified(): void {
+		$this->mockLogger->expects( $this->once() )->method( 'warning' );
+		EventLogging::submit( 'test.event', [], $this->mockLogger );
+	}
+
+	public function testFailIfStreamNameNotConfigured(): void {
+		$this->mockLogger->expects( $this->once() )->method( 'warning' );
+		EventLogging::submit(
+			'not.configured',
+			[ '$schema' => '/test/event/1.0.0' ],
+			$this->mockLogger
+		);
+	}
+
+	public function testDisableStreamConfig(): void {
+		$this->setMwGlobals( [ 'wgEventLoggingStreamNames' => false ] );
+		$this->mockEventBus->expects( $this->once() )->method( 'send' );
+		EventLogging::submit(
+			'not.configured',
+			[ '$schema' => '/test/event/1.0.0' ],
+			$this->mockLogger
+		);
 	}
 
 }
