@@ -22,4 +22,8 @@ class EventLoggingServices {
 		return $this->services->getService( 'EventServiceClient' );
 	}
 
+	public function getUserBucketProvider(): UserBucketProvider {
+		return $this->services->getService( 'UserBucketProvider' );
+	}
+
 }

@@ -25,4 +25,8 @@ return [
 		return $client;
 	},
 
+	'UserBucketProvider' => function ( MediaWikiServices $services ): UserBucketProvider {
+		return new UserBucketProvider();
+	},
+
 ];

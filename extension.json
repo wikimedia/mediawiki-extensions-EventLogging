@@ -1,6 +1,6 @@
 {
 	"name": "EventLogging",
-	"version": "0.9.0",
+	"version": "0.9.1",
 	"author": [
 		"Ori Livneh",
 		"Timo Tijhof",
@@ -69,7 +69,8 @@
 		"JsonTreeRef": "includes/Libs/JsonSchemaValidation/JsonTreeRef.php",
 		"JsonUtil": "includes/Libs/JsonSchemaValidation/JsonUtil.php",
 		"RemoteSchema": "includes/RemoteSchema.php",
-		"TreeRef": "includes/Libs/JsonSchemaValidation/TreeRef.php"
+		"TreeRef": "includes/Libs/JsonSchemaValidation/TreeRef.php",
+		"UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php"
 	},
 	"ResourceModules": {
 		"ext.eventLogging": {
