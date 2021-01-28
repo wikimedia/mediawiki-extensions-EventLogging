@@ -13,11 +13,7 @@
 		// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
 		config = require( './data.json' ),
 		BackgroundQueue = require( './BackgroundQueue.js' ),
-		queue = ( new BackgroundQueue( config.queueLingerSeconds ) ),
-		// samplingCache caches in-sample vs. out-of-sample determinations for
-		// streams, so that the determination only needs to happen the first time an
-		// an event is logged to each stream
-		samplingCache = Object.create( null );
+		queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
 
 	// Support both 1 or "1" (T54542)
 	debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
@@ -324,9 +320,18 @@
 	 * @param {Object} eventData data to send to streamName
 	 */
 	core.submit = function ( streamName, eventData ) {
-
+		//
+		// NOTE
 		// If stream configuration is disabled (config.streamConfigs === false),
-		// this will return {} (a truthy value).
+		// then core.streamConfig will return an empty object {},
+		// i.e. a truthy value, for all stream names.
+		//
+		// FIXME
+		// The convention that disabling stream configuration results
+		// in enabling any caller to send any event, with no sampling,
+		// etc., is correct in the sense of the boolean logic, but
+		// counter-intuitive and likely hard to keep correct as more
+		// behavior is added. We should revisit.
 		var streamConfig = core.streamConfig( streamName );
 
 		if ( !streamConfig ) {
@@ -338,17 +343,14 @@
 			// inconsistent data, the event submission does not
 			// proceed.
 			//
-			// Note for the future: when stream cc-ing feature
-			// is added, the cc-ing needs to happen BEFORE this
-			// step, so that a lack of streamName does not
-			// block submitting an event to streamName.ccStream
-			// and so on.
-			//
+			// FIXME
+			// See comment above; this should be made less
+			// confusing.
 			return;
 		}
 
 		// If stream is not in sample, do not log the event.
-		if ( !core.streamInSample( streamName ) ) {
+		if ( !core.streamInSample( streamConfig ) ) {
 			return;
 		}
 
@@ -409,75 +411,120 @@
 		}
 	};
 
+	core.storage = {
+		get: function ( name ) {
+			mw.cookie.get( 'el-' + name );
+		},
+		set: function ( name, value ) {
+			mw.cookie.set( 'el-' + name, value );
+		},
+		unset: function ( name ) {
+			mw.cookie.set( 'el-' + name, null );
+		}
+	};
+
+	core.id = ( function () {
+		var
+			UINT32_MAX = 4294967295, // (2^32) - 1
+			pageviewId = null,
+			sessionId = null;
+
+		// Provided by the sessionTick instrument in WikimediaEvents.
+		mw.trackSubscribe( 'sessionReset', function () {
+			core.id.resetSessionId();
+		} );
+
+		return {
+			resetPageviewId: function () {
+				pageviewId = null;
+			},
+
+			resetSessionId: function () {
+				sessionId = null;
+				core.storage.unset( 'sessionId' );
+			},
+
+			generateId: function () {
+				return mw.user.generateRandomSessionId();
+			},
+
+			normalizeId: function ( id ) {
+				return parseInt( id.slice( 0, 8 ), 16 ) / UINT32_MAX;
+			},
+
+			getPageviewId: function () {
+				if ( !pageviewId ) {
+					pageviewId = core.id.generateId();
+				}
+				return pageviewId;
+			},
+
+			getSessionId: function () {
+				if ( !sessionId ) {
+					//
+					// If there is no runtime value for SESSION_ID,
+					// try to load a value from persistent store.
+					//
+					sessionId = core.storage.get( 'sessionId' );
+
+					if ( !sessionId ) {
+						//
+						// If there is no value in the persistent store,
+						// generate a new value for SESSION_ID, and write
+						// the update to the persistent store.
+						//
+						sessionId = core.id.generateId();
+						core.storage.set( 'sessionId', sessionId );
+					}
+				}
+				return sessionId;
+			}
+		};
+	}() );
+
 	/**
-	 * Return the in-sample/out-of-sample determination of the given stream name.
-	 *
-	 * Refer to https://www.mediawiki.org/wiki/Wikimedia_Product/Analytics_Infrastructure/Stream_configuration#Sampling_settings
-	 * for documentation of the sampling config behavior and how the sampling rate
-	 * works with regards to increases and "widening-the-stationary-net" behavior.
-	 *
-	 * While developing with MediaWiki-Vagrant, streams should still be configured
-	 * in $wgEventStreams and registered with $wgEventLoggingStreamNames inside
-	 * LocalSettings.php for events to be sent. See https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To
-	 * for more information on configuring streams in MediaWiki-Vagrant and in
-	 * production through mediawiki-config.
+	 * Determine whether a stream is in-sample or out-sample.
 	 *
 	 * @private
-	 * @param {string} streamName name of the stream to return config for
-	 * @return {boolean} determination for the given streamName, defaulting to
-	 	false if the stream is not enabled.
+	 * @param {Object} streamConfig stream configuration
+	 * @return {boolean} true if in-sample, false if out-sample.
 	 */
-	core.streamInSample = function ( streamName ) {
-		var uInt32Max = Math.pow( 2, 32 ) - 1,
-			samplingConfig,
-			samplingRate,
-			samplingId,
-			parsedId;
+	core.streamInSample = function ( streamConfig ) {
+		var id;
 
-		// If the determination for the stream has not already been made on this
-		// page load, we need to go through the process of determining whether the
-		// stream is in-sample or out-of-sample based on its 'sampling' config.
-		if ( streamName in samplingCache ) {
-			return samplingCache[ streamName ];
+		if ( !streamConfig ) {
+			// If a stream is not defined, it is not in sample.
+			return false;
 		}
 
-		// Stream determination not in cache, proceed with making a determination:
-		if ( core.streamConfig( streamName ) === undefined ) {
-			// If a stream is NOT DEFINED in the stream config, it is NOT IN SAMPLE.
-			samplingCache[ streamName ] = false;
-			return samplingCache[ streamName ];
+		if ( !streamConfig.sample ) {
+			// If the stream does not specify sampling, it is in-sample.
+			return true;
 		}
 
-		samplingConfig = core.streamConfig( streamName ).sampling;
-		if ( !samplingConfig ) {
-			// Default to 100% (always in-sample) for stream if the stream *is*
-			// configured but its sampling config is not explicitly defined.
-			samplingCache[ streamName ] = true;
-			return samplingCache[ streamName ];
+		if (
+			( !streamConfig.sample.rate || !streamConfig.sample.unit ) ||
+			( streamConfig.sample.rate < 0 || streamConfig.sample.rate > 1 )
+		) {
+			// If the stream does specify sampling, but it is malformed,
+			// it is not in-sample.
+			return false;
 		}
 
-		samplingRate = samplingConfig.rate;
-		if ( samplingRate === undefined && samplingConfig.identifier !== 'device' ) {
-			// If rate is not provided and stream is not configured to use 'device',
-			// we default to in-sample. Specifying 'device' ID-based sampling disables
-			// the stream on MediaWiki.
-			samplingCache[ streamName ] = true;
-			return samplingCache[ streamName ];
-		} else if ( samplingConfig.identifier === 'pageview' ) {
-			samplingId = mw.user.getPageviewToken();
-		} else if ( samplingConfig.identifier === 'session' || !samplingConfig.identifier ) {
-			// Either the identifier was explicitly set to "session" or it was omitted
-			// from sampling config, in which case we default to "session".
-			samplingId = mw.user.sessionId();
-		} else {
-			// Either the identifier was set to 'device' or it was not recognized.
-			samplingCache[ streamName ] = false;
-			return samplingCache[ streamName ];
+		switch ( streamConfig.sample.unit ) {
+			case 'pageview':
+				id = core.id.getPageviewId();
+				break;
+			case 'session':
+				id = core.id.getSessionId();
+				break;
+			default:
+				return false;
 		}
-		parsedId = parseInt( samplingId.slice( 0, 8 ), 16 );
-		samplingCache[ streamName ] = parsedId / uInt32Max < samplingRate;
-		return samplingCache[ streamName ];
 
+		id = core.id.normalizeId( id );
+
+		return ( id < streamConfig.sample.rate );
 	};
 
 	/**
@@ -496,8 +543,9 @@
 		// If streamConfigs are false, then
 		// stream config usage is not enabled.
 		// Always return an empty object.
+		// FIXME: naming
 		if ( config.streamConfigs === false ) {
-			return { };
+			return {};
 		}
 
 		if ( !config.streamConfigs[ streamName ] ) {

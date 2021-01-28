@@ -62,84 +62,173 @@ QUnit.test( 'streamConfig() - disallow modification', function ( assert ) {
 	assert.equal( mw.eventLog.streamConfig( 'test.stream' ).field, 'expectedValue' );
 } );
 
-QUnit.test( 'streamInSample() - perform correct determination', function ( assert ) {
-	mw.eventLog.setOptionsForTest( {
-		streamConfigs: {
-			'test.stream': {
-				some: 'config'
-			},
-			'test.virtually_disabled': {
-				sampling: {
-					rate: 0.0
-				}
-			},
-			'test.mobile_app': {
-				sampling: {
-					identifier: 'device'
-				}
-			},
-			'test.mobile_app.alt': {
-				sampling: {
-					identifier: 'device',
-					rate: 1.0
-				}
+QUnit.test( 'streamInSample() - valid and invalid stream configs', function ( assert ) {
+	var conf = {
+		emptyConfig: {},
+		nonemptyConfigNoSample: {
+			some: 'value'
+		},
+		zeroRateValidUnit: {
+			sample: {
+				rate: 0.0,
+				unit: 'session'
 			}
+		},
+		validRateInvalidUnit: {
+			sample: {
+				rate: 0.5,
+				unit: 'coelacanth'
+			}
+		},
+		validRateMissingUnit: {
+			sample: {
+				rate: 0.5
+			}
+		},
+		tooHighRateValidUnit: {
+			sample: {
+				rate: 5,
+				unit: 'session'
+			}
+		},
+		tooHighRateInvalidUnit: {
+			sample: {
+				rate: 5,
+				unit: 'coelacanth'
+			}
+		},
+		tooHighRateMissingUnit: {
+			sample: {
+				rate: 5
+			}
+		},
+		tooLowRateValidUnit: {
+			sample: {
+				rate: -5,
+				unit: 'session'
+			}
+		},
+		tooLowRateInvalidUnit: {
+			sample: {
+				rate: -5,
+				unit: 'coelacanth'
+			}
+		},
+		tooLowRateMissingUnit: {
+			sample: {
+				rate: -5
+			}
+		},
+		missingRateValidUnit: {
+			sample: {
+				unit: 'session'
+			}
+		},
+		missingRateInvalidUnit: {
+			sample: {
+				unit: 'coelacanth'
+			}
+		},
+		missingRateMissingUnit: {
+			sample: {}
 		}
-	} );
-	assert.equal( mw.eventLog.streamInSample( 'test.stream' ), true );
-	assert.equal( mw.eventLog.streamInSample( 'test.virtually_disabled' ), false );
-	assert.equal( mw.eventLog.streamInSample( 'test.mobile_app' ), false );
-	assert.equal( mw.eventLog.streamInSample( 'test.mobile_app.alt' ), false );
-	assert.equal( mw.eventLog.streamInSample( 'test.nonexistent' ), false );
+	};
+
+	assert.equal( mw.eventLog.streamInSample( conf.nonExistentStream ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.emptyConfig ), true );
+	assert.equal( mw.eventLog.streamInSample( conf.nonemptyConfigNoSample ), true );
+	assert.equal( mw.eventLog.streamInSample( conf.zeroRateValidUnit ), false );
+
+	assert.equal( mw.eventLog.streamInSample( conf.validRateInvalidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.validRateMissingUnit ), false );
+
+	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateValidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateInvalidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateMissingUnit ), false );
+
+	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateValidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateInvalidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateMissingUnit ), false );
+
+	assert.equal( mw.eventLog.streamInSample( conf.missingRateValidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.missingRateInvalidUnit ), false );
+	assert.equal( mw.eventLog.streamInSample( conf.missingRateMissingUnit ), false );
 } );
 
-QUnit.test( 'streamInSample() - determination is cached', function ( assert ) {
-	var det1, det2, det3, det4;
+QUnit.test( 'streamInSample() - session sampling is deterministic', function ( assert ) {
+	var conf, x0, i;
 
-	mw.eventLog.setOptionsForTest( {
-		streamConfigs: {
-			'test.stream1': {
-				some: 'config'
-			},
-			'test.stream2': {
-				sampling: {
-					rate: 0.5,
-					identifier: 'session'
-				}
-			},
-			'test.stream3': {
-				sampling: {
-					rate: 0.5,
-					identifier: 'pageview'
-				}
-			},
-			'test.stream4': {
-				sampling: {
-					rate: 1.0
-				}
-			}
+	conf = {
+		sample: {
+			rate: 0.5,
+			unit: 'session'
 		}
-	} );
+	};
 
-	// Each stream's determination is lazy, cached first time it's requested.
-	// Subsequent calls should be much faster since the cached determination is
-	// supposed to be used.
-	this.clock.tick( 1000 );
-	det1 = mw.eventLog.streamInSample( 'test.stream1' );
-	this.clock.tick( 1000 );
-	det2 = mw.eventLog.streamInSample( 'test.stream2' );
-	this.clock.tick( 1000 );
-	det3 = mw.eventLog.streamInSample( 'test.stream3' );
-	this.clock.tick( 1000 );
-	det4 = mw.eventLog.streamInSample( 'test.stream4' );
-	this.clock.tick( 1000 );
-	assert.equal( mw.eventLog.streamInSample( 'test.stream1' ), det1 );
-	this.clock.tick( 1000 );
-	assert.equal( mw.eventLog.streamInSample( 'test.stream2' ), det2 );
-	this.clock.tick( 1000 );
-	assert.equal( mw.eventLog.streamInSample( 'test.stream3' ), det3 );
-	this.clock.tick( 1000 );
-	assert.equal( mw.eventLog.streamInSample( 'test.stream4' ), det4 );
-	this.clock.tick( 1000 );
-	assert.equal( det1, det4 );
+	x0 = mw.eventLog.streamInSample( conf );
+
+	for ( i = 0; i < 5; i++ ) {
+		assert.equal( x0, mw.eventLog.streamInSample( conf ) );
+	}
+} );
+
+QUnit.test( 'streamInSample() - pageview sampling is deterministic', function ( assert ) {
+	var conf, x0, i;
+
+	conf = {
+		sample: {
+			rate: 0.5,
+			unit: 'pageview'
+		}
+	};
+
+	x0 = mw.eventLog.streamInSample( conf );
+
+	for ( i = 0; i < 5; i++ ) {
+		assert.equal( x0, mw.eventLog.streamInSample( conf ) );
+	}
+} );
+
+QUnit.test( 'streamInSample() - session sampling resets', function ( assert ) {
+	var conf, tot = 0, i;
+
+	conf = {
+		sample: {
+			rate: 0.5,
+			unit: 'session'
+		}
+	};
+
+	for ( i = 0; i < 20; i++ ) {
+		tot += mw.eventLog.streamInSample( conf );
+		mw.eventLog.id.resetSessionId();
+	}
+
+	assert.notEqual( tot, 20 );
+	assert.notEqual( tot, 0 );
+} );
+
+QUnit.test( 'streamInSample() - pageview sampling resets', function ( assert ) {
+	var conf, tot = 0, i;
+
+	conf = {
+		sample: {
+			rate: 0.5,
+			unit: 'pageview'
+		}
+	};
+
+	for ( i = 0; i < 20; i++ ) {
+		tot += mw.eventLog.streamInSample( conf );
+		mw.eventLog.id.resetPageviewId();
+	}
+
+	assert.notEqual( tot, 20 );
+	assert.notEqual( tot, 0 );
+} );
+
+QUnit.test( 'id.normalizeId() - id normalizes to a number in [0,1]', function ( assert ) {
+	var id = mw.eventLog.id.normalizeId( mw.eventLog.id.generateId() );
+
+	assert.equal( ( id >= 0 && id <= 1 ), true );
 } );
