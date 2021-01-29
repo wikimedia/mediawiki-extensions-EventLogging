@@ -6,6 +6,7 @@
 		"wikimedia/mediawiki"
 	],
 	"rules": {
-		"no-redeclare": "warn"
+		"no-redeclare": "warn",
+		"compat/compat": "warn"
 	}
 }

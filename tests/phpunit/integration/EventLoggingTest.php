@@ -34,7 +34,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * If true, HTTP_HOST has been modified and should be reset during tearDown.
-	 * @var boolean
+	 * @var bool
 	 */
 	private $modifiedHttpHost = false;
 
