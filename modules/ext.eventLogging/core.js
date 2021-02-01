@@ -325,15 +325,18 @@
 	 */
 	core.submit = function ( streamName, eventData ) {
 
-		if ( !core.streamConfig( streamName ) ) {
+		// If stream configuration is disabled (config.streamConfigs === false),
+		// this will return {} (a truthy value).
+		var streamConfig = core.streamConfig( streamName );
+
+		if ( !streamConfig ) {
 			//
-			// If no stream configuration has been loaded
-			// for streamName (and we are not in debugMode),
-			// we assume the client is misconfigured. Rather
-			// than produce potentially inconsistent data, the
-			// event submission does not proceed.
-			// If config.streamConfigs === false,
-			// this will always return {} and proceed.
+			// If stream configurations are enabled but no
+			// stream configuration has been loaded for streamName
+			// (and we are not in debugMode), we assume the client
+			// is misconfigured. Rather than produce potentially
+			// inconsistent data, the event submission does not
+			// proceed.
 			//
 			// Note for the future: when stream cc-ing feature
 			// is added, the cc-ing needs to happen BEFORE this
@@ -381,6 +384,9 @@
 		//
 		// eslint-disable-next-line
 		eventData.dt = eventData.dt || new Date().toISOString();
+
+		// FIXME: This is a demo implementation. Use at your own risk.
+		core.addRequestedValues( eventData, streamConfig );
 
 		// This will use a MediaWiki notification in the browser to display the event data.
 		if ( debugMode ) {
@@ -501,6 +507,49 @@
 			return undefined;
 		}
 		return $.extend( true, {}, config.streamConfigs[ streamName ] );
+	};
+
+	/**
+	 * Add client-provided supplemental values as requested in the stream configuration.
+	 *
+	 * For now, as a proof of concept, this function will add requested values to a top-level
+	 * `test` field. If the event data object already contains a corresponding value for a
+	 * requested value, it will *not* be overwritten.
+	 *
+	 * @param {Object} eventData
+	 * @param {Object} streamConfig
+	 * @return {Object} event data
+	 */
+	core.addRequestedValues = function ( eventData, streamConfig ) {
+		var i,
+			requestedValue,
+			requestedValues = streamConfig.provide_values;
+
+		if ( !Array.isArray( requestedValues ) ) {
+			return eventData;
+		}
+		eventData.test = eventData.test || {};
+		if ( !( eventData.test === Object( eventData.test ) ) ) {
+			// eventData.test exists but is not an Object; abort
+			// TODO: This check should not be needed in the final implementation
+			return eventData;
+		}
+		for ( i = 0; i < requestedValues.length; i++ ) {
+			requestedValue = requestedValues[ i ];
+			if ( {}.hasOwnProperty.call( eventData.test, requestedValue ) ) {
+				continue;
+			}
+			switch ( requestedValue ) {
+				case 'skin':
+					eventData.test.skin = mw.config.get( 'skin' );
+					break;
+				default:
+					mw.log.warn( 'EventLogging: Ignoring unknown requested value \'' +
+						requestedValue + '\'' );
+					break;
+			}
+		}
+		return eventData;
 	};
 
 	// Not allowed outside unit tests
