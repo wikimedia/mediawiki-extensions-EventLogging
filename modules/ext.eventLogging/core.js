@@ -158,20 +158,27 @@
 		},
 
 		/**
-		 * Make a lightweight HTTP request to a specified URL, using the best means
-		 * available to this user agent.
+		 * Make a 'fire and forget' HTTP request to a specified URL with the given payload data.
 		 *
-		 * This respect DNT. It falls back to creating an detached image element for
-		 * browsers without `navigator.sendBeacon`.
+		 * If data is undefined, a detached image element wil be created for
+		 * browsers without `navigator.sendBeacon`.  This cannot be done if data is provided,
+		 * as a payload cannot be sent using this mechanism.  I.e. this img fallback will
+		 * only be used for 'legacy' events that are sent via a URL query params rather than
+		 * a POST JSON body.
+		 * See also T273374 and T86680.
+		 *
+		 * If navigator.sendBeacon does not exist (and img fallback cannot be used)
+		 * or throws an exception, this will be a no-op.
 		 *
 		 * @param {string} url URL to request from the server.
+		 * @param {string} data to POST to server.
 		 */
-		sendBeacon: function ( url ) {
+		sendBeacon: function ( url, data ) {
 			if ( navigator.sendBeacon ) {
 				try {
-					navigator.sendBeacon( url );
+					navigator.sendBeacon( url, data );
 				} catch ( e ) {}
-			} else {
+			} else if ( !data ) {
 				document.createElement( 'img' ).src = url;
 			}
 		},
@@ -403,7 +410,7 @@
 		//
 		if ( config.serviceUri ) {
 			core.enqueue( function () {
-				navigator.sendBeacon(
+				core.sendBeacon(
 					config.serviceUri,
 					JSON.stringify( eventData )
 				);
