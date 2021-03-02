@@ -108,6 +108,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 				return (
 					$event['$schema'] === '/test/event/1.0.0' &&
 					(bool)preg_match( $this->timestamp->regexes['TS_ISO_8601'], $event['dt'] ) &&
+					str_ends_with( $event['dt'], 'Z' ) &&
 					$event['meta']['stream'] === 'eventlogging_Migrated' &&
 					$event['meta']['domain'] === $this->testHttpHost &&
 					isset( $event['http']['request_headers']['user-agent'] )
@@ -142,6 +143,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertSame( $result['$schema'], '/test/event/1.0.0' );
 		$this->assertRegExp( $this->timestamp->regexes['TS_ISO_8601'], $result['client_dt'] );
+		$this->assertStringEndsWith( 'Z', $result['client_dt'] );
 		$this->assertSame( $this->testHttpHost, $result['webHost'] );
 		$this->assertSame( $result['event']['field_a'],  $this->legacyEvent['field_a'] );
 	}
