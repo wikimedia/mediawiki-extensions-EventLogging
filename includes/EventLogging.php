@@ -238,7 +238,7 @@ class EventLogging {
 			$event['$schema'] = $revisionOrSchemaUri;
 			// NOTE: `client_dt` is 'legacy' event time.  `dt` is the preferred event time field
 			// and is set in EventServiceClient.
-			$event['client_dt'] = date( DATE_ISO8601 );
+			$event['client_dt'] = wfTimestamp( TS_ISO_8601 );
 
 			// Note: some fields will have defaults set by eventgate-wikimedia.
 			// See:
