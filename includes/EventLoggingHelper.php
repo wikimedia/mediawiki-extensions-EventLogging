@@ -36,7 +36,7 @@ class EventLoggingHelper {
 			$requiredData
 		);
 
-		$preparedEvent['dt'] = $preparedEvent['dt'] ?? date( DATE_ISO8601 );
+		$preparedEvent['dt'] = $preparedEvent['dt'] ?? wfTimestamp( TS_ISO_8601 );
 
 		return $preparedEvent;
 	}

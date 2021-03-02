@@ -21,6 +21,7 @@ class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'test.event', $preparedEvent['meta']['stream'] );
 		$ts = TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class );
 		$this->assertRegExp( $ts->regexes['TS_ISO_8601'], $preparedEvent['dt'] );
+		$this->assertStringEndsWith( 'Z', $preparedEvent['dt'] );
 		$this->assertSame( 'B', $preparedEvent['extra_default'] );
 	}
 
