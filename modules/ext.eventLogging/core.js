@@ -499,6 +499,12 @@
 	core.streamInSample = function ( streamConfig ) {
 		var id;
 
+		if ( debugMode ) {
+			// If a user is in debug mode, they are in-sample.
+			// FIXME: Is this always what we want?
+			return true;
+		}
+
 		if ( !streamConfig ) {
 			// If a stream is not defined, it is not in sample.
 			return false;
