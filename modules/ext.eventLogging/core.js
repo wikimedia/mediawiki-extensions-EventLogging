@@ -613,6 +613,41 @@
 		return eventData;
 	};
 
+	/**
+	 * Provide the user's edit count as a low-granularity bucket name
+	 *
+	 * TODO: This should be transparently injected using the
+	 * addRequestedValues mechanism, when it's mature.
+	 *
+	 * @param {number|null} editCount User edit count, or null for anonymous performers.
+	 * @return {string|null} `null` for anonymous performers.
+	 *
+	 * Do not use this value in conjunction with other edit count
+	 * bucketing, or you will deanonymize users to some degree.
+	 */
+	function getUserEditCountBucket( editCount ) {
+		if ( editCount === null ) {
+			return null;
+		}
+		if ( editCount === 0 ) {
+			return '0 edits';
+		}
+		if ( editCount < 5 ) {
+			return '1-4 edits';
+		}
+		if ( editCount < 100 ) {
+			return '5-99 edits';
+		}
+		if ( editCount < 1000 ) {
+			return '100-999 edits';
+		}
+		return '1000+ edits';
+	}
+	mw.config.set(
+		'wgUserEditCountBucket',
+		getUserEditCountBucket( mw.config.get( 'wgUserEditCount' ) )
+	);
+
 	// Not allowed outside unit tests
 	if ( window.QUnit ) {
 		core.setOptionsForTest = function ( opts ) {
@@ -623,6 +658,7 @@
 		core.BackgroundQueue = BackgroundQueue;
 		core.streamConfigs = config.streamConfigs;
 		core.makeLegacyStreamName = makeLegacyStreamName;
+		core.getUserEditCountBucket = getUserEditCountBucket;
 	}
 
 	module.exports = core;
