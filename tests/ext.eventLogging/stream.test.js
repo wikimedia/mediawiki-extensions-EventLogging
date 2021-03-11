@@ -1,4 +1,3 @@
-/* eslint-env qunit */
 'use strict';
 
 QUnit.module( 'ext.eventLogging/stream', {
@@ -59,7 +58,7 @@ QUnit.test( 'streamConfig() - disallow modification', function ( assert ) {
 		}
 	} );
 	mw.eventLog.streamConfig( 'test.stream' ).field = 'otherValue';
-	assert.equal( mw.eventLog.streamConfig( 'test.stream' ).field, 'expectedValue' );
+	assert.strictEqual( mw.eventLog.streamConfig( 'test.stream' ).field, 'expectedValue' );
 } );
 
 QUnit.test( 'streamInSample() - valid and invalid stream configs', function ( assert ) {
@@ -134,25 +133,25 @@ QUnit.test( 'streamInSample() - valid and invalid stream configs', function ( as
 		}
 	};
 
-	assert.equal( mw.eventLog.streamInSample( conf.nonExistentStream ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.emptyConfig ), true );
-	assert.equal( mw.eventLog.streamInSample( conf.nonemptyConfigNoSample ), true );
-	assert.equal( mw.eventLog.streamInSample( conf.zeroRateValidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.nonExistentStream ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.emptyConfig ), true );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.nonemptyConfigNoSample ), true );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.zeroRateValidUnit ), false );
 
-	assert.equal( mw.eventLog.streamInSample( conf.validRateInvalidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.validRateMissingUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.validRateInvalidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.validRateMissingUnit ), false );
 
-	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateValidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateInvalidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.tooHighRateMissingUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooHighRateValidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooHighRateInvalidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooHighRateMissingUnit ), false );
 
-	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateValidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateInvalidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.tooLowRateMissingUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooLowRateValidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooLowRateInvalidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.tooLowRateMissingUnit ), false );
 
-	assert.equal( mw.eventLog.streamInSample( conf.missingRateValidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.missingRateInvalidUnit ), false );
-	assert.equal( mw.eventLog.streamInSample( conf.missingRateMissingUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.missingRateValidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.missingRateInvalidUnit ), false );
+	assert.strictEqual( mw.eventLog.streamInSample( conf.missingRateMissingUnit ), false );
 } );
 
 QUnit.test( 'streamInSample() - session sampling is deterministic', function ( assert ) {
@@ -168,7 +167,7 @@ QUnit.test( 'streamInSample() - session sampling is deterministic', function ( a
 	x0 = mw.eventLog.streamInSample( conf );
 
 	for ( i = 0; i < 5; i++ ) {
-		assert.equal( x0, mw.eventLog.streamInSample( conf ) );
+		assert.strictEqual( x0, mw.eventLog.streamInSample( conf ) );
 	}
 } );
 
@@ -185,7 +184,7 @@ QUnit.test( 'streamInSample() - pageview sampling is deterministic', function ( 
 	x0 = mw.eventLog.streamInSample( conf );
 
 	for ( i = 0; i < 5; i++ ) {
-		assert.equal( x0, mw.eventLog.streamInSample( conf ) );
+		assert.strictEqual( x0, mw.eventLog.streamInSample( conf ) );
 	}
 } );
 
@@ -230,5 +229,5 @@ QUnit.test( 'streamInSample() - pageview sampling resets', function ( assert ) {
 QUnit.test( 'id.normalizeId() - id normalizes to a number in [0,1]', function ( assert ) {
 	var id = mw.eventLog.id.normalizeId( mw.eventLog.id.generateId() );
 
-	assert.equal( ( id >= 0 && id <= 1 ), true );
+	assert.strictEqual( ( id >= 0 && id <= 1 ), true );
 } );

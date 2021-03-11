@@ -1,4 +1,3 @@
-/* eslint-env qunit */
 ( function () {
 	'use strict';
 
@@ -84,7 +83,6 @@
 
 	QUnit.test( 'validate', function ( assert ) {
 		var errors;
-		assert.expect( validationCases.length + 1 );
 
 		errors = eventLogDebug.validate( {
 			epicenter: 'Valdivia',

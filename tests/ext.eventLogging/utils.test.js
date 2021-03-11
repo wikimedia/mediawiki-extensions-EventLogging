@@ -1,4 +1,3 @@
-/* eslint-env qunit */
 'use strict';
 
 QUnit.module( 'ext.eventLogging/utils' );

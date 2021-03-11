@@ -1,4 +1,3 @@
-/* eslint-env qunit */
 'use strict';
 
 QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
@@ -26,7 +25,7 @@ QUnit.test( 'logEvent()', function ( assert ) {
 
 	return mw.eventLog.logEvent( 'earthquake', eventData ).then( function ( e ) {
 		assert.deepEqual( e.event, eventData, 'logEvent promise resolves with event' );
-		assert.equal( e.revision, 123, 'logEvent gets the revision id from config' );
+		assert.strictEqual( e.revision, 123, 'logEvent gets the revision id from config' );
 	} );
 } );
 
@@ -48,7 +47,7 @@ QUnit.test( 'logEvent() via submit()', function ( assert ) {
 			'logEvent promise resolves with event prepared for EventGate'
 		);
 
-		assert.equal(
+		assert.strictEqual(
 			e.$schema,
 			'/analytics/legacy/eruption/1.0.0',
 			'logEvent builds the $schema url from revision in config'
@@ -57,7 +56,7 @@ QUnit.test( 'logEvent() via submit()', function ( assert ) {
 		assert.ok( e.meta, 'meta field should be set' );
 		assert.notOk( e.dt, 'dt should not be set' );
 		assert.ok( e.client_dt, 'client_dt should be set' );
-		assert.equal( e.meta.domain, e.webHost, 'meta.domain should match webHost field' );
+		assert.strictEqual( e.meta.domain, e.webHost, 'meta.domain should match webHost field' );
 		assert.strictEqual( e.revision, undefined, 'revision field should be unset' );
 	} );
 } );
