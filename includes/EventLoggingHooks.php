@@ -18,7 +18,7 @@ class EventLoggingHooks {
 	 * Emit a debug log message for each invalid or unset
 	 * configuration variable (if any).
 	 */
-	public static function onSetup() {
+	public static function onSetup() : void {
 		foreach ( [
 			'wgEventLoggingBaseUri',
 			'wgEventLoggingSchemaApiUri',
@@ -33,7 +33,7 @@ class EventLoggingHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) : void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
 		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
@@ -97,14 +97,14 @@ class EventLoggingHooks {
 	 * @param User $user
 	 * @param array &$preferences
 	 */
-	public static function onGetPreferences( User $user, array &$preferences ) {
+	public static function onGetPreferences( User $user, array &$preferences ) : void {
 		// See 'ext.eventLogging.debug' module.
 		$preferences['eventlogging-display-web'] = [
 			'type' => 'api',
 		];
 	}
 
-	public static function onCanonicalNamespaces( &$namespaces ) {
+	public static function onCanonicalNamespaces( &$namespaces ) : void {
 		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';

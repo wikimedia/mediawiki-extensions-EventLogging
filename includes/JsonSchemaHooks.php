@@ -29,7 +29,7 @@ class JsonSchemaHooks {
 	 *
 	 * @param ApiModuleManager $moduleManager
 	 */
-	public static function onApiMainModuleManager( ApiModuleManager $moduleManager ) {
+	public static function onApiMainModuleManager( ApiModuleManager $moduleManager ) : void {
 		if ( self::isSchemaNamespaceEnabled() ) {
 			$moduleManager->addModule(
 				'jsonschema',
@@ -46,7 +46,7 @@ class JsonSchemaHooks {
 	 * @param Title $title
 	 * @param string &$lang Page language.
 	 */
-	public static function onCodeEditorGetPageLanguage( $title, &$lang ) {
+	public static function onCodeEditorGetPageLanguage( $title, &$lang ) : void {
 		if ( self::isSchemaNamespaceEnabled()
 			&& $title->inNamespace( NS_SCHEMA )
 		) {
@@ -72,7 +72,7 @@ class JsonSchemaHooks {
 		$summary,
 		$user,
 		$minoredit
-	) {
+	) : void {
 		$title = $context->getTitle();
 
 		if ( !self::isSchemaNamespaceEnabled()
@@ -103,7 +103,7 @@ class JsonSchemaHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, $skin ) {
+	public static function onBeforePageDisplay( OutputPage $out, $skin ) : void {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
