@@ -23,7 +23,16 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	 * @var array
 	 */
 	private $legacyEvent = [
-		"field_a" => "hi"
+		'field_a' => 'hi',
+	];
+
+	/**
+	 * Represents a Modern Event Platform event. Like $this->>legacyEvent, but includes a target schema.
+	 * @var array
+	 */
+	private $newEvent = [
+		"field_a" => "hi",
+		'$schema' => '/test/event/1.0.0'
 	];
 
 	/*
@@ -58,7 +67,10 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 					'schema_title' => 'analytics/legacy/test/migrated'
 				],
 			],
-			'wgEventLoggingStreamNames' => [ 'eventlogging_Migrated' ],
+			'wgEventLoggingStreamNames' => [
+				'test.event',
+				'eventlogging_Migrated',
+			],
 		] );
 
 		// EventLogging uses HTTP_HOST.  If it isn't set for tests, set a dummy,
@@ -100,7 +112,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function testSendMigratedEventLoggingEvent(): void {
+	public function testSendNewSchemaEvent() : void {
 		$this->mockEventBus->expects( $this->once() )
 			->method( 'send' )
 			->with( $this->callback( function ( $events ) {
@@ -109,6 +121,24 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 					$event['$schema'] === '/test/event/1.0.0' &&
 					(bool)preg_match( $this->timestamp->regexes['TS_ISO_8601'], $event['dt'] ) &&
 					str_ends_with( $event['dt'], 'Z' ) &&
+					$event['meta']['stream'] === 'test.event' &&
+					$event['meta']['domain'] === $this->testHttpHost &&
+					isset( $event['http']['request_headers']['user-agent'] )
+				);
+			} ) );
+
+		EventLogging::submit( 'test.event', $this->newEvent );
+	}
+
+	public function testSendMigratedLegacyEvent(): void {
+		$this->mockEventBus->expects( $this->once() )
+			->method( 'send' )
+			->with( $this->callback( function ( $events ) {
+				$event = $events[0];
+				return (
+					$event['$schema'] === '/test/event/1.0.0' &&
+					(bool)preg_match( $this->timestamp->regexes['TS_ISO_8601'], $event['client_dt'] ) &&
+					str_ends_with( $event['client_dt'], 'Z' ) &&
 					$event['meta']['stream'] === 'eventlogging_Migrated' &&
 					$event['meta']['domain'] === $this->testHttpHost &&
 					isset( $event['http']['request_headers']['user-agent'] )
@@ -118,14 +148,14 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		EventLogging::logEvent( 'Migrated', 1337,  $this->legacyEvent );
 	}
 
-	public function testSendNonMigratedEventLoggingEvent(): void {
+	public function testSendNonMigratedLegacyEvent(): void {
 		$this->mockHttpRequestFactory->expects( $this->once() )
 			->method( 'post' )
 			->with( $this->callback( function ( $url ) {
 				return (
 					is_string( $url ) &&
 					str_starts_with( $url, 'https://test.wikipedia.org/beacon/event?' ) &&
-					// Test that the $legacyEvent is in the encoded event.
+					// Test that the base event is in the encoded event.
 					// "field_a": "hi" url encodes to this.
 					str_contains( $url, "%22field_a%22%3A%22hi%22" )
 				);
