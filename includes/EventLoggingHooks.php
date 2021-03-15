@@ -39,13 +39,6 @@ class EventLoggingHooks {
 		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
 			$out->addModules( 'ext.eventLogging.debug' );
 		}
-
-		if ( $out->getUser()->isRegistered() ) {
-			$out->addJsConfigVars( [
-				'wgUserEditCountBucket' =>
-					UserBucketProvider::getUserEditCountBucket( $out->getUser() ),
-			] );
-		}
 	}
 
 	/**

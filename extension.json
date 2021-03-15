@@ -129,6 +129,7 @@
 			"tests/ext.eventLogging/BackgroundQueue.test.js",
 			"tests/ext.eventLogging/log.test.js",
 			"tests/ext.eventLogging/stream.test.js",
+			"tests/ext.eventLogging/bucketing.test.js",
 			"tests/ext.eventLogging.debug.tests.js"
 		],
 		"dependencies": [
