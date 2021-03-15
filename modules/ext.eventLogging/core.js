@@ -55,8 +55,7 @@
 		 * - varnishkafka
 		 *
 		 * @private
-		 * @property maxUrlSize
-		 * @type number
+		 * @property {number} maxUrlSize
 		 */
 		maxUrlSize: 2000,
 
@@ -391,7 +390,6 @@
 		// If 'dt' is provided, its value is not modified.
 		// If 'dt' is not provided, a new value is computed.
 		//
-		// eslint-disable-next-line
 		eventData.dt = eventData.dt || new Date().toISOString();
 
 		// FIXME: This is a demo implementation. Use at your own risk.

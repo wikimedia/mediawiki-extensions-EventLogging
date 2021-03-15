@@ -127,7 +127,6 @@
 	 */
 	function makeDialogPromise() {
 		return mw.loader.using( 'oojs-ui-windows' ).then( function () {
-			/* global OO */
 			var manager = new OO.ui.WindowManager(),
 				dialog = new OO.ui.MessageDialog();
 			$( document.body ).append( manager.$element );
