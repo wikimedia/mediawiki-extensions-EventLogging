@@ -55,7 +55,7 @@ QUnit.test( 'logEvent() via submit()', function ( assert ) {
 		);
 
 		assert.ok( e.meta, 'meta field should be set' );
-		assert.ok( e.dt, 'dt field should be set' );
+		assert.notOk( e.dt, 'dt should not be set' );
 		assert.ok( e.client_dt, 'client_dt should be set' );
 		assert.equal( e.meta.domain, e.webHost, 'meta.domain should match webHost field' );
 		assert.strictEqual( e.revision, undefined, 'revision field should be unset' );

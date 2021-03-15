@@ -383,14 +383,20 @@
 		eventData.meta.domain = location.hostname;
 		//
 		// The 'dt' field is reserved for the internal use of this library,
-		// and should not be set by any other caller. The 'meta.dt' field is
-		// reserved for EventGate and will be set at ingestion to act as a record
-		// of when the event was received.
+		// and should not be set by any other caller.
 		//
-		// If 'dt' is provided, its value is not modified.
-		// If 'dt' is not provided, a new value is computed.
+		// (1) 'dt' is a client-side timestamp for new events
+		//      and a server-side timestamp for legacy events.
+		// (2) 'dt' will be provided by EventGate if omitted here,
+		//     so it should be omitted for legacy events.
 		//
-		eventData.dt = eventData.dt || new Date().toISOString();
+		// We detect legacy events by looking for the 'client_dt' field
+		// set in the .produce() method (see above).
+		//
+		// eslint-disable-next-line
+		if ( !eventData.client_dt ) {
+			eventData.dt = new Date().toISOString();
+		}
 
 		// FIXME: This is a demo implementation. Use at your own risk.
 		core.addRequestedValues( eventData, streamConfig );
