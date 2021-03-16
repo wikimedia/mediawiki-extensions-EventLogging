@@ -387,13 +387,16 @@ core.submit = function ( streamName, eventData ) {
 	// (1) 'dt' is a client-side timestamp for new events
 	//      and a server-side timestamp for legacy events.
 	// (2) 'dt' will be provided by EventGate if omitted here,
-	//     so it should be omitted for legacy events.
+	//      so it should be omitted for legacy events (and
+	//      deleted if present).
 	//
 	// We detect legacy events by looking for the 'client_dt' field
 	// set in the .produce() method (see above).
 	//
-	// eslint-disable-next-line
-	if ( !eventData.client_dt ) {
+	// eslint-disable-next-line camelcase
+	if ( eventData.client_dt ) {
+		delete eventData.dt;
+	} else {
 		eventData.dt = new Date().toISOString();
 	}
 
