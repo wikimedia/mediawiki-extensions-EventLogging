@@ -39,15 +39,18 @@ class EventLoggingHelper {
 		//
 		// If this is a migrated legacy event, client_dt will have been set already by
 		// EventLogging::encapsulate, and the dt field should be left unset so that it can be set
-		// to the intake time by EventGate.
+		// to the intake time by EventGate. If dt was set by a caller, we unset it here.
 		//
-		// If client_dt is absent, this is a new event schema, and dt represents the client-side
-		// event time. We set it here, overwriting any caller-provided value to ensure consistency.
+		// If client_dt is absent, this schema is native to the Event Platform, and dt represents
+		// the client-side event time. We set it here, overwriting any caller-provided value to
+		// ensure consistency.
 		//
 		// https://phabricator.wikimedia.org/T277253
 		// https://phabricator.wikimedia.org/T277330
 		//
-		if ( !isset( $preparedEvent['client_dt'] ) ) {
+		if ( isset( $preparedEvent['client_dt'] ) ) {
+			unset( $preparedEvent['dt'] );
+		} else {
 			$preparedEvent['dt'] = wfTimestamp( TS_ISO_8601 );
 		}
 
