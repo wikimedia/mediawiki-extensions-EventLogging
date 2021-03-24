@@ -96,7 +96,7 @@ core = {
 			event = {
 				event: eventData,
 				schema: schemaName,
-				webHost: location.hostname,
+				webHost: mw.config.get( 'wgServerName' ),
 				wiki: mw.config.get( 'wgDBname' )
 			},
 			revisionOrSchemaUri = core.getRevisionOrSchemaUri( schemaName );
@@ -379,7 +379,7 @@ core.submit = function ( streamName, eventData ) {
 
 	eventData.meta = eventData.meta || {};
 	eventData.meta.stream = streamName;
-	eventData.meta.domain = location.hostname;
+	eventData.meta.domain = mw.config.get( 'wgServerName' );
 	//
 	// The 'dt' field is reserved for the internal use of this library,
 	// and should not be set by any other caller.
