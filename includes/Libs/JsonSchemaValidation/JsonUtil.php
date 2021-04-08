@@ -64,7 +64,7 @@ class JsonUtil {
 	 * @return string
 	 */
 	public static function encodeForMsg( $data ) {
-		if ( class_exists( 'FormatJson' ) && function_exists( 'wfEscapeWikiText' ) ) {
+		if ( class_exists( FormatJson::class ) && function_exists( 'wfEscapeWikiText' ) ) {
 			$json = FormatJson::encode( $data, "\t", FormatJson::ALL_OK );
 			// Literal newlines can't appear in JSON string values, so this neatly folds the formatting
 			$json = preg_replace( "/\n\t+/", ' ', $json );
