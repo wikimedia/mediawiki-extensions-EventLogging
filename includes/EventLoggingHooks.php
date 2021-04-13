@@ -36,7 +36,15 @@ class EventLoggingHooks {
 	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) : void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
-		if ( $out->getUser()->getIntOption( 'eventlogging-display-web' ) ) {
+		$services = MediaWikiServices::getInstance();
+		if ( method_exists( $services, 'getUserOptionsLookup' ) ) {
+			// MW 1.35+
+			$eventloggingDisplayWeb = MediaWikiServices::getInstance()->getUserOptionsLookup()
+				->getIntOption( $out->getUser(), 'eventlogging-display-web' );
+		} else {
+			$eventloggingDisplayWeb = $out->getUser()->getIntOption( 'eventlogging-display-web' );
+		}
+		if ( $eventloggingDisplayWeb ) {
 			$out->addModules( 'ext.eventLogging.debug' );
 		}
 	}
