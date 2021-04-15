@@ -9,7 +9,9 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Revision\RevisionLookup;
 
 /**
  * Represents the content of a JSON Schema article.
@@ -18,8 +20,17 @@ class JsonSchemaContent extends JsonContent {
 
 	private const DEFAULT_RECURSION_LIMIT = 3;
 
+	/** @var RevisionLookup */
+	private $revisionLookup;
+
+	/** @var LinkRenderer */
+	private $linkRenderer;
+
 	public function __construct( $text, $modelId = 'JsonSchema' ) {
 		parent::__construct( $text, $modelId );
+		$services = MediaWikiServices::getInstance();
+		$this->revisionLookup = $services->getRevisionLookup();
+		$this->linkRenderer = $services->getLinkRenderer();
 	}
 
 	/**
@@ -95,12 +106,9 @@ class JsonSchemaContent extends JsonContent {
 			$valParts = explode( '/', $val, 2 );
 			if ( !isset( $valParts[1] ) ) {
 				$revId = (int)$valParts[1];
-				$revRecord = MediaWikiServices::getInstance()
-					->getRevisionLookup()
-					->getRevisionById( $revId );
+				$revRecord = $this->revisionLookup->getRevisionById( $revId );
 				$title = $revRecord->getPageAsLinkTarget();
-				$link = Linker::link( $title, htmlspecialchars( $val ), [],
-					[ 'oldid' => $revId ] );
+				$link = $this->linkRenderer->makeLink( $title, $val, [], [ 'oldid' => $revId ] );
 
 				$th = Xml::elementClean( 'th', [], $key );
 				$td = Xml::tags( 'td', [ 'class' => 'value' ], $link );
