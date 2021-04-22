@@ -393,7 +393,6 @@ core.submit = function ( streamName, eventData ) {
 	// We detect legacy events by looking for the 'client_dt' field
 	// set in the .produce() method (see above).
 	//
-	// eslint-disable-next-line camelcase
 	if ( eventData.client_dt ) {
 		delete eventData.dt;
 	} else {
