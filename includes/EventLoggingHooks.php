@@ -19,13 +19,14 @@ class EventLoggingHooks {
 	 * configuration variable (if any).
 	 */
 	public static function onSetup() : void {
-		foreach ( [
-			'wgEventLoggingBaseUri',
-			'wgEventLoggingSchemaApiUri',
-		] as $configVar ) {
-			if ( $GLOBALS[ $configVar ] === false ) {
-				wfDebugLog( 'EventLogging', "$configVar has not been configured." );
-			}
+		global $wgEventLoggingBaseUri;
+		if ( $wgEventLoggingBaseUri === false ) {
+			EventLogging::getLogger()->debug( 'wgEventLoggingBaseUri has not been configured.' );
+		}
+
+		global $wgEventLoggingSchemaApiUri;
+		if ( $wgEventLoggingSchemaApiUri === false ) {
+			EventLogging::getLogger()->debug( 'wgEventLoggingSchemaApiUri has not been configured.' );
 		}
 	}
 
@@ -132,23 +133,23 @@ class EventLoggingHooks {
 	 * a list of streams to search for in $wgEventStreams.
 	 * $wgEventLoggingStreamNames is that list.
 	 *
-	 * @param \Config $config
-	 *
+	 * @param Config $config
 	 * @return array|bool Selected stream name -> stream configs
 	 */
-	private static function loadEventStreamConfigs(
-		\Config $config
-	) {
+	private static function loadEventStreamConfigs( Config $config ) {
+		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventStreamConfig' ) ) {
+			EventLogging::getLogger()->debug( 'EventStreamConfig is not installed' );
+			return false;
+		}
+
 		$streamConfigs = MediaWikiServices::getInstance()->getService(
 			'EventStreamConfig.StreamConfigs'
 		);
 
 		$targetStreams = $config->get( 'EventLoggingStreamNames' );
-
 		if ( $targetStreams === false ) {
 			return false;
 		}
-
 		if ( !is_array( $targetStreams ) ) {
 			throw new RuntimeException(
 				'Expected $wgEventLoggingStreamNames to be a list of stream names, got ' .

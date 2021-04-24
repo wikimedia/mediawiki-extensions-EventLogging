@@ -17,6 +17,16 @@ use Psr\Log\LoggerInterface;
 class EventLogging {
 
 	/**
+	 * Default logger.
+	 *
+	 * @internal
+	 * @return LoggerInterface
+	 */
+	public static function getLogger() : LoggerInterface {
+		return LoggerFactory::getInstance( 'EventLogging' );
+	}
+
+	/**
 	 * Submit an event according to the given stream's configuration.
 	 * @param string $streamName
 	 * @param array $event
@@ -27,11 +37,16 @@ class EventLogging {
 		array $event,
 		$logger = null
 	): void {
+		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
+			self::getLogger()->warning( 'EventBus is not installed' );
+			return;
+		}
+
 		DeferredUpdates::addCallableUpdate( function () use ( $streamName, $event, $logger ) {
 			$services = MediaWikiServices::getInstance();
 			$config = $services->getMainConfig();
 			$eventLoggingStreamNames = $config->get( 'EventLoggingStreamNames' );
-			$logger = $logger ?? LoggerFactory::getInstance( 'EventLogging' );
+			$logger = $logger ?? self::getLogger();
 
 			if ( $eventLoggingStreamNames === false ) {
 				$streamConfigs = false;
