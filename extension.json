@@ -12,10 +12,7 @@
 	"type": "other",
 	"requires": {
 		"MediaWiki": ">= 1.34.0",
-		"extensions": {
-			"EventBus": "*",
-			"EventStreamConfig": "*"
-		}
+		"extensions": {}
 	},
 	"namespaces": [
 		{

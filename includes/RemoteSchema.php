@@ -1,7 +1,6 @@
 <?php
 
 use MediaWiki\Http\HttpRequestFactory;
-use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 
 /**
@@ -97,7 +96,7 @@ class RemoteSchema implements JsonSerializable {
 	protected function httpGet() {
 		$uri = $this->getUri();
 		if ( !$this->lock() ) {
-			LoggerFactory::getInstance( 'EventLogging' )->warning(
+			EventLogging::getLogger()->warning(
 				'Failed to get lock for requesting {schema_uri}.',
 				[ 'schema_uri' => $uri ]
 			);
@@ -108,7 +107,7 @@ class RemoteSchema implements JsonSerializable {
 		], __METHOD__ );
 		$content = FormatJson::decode( $raw, true );
 		if ( !$content ) {
-			LoggerFactory::getInstance( 'EventLogging' )->error(
+			EventLogging::getLogger()->error(
 				'Request to {schema_uri} failed.',
 				[ 'schema_uri' => $uri ]
 			);
