@@ -38,7 +38,7 @@ class RemoteSchemaTest extends MediaWikiTestCase {
 
 		$this->httpRequestFactory = $this->getMockBuilder( HttpRequestFactory::class )
 			->disableOriginalConstructor()
-			->setMethods( [ 'get' ] )
+			->onlyMethods( [ 'get' ] )
 			->getMock();
 		$this->schema = new RemoteSchema( 'Test', 99, $this->cache, $this->httpRequestFactory );
 	}

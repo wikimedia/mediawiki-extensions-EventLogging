@@ -151,7 +151,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	public function testSendNonMigratedLegacyEvent(): void {
 		$this->mockHttpRequestFactory->expects( $this->once() )
 			->method( 'post' )
-			->with( $this->callback( function ( $url ) {
+			->with( $this->callback( static function ( $url ) {
 				return (
 					is_string( $url ) &&
 					str_starts_with( $url, 'https://test.wikipedia.org/beacon/event?' ) &&
