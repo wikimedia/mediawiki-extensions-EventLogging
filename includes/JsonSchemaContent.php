@@ -52,7 +52,7 @@ class JsonSchemaContent extends JsonContent {
 	 */
 	public static function expand( $schema,
 			$recursionLimit = self::DEFAULT_RECURSION_LIMIT ) {
-		return array_map( function ( $value ) use( $recursionLimit ) {
+		return array_map( static function ( $value ) use( $recursionLimit ) {
 			if ( is_array( $value ) && $recursionLimit > 0 ) {
 				if ( isset( $value['$ref'] ) ) {
 					$value = JsonSchemaContent::resolve( $value['$ref'] );
