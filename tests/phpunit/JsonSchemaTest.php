@@ -57,7 +57,7 @@ class JsonSchemaTest extends MediaWikiTestCase {
 			$this->createMock( Title::class ),
 			$user,
 			new ParserOptions( $user )
-		)->getNativeData();
+		)->getText();
 
 		$this->assertStringContainsString( "\n", $prettyJson, 'Transformed JSON is beautified.' );
 		$this->assertEquals(
