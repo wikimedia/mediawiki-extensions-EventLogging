@@ -4,6 +4,7 @@
 			"Impersonator 1",
 			"Liuxinyu970226",
 			"Mywood",
+			"Shizhao",
 			"Yfdyh000"
 		]
 	},
@@ -18,5 +19,6 @@
 	"apihelp-jsonschema-summary": "检索一个JSON架构页面。",
 	"apihelp-jsonschema-param-revid": "架构修订ID。",
 	"apihelp-jsonschema-param-title": "架构名称。",
-	"apihelp-jsonschema-example-1": "检索修订版本1234的架构"
+	"apihelp-jsonschema-example-1": "检索修订版本1234的架构",
+	"apihelp-jsonschema-example-2": "检索Schema:Test最新版本的架构"
 }
