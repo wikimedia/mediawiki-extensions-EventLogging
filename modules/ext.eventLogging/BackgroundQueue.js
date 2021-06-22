@@ -95,9 +95,6 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 		discardingPage = false;
 	} );
 
-	// In case pageshow isn't supported, give a last-ditch attempt onunload.
-	window.addEventListener( 'unload', discardPage );
-
 	if ( getVisibilityChanged ) {
 		document.addEventListener( visibilityEvent, function () {
 			if ( getVisibilityChanged() ) {
