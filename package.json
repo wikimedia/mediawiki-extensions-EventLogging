@@ -2,23 +2,15 @@
 	"private": true,
 	"scripts": {
 		"test": "grunt test",
-		"doc": "jsduck",
-		"eventgate-devserver": "eventgate-wikimedia-dev -c ./devserver/eventgate.config.yaml | bunyan"
+		"doc": "jsduck"
 	},
 	"devDependencies": {
-		"buynan": "^1.8.12",
 		"eslint-config-wikimedia": "0.20.0",
-		"eventgate-wikimedia": "git+https://gerrit.wikimedia.org/r/eventgate-wikimedia#536d5ef",
 		"grunt": "1.4.0",
 		"grunt-banana-checker": "0.9.0",
 		"grunt-eslint": "23.0.0",
 		"grunt-stylelint": "0.16.0",
 		"stylelint-config-wikimedia": "0.10.3"
-	},
-	"optionalDependencies": {
-		"@wikimedia/node-rdkafka-factory": "*",
-		"node-rdkafka-statsd": "*",
-		"node-rdkafka": "*"
 	},
 	"eslintIgnore": [
 		"docs/**",
