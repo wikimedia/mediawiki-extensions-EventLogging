@@ -6,7 +6,7 @@ This is a backend that uses event intake service and schema git repositories for
 
 ### Install
 
-You need Node.js 10 or later. Run the following once from the parent directory:
+You need Node.js 10 or later. Run the following once from this directory:
 
 ```
 npm install --no-optional
@@ -16,6 +16,7 @@ NOTE: When running `npm install`, it is recommended to use `--no-optional` so as
 exclude optional "node-rdkafka" package, which can be cumbersome to build.
 
 ### Run
+
 Just:
 ```
 npm run eventgate-devserver
