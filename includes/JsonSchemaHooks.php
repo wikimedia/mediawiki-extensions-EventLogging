@@ -95,6 +95,7 @@ class JsonSchemaHooks {
 
 		try {
 			$content->validate();
+			return true;
 		} catch ( JsonSchemaException $e ) {
 			$status->fatal( $context->msg( $e->getCode(), $e->args ) );
 			// @todo Remove this line after this extension do not support mediawiki version 1.36 and before
