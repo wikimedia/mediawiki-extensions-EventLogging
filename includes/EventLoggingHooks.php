@@ -18,7 +18,7 @@ class EventLoggingHooks {
 	 * Emit a debug log message for each invalid or unset
 	 * configuration variable (if any).
 	 */
-	public static function onSetup() : void {
+	public static function onSetup(): void {
 		global $wgEventLoggingBaseUri;
 		if ( $wgEventLoggingBaseUri === false ) {
 			EventLogging::getLogger()->debug( 'wgEventLoggingBaseUri has not been configured.' );
@@ -34,7 +34,7 @@ class EventLoggingHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ) : void {
+	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ): void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
 		$services = MediaWikiServices::getInstance();
@@ -106,14 +106,14 @@ class EventLoggingHooks {
 	 * @param User $user
 	 * @param array &$preferences
 	 */
-	public static function onGetPreferences( User $user, array &$preferences ) : void {
+	public static function onGetPreferences( User $user, array &$preferences ): void {
 		// See 'ext.eventLogging.debug' module.
 		$preferences['eventlogging-display-web'] = [
 			'type' => 'api',
 		];
 	}
 
-	public static function onCanonicalNamespaces( &$namespaces ) : void {
+	public static function onCanonicalNamespaces( &$namespaces ): void {
 		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';

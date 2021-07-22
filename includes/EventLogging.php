@@ -22,7 +22,7 @@ class EventLogging {
 	 * @internal
 	 * @return LoggerInterface
 	 */
-	public static function getLogger() : LoggerInterface {
+	public static function getLogger(): LoggerInterface {
 		return LoggerFactory::getInstance( 'EventLogging' );
 	}
 

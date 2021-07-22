@@ -112,7 +112,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		}
 	}
 
-	public function testSendNewSchemaEvent() : void {
+	public function testSendNewSchemaEvent(): void {
 		$this->mockEventBus->expects( $this->once() )
 			->method( 'send' )
 			->with( $this->callback( function ( $events ) {

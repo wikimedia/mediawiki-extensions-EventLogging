@@ -7,7 +7,7 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 /** @covers EventLoggingHelper */
 class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 
-	public function testPrepareModernEvent() : void {
+	public function testPrepareModernEvent(): void {
 		$preparedEvent = EventLoggingHelper::prepareEvent(
 			'test.event',
 			[
@@ -25,7 +25,7 @@ class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'B', $preparedEvent['extra_default'] );
 	}
 
-	public function testPrepareModernEventSubmittedWithDt() : void {
+	public function testPrepareModernEventSubmittedWithDt(): void {
 		$preparedEvent = EventLoggingHelper::prepareEvent(
 			'test.event',
 			[
@@ -45,7 +45,7 @@ class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'B', $preparedEvent['extra_default'] );
 	}
 
-	public function testPrepareMigratedLegacyEvent() : void {
+	public function testPrepareMigratedLegacyEvent(): void {
 		$preparedEvent = EventLoggingHelper::prepareEvent(
 			'test.event.legacy',
 			[
@@ -63,7 +63,7 @@ class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'B', $preparedEvent['extra_default'] );
 	}
 
-	public function testPrepareMigratedLegacyEventSubmittedWithDt() : void {
+	public function testPrepareMigratedLegacyEventSubmittedWithDt(): void {
 		$preparedEvent = EventLoggingHelper::prepareEvent(
 			'test.event.legacy',
 			[
@@ -82,7 +82,7 @@ class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( 'B', $preparedEvent['extra_default'] );
 	}
 
-	public function testGetEventDefaults() : void {
+	public function testGetEventDefaults(): void {
 		$config = MediaWikiServices::getInstance()->getMainConfig();
 		$defaults = EventLoggingHelper::getEventDefaults( $config );
 		$this->assertSame( $config->get( 'ServerName' ), $defaults['meta']['domain'] );
