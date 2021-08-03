@@ -48,12 +48,15 @@ class JsonSchemaTest extends MediaWikiTestCase {
 
 	/**
 	 * Tests JSON pretty-printing.
-	 * @covers JsonSchemaContent::preSaveTransform
+	 * Make sure that we can put a JsonSchemaContent
+	 * into ContentTransformer.
 	 */
 	public function testPreSaveTransform() {
 		$user = new User();
+		$contentTransformer = $this->getServiceContainer()->getContentTransformer();
 		$transformed = new JsonSchemaContent( self::VALID_JSON_SCHEMA );
-		$prettyJson = $transformed->preSaveTransform(
+		$prettyJson = $contentTransformer->preSaveTransform(
+			$transformed,
 			$this->createMock( Title::class ),
 			$user,
 			new ParserOptions( $user )
