@@ -35,13 +35,15 @@ class EventLoggingHooks {
 		$services = MediaWikiServices::getInstance();
 		if ( method_exists( $services, 'getUserOptionsLookup' ) ) {
 			// MW 1.35+
-			$eventloggingDisplayWeb = $services->getUserOptionsLookup()
-				->getIntOption( $out->getUser(), 'eventlogging-display-web' );
+			$lookup = $services->getUserOptionsLookup();
+			$eventloggingDebugMode = $lookup->getIntOption( $out->getUser(), 'eventlogging-display-web' )
+				|| $lookup->getIntOption( $out->getUser(), 'eventlogging-display-console' );
 		} else {
 			// Avoid Phan warning about User::getIntOption, removed in MW 1.37
-			$eventloggingDisplayWeb = (int)$out->getUser()->getOption( 'eventlogging-display-web' );
+			$eventloggingDebugMode = (int)$out->getUser()->getOption( 'eventlogging-display-web' )
+				|| (int)$out->getUser()->getOption( 'eventlogging-display-console' );
 		}
-		if ( $eventloggingDisplayWeb ) {
+		if ( $eventloggingDebugMode ) {
 			$out->addModules( 'ext.eventLogging.debug' );
 		}
 	}
@@ -105,6 +107,9 @@ class EventLoggingHooks {
 	public static function onGetPreferences( User $user, array &$preferences ): void {
 		// See 'ext.eventLogging.debug' module.
 		$preferences['eventlogging-display-web'] = [
+			'type' => 'api',
+		];
+		$preferences['eventlogging-display-console'] = [
 			'type' => 'api',
 		];
 	}

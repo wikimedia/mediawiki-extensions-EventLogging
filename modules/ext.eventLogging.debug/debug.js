@@ -15,6 +15,10 @@
  *         new mw.Api().saveOption( 'eventlogging-display-web', '0' );
  *     } );
  *
+ * This will log events to the browser console, and also show them in a popup
+ * (via mw.notify). Use 'eventlogging-display-console' instead of
+ * 'eventlogging-display-web' to only log to the console.
+ *
  * See EventLoggingHooks.php for the module loading, and user option registation.
  *
  * @private
@@ -42,6 +46,17 @@ schemaApiQueryParams = {
 	indexpageids: ''
 };
 baseUrl = ( schemaApiQueryUrl || '' ).replace( 'api.php', 'index.php' );
+
+/**
+ * Whether to show a popup notice as part of the debug output, or just write to console.
+ *
+ * @return {boolean}
+ */
+function shouldShowNotice() {
+	// This file gets evaluated before mw.user.options is set up, so we can't just put this
+	// value into a variable in the file scope.
+	return Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
+}
 
 /**
  * Checks whether a JavaScript value conforms to a specified
@@ -187,7 +202,9 @@ function displayLoggedEvent( event, errors ) {
 		console.info( event.schema, event );
 	}
 	/* eslint-enable no-console */
-	mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
+	if ( shouldShowNotice() ) {
+		mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
+	}
 }
 
 function validateAndDisplay( event, schema ) {
@@ -267,7 +284,9 @@ function displaySubmittedEvent( streamName, eventData ) {
 		console.info( eventData );
 	}
 	/* eslint-enable no-console */
-	mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
+	if ( shouldShowNotice() ) {
+		mw.notification.notify( $content, { autoHide: true, autoHideSeconds: 'long' } );
+	}
 }
 
 handleEventSubmitDebug = function ( topic, params ) {

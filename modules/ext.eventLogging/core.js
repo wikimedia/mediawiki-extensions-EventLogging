@@ -15,7 +15,8 @@ var core, debugMode,
 	queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
 
 // Support both 1 or "1" (T54542)
-debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
+debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
+	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
 /**
  * Construct the streamName for a legacy EventLogging Schema.

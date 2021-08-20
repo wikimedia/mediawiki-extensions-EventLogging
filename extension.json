@@ -33,7 +33,8 @@
 		}
 	],
 	"DefaultUserOptions": {
-		"eventlogging-display-web": 0
+		"eventlogging-display-web": 0,
+		"eventlogging-display-console": 0
 	},
 	"ContentHandlers": {
 		"JsonSchema": "JsonSchemaContentHandler"
