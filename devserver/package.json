@@ -5,7 +5,7 @@
 	},
 	"devDependencies": {
 		"buynan": "^1.8.12",
-		"eventgate-wikimedia": "git+https://gerrit.wikimedia.org/r/eventgate-wikimedia#536d5ef"
+		"eventgate-wikimedia": "git+https://gerrit.wikimedia.org/r/eventgate-wikimedia#88248d4"
 	},
 	"optionalDependencies": {
 		"@wikimedia/node-rdkafka-factory": "*",
