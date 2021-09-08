@@ -23,11 +23,6 @@ class EventLoggingHooks {
 		if ( $wgEventLoggingBaseUri === false ) {
 			EventLogging::getLogger()->debug( 'wgEventLoggingBaseUri has not been configured.' );
 		}
-
-		global $wgEventLoggingSchemaApiUri;
-		if ( $wgEventLoggingSchemaApiUri === false ) {
-			EventLogging::getLogger()->debug( 'wgEventLoggingSchemaApiUri has not been configured.' );
-		}
 	}
 
 	/**
