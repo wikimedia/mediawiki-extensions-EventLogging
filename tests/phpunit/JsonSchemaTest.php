@@ -76,11 +76,10 @@ class JsonSchemaTest extends MediaWikiTestCase {
 	 */
 	public function testGetText() {
 		$content = new JsonSchemaContent( self::EVIL_JSON );
-		$out = $content->getParserOutput(
-			Title::newFromText( 'Test' ),
-			null,
-			null,
-			/* html */ true
+		$contentRenderer = $this->getServiceContainer()->getContentRenderer();
+		$out = $contentRenderer->getParserOutput(
+			$content,
+			Title::newFromText( 'Test' )
 		);
 		$this->assertStringContainsString(
 			'&lt;script>',
