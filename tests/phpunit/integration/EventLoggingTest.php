@@ -58,11 +58,11 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 			'wgEventLoggingBaseUri' => 'https://test.wikipedia.org/beacon/event',
 			'wgServerName' => $this->testHttpHost,
 			'wgEventStreams' => [
-				[
+				'test.event' => [
 					'stream' => 'test.event',
 					'schema_title' => 'test/event'
 				],
-				[
+				'eventlogging_Migrated' => [
 					'stream' => 'eventlogging_Migrated',
 					'schema_title' => 'analytics/legacy/test/migrated'
 				],
