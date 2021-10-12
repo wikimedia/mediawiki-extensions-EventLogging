@@ -12,7 +12,7 @@
  * @group EventLogging
  * @covers EventLogging::serializeEvent
  */
-class SerializeEventTest extends MediaWikiTestCase {
+class SerializeEventTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * Empty event should be returned as an object.

@@ -12,7 +12,7 @@
  * @group EventLogging
  * @covers JsonSchemaContent
  */
-class JsonSchemaTest extends MediaWikiTestCase {
+class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 
 	private const INVALID_JSON = '"Malformed, JSON }';
 	private const INVALID_JSON_SCHEMA = '{"malformed":true}';  // Valid JSON, invalid JSON Schema.

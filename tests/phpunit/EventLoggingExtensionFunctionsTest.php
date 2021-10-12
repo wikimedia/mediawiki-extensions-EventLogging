@@ -13,7 +13,7 @@
  * @group EventLogging
  * @covers EventLogging::schemaValidate
  */
-class EventLoggingExtensionFunctionsTest extends MediaWikiTestCase {
+class EventLoggingExtensionFunctionsTest extends MediaWikiIntegrationTestCase {
 
 	/** @var array a basic JSON schema, decoded to associative array. */
 	private static $validSchema = [

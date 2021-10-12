@@ -16,7 +16,7 @@ use Wikimedia\TestingAccessWrapper;
  * @group EventLogging
  * @covers RemoteSchema
  */
-class RemoteSchemaTest extends MediaWikiTestCase {
+class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 
 	/** @var BagOStuff|MockObject */
 	private $cache;

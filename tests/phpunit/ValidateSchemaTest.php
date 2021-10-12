@@ -11,7 +11,7 @@
 /**
  * @group EventLogging
  */
-class ValidateSchemaTest extends MediaWikiTestCase {
+class ValidateSchemaTest extends MediaWikiIntegrationTestCase {
 
 	private const VALID_JSON_SCHEMA = '{
 		"description": "A wrapper around event objects that encodes generic metadata",
