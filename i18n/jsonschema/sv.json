@@ -4,7 +4,8 @@
 			"Jopparn",
 			"Lokal Profil",
 			"Tobulos1",
-			"WikiPhoenix"
+			"WikiPhoenix",
+			"JRyan"
 		]
 	},
 	"jsonschema-badidref": "Fel idref: \"$1\"",
@@ -15,7 +16,9 @@
 	"jsonschema-invalid-missingfield": "Saknar obligatoriskt fält \"$1\"",
 	"jsonschema-invalid-notinenum": "Värdet <code>$1</code> är inte med i uppräkningen för egendom $2",
 	"apihelp-jsonschema-description": "Hämta en JSON-schemasida.",
+	"apihelp-jsonschema-summary": "Hämta en JSON-Schema sida.",
 	"apihelp-jsonschema-param-revid": "Versions-ID för schema.",
 	"apihelp-jsonschema-param-title": "Schemanamn.",
-	"apihelp-jsonschema-example-1": "Hämta schemat för version 1234"
+	"apihelp-jsonschema-example-1": "Hämta schemat för version 1234",
+	"apihelp-jsonschema-example-2": "Hämta schema för senaste revision av Schema:Test"
 }
