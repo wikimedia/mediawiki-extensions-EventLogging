@@ -8,13 +8,14 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+use MediaWiki\Extension\EventLogging\RemoteSchema;
 use MediaWiki\Http\HttpRequestFactory;
 use PHPUnit\Framework\MockObject\MockObject;
 use Wikimedia\TestingAccessWrapper;
 
 /**
  * @group EventLogging
- * @covers RemoteSchema
+ * @covers \MediaWiki\Extension\EventLogging\RemoteSchema
  */
 class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 
@@ -63,7 +64,7 @@ class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 	 * Calling get() multiple times should not result in multiple
 	 * memcached calls; instead, once the content is retrieved, it
 	 * should be stored locally as an object attribute.
-	 * @covers RemoteSchema::get
+	 * @covers \MediaWiki\Extension\EventLogging\RemoteSchema::get
 	 */
 	public function testContentLocallyCached() {
 		// The revision is in cache...

@@ -1,5 +1,7 @@
 <?php
 
+namespace MediaWiki\Extension\EventLogging;
+
 use MediaWiki\MediaWikiServices;
 
 class EventLoggingHelper {

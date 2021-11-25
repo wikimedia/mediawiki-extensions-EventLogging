@@ -2,6 +2,7 @@
 
 use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Extension\EventBus\EventBusFactory;
+use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use Monolog\Logger;

@@ -9,9 +9,16 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+namespace MediaWiki\Extension\EventLogging;
+
+use FormatJson;
+use Html;
+use JsonContent;
+use JsonSchemaException;
 use MediaWiki\Linker\LinkRenderer;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionLookup;
+use Xml;
 
 /**
  * Represents the content of a JSON Schema article.

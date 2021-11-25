@@ -9,6 +9,19 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+namespace MediaWiki\Extension\EventLogging;
+
+use ApiModuleManager;
+use Content;
+use EditPage;
+use IContextSource;
+use JsonSchemaException;
+use OutputPage;
+use Skin;
+use Status;
+use Title;
+use User;
+
 class JsonSchemaHooks {
 
 	/**

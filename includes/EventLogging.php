@@ -9,6 +9,13 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+namespace MediaWiki\Extension\EventLogging;
+
+use DeferredUpdates;
+use ExtensionRegistry;
+use FormatJson;
+use JsonSchemaException;
+use JsonTreeRef;
 use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
@@ -125,7 +132,7 @@ class EventLogging {
 	public static function logEvent( $schemaName, $revId, $eventData, $options = 0 ) {
 		$config = MediaWikiServices::getInstance()->getMainConfig();
 
-		$eventLoggingConfig = EventLoggingHooks::getEventLoggingConfig( $config );
+		$eventLoggingConfig = Hooks::getEventLoggingConfig( $config );
 		$schemasInfo = $eventLoggingConfig['schemasInfo'];
 		$eventLoggingBaseUri = $eventLoggingConfig['baseUrl'];
 
@@ -281,3 +288,5 @@ class EventLogging {
 	}
 
 }
+
+class_alias( EventLogging::class, 'EventLogging' );

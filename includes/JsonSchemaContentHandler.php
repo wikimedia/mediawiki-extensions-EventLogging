@@ -9,7 +9,17 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+namespace MediaWiki\Extension\EventLogging;
+
+use Content;
+use ExtensionRegistry;
+use Html;
+use JsonContentHandler;
 use MediaWiki\Content\Renderer\ContentParseParams;
+use ParserOutput;
+use SyntaxHighlight;
+use Title;
+use Xml;
 
 class JsonSchemaContentHandler extends JsonContentHandler {
 

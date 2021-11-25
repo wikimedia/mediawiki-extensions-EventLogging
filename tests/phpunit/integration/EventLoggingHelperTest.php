@@ -1,10 +1,13 @@
 <?php
 
+use MediaWiki\Extension\EventLogging\EventLoggingHelper;
 use MediaWiki\MediaWikiServices;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
-/** @covers EventLoggingHelper */
+/**
+ * @covers \MediaWiki\Extension\EventLogging\EventLoggingHelper
+ */
 class EventLoggingHelperTest extends MediaWikiIntegrationTestCase {
 
 	public function testPrepareModernEvent(): void {
