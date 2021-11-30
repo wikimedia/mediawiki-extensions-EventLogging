@@ -4,5 +4,6 @@
 			"Ajeje Brazorf"
 		]
 	},
+	"eventlogging-invalid-json": "JSON nun vàlidu",
 	"eventlogging-revision-id": "Virsioni $1"
 }
