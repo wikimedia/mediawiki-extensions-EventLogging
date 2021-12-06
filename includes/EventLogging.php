@@ -36,7 +36,7 @@ class EventLogging {
 	public static function submit(
 		string $streamName,
 		array $event,
-		$logger = null
+		?LoggerInterface $logger = null
 	): void {
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
 			self::getLogger()->warning( 'EventBus is not installed' );
