@@ -31,6 +31,7 @@ class EventLogging {
 	 * @param string $streamName
 	 * @param array $event
 	 * @param LoggerInterface|null $logger
+	 * @see https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To#In_PHP
 	 */
 	public static function submit(
 		string $streamName,
@@ -118,7 +119,8 @@ class EventLogging {
 	 *        not an encapsulated real event.
 	 * @param int $options This parameter is deprecated and no longer used.
 	 * @return bool Whether the event was logged.
-	 * @deprecated use submit with new Event Platform based schemas.
+	 * @deprecated use EventLogging::submit() with new Event Platform based schemas.
+	 * @see https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To#In_PHP
 	 */
 	public static function logEvent( $schemaName, $revId, $eventData, $options = 0 ) {
 		$config = MediaWikiServices::getInstance()->getMainConfig();
