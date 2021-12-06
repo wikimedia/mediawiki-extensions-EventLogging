@@ -35,10 +35,11 @@ class EventLoggingHooks {
 		$services = MediaWikiServices::getInstance();
 		if ( method_exists( $services, 'getUserOptionsLookup' ) ) {
 			// MW 1.35+
-			$eventloggingDisplayWeb = MediaWikiServices::getInstance()->getUserOptionsLookup()
+			$eventloggingDisplayWeb = $services->getUserOptionsLookup()
 				->getIntOption( $out->getUser(), 'eventlogging-display-web' );
 		} else {
-			$eventloggingDisplayWeb = $out->getUser()->getIntOption( 'eventlogging-display-web' );
+			// Avoid Phan warning about User::getIntOption, removed in MW 1.37
+			$eventloggingDisplayWeb = (int)$out->getUser()->getOption( 'eventlogging-display-web' );
 		}
 		if ( $eventloggingDisplayWeb ) {
 			$out->addModules( 'ext.eventLogging.debug' );
