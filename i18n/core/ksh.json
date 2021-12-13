@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"Purodha"
+			"Purodha",
+			"MuratTheTurkish"
 		]
 	},
 	"eventlogging-desc": "Vörjäng us enem Projramm om Rääschner von enem Metmaacher uß en e Logbohch schrihve.",
@@ -9,6 +10,6 @@
 	"eventlogging-revision-id": "Väsjohn $1",
 	"eventlogging-code-sample-logging-on-server-side": "Met <i lang=\"en\" xml:lang=\"en\" dir=\"ltr\" title=\"PHP Hypertext Preprocessor</i> en et Logbohch schrihve",
 	"eventlogging-code-sample-logging-on-client-side": "Övver JavaSkrep en et Logbohch schrihve",
-	"eventlogging-error-move-source": "Sigge em Appachtemang {{ns:schema}} künne nit ömjenannt wähde.",
-	"eventlogging-error-move-destination": "Sigge künne nit esu ömjenannt wähde, dat se em Appachtemang {{ns:schema}} lannde."
+	"eventlogging-error-move-source": "Sigge em Appachtemang schema künne nit ömjenannt wähde.",
+	"eventlogging-error-move-destination": "Sigge künne nit esu ömjenannt wähde, dat se em Appachtemang schema lannde."
 }

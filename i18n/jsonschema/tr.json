@@ -1,7 +1,8 @@
 {
 	"@metadata": {
 		"authors": [
-			"BaRaN6161 TURK"
+			"BaRaN6161 TURK",
+			"MuratTheTurkish"
 		]
 	},
 	"jsonschema-badidref": "Hatalı ref kodu: \"$1\"",
@@ -15,6 +16,6 @@
 	"apihelp-jsonschema-summary": "Bir JSON Şeması sayfasını alın.",
 	"apihelp-jsonschema-param-revid": "Şema revizyon kimliği.",
 	"apihelp-jsonschema-param-title": "Şema adı.",
-	"apihelp-jsonschema-example-1": "1234 revizyonu için şema al",
-	"apihelp-jsonschema-example-2": "En son Şema revizyonu için Schema:Test al"
+	"apihelp-jsonschema-example-1": "1234 revizyonu için şema alın",
+	"apihelp-jsonschema-example-2": "En son Şema revizyonu için Schema:Test alın"
 }

@@ -8,6 +8,7 @@
 	"eventlogging-invalid-json": "JSON invalide",
 	"eventlogging-revision-id": "Version $1",
 	"eventlogging-code-sample-logging-on-server-side": "Registro PHP",
+	"eventlogging-code-sample-module-setup-json": "Configuration de extension.json pro le registro de eventos via JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Rexistro JavaScript",
 	"eventlogging-error-move-source": "Paginas de Schema non pote esser renominate",
 	"eventlogging-error-move-destination": "Paginas non pote esser renominate a paginas de Schema"
