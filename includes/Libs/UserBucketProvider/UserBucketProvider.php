@@ -1,5 +1,8 @@
 <?php
 
+use MediaWiki\MediaWikiServices;
+use MediaWiki\User\UserIdentity;
+
 /**
  * Utilities for getting low-granularity segmentation of users.
  */
@@ -15,11 +18,11 @@ class UserBucketProvider {
 	 * protect user identity, it's important to not mix different bucketing thresholds, since the intersections
 	 * can reveal more detail than intended.
 	 *
-	 * @param User $user provides raw edit count
+	 * @param UserIdentity $user provides raw edit count
 	 * @return string|null Bucket identifier, or null for anonymous users.
 	 */
-	public static function getUserEditCountBucket( User $user ): ?string {
-		$editCount = $user->getEditCount();
+	public static function getUserEditCountBucket( UserIdentity $user ): ?string {
+		$editCount = MediaWikiServices::getInstance()->getUserEditTracker()->getUserEditCount( $user );
 		if ( $editCount === null ) {
 			return null;
 		}

@@ -1,9 +1,12 @@
 <?php
 
+use MediaWiki\User\UserEditTracker;
+use MediaWiki\User\UserIdentity;
+
 /**
  * @covers UserBucketProvider
  */
-class UserBucketProviderTest extends MediaWikiUnitTestCase {
+class UserBucketProviderTest extends MediaWikiIntegrationTestCase {
 
 	public function userProvider() {
 		return [
@@ -18,9 +21,11 @@ class UserBucketProviderTest extends MediaWikiUnitTestCase {
 	 * @dataProvider userProvider
 	 */
 	public function testGetUserEditCountBucket( ?int $editCount, ?string $expectedBucket ) {
-		$user = $this->createMock( User::class );
-		$user->method( 'getEditCount' )
+		$userEditTracker = $this->createMock( UserEditTracker::class );
+		$userEditTracker->method( 'getUserEditCount' )
 			->willReturn( $editCount );
+		$this->setService( 'UserEditTracker', $userEditTracker );
+		$user = $this->createMock( UserIdentity::class );
 
 		$result = UserBucketProvider::getUserEditCountBucket( $user );
 
