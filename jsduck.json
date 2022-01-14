@@ -5,6 +5,7 @@
 	"--warnings-exit-nonzero": true,
 	"--external": "jQuery.Promise",
 	"--warnings": [ "-nodoc(class,public)" ],
+	"--exclude": "modules/lib",
 	"--": [
 		"modules"
 	]

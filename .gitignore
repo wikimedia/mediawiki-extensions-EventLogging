@@ -6,3 +6,4 @@
 /composer.lock
 /vendor
 .eslintcache
+/modules/lib/.foreign
