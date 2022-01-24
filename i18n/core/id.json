@@ -1,9 +1,16 @@
 {
 	"@metadata": {
 		"authors": [
-			"Farras"
+			"Farras",
+			"Daud I.F. Argana"
 		]
 	},
 	"eventlogging-desc": "Kerangka kerja untuk aksi log dari kode sisi klien",
-	"eventlogging-invalid-json": "JSON salah"
+	"eventlogging-invalid-json": "JSON salah",
+	"eventlogging-revision-id": "Revisi $1",
+	"eventlogging-code-sample-logging-on-server-side": "Catatan PHP",
+	"eventlogging-code-sample-module-setup-json": "Pengaturan extension.json untuk catatan JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "Catatan JavaScript",
+	"eventlogging-error-move-source": "Halaman skema tidak bisa diubah namanya",
+	"eventlogging-error-move-destination": "Halaman tidak bisa diubah menjadi halaman skema"
 }
