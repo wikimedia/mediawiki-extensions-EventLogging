@@ -32,17 +32,17 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 	 *
 	 * @param Content $content
 	 * @param ContentParseParams $cpoParams
-	 * @param ParserOutput &$output The output object to fill (reference).
+	 * @param ParserOutput &$parserOutput The output object to fill (reference).
 	 */
 	protected function fillParserOutput(
 		Content $content,
 		ContentParseParams $cpoParams,
-		ParserOutput &$output
+		ParserOutput &$parserOutput
 	) {
 		'@phan-var JsonSchemaContent $content';
 		$page = $cpoParams->getPage();
 		$revId = $cpoParams->getRevId();
-		parent::fillParserOutput( $content, $cpoParams, $output );
+		parent::fillParserOutput( $content, $cpoParams, $parserOutput );
 		if ( $revId !== null && ExtensionRegistry::getInstance()->isLoaded( 'SyntaxHighlight' ) ) {
 			$html = '';
 			foreach ( $content->getCodeSamples( $page->getDBkey(), $revId ) as $sample ) {
@@ -57,9 +57,9 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
 			$html = Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-glyph' ], '&#xe714;' ) .
 				Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-samples' ], $html );
-			$output->setIndicator( 'schema-code-samples', $html );
-			$output->addModules( [ 'ext.eventLogging.jsonSchema', 'ext.pygments' ] );
-			$output->addModuleStyles( 'ext.eventLogging.jsonSchema.styles' );
+			$parserOutput->setIndicator( 'schema-code-samples', $html );
+			$parserOutput->addModules( [ 'ext.eventLogging.jsonSchema', 'ext.pygments' ] );
+			$parserOutput->addModuleStyles( [ 'ext.eventLogging.jsonSchema.styles' ] );
 		}
 	}
 

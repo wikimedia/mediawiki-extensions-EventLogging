@@ -77,13 +77,13 @@ class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 	public function testGetText() {
 		$content = new JsonSchemaContent( self::EVIL_JSON );
 		$contentRenderer = $this->getServiceContainer()->getContentRenderer();
-		$out = $contentRenderer->getParserOutput(
+		$parserOutput = $contentRenderer->getParserOutput(
 			$content,
 			Title::newFromText( 'Test' )
 		);
 		$this->assertStringContainsString(
 			'&lt;script>',
-			$out->getText(),
+			$parserOutput->getText(),
 			'HTML output should be escaped'
 		);
 	}
