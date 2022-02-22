@@ -157,27 +157,22 @@ core = {
 	},
 
 	/**
-	 * Make a 'fire and forget' HTTP request to a specified URL with the given payload data.
+	 * Make a "fire and forget" HTTP request to a specified URL.
 	 *
-	 * If data is undefined, a detached image element wil be created for
-	 * browsers without `navigator.sendBeacon`.  This cannot be done if data is provided,
-	 * as a payload cannot be sent using this mechanism.  I.e. this img fallback will
-	 * only be used for 'legacy' events that are sent via a URL query params rather than
-	 * a POST JSON body.
-	 * See also T273374 and T86680.
-	 *
-	 * If navigator.sendBeacon does not exist (and img fallback cannot be used)
-	 * or throws an exception, this will be a no-op.
+	 * In older browsers that lack the Beacon API (`navigator.sendBeacon`),
+	 * this falls back to a detached Image request.
 	 *
 	 * @param {string} url URL to request from the server.
-	 * @param {string} data to POST to server.
 	 */
-	sendBeacon: function ( url, data ) {
+	sendBeacon: function ( url ) {
 		if ( navigator.sendBeacon ) {
 			try {
-				navigator.sendBeacon( url, data );
-			} catch ( e ) {}
-		} else if ( !data ) {
+				navigator.sendBeacon( url );
+			} catch ( e ) {
+				// Ignore, T86680.
+			}
+		} else {
+			// Support IE 11: Fallback for Beacon API
 			document.createElement( 'img' ).src = url;
 		}
 	},
@@ -416,10 +411,12 @@ core.submit = function ( streamName, eventData ) {
 	//
 	if ( config.serviceUri ) {
 		core.enqueue( function () {
-			core.sendBeacon(
-				config.serviceUri,
-				JSON.stringify( eventData )
-			);
+			var json = JSON.stringify( eventData );
+			try {
+				navigator.sendBeacon( config.serviceUri, json );
+			} catch ( e ) {
+				// Ignore, T86680 and T273374.
+			}
 		} );
 	}
 };
