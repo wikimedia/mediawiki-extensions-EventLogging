@@ -1,7 +1,14 @@
 <?php
 
+namespace MediaWiki\Extension\EventLogging;
+
+use BagOStuff;
+use FormatJson;
+use JsonSerializable;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
+use ObjectCache;
+use stdClass;
 
 /**
  * Represents a schema revision on a remote wiki.

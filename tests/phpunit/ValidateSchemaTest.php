@@ -8,6 +8,9 @@
  * @author Nuria Ruiz <nuria@wikimedia.org>
  */
 
+use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\Extension\EventLogging\JsonSchemaContent;
+
 /**
  * @group EventLogging
  */
@@ -91,7 +94,7 @@ class ValidateSchemaTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * Tests schema we are using for tests is, indeed, valid
-	 * @covers JsonSchemaContent::isValid
+	 * @covers \MediaWiki\Extension\EventLogging\JsonSchemaContent::isValid
 	 */
 	public function testValidJson() {
 		$content = new JsonSchemaContent( self::VALID_JSON_SCHEMA );

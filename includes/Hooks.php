@@ -10,9 +10,19 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-use MediaWiki\MediaWikiServices;
+namespace MediaWiki\Extension\EventLogging;
 
-class EventLoggingHooks {
+use Config;
+use ExtensionRegistry;
+use Hooks as MWHooks;
+use MediaWiki\MediaWikiServices;
+use OutputPage;
+use ResourceLoaderContext;
+use RuntimeException;
+use Skin;
+use User;
+
+class Hooks {
 
 	/**
 	 * Emit a debug log message for each invalid or unset
@@ -66,7 +76,7 @@ class EventLoggingHooks {
 		$extRegistry = ExtensionRegistry::getInstance();
 		$schemas = $wgEventLoggingSchemas + $extRegistry->getAttribute( 'EventLoggingSchemas' );
 
-		Hooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
+		MWHooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
 
 		return $schemas;
 	}

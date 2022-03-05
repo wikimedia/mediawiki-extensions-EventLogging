@@ -37,10 +37,10 @@
 		"eventlogging-display-console": 0
 	},
 	"ContentHandlers": {
-		"JsonSchema": "JsonSchemaContentHandler"
+		"JsonSchema": "MediaWiki\\Extension\\EventLogging\\JsonSchemaContentHandler"
 	},
 	"ExtensionFunctions": [
-		"EventLoggingHooks::onSetup"
+		"MediaWiki\\Extension\\EventLogging\\Hooks::onSetup"
 	],
 	"MessagesDirs": {
 		"EventLogging": [
@@ -54,20 +54,17 @@
 		"EventLoggingNamespaces": "EventLogging.namespaces.php"
 	},
 	"AutoloadClasses": {
-		"ApiJsonSchema": "includes/ApiJsonSchema.php",
 		"EventLogging": "includes/EventLogging.php",
-		"EventLoggingHelper": "includes/EventLoggingHelper.php",
-		"EventLoggingHooks": "includes/EventLoggingHooks.php",
-		"JsonSchemaContent": "includes/JsonSchemaContent.php",
-		"JsonSchemaContentHandler": "includes/JsonSchemaContentHandler.php",
 		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
-		"JsonSchemaHooks": "includes/JsonSchemaHooks.php",
 		"JsonSchemaIndex": "includes/Libs/JsonSchemaValidation/JsonSchemaIndex.php",
 		"JsonTreeRef": "includes/Libs/JsonSchemaValidation/JsonTreeRef.php",
 		"JsonUtil": "includes/Libs/JsonSchemaValidation/JsonUtil.php",
-		"RemoteSchema": "includes/RemoteSchema.php",
+		"MediaWiki\\Extension\\EventLogging\\EventLogging": "includes/EventLogging.php",
 		"TreeRef": "includes/Libs/JsonSchemaValidation/TreeRef.php",
 		"UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php"
+	},
+	"AutoloadNamespaces": {
+		"MediaWiki\\Extension\\EventLogging\\": "includes/"
 	},
 	"ResourceModules": {
 		"ext.eventLogging": {
@@ -80,7 +77,7 @@
 				"BackgroundQueue.js",
 				{
 					"name": "data.json",
-					"callback": "EventLoggingHooks::getModuleData"
+					"callback": "MediaWiki\\Extension\\EventLogging\\Hooks::getModuleData"
 				}
 			],
 			"dependencies": [
@@ -135,16 +132,16 @@
 		]
 	},
 	"Hooks": {
-		"CanonicalNamespaces": "EventLoggingHooks::onCanonicalNamespaces",
+		"CanonicalNamespaces": "MediaWiki\\Extension\\EventLogging\\Hooks::onCanonicalNamespaces",
 		"BeforePageDisplay": [
-			"EventLoggingHooks::onBeforePageDisplay",
-			"JsonSchemaHooks::onBeforePageDisplay"
+			"MediaWiki\\Extension\\EventLogging\\Hooks::onBeforePageDisplay",
+			"MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onBeforePageDisplay"
 		],
-		"GetPreferences": "EventLoggingHooks::onGetPreferences",
-		"CodeEditorGetPageLanguage": "JsonSchemaHooks::onCodeEditorGetPageLanguage",
-		"EditFilterMergedContent": "JsonSchemaHooks::onEditFilterMergedContent",
-		"MovePageIsValidMove": "JsonSchemaHooks::onMovePageIsValidMove",
-		"ApiMain::moduleManager": "JsonSchemaHooks::onApiMainModuleManager"
+		"GetPreferences": "MediaWiki\\Extension\\EventLogging\\Hooks::onGetPreferences",
+		"CodeEditorGetPageLanguage": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onCodeEditorGetPageLanguage",
+		"EditFilterMergedContent": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onEditFilterMergedContent",
+		"MovePageIsValidMove": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onMovePageIsValidMove",
+		"ApiMain::moduleManager": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onApiMainModuleManager"
 	},
 	"config": {
 		"EventLoggingBaseUri": {
