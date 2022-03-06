@@ -8,9 +8,11 @@
  * @author Nuria Ruiz <nuria@wikimedia.org>
  */
 
+use MediaWiki\Extension\EventLogging\EventLogging;
+
 /**
  * @group EventLogging
- * @covers EventLogging::serializeEvent
+ * @covers \MediaWiki\Extension\EventLogging\EventLogging::serializeEvent
  */
 class SerializeEventTest extends MediaWikiIntegrationTestCase {
 
