@@ -1,5 +1,7 @@
 <?php
 
+namespace MediaWiki\Extension\EventLogging\Libs\UserBucketProvider;
+
 use MediaWiki\MediaWikiServices;
 use MediaWiki\User\UserIdentity;
 
@@ -42,3 +44,5 @@ class UserBucketProvider {
 	}
 
 }
+
+class_alias( UserBucketProvider::class, 'UserBucketProvider' );

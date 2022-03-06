@@ -38,6 +38,10 @@
  * @license http://jsonwidget.org/LICENSE BSD-3-Clause
  */
 
+namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
+
+use Exception;
+
 class JsonSchemaException extends Exception {
 
 	/**
@@ -62,3 +66,5 @@ class JsonSchemaException extends Exception {
 		$this->args = $args;
 	}
 }
+
+class_alias( JsonSchemaException::class, 'JsonSchemaException' );
