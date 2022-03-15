@@ -56,11 +56,9 @@
 	"AutoloadClasses": {
 		"EventLogging": "includes/EventLogging.php",
 		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
-		"JsonSchemaIndex": "includes/Libs/JsonSchemaValidation/JsonSchemaIndex.php",
-		"JsonTreeRef": "includes/Libs/JsonSchemaValidation/JsonTreeRef.php",
-		"JsonUtil": "includes/Libs/JsonSchemaValidation/JsonUtil.php",
 		"MediaWiki\\Extension\\EventLogging\\EventLogging": "includes/EventLogging.php",
-		"TreeRef": "includes/Libs/JsonSchemaValidation/TreeRef.php",
+		"MediaWiki\\Extension\\EventLogging\\Libs\\JsonSchemaValidation\\JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
+		"MediaWiki\\Extension\\EventLogging\\Libs\\UserBucketProvider\\UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php",
 		"UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php"
 	},
 	"AutoloadNamespaces": {

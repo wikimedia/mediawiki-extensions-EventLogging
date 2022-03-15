@@ -38,6 +38,10 @@
  * @license http://jsonwidget.org/LICENSE BSD-3-Clause
  */
 
+namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
+
+use Exception;
+
 /**
  * The JsonSchemaIndex object holds all schema refs with an "id", and is used
  * to resolve an idref to a schema ref.  This also holds the root of the schema

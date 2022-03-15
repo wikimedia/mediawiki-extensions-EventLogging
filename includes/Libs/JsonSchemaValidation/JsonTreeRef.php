@@ -38,6 +38,8 @@
  * @license http://jsonwidget.org/LICENSE BSD-3-Clause
  */
 
+namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
+
 /**
  * Structure for representing a data tree, where each node (ref) is aware of its
  * context and associated schema.

@@ -1,10 +1,11 @@
 <?php
 
+use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider;
 use MediaWiki\User\UserEditTracker;
 use MediaWiki\User\UserIdentity;
 
 /**
- * @covers UserBucketProvider
+ * @covers \MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider
  */
 class UserBucketProviderTest extends MediaWikiIntegrationTestCase {
 

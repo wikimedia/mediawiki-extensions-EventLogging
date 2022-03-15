@@ -38,6 +38,10 @@
  * @license http://jsonwidget.org/LICENSE BSD-3-Clause
  */
 
+namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
+
+use FormatJson;
+
 class JsonUtil {
 	/**
 	 * Converts the string into something safe for an HTML id.

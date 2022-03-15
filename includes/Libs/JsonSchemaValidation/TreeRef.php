@@ -38,6 +38,8 @@
  * @license http://jsonwidget.org/LICENSE BSD-3-Clause
  */
 
+namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
+
 /*
  * Internal terminology:
  *   Node: "node" in the graph theory sense, but specifically, a node in the
