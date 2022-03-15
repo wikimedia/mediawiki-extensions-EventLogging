@@ -1,10 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"ديفيد"
+			"ديفيد",
+			"FiberAhmed"
 		]
 	},
-	"jsonschema-badidref": "idref سيء: \"$1\"",
+	"jsonschema-badidref": "idref سيئ: \"$1\"",
 	"jsonschema-idconvert": "لا يمكن تحويل var إلى id: <code>$1</code>",
 	"jsonschema-invalidkey": "مفتاح غير صالح \"$1\" في \"$2\"",
 	"jsonschema-invalidempty": "بنية البيانات الفارغة غير صالحة مع هذا المخطط",
