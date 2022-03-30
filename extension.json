@@ -117,12 +117,12 @@
 		"localBasePath": "",
 		"remoteExtPath": "EventLogging",
 		"scripts": [
-			"tests/ext.eventLogging/utils.test.js",
-			"tests/ext.eventLogging/BackgroundQueue.test.js",
-			"tests/ext.eventLogging/log.test.js",
-			"tests/ext.eventLogging/stream.test.js",
-			"tests/ext.eventLogging/bucketing.test.js",
-			"tests/ext.eventLogging.debug.tests.js"
+			"tests/qunit/ext.eventLogging/BackgroundQueue.test.js",
+			"tests/qunit/ext.eventLogging/bucketing.test.js",
+			"tests/qunit/ext.eventLogging/log.test.js",
+			"tests/qunit/ext.eventLogging/stream.test.js",
+			"tests/qunit/ext.eventLogging/utils.test.js",
+			"tests/qunit/ext.eventLogging.debug/debug.test.js"
 		],
 		"dependencies": [
 			"ext.eventLogging",

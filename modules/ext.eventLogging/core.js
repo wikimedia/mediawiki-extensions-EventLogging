@@ -556,11 +556,10 @@ core.streamInSample = function ( streamConfig ) {
  *  undefined if the given stream was not enabled (or not loaded).
  */
 core.streamConfig = function ( streamName ) {
-	// If streamConfigs are false, then
-	// stream config usage is not enabled.
+	// If streamConfigs is not set, then stream config usage is not enabled.
 	// Always return an empty object.
 	// FIXME: naming
-	if ( config.streamConfigs === false ) {
+	if ( !config.streamConfigs ) {
 		return {};
 	}
 
@@ -654,12 +653,11 @@ mw.config.set(
 // Not allowed outside unit tests
 if ( window.QUnit ) {
 	core.setOptionsForTest = function ( opts ) {
-		var oldConfig = config;
-		config = $.extend( {}, config, opts );
-		return oldConfig;
+		var originalOptions = config;
+		config = opts;
+		return originalOptions;
 	};
 	core.BackgroundQueue = BackgroundQueue;
-	core.streamConfigs = config.streamConfigs;
 	core.makeLegacyStreamName = makeLegacyStreamName;
 	core.getUserEditCountBucket = getUserEditCountBucket;
 }

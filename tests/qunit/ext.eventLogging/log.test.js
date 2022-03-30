@@ -1,8 +1,10 @@
 'use strict';
 
-QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
-	setup: function () {
-		this.suppressWarnings();
+QUnit.module( 'ext.eventLogging/log', {
+	beforeEach: function () {
+		this.sandbox.stub( mw.log, 'warn', function () {} );
+		this.sandbox.stub( mw.log, 'error', function () {} );
+
 		this.originalOptions = mw.eventLog.setOptionsForTest( {
 			baseUrl: '/dummy/',
 			schemasInfo: {
@@ -12,11 +14,10 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 			}
 		} );
 	},
-	teardown: function () {
-		this.restoreWarnings();
+	afterEach: function () {
 		mw.eventLog.setOptionsForTest( this.originalOptions );
 	}
-} ) );
+} );
 
 QUnit.test( 'logEvent()', function ( assert ) {
 	var eventData = {
@@ -62,22 +63,19 @@ QUnit.test( 'logEvent() via submit()', function ( assert ) {
 	} );
 } );
 
-// eslint-disable-next-line no-jquery/no-each-util
-$.each( {
-	'checkUrlSize() - URL size is ok': {
+QUnit.test.each( 'checkUrlSize()', {
+	'URL size is ok': {
 		size: mw.eventLog.maxUrlSize,
 		expected: undefined
 	},
-	'checkUrlSize() - URL size is not ok': {
+	'URL size is not ok': {
 		size: mw.eventLog.maxUrlSize + 1,
 		expected: 'Url exceeds maximum length'
 	}
-}, function ( name, params ) {
-	QUnit.test( name, function ( assert ) {
-		var url = new Array( params.size + 1 ).join( 'x' ),
-			result = mw.eventLog.checkUrlSize( 'earthquake', url );
-		assert.deepEqual( result, params.expected, name );
-	} );
+}, function ( assert, data ) {
+	var url = new Array( data.size + 1 ).join( 'x' );
+	var result = mw.eventLog.checkUrlSize( 'earthquake', url );
+	assert.deepEqual( result, data.expected );
 } );
 
 QUnit.test( 'logEvent() - reject large event data', function ( assert ) {

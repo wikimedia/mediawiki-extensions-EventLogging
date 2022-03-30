@@ -1,8 +1,10 @@
-( function () {
+QUnit.module( 'ext.eventLogging.debug', function () {
 	'use strict';
 
-	var eventLogDebug = require( 'ext.eventLogging.debug' ),
-		earthquakeSchema = {
+	var eventLogDebug = require( 'ext.eventLogging.debug' );
+
+	QUnit.test( 'validate()', function ( assert ) {
+		var earthquakeSchema = {
 			revision: 123,
 			schema: {
 				description: 'Record of a history earthquake',
@@ -21,9 +23,8 @@
 					}
 				}
 			}
-		},
-
-		validationCases = [
+		};
+		var validationCases = [
 			{
 				args: {},
 				regex: /^Missing property/,
@@ -71,20 +72,7 @@
 			}
 		];
 
-	QUnit.module( 'ext.eventLogging.debug', QUnit.newMwEnvironment( {
-		setup: function () {
-			this.suppressWarnings();
-			mw.config.set( 'wgEventLoggingBaseUri', '#' );
-		},
-		teardown: function () {
-			this.restoreWarnings();
-		}
-	} ) );
-
-	QUnit.test( 'validate', function ( assert ) {
-		var errors;
-
-		errors = eventLogDebug.validate( {
+		var errors = eventLogDebug.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, earthquakeSchema.schema );
@@ -97,45 +85,46 @@
 		} );
 	} );
 
-	QUnit.module( 'ext.eventLogging.debug: isInstanceOf()' );
-
-	// eslint-disable-next-line no-jquery/no-each-util
-	$.each( {
+	QUnit.test.each( 'isInstanceOf()', {
 		boolean: {
+			type: 'boolean',
 			valid: [ true, false ],
 			invalid: [ undefined, null, 0, -1, 1, 'false' ]
 		},
 		integer: {
+			type: 'integer',
 			valid: [ -12, 42, 0, 4294967296 ],
 			invalid: [ 42.1, NaN, Infinity, '42', [ 42 ] ]
 		},
 		number: {
+			type: 'number',
 			valid: [ 12, 42.1, 0, Math.PI ],
 			invalid: [ '42.1', NaN, [ 42 ], undefined ]
 		},
 		string: {
+			type: 'string',
 			valid: [ 'Hello', '', '-1' ],
 			invalid: [ [], 0, true ]
 		},
 		timestamp: {
+			type: 'timestamp',
 			valid: [ +new Date(), new Date() ],
 			invalid: [ -1, 'yesterday', NaN ]
 		},
 		array: {
+			type: 'array',
 			valid: [ [], [ 42 ] ],
 			invalid: [ -1, {}, undefined ]
 		}
-	}, function ( type, cases ) {
-		QUnit.test( type, function ( assert ) {
-			cases.valid.forEach( function ( value ) {
-				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), true,
-					JSON.stringify( value ) + ' is a ' + type );
-			} );
-			cases.invalid.forEach( function ( value ) {
-				assert.strictEqual( eventLogDebug.isInstanceOf( value, type ), false,
-					JSON.stringify( value ) + ' is not a ' + type );
-			} );
+	}, function ( assert, data ) {
+		data.valid.forEach( function ( value ) {
+			assert.strictEqual( eventLogDebug.isInstanceOf( value, data.type ), true,
+				JSON.stringify( value ) + ' is valid' );
+		} );
+		data.invalid.forEach( function ( value ) {
+			assert.strictEqual( eventLogDebug.isInstanceOf( value, data.type ), false,
+				JSON.stringify( value ) + ' is invalid' );
 		} );
 	} );
 
-}() );
+} );
