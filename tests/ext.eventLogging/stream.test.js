@@ -3,6 +3,10 @@
 QUnit.module( 'ext.eventLogging/stream', {
 	beforeEach: function () {
 		this.clock = this.sandbox.useFakeTimers();
+		this.originalOptions = mw.eventLog.setOptionsForTest( {} );
+	},
+	afterEach: function () {
+		mw.eventLog.setOptionsForTest( this.originalOptions );
 	}
 } );
 

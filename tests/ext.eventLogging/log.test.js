@@ -3,8 +3,8 @@
 QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 	setup: function () {
 		this.suppressWarnings();
-		mw.eventLog.setOptionsForTest( {
-			baseUrl: '#',
+		this.originalOptions = mw.eventLog.setOptionsForTest( {
+			baseUrl: '/dummy/',
 			schemasInfo: {
 				earthquake: 123,
 				// eruption events will be prepared for POSTing to EventGate.
@@ -14,6 +14,7 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 	},
 	teardown: function () {
 		this.restoreWarnings();
+		mw.eventLog.setOptionsForTest( this.originalOptions );
 	}
 } ) );
 
