@@ -17,6 +17,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;
 use Title;
+use Wikimedia\ParamValidator\ParamValidator;
 
 /**
  * API module for retrieving JSON Schema.
@@ -29,10 +30,10 @@ class ApiJsonSchema extends ApiBase {
 	public function getAllowedParams() {
 		return [
 			'revid' => [
-				ApiBase::PARAM_TYPE => 'integer',
+				ParamValidator::PARAM_TYPE => 'integer',
 			],
 			'title' => [
-				ApiBase::PARAM_TYPE => 'string',
+				ParamValidator::PARAM_TYPE => 'string',
 			],
 		];
 	}
