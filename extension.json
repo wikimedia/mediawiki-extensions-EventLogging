@@ -11,8 +11,7 @@
 	"license-name": "GPL-2.0-or-later",
 	"type": "other",
 	"requires": {
-		"MediaWiki": ">= 1.35.0",
-		"extensions": {}
+		"MediaWiki": ">= 1.35.0"
 	},
 	"namespaces": [
 		{
