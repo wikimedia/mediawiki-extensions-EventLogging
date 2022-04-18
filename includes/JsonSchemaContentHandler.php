@@ -16,8 +16,8 @@ use ExtensionRegistry;
 use Html;
 use JsonContentHandler;
 use MediaWiki\Content\Renderer\ContentParseParams;
+use MediaWiki\SyntaxHighlight\SyntaxHighlight;
 use ParserOutput;
-use SyntaxHighlight;
 use Title;
 use Xml;
 
