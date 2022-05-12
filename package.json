@@ -13,6 +13,7 @@
 		"stylelint-config-wikimedia": "0.11.1"
 	},
 	"eslintIgnore": [
+		"modules/ext.eventLogging/lib/**",
 		"docs/**",
 		"vendor/**"
 	]

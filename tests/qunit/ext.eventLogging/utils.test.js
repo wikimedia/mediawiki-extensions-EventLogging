@@ -32,9 +32,3 @@ QUnit.test( 'randomTokenMatch()', function ( assert ) {
 QUnit.test( 'makeLegacyStreamName()', function ( assert ) {
 	assert.strictEqual( mw.eventLog.makeLegacyStreamName( 'MySchema' ), 'eventlogging_MySchema' );
 } );
-
-QUnit.test( 'addRequestedValues()', function ( assert ) {
-	// eslint-disable-next-line camelcase
-	var event = mw.eventLog.addRequestedValues( {}, { provide_values: [ 'skin' ] } );
-	assert.strictEqual( typeof event.test.skin, 'string' );
-} );

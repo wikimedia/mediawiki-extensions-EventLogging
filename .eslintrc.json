@@ -8,5 +8,8 @@
 	"rules": {
 		"no-redeclare": "warn",
 		"compat/compat": "warn"
-	}
+	},
+	"ignorePatterns": [
+		"modules/lib/metrics-platform"
+	]
 }

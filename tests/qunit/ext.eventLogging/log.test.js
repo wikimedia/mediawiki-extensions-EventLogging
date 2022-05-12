@@ -11,7 +11,8 @@ QUnit.module( 'ext.eventLogging/log', {
 				earthquake: 123,
 				// eruption events will be prepared for POSTing to EventGate.
 				eruption: '/analytics/legacy/eruption/1.0.0'
-			}
+			},
+			streamConfigs: false
 		} );
 	},
 	afterEach: function () {

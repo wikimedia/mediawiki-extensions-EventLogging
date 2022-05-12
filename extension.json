@@ -65,17 +65,23 @@
 	},
 	"ResourceModules": {
 		"ext.eventLogging": {
-			"localBasePath": "modules/ext.eventLogging/",
-			"remoteExtPath": "EventLogging/modules/ext.eventLogging/",
+			"localBasePath": "modules",
+			"remoteExtPath": "EventLogging/modules",
 			"packageFiles": [
-				"subscriber.js",
-				"core.js",
-				"Schema.js",
-				"BackgroundQueue.js",
+				"ext.eventLogging/subscriber.js",
+				"ext.eventLogging/core.js",
+				"ext.eventLogging/Schema.js",
+				"ext.eventLogging/BackgroundQueue.js",
 				{
-					"name": "data.json",
+					"name": "ext.eventLogging/data.json",
 					"callback": "MediaWiki\\Extension\\EventLogging\\Hooks::getModuleData"
-				}
+				},
+				"lib/metrics-platform/ContextUtils.js",
+				"lib/metrics-platform/ContextController.js",
+				"lib/metrics-platform/CurationController.js",
+				"lib/metrics-platform/MetricsClient.js",
+				"lib/metrics-platform/SamplingController.js",
+				"ext.eventLogging/MediaWikiMetricsClientIntegration.js"
 			],
 			"dependencies": [
 				"mediawiki.user",

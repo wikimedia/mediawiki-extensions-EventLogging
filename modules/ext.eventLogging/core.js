@@ -7,7 +7,9 @@
 var core, debugMode,
 	// config contains:
 	// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
-	//            If set to false (default), then events will not be logged.
+	//            If set to false (default), then mw.eventLog.logEvent will not log events.
+	// - serviceUri: corresponds to $wgEventLoggingServiceUri configuration in PHP.
+	//               If set to false (default), then mw.eventLog.submit will not log events.
 	// - schemasInfo: Object mapping schema names to revision IDs or $schema URIs
 	// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
 	config = require( './data.json' ),
@@ -313,113 +315,17 @@ core = {
 // code from above to here. https://phabricator.wikimedia.org/T238544
 // ////////////////////////////////////////////////////////////////////
 
-/**
- * Submit an event according to the given stream's configuration.
- * If DNT is enabled, this method does nothing.
- *
- * @param {string} streamName name of the stream to send eventData to
- * @param {Object} eventData data to send to streamName
- */
-core.submit = function ( streamName, eventData ) {
-	//
-	// NOTE
-	// If stream configuration is disabled (config.streamConfigs === false),
-	// then core.streamConfig will return an empty object {},
-	// i.e. a truthy value, for all stream names.
-	//
-	// FIXME
-	// The convention that disabling stream configuration results
-	// in enabling any caller to send any event, with no sampling,
-	// etc., is correct in the sense of the boolean logic, but
-	// counter-intuitive and likely hard to keep correct as more
-	// behavior is added. We should revisit.
-	var streamConfig = core.streamConfig( streamName );
+var MetricsClient = require( '../lib/metrics-platform/MetricsClient.js' );
+var MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
 
-	if ( !streamConfig ) {
-		//
-		// If stream configurations are enabled but no
-		// stream configuration has been loaded for streamName
-		// (and we are not in debugMode), we assume the client
-		// is misconfigured. Rather than produce potentially
-		// inconsistent data, the event submission does not
-		// proceed.
-		//
-		// FIXME
-		// See comment above; this should be made less
-		// confusing.
-		return;
-	}
+function initMetricsClient() {
+	var integration = new MediaWikiMetricsClientIntegration( core, config );
+	var metricsClient = new MetricsClient( integration, config.streamConfigs );
 
-	// If stream is not in sample, do not log the event.
-	if ( !core.streamInSample( streamConfig ) ) {
-		return;
-	}
-
-	if ( !eventData || !eventData.$schema ) {
-		//
-		// If the caller has not provided a $schema field
-		// in eventData, the event submission does not
-		// proceed.
-		//
-		// The $schema field represents the (versioned)
-		// schema which the caller expects eventData
-		// will validate against (once the appropriate
-		// additions have been made by this client).
-		//
-		mw.log.warn(
-			'submit( ' + streamName + ', eventData ) called with eventData ' +
-			'missing required field "$schema". No event will issue.'
-		);
-		return;
-	}
-
-	eventData.meta = eventData.meta || {};
-	eventData.meta.stream = streamName;
-	eventData.meta.domain = mw.config.get( 'wgServerName' );
-	//
-	// The 'dt' field is reserved for the internal use of this library,
-	// and should not be set by any other caller.
-	//
-	// (1) 'dt' is a client-side timestamp for new events
-	//      and a server-side timestamp for legacy events.
-	// (2) 'dt' will be provided by EventGate if omitted here,
-	//      so it should be omitted for legacy events (and
-	//      deleted if present).
-	//
-	// We detect legacy events by looking for the 'client_dt' field
-	// set in the .produce() method (see above).
-	//
-	if ( eventData.client_dt ) {
-		delete eventData.dt;
-	} else {
-		eventData.dt = new Date().toISOString();
-	}
-
-	// FIXME: This is a demo implementation. Use at your own risk.
-	core.addRequestedValues( eventData, streamConfig );
-
-	// This will use a MediaWiki notification in the browser to display the event data.
-	if ( debugMode ) {
-		mw.track(
-			'eventlogging.eventSubmitDebug',
-			{ streamName: streamName, eventData: eventData }
-		);
-	}
-
-	//
-	// Send the processed event to be produced.
-	//
-	if ( config.serviceUri ) {
-		core.enqueue( function () {
-			var json = JSON.stringify( eventData );
-			try {
-				navigator.sendBeacon( config.serviceUri, json );
-			} catch ( e ) {
-				// Ignore, T86680 and T273374.
-			}
-		} );
-	}
-};
+	core.submit = metricsClient.submit.bind( metricsClient );
+	core.dispatch = metricsClient.dispatch.bind( metricsClient );
+}
+initMetricsClient();
 
 core.storage = {
 	get: function ( name ) {
@@ -493,133 +399,7 @@ core.id = ( function () {
 }() );
 
 /**
- * Determine whether a stream is in-sample or out-sample.
- *
- * @private
- * @param {Object} streamConfig stream configuration
- * @return {boolean} true if in-sample, false if out-sample.
- */
-core.streamInSample = function ( streamConfig ) {
-	var id;
-
-	if ( debugMode ) {
-		// If a user is in debug mode, they are in-sample.
-		// FIXME: Is this always what we want?
-		return true;
-	}
-
-	if ( !streamConfig ) {
-		// If a stream is not defined, it is not in sample.
-		return false;
-	}
-
-	if ( !streamConfig.sample ) {
-		// If the stream does not specify sampling, it is in-sample.
-		return true;
-	}
-
-	if (
-		( !streamConfig.sample.rate || !streamConfig.sample.unit ) ||
-		( streamConfig.sample.rate < 0 || streamConfig.sample.rate > 1 )
-	) {
-		// If the stream does specify sampling, but it is malformed,
-		// it is not in-sample.
-		return false;
-	}
-
-	switch ( streamConfig.sample.unit ) {
-		case 'pageview':
-			id = core.id.getPageviewId();
-			break;
-		case 'session':
-			id = core.id.getSessionId();
-			break;
-		default:
-			return false;
-	}
-
-	id = core.id.normalizeId( id );
-
-	return ( id < streamConfig.sample.rate );
-};
-
-/**
- * Return the configuration object of the given stream name.
- *
- * Modifications to the returned object will not change the actual
- * configuration. If there's no configuration for the passed stream,
- * undefined is returned.
- *
- * @private
- * @param {string} streamName name of the stream to return config for
- * @return {Object|null} Stream configuration for the given streamName, or
- *  undefined if the given stream was not enabled (or not loaded).
- */
-core.streamConfig = function ( streamName ) {
-	// If streamConfigs is not set, then stream config usage is not enabled.
-	// Always return an empty object.
-	// FIXME: naming
-	if ( !config.streamConfigs ) {
-		return {};
-	}
-
-	if ( !config.streamConfigs[ streamName ] ) {
-		// In case no config has been assigned to the given streamName,
-		// return undefined, so that the developer can discern between
-		// a stream that is not configured, and a stream with config = {}.
-		return undefined;
-	}
-	return $.extend( true, {}, config.streamConfigs[ streamName ] );
-};
-
-/**
- * Add client-provided supplemental values as requested in the stream configuration.
- *
- * For now, as a proof of concept, this function will add requested values to a top-level
- * `test` field. If the event data object already contains a corresponding value for a
- * requested value, it will *not* be overwritten.
- *
- * @param {Object} eventData
- * @param {Object} streamConfig
- * @return {Object} event data
- */
-core.addRequestedValues = function ( eventData, streamConfig ) {
-	var i,
-		requestedValue,
-		requestedValues = streamConfig.provide_values;
-
-	if ( !Array.isArray( requestedValues ) ) {
-		return eventData;
-	}
-	eventData.test = eventData.test || {};
-	if ( !( eventData.test === Object( eventData.test ) ) ) {
-		// eventData.test exists but is not an Object; abort
-		// TODO: This check should not be needed in the final implementation
-		return eventData;
-	}
-	for ( i = 0; i < requestedValues.length; i++ ) {
-		requestedValue = requestedValues[ i ];
-		if ( {}.hasOwnProperty.call( eventData.test, requestedValue ) ) {
-			continue;
-		}
-		switch ( requestedValue ) {
-			case 'skin':
-				eventData.test.skin = mw.config.get( 'skin' );
-				break;
-			default:
-				mw.log.warn( 'EventLogging: Ignoring unknown requested value \'' +
-					requestedValue + '\'' );
-				break;
-		}
-	}
-	return eventData;
-};
-
-/**
  * Provide the user's edit count as a low-granularity bucket name
- *
- * TODO: This should be transparently injected using the
- * addRequestedValues mechanism, when it's mature.
  *
  * @param {number|null} editCount User edit count, or null for anonymous performers.
  * @return {string|null} `null` for anonymous performers.
@@ -655,6 +435,10 @@ if ( window.QUnit ) {
 	core.setOptionsForTest = function ( opts ) {
 		var originalOptions = config;
 		config = opts;
+
+		// Reinitialise the Metrics Platform client.
+		initMetricsClient();
+
 		return originalOptions;
 	};
 	core.BackgroundQueue = BackgroundQueue;
