@@ -27,10 +27,14 @@ MediaWikiMetricsClientIntegration.prototype.enqueueEvent = function ( eventData 
 
 	if ( serviceUri ) {
 		this.eventLog.enqueue( function () {
-			navigator.sendBeacon(
-				serviceUri,
-				JSON.stringify( eventData )
-			);
+			try {
+				navigator.sendBeacon(
+					serviceUri,
+					JSON.stringify( eventData )
+				);
+			} catch ( e ) {
+				// Ignore. See T86680, T273374, and T308311.
+			}
 		} );
 	}
 };
