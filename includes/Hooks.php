@@ -16,8 +16,8 @@ use Config;
 use ExtensionRegistry;
 use Hooks as MWHooks;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\ResourceLoader as RL;
 use OutputPage;
-use ResourceLoaderContext;
 use RuntimeException;
 use Skin;
 use User;
@@ -102,11 +102,11 @@ class Hooks {
 	/**
 	 * Wraps getEventLoggingConfig for use with ResourceLoader.
 	 *
-	 * @param ResourceLoaderContext $context
+	 * @param RL\Context $context
 	 * @param Config $config
 	 * @return array
 	 */
-	public static function getModuleData( ResourceLoaderContext $context, Config $config ) {
+	public static function getModuleData( RL\Context $context, Config $config ) {
 		return self::getEventLoggingConfig( $config );
 	}
 
