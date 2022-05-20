@@ -96,6 +96,8 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 
 	var version = String( c( 'wgVersion' ) );
 
+	var userGroups = c( 'wgUserGroups' );
+
 	/* eslint-disable camelcase */
 	var result = {
 		agent: {
@@ -129,7 +131,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 
 			// NOTE: This method is expected to execute synchronously. mw.user.getGroups returns a
 			// promise (jQuery.Promise) so get the information from the global config instead.
-			groups: c( 'wgUserGroups' ),
+			groups: userGroups,
 
 			// NOTE: As above, this method is expected to execute synchronously. We should test
 			// whether the user has the "bot" right but mw.user.getRights() returns a promise
@@ -137,7 +139,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			// is a default MediaWiki user group [0].
 			//
 			// [0] https://www.mediawiki.org/wiki/Help:User_rights_and_groups#User_rights_and_groups_on_your_wiki
-			is_bot: this.getUserGroups().indexOf( 'bot' ) !== -1,
+			is_bot: userGroups.indexOf( 'bot' ) !== -1,
 
 			language: c( 'wgUserLanguage' ),
 			language_variant: c( 'wgUserVariant' ),
