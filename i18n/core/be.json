@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Chadyka"
+		]
+	},
+	"eventlogging-desc": "Фрэймворк для дадавання падзеяў у журнал з кліенцкага коду",
+	"eventlogging-invalid-json": "Няслушны JSON",
+	"eventlogging-revision-id": "Версія $1",
+	"eventlogging-code-sample-logging-on-server-side": "Запіс у журнал PHP",
+	"eventlogging-code-sample-module-setup-json": "налады extension.json для запісу ў журнал з дапамогай JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "Запіс у журнал JavaScript",
+	"eventlogging-error-move-source": "Старонкі схемаў не могуць быць перайменаваныя",
+	"eventlogging-error-move-destination": "Старонкі не могуць быць перайменаваныя ў старонкі схемаў"
+}
