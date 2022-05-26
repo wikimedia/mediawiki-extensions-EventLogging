@@ -1,7 +1,8 @@
 var c = mw.config.get.bind( mw.config );
 
 // Support both 1 or "1" (T54542)
-var isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1;
+var isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
+	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
 /**
  * Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
