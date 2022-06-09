@@ -110,9 +110,16 @@ MetricsClient.prototype.getStreamNamesForEvent = function ( eventName ) {
 		this.eventNameToStreamNamesMap = getEventNameToStreamNamesMap( this.streamConfigs );
 	}
 
-	return this.eventNameToStreamNamesMap[ eventName ] ?
-		this.eventNameToStreamNamesMap[ eventName ] :
-		[];
+	/** @type string[] */
+	var result = [];
+
+	for ( var key in this.eventNameToStreamNamesMap ) {
+		if ( eventName.indexOf( key ) === 0 ) {
+			result = result.concat( this.eventNameToStreamNamesMap[ key ] );
+		}
+	}
+
+	return result;
 };
 
 /**
@@ -287,6 +294,15 @@ MetricsClient.prototype.dispatch = function ( eventName, customData ) {
 			// @ts-ignore TS2571
 			'dispatch( ' + eventName + ', customData ) called with invalid customData: ' + e.message +
 			'No event(s) will be produced.'
+		);
+
+		return;
+	}
+
+	// T309083
+	if ( this.streamConfigs === false ) {
+		this.integration.logWarning(
+			'dispatch( ' + eventName + ', customData ) cannot dispatch events when stream configs are disabled.'
 		);
 
 		return;

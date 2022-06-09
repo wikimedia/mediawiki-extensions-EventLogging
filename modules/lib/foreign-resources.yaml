@@ -5,8 +5,8 @@
 # instead of GitHub mirror, but https://github.com/google/gitiles/issues/217
 metrics-platform:
   type: tar
-  src: https://codeload.github.com/wikimedia/metrics-platform/tar.gz/d98c47371f6447f6549de9d1ffe798ef9bee18e1
-  integrity: sha384-S8tEwphHn3GQgg7ovpGK6m13nAsRDI7T47tJmbz3bakDA2UVo6TI2BxfDuEGy4b9
+  src: https://codeload.github.com/wikimedia/metrics-platform/tar.gz/f8693e7180702edd499e00ba1e39b04950b14c4c
+  integrity: sha384-CiCbwMWBBpUFcjECTWcuLIJMR4l4E8yioVtaReCCMh+Z6g5gxxuMIcM9D8C+3LqW
   # GitHub nests their archives with a variable subdirectory...
   dest:
     metrics-platform-*/COPYING:

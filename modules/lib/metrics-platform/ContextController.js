@@ -1,7 +1,7 @@
 var copyAttributeByName = require( './ContextUtils.js' ).copyAttributeByName;
 
 /**
- * Add context requested in stream configuration.
+ * Add context attributes requested in stream configuration.
  *
  * @param {Integration} integration
  * @constructor
@@ -27,14 +27,14 @@ ContextController.prototype.addRequestedValues = function ( eventData, streamCon
 		requestedValues = [];
 	}
 
-	var contextualAttributes = this.integration.getContextAttributes();
+	var contextAttributes = this.integration.getContextAttributes();
 
 	requestedValues.concat( [
 		'agent_client_platform',
 		'agent_client_platform_family'
 	] )
 		.forEach( function ( requestedValue ) {
-			copyAttributeByName( contextualAttributes, eventData, requestedValue );
+			copyAttributeByName( contextAttributes, eventData, requestedValue );
 		} );
 
 	return eventData;
