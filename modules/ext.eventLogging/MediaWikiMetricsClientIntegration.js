@@ -4,6 +4,11 @@ var c = mw.config.get.bind( mw.config );
 var isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
 	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
+// Module-local cache for the result of MediaWikiMetricsClientIntegration::getContextAttributes().
+// Since the result of ::getContextAttributes() does not vary by instance, it is safe to cache the
+// result at this level.
+var contextAttributes = null;
+
 /**
  * Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
  *
@@ -91,6 +96,9 @@ MediaWikiMetricsClientIntegration.prototype.clone = function ( obj ) {
  * @return {Object}
  */
 MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
+	if ( contextAttributes ) {
+		return contextAttributes;
+	}
 
 	// See https://phabricator.wikimedia.org/T299772
 	var isMobileFrontendActive = document.body.classList.contains( 'mw-mf' );
@@ -165,6 +173,8 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			return self.getPageviewId();
 		}
 	} );
+
+	contextAttributes = result;
 
 	return result;
 };
