@@ -100,8 +100,16 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 		return contextAttributes;
 	}
 
-	// See https://phabricator.wikimedia.org/T299772
-	var isMobileFrontendActive = document.body.classList.contains( 'mw-mf' );
+	// TODO: Replace this with whatever config variable is decided on in
+	//  https://phabricator.wikimedia.org/T299772.
+	//
+	// This used to be determined by checking whether <body> had the "mw-mf" class. However, this
+	// was determined to be a non-trivial read from the DOM and one that could cause a forced style
+	// recalculation in certain situations.
+	//
+	// See https://gerrit.wikimedia.org/r/c/mediawiki/extensions/WikimediaEvents/+/799353/1#message-21b63aebf69dc330933ef27deb11279b226656b8
+	// for a detailed explanation.
+	var isMobileFrontendActive = c( 'wgMFMode' ) !== null;
 
 	var version = String( c( 'wgVersion' ) );
 
