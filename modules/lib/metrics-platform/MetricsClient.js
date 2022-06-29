@@ -21,25 +21,38 @@ function MetricsClient( integration, streamConfigs ) {
 }
 
 /**
+ * @param {StreamConfigs|false} streamConfigs
  * @param {string} streamName
  * @return {StreamConfig|undefined}
  */
-MetricsClient.prototype.getStreamConfig = function ( streamName ) {
+function getStreamConfigInternal( streamConfigs, streamName ) {
 	// If streamConfigs are false, then stream config usage is not enabled.
 	// Always return an empty object.
 	// FIXME: naming
-	if ( this.streamConfigs === false ) {
+	if ( streamConfigs === false ) {
 		return {};
 	}
 
-	if ( !this.streamConfigs[ streamName ] ) {
+	if ( !streamConfigs[ streamName ] ) {
 		// In case no config has been assigned to the given streamName,
 		// return undefined, so that the developer can discern between
 		// a stream that is not configured, and a stream with config = {}.
 		return undefined;
 	}
 
-	return this.integration.clone( this.streamConfigs[ streamName ] );
+	return streamConfigs[ streamName ];
+}
+
+/**
+ * Gets a deep clone of the stream config.
+ *
+ * @param {string} streamName
+ * @return {StreamConfig|undefined}
+ */
+MetricsClient.prototype.getStreamConfig = function ( streamName ) {
+	var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
+
+	return streamConfig ? this.integration.clone( streamConfig ) : streamConfig;
 };
 
 /**
@@ -203,7 +216,7 @@ MetricsClient.prototype.submit = function ( streamName, eventData ) {
 	// etc., is correct in the sense of the boolean logic, but
 	// counter-intuitive and likely hard to keep correct as more
 	// behavior is added. We should revisit.
-	var streamConfig = this.getStreamConfig( streamName );
+	var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
 
 	if ( !streamConfig ) {
 		//
@@ -326,7 +339,7 @@ MetricsClient.prototype.dispatch = function ( eventName, customData ) {
 		/* eslint-enable camelcase */
 
 		var streamName = streamNames[ i ];
-		var streamConfig = this.getStreamConfig( streamName );
+		var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
 
 		if ( !streamConfig ) {
 			// NOTE: This SHOULD never happen.
