@@ -72,7 +72,7 @@ class RemoteSchema implements JsonSerializable {
 	 * Returns an object containing serializable properties.
 	 * @return array
 	 */
-	public function jsonSerialize() {
+	public function jsonSerialize(): array {
 		return [
 			'schema'   => $this->get() ?: new stdClass(),
 			'revision' => $this->revision
