@@ -5,7 +5,7 @@ use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
-use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -101,7 +101,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		} );
 
 		$this->timestamp = TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class );
-		$this->mockLogger = $this->createMock( Logger::class );
+		$this->mockLogger = $this->createMock( LoggerInterface::class );
 	}
 
 	protected function tearDown(): void {
