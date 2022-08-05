@@ -329,7 +329,7 @@ initMetricsClient();
 
 core.storage = {
 	get: function ( name ) {
-		mw.cookie.get( 'el-' + name );
+		return mw.cookie.get( 'el-' + name );
 	},
 	set: function ( name, value ) {
 		mw.cookie.set( 'el-' + name, value );
