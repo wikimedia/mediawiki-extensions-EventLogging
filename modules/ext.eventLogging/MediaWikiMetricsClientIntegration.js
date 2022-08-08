@@ -80,13 +80,13 @@ MediaWikiMetricsClientIntegration.prototype.getHostname = function () {
 };
 
 /**
- * Clones the object.
+ * Clones the object deeply.
  *
  * @param {Object} obj
  * @return {Object}
  */
 MediaWikiMetricsClientIntegration.prototype.clone = function ( obj ) {
-	return $.extend( {}, obj );
+	return $.extend( true, {}, obj );
 };
 
 /**
