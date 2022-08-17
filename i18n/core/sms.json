@@ -4,5 +4,6 @@
 			"Yupik"
 		]
 	},
-	"eventlogging-invalid-json": "Vââǥǥlaž JSON"
+	"eventlogging-invalid-json": "Vââǥǥlaž JSON",
+	"eventlogging-revision-id": "Versio $1"
 }
