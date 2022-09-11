@@ -27,7 +27,7 @@ return [
 		/** @var \MediaWiki\Extension\EventStreamConfig\StreamConfigs $streamConfigs */
 		$streamConfigs = $services->getService( 'EventStreamConfig.StreamConfigs' );
 
-		return $streamConfigs->get( $eventLoggingStreamNames, true );
+		return $streamConfigs->get( $eventLoggingStreamNames );
 	},
 	'EventLogging.Logger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'EventLogging' );
