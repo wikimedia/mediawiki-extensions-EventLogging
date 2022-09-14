@@ -4,5 +4,6 @@
 			"Vlad5250"
 		]
 	},
+	"eventlogging-invalid-json": "Nevaljan JSON",
 	"eventlogging-revision-id": "Izmjena $1"
 }
