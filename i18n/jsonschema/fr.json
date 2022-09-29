@@ -3,7 +3,8 @@
 		"authors": [
 			"Gomoko",
 			"Urhixidur",
-			"Wladek92"
+			"Wladek92",
+			"Verdy p"
 		]
 	},
 	"jsonschema-badidref": "Mauvais idref : « $1 »",
@@ -15,7 +16,7 @@
 	"jsonschema-invalid-notinenum": "La valeur <code>$1</code> ne fait pas partie de l’énumération pour la propriété $2",
 	"apihelp-jsonschema-description": "Récupérer une page de schéma JSON.",
 	"apihelp-jsonschema-summary": "Récupérer une page schéma JSON.",
-	"apihelp-jsonschema-param-revid": "ID de révision de schéma.",
+	"apihelp-jsonschema-param-revid": "Identifiant de révision de schéma.",
 	"apihelp-jsonschema-param-title": "Nom du schéma.",
 	"apihelp-jsonschema-example-1": "Récupérer le schéma pour la révision 1234",
 	"apihelp-jsonschema-example-2": "Récupérer le schéma pour la dernière version de Schema:Test"
