@@ -138,7 +138,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			version: version,
 			is_production: version.indexOf( 'wmf' ) !== -1,
 			is_debug_mode: isDebugMode,
-			db_name: c( 'wgDBname' ),
+			database: c( 'wgDBname' ),
 			site_content_language: c( 'wgContentLanguage' )
 		},
 		performer: {

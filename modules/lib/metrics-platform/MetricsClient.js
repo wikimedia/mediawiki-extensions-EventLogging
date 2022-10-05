@@ -328,7 +328,7 @@ MetricsClient.prototype.dispatch = function ( eventName, customData ) {
 		/* eslint-disable camelcase */
 		/** @type {MetricsPlatformEventData} */
 		var eventData = {
-			$schema: '/analytics/mediawiki/client/metrics_event/1.0.0',
+			$schema: '/analytics/mediawiki/client/metrics_event/1.1.0',
 			dt: dt,
 			name: eventName
 		};
