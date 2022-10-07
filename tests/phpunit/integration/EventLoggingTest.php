@@ -173,7 +173,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		);
 
 		$this->assertSame( '/test/event/1.0.0', $result['$schema'] );
-		$this->assertRegExp( $this->timestamp->regexes['TS_ISO_8601'], $result['client_dt'] );
+		$this->assertMatchesRegularExpression( $this->timestamp->regexes['TS_ISO_8601'], $result['client_dt'] );
 		$this->assertStringEndsWith( 'Z', $result['client_dt'] );
 		$this->assertSame( $this->testHttpHost, $result['webHost'] );
 		$this->assertSame( $result['event']['field_a'],  $this->legacyEvent['field_a'] );
