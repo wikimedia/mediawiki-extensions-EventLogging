@@ -18,5 +18,6 @@
 	"apihelp-jsonschema-summary": "אחזר דף סכמת JSON.",
 	"apihelp-jsonschema-param-revid": "מזהה גרסה של סכֵמה",
 	"apihelp-jsonschema-param-title": "שם הסכֵמה.",
-	"apihelp-jsonschema-example-1": "אחזור סכֵמה עבור גרסה 1234"
+	"apihelp-jsonschema-example-1": "אחזור סכֵמה עבור גרסה 1234",
+	"apihelp-jsonschema-example-2": "אחזור סכימה עבור הגרסה האחרונה של Schema:Test"
 }
