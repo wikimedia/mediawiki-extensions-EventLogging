@@ -101,7 +101,9 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		} );
 
 		$this->timestamp = TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class );
+
 		$this->mockLogger = $this->createMock( LoggerInterface::class );
+		$this->setLogger( 'EventLogging', $this->mockLogger );
 	}
 
 	protected function tearDown(): void {
@@ -187,15 +189,14 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 	public function testFailIfSchemaNotSpecified(): void {
 		$this->mockLogger->expects( $this->once() )->method( 'warning' );
-		EventLogging::submit( 'test.event', [], $this->mockLogger );
+		EventLogging::submit( 'test.event', [] );
 	}
 
 	public function testFailIfStreamNameNotConfigured(): void {
 		$this->mockLogger->expects( $this->once() )->method( 'warning' );
 		EventLogging::submit(
 			'not.configured',
-			[ '$schema' => '/test/event/1.0.0' ],
-			$this->mockLogger
+			[ '$schema' => '/test/event/1.0.0' ]
 		);
 	}
 
@@ -204,9 +205,13 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$this->mockEventBus->expects( $this->once() )->method( 'send' );
 		EventLogging::submit(
 			'not.configured',
-			[ '$schema' => '/test/event/1.0.0' ],
-			$this->mockLogger
+			[ '$schema' => '/test/event/1.0.0' ]
 		);
 	}
 
+	public function testSubmitLoggerParameterDeprecated(): void {
+		$this->expectDeprecationAndContinue( '/\$logger parameter is deprecated/' );
+
+		EventLogging::submit( 'test.event', $this->newEvent, $this->mockLogger );
+	}
 }

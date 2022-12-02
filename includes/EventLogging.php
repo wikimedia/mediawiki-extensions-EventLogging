@@ -37,7 +37,8 @@ class EventLogging {
 	 * Submit an event according to the given stream's configuration.
 	 * @param string $streamName
 	 * @param array $event
-	 * @param LoggerInterface|null $logger
+	 * @param LoggerInterface|null $logger @deprecated since 1.40. All messages will be logged
+	 *  via the logger returned by {@link EventLogging::getLogger()}
 	 * @see https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To#In_PHP
 	 */
 	public static function submit(
@@ -50,11 +51,16 @@ class EventLogging {
 			return;
 		}
 
-		DeferredUpdates::addCallableUpdate( function () use ( $streamName, $event, $logger ) {
+		if ( $logger ) {
+			wfDeprecatedMsg( __METHOD__ . ': $logger parameter is deprecated', '1.40' );
+		}
+
+		$logger = self::getLogger();
+
+		DeferredUpdates::addCallableUpdate( static function () use ( $streamName, $event, $logger ) {
 			$services = MediaWikiServices::getInstance();
 			$config = $services->getMainConfig();
 			$eventLoggingStreamNames = $config->get( 'EventLoggingStreamNames' );
-			$logger = $logger ?? self::getLogger();
 
 			if ( $eventLoggingStreamNames === false ) {
 				$streamConfigs = false;
