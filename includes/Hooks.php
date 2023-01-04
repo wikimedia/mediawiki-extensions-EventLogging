@@ -14,7 +14,6 @@ namespace MediaWiki\Extension\EventLogging;
 
 use Config;
 use ExtensionRegistry;
-use Hooks as MWHooks;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\ResourceLoader as RL;
 use OutputPage;
@@ -58,9 +57,6 @@ class Hooks {
 	 * for forward compatibility with Event Platform.
 	 * TODO: what happens when two extensions register the same schema with a different revision?
 	 *
-	 * @since 1.32 the EventLoggingRegisterSchemas hook is deprecated. Register
-	 * schemas in the extension.json file for your extension instead.
-	 *
 	 * @return array
 	 */
 	private static function getSchemas() {
@@ -68,8 +64,6 @@ class Hooks {
 
 		$extRegistry = ExtensionRegistry::getInstance();
 		$schemas = $wgEventLoggingSchemas + $extRegistry->getAttribute( 'EventLoggingSchemas' );
-
-		MWHooks::run( 'EventLoggingRegisterSchemas', [ &$schemas ], '1.32' );
 
 		return $schemas;
 	}
