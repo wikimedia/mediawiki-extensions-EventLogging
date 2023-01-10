@@ -4,5 +4,6 @@
 			"Eleassar"
 		]
 	},
-	"eventlogging-desc": "Ogrodje za beleženje dogodkov s kodo na strani odjemalca"
+	"eventlogging-desc": "Ogrodje za beleženje dogodkov s kodo na strani odjemalca",
+	"eventlogging-revision-id": "Redakcija $1"
 }
