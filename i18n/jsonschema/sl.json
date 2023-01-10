@@ -1,0 +1,8 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"jsonschema-invalid-missingfield": "Manjka obvezno polje »$1«"
+}
