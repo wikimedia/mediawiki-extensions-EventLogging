@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Eleassar"
+		]
+	},
+	"jsonschema-invalid-missingfield": "Manjka obvezno polje »$1«",
+	"apihelp-jsonschema-param-title": "Ime sheme."
+}

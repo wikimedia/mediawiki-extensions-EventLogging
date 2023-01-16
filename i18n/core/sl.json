@@ -5,5 +5,11 @@
 		]
 	},
 	"eventlogging-desc": "Ogrodje za beleženje dogodkov s kodo na strani odjemalca",
-	"eventlogging-revision-id": "Redakcija $1"
+	"eventlogging-invalid-json": "Neveljaven JSON",
+	"eventlogging-revision-id": "Redakcija $1",
+	"eventlogging-code-sample-logging-on-server-side": "Beleženje PHP",
+	"eventlogging-code-sample-module-setup-json": "Nastavitev extension.json za beleženje JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "Beleženje JavaScripta",
+	"eventlogging-error-move-source": "Strani sheme ni mogoče preimenovati",
+	"eventlogging-error-move-destination": "Strani ni mogoče preimenovati v strani sheme"
 }
