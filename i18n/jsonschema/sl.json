@@ -4,6 +4,17 @@
 			"Eleassar"
 		]
 	},
+	"jsonschema-badidref": "Neveljaven idref: »$1«",
+	"jsonschema-idconvert": "Ni mogoče pretvoriti var v id: <code>$1</code>",
+	"jsonschema-invalidkey": "Neveljaven ključ »$1« v »$2«",
+	"jsonschema-invalidempty": "Prazna podatkovna struktura ni veljavna pri tej shemi",
+	"jsonschema-invalidnode": "Neveljavno vozlišče: pričakovano »$1«, pridobljeno »$2«. Pot: »$3«.",
 	"jsonschema-invalid-missingfield": "Manjka obvezno polje »$1«",
-	"apihelp-jsonschema-param-title": "Ime sheme."
+	"jsonschema-invalid-notinenum": "Vrednost <code>$1</code> ni v naštevanju za lastnost $2",
+	"apihelp-jsonschema-description": "Pridobi stran s shemo JSON.",
+	"apihelp-jsonschema-summary": "Pridobi stran s shemo JSON.",
+	"apihelp-jsonschema-param-revid": "ID redakcije sheme.",
+	"apihelp-jsonschema-param-title": "Ime sheme.",
+	"apihelp-jsonschema-example-1": "Pridobi shemo za redakcijo 1234",
+	"apihelp-jsonschema-example-2": "Pridobi shemo za zadnjo redakcijo Schema:Test"
 }
