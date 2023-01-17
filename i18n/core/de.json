@@ -2,7 +2,8 @@
 	"@metadata": {
 		"authors": [
 			"Kghbln",
-			"Metalhead64"
+			"Metalhead64",
+			"Brettchenweber"
 		]
 	},
 	"eventlogging-desc": "Ergänzt ein Framework zum Protokollieren von Aktionen clientseitigen Codes",
@@ -12,5 +13,5 @@
 	"eventlogging-code-sample-module-setup-json": "extension.json-Setup zur JavaScript-Protokollierung",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript-Protokollierung",
 	"eventlogging-error-move-source": "Schemaseiten können nicht umbenannt werden",
-	"eventlogging-error-move-destination": "Seiten können nicht zu Schemaseiten umbenannt werden"
+	"eventlogging-error-move-destination": "Seiten können nicht in Schemaseiten umbenannt werden"
 }
