@@ -13,36 +13,20 @@ class UserBucketProvider {
 	/**
 	 * Find the coarse bucket corresponding to a user's edit count.
 	 *
-	 * Usually safe to keep in sanitized streams.
-	 *
-	 * These bucket labels are the current standard, but are subject to change in the future.
-	 * Sites may override this service and define their own metrics buckets.  If we rely on coarse bucketing to
-	 * protect user identity, it's important to not mix different bucketing thresholds, since the intersections
-	 * can reveal more detail than intended.
+	 * @see UserBucketService::bucketEditCount()
+	 * @see UserBucketService::getUserEditCountBucket()
 	 *
 	 * @param UserIdentity $user provides raw edit count
 	 * @return string|null Bucket identifier, or null for anonymous users.
+	 *
+	 * @deprecated since 1.40. Use an injected instance of `UserBucketService` or the
+	 *  `EventLogging.UserBucketService` service instead
 	 */
 	public static function getUserEditCountBucket( UserIdentity $user ): ?string {
-		$editCount = MediaWikiServices::getInstance()->getUserEditTracker()->getUserEditCount( $user );
-		if ( $editCount === null ) {
-			return null;
-		}
-		if ( $editCount >= 1000 ) {
-			return '1000+ edits';
-		}
-		if ( $editCount >= 100 ) {
-			return '100-999 edits';
-		}
-		if ( $editCount >= 5 ) {
-			return '5-99 edits';
-		}
-		if ( $editCount >= 1 ) {
-			return '1-4 edits';
-		}
-		return '0 edits';
+		return MediaWikiServices::getInstance()
+			->getService( 'EventLogging.UserBucketService' )
+			->getUserEditCountBucket( $user );
 	}
-
 }
 
 class_alias( UserBucketProvider::class, 'UserBucketProvider' );
