@@ -59,16 +59,7 @@ class EventLogging {
 
 		DeferredUpdates::addCallableUpdate( static function () use ( $streamName, $event, $logger ) {
 			$services = MediaWikiServices::getInstance();
-			$config = $services->getMainConfig();
-			$eventLoggingStreamNames = $config->get( 'EventLoggingStreamNames' );
-
-			if ( $eventLoggingStreamNames === false ) {
-				$streamConfigs = false;
-			} else {
-				$streamConfigs = $services->getService(
-					'EventStreamConfig.StreamConfigs'
-				)->get( $eventLoggingStreamNames, true );
-			}
+			$streamConfigs = $services->getService( 'EventLogging.StreamConfigs' );
 
 			if ( $streamConfigs !== false && !array_key_exists( $streamName, $streamConfigs ) ) {
 				$logger->warning(

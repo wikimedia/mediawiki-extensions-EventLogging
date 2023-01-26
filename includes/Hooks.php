@@ -17,7 +17,6 @@ use ExtensionRegistry;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\ResourceLoader as RL;
 use OutputPage;
-use RuntimeException;
 use Skin;
 use User;
 
@@ -39,9 +38,18 @@ class Hooks {
 	 * configuration variable (if any).
 	 */
 	public static function onSetup(): void {
-		global $wgEventLoggingBaseUri;
+		global $wgEventLoggingBaseUri, $wgEventLoggingStreamNames;
+
 		if ( $wgEventLoggingBaseUri === false ) {
 			EventLogging::getLogger()->debug( 'wgEventLoggingBaseUri has not been configured.' );
+		}
+
+		if ( $wgEventLoggingStreamNames !== false && !is_array( $wgEventLoggingStreamNames ) ) {
+			EventLogging::getLogger()->debug(
+				'wgEventLoggingStreamNames is configured but is not a list of stream names'
+			);
+
+			$wgEventLoggingStreamNames = [];
 		}
 	}
 
@@ -93,7 +101,7 @@ class Hooks {
 			'serviceUri' => $config->get( 'EventLoggingServiceUri' ),
 			'queueLingerSeconds' => $config->get( 'EventLoggingQueueLingerSeconds' ),
 			// If this is false, EventLogging will not use stream config.
-			'streamConfigs' => self::loadEventStreamConfigs( $config )
+			'streamConfigs' => self::loadEventStreamConfigs()
 		];
 	}
 
@@ -150,28 +158,19 @@ class Hooks {
 	 * a list of streams to search for in $wgEventStreams.
 	 * $wgEventLoggingStreamNames is that list.
 	 *
-	 * @param Config $config
 	 * @return array|bool Selected stream name -> stream configs
 	 */
-	private static function loadEventStreamConfigs( Config $config ) {
+	private static function loadEventStreamConfigs() {
+		// FIXME: Does the following need to be logged?
 		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventStreamConfig' ) ) {
 			EventLogging::getLogger()->debug( 'EventStreamConfig is not installed' );
 			return false;
 		}
 
-		$streamConfigs = MediaWikiServices::getInstance()->getService(
-			'EventStreamConfig.StreamConfigs'
-		);
+		$streamConfigs = MediaWikiServices::getInstance()->getService( 'EventLogging.StreamConfigs' );
 
-		$targetStreams = $config->get( 'EventLoggingStreamNames' );
-		if ( $targetStreams === false ) {
+		if ( $streamConfigs === false ) {
 			return false;
-		}
-		if ( !is_array( $targetStreams ) ) {
-			throw new RuntimeException(
-				'Expected $wgEventLoggingStreamNames to be a list of stream names, got ' .
-				$targetStreams
-			);
 		}
 
 		// Only send stream config settings that should be sent to the client as part of the
@@ -182,7 +181,7 @@ class Hooks {
 			static function ( $streamConfig ) use ( $settingsAllowList ) {
 				return array_intersect_key( $streamConfig, $settingsAllowList );
 			},
-			$streamConfigs->get( $targetStreams )
+			$streamConfigs
 		);
 	}
 }
