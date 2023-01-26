@@ -12,9 +12,8 @@
 namespace MediaWiki\Extension\EventLogging;
 
 use DeferredUpdates;
-use ExtensionRegistry;
 use FormatJson;
-use MediaWiki\Extension\EventBus\EventBus;
+use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonTreeRef;
 use MediaWiki\Logger\LoggerFactory;
@@ -34,52 +33,30 @@ class EventLogging {
 	}
 
 	/**
-	 * Submit an event according to the given stream's configuration.
+	 * @return EventSubmitter
+	 */
+	private static function getEventSubmitter(): EventSubmitter {
+		return MediaWikiServices::getInstance()->get( 'EventLogging.EventSubmitter' );
+	}
+
+	/**
+	 * Submit an event according to the configuration of the given stream.
+	 *
 	 * @param string $streamName
 	 * @param array $event
 	 * @param LoggerInterface|null $logger @deprecated since 1.40. All messages will be logged
-	 *  via the logger returned by {@link EventLogging::getLogger()}
-	 * @see https://wikitech.wikimedia.org/wiki/Event_Platform/Instrumentation_How_To#In_PHP
+	 *  via the `EventLogging.Logger` service
 	 */
 	public static function submit(
 		string $streamName,
 		array $event,
 		?LoggerInterface $logger = null
 	): void {
-		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
-			self::getLogger()->warning( 'EventBus is not installed' );
-			return;
-		}
-
 		if ( $logger ) {
 			wfDeprecatedMsg( __METHOD__ . ': $logger parameter is deprecated', '1.40' );
 		}
 
-		$logger = self::getLogger();
-
-		DeferredUpdates::addCallableUpdate( static function () use ( $streamName, $event, $logger ) {
-			$services = MediaWikiServices::getInstance();
-			$streamConfigs = $services->getService( 'EventLogging.StreamConfigs' );
-
-			if ( $streamConfigs !== false && !array_key_exists( $streamName, $streamConfigs ) ) {
-				$logger->warning(
-					'Event submitted for unregistered stream name "{streamName}".',
-					[ 'streamName' => $streamName ]
-				);
-				return;
-			}
-			if ( !isset( $event['$schema'] ) ) {
-				$logger->warning(
-					'Event data s missing required field "$schema".',
-					[ 'event' => $event ]
-				);
-				return;
-			}
-
-			$event = EventLoggingHelper::prepareEvent( $streamName, $event );
-			// @phan-suppress-next-line PhanUndeclaredClassMethod
-			EventBus::getInstanceForStream( $streamName )->send( [ $event ] );
-		} );
+		self::getEventSubmitter()->submit( $streamName, $event );
 	}
 
 	/**
