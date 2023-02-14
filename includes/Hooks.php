@@ -24,6 +24,17 @@ use User;
 class Hooks {
 
 	/**
+	 * The list of stream config settings that should be sent to the client as part of the
+	 * ext.eventLogging RL module.
+	 *
+	 * @var string[]
+	 */
+	private const STREAM_CONFIG_SETTINGS_ALLOWLIST = [
+		'sample',
+		'producers',
+	];
+
+	/**
 	 * Emit a debug log message for each invalid or unset
 	 * configuration variable (if any).
 	 */
@@ -163,6 +174,15 @@ class Hooks {
 			);
 		}
 
-		return $streamConfigs->get( $targetStreams, false );
+		// Only send stream config settings that should be sent to the client as part of the
+		// ext.eventLogging RL module.
+		$settingsAllowList = array_flip( self::STREAM_CONFIG_SETTINGS_ALLOWLIST );
+
+		return array_map(
+			static function ( $streamConfig ) use ( $settingsAllowList ) {
+				return array_intersect_key( $streamConfig, $settingsAllowList );
+			},
+			$streamConfigs->get( $targetStreams )
+		);
 	}
 }
