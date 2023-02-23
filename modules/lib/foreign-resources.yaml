@@ -4,6 +4,9 @@
 # Ideally we'd use https://gerrit.wikimedia.org/g/mediawiki/libs/metrics-platform/+archive/X.tar.gz
 # instead of GitHub mirror, but https://github.com/google/gitiles/issues/217
 metrics-platform:
+  license: GPL-2.0+
+  homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
+  version: 44b6b0ab12
   type: tar
   src: https://codeload.github.com/wikimedia/metrics-platform/tar.gz/44b6b0ab12f77499301f554ec9be17693a4194f9
   integrity: sha384-z7AFIncbaXLGoCEMGdwXN15dTYOxMqoRamlJxy38M7wkH6fsI+Zyvx7zRGS/KC2u
