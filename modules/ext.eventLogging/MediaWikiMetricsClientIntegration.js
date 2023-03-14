@@ -163,7 +163,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			can_probably_edit_page: c( 'wgIsProbablyEditable' ),
 			edit_count: c( 'wgUserEditCount' ),
 			edit_count_bucket: c( 'wgUserEditCountBucket' ),
-			registration_dt: c( 'wgUserRegistration' )
+			registration_dt: new Date( c( 'wgUserRegistration' ) ).toISOString()
 		}
 	};
 	/* eslint-enable camelcase */
