@@ -17,12 +17,10 @@
  * @param {number} [intervalSecs=30] seconds to wait before calling callbacks
  */
 module.exports = function BackgroundQueue( intervalSecs ) {
-	var timer = null,
-		pendingCallbacks = [],
-		getVisibilityChanged,
-		visibilityEvent,
-		discardingPage,
-		queue = this;
+	var timer = null;
+	var pendingCallbacks = [];
+	var discardingPage;
+	var queue = this;
 
 	intervalSecs = intervalSecs || 30;
 
@@ -57,51 +55,27 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 		}
 	};
 
-	// Cross referencing to support all browsers we consider "modern":
-	// 1. https://developer.mozilla.org/en-US/docs/Web/API/Document/onvisibilitychange#Browser_compatibility
-	// 2. https://www.mediawiki.org/wiki/Compatibility#Browsers
-	// no longer needed: document.msHidden / msvisibilitychange
-	if ( typeof document.hidden !== 'undefined' ) {
-		getVisibilityChanged = function () {
-			return document.hidden;
-		};
-		visibilityEvent = 'visibilitychange';
-	} else if ( typeof document.mozHidden !== 'undefined' ) {
-		getVisibilityChanged = function () {
-			return document.mozHidden;
-		};
-		visibilityEvent = 'mozvisibilitychange';
-	} else if ( typeof document.webkitHidden !== 'undefined' ) {
-		getVisibilityChanged = function () {
-			return document.webkitHidden;
-		};
-		visibilityEvent = 'webkitvisibilitychange';
-	}
-
-	// Record when the page is in the process of being discarded.
-	function discardPage() {
-		discardingPage = true;
-		queue.flush();
-	}
-
 	// If the user navigates to another page or closes the tab/window/application,
 	// then send any queued events.
 	// Listen to the pagehide and visibilitychange events as Safari 12 and Mobile Safari 11
 	// don't appear to support the Page Visbility API yet.
-	window.addEventListener( 'pagehide', discardPage );
+	window.addEventListener( 'pagehide', function () {
+		// Record when the page is in the process of being discarded.
+		discardingPage = true;
+		queue.flush();
+	} );
 
 	// If the page was just suspended and gets reactivated, re-enable queuing.
 	window.addEventListener( 'pageshow', function () {
 		discardingPage = false;
 	} );
 
-	if ( getVisibilityChanged ) {
-		document.addEventListener( visibilityEvent, function () {
-			if ( getVisibilityChanged() ) {
-				queue.flush();
-			}
-		} );
-	}
+	// https://developer.mozilla.org/en-US/docs/Web/API/Document/onvisibilitychange
+	document.addEventListener( 'visibilitychange', function () {
+		if ( document.hidden ) {
+			queue.flush();
+		}
+	} );
 
 	// Not allowed outside unit tests
 	if ( window.QUnit ) {
