@@ -2,21 +2,23 @@
 
 namespace MediaWiki\Extension\EventLogging\Test\EventSubmitter;
 
+require_once __DIR__ . '/../../EventLoggingTestTrait.php';
+
 use ExtensionRegistry;
 use Generator;
 use HashConfig;
 use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
+use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWikiIntegrationTestCase;
 use Psr\Log\LoggerInterface;
-use Wikimedia\TestingAccessWrapper;
-use Wikimedia\Timestamp\ConvertibleTimestamp;
 
 /**
  * @covers \MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter
  */
 class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
+	use EventLoggingTestTrait;
 
 	/** @var EventBus */
 	private $mockEventBus;
@@ -101,7 +103,9 @@ class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
 		$this->mockEventBus->expects( $this->once() )
 			->method( 'send' )
 			->with( $this->callback( function ( $events ) use ( $streamName ) {
-				$this->assertEventCanBeIngested( $events[0], $streamName );
+				$event = $events[0];
+
+				$this->assertEventCanBeIngested( $event, $event['$schema'], $streamName );
 
 				return true;
 			} ) );
@@ -132,28 +136,5 @@ class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
 				'$schema' => '/test/event/1.0.0',
 			]
 		);
-	}
-
-	private function assertIsTimestamp( string $timestamp ): void {
-		// FIXME: Find a better way to assert "this is an ISO 8601 timestamp"
-		$this->assertMatchesRegularExpression(
-			TestingAccessWrapper::newFromClass( ConvertibleTimestamp::class )->regexes['TS_ISO_8601'],
-			$timestamp
-		);
-		$this->assertStringEndsWith( 'Z', $timestamp );
-	}
-
-	private function assertEventCanBeIngested( $event, $streamName ): void {
-		if ( array_key_exists( 'client_dt', $event ) ) {
-			$this->assertArrayNotHasKey( 'dt', $event );
-		} else {
-			$this->assertArrayHasKey( 'dt', $event );
-			$this->assertIsTimestamp( $event['dt'] );
-		}
-
-		$this->assertSame( $streamName, $event['meta']['stream'] );
-		$this->assertSame( 'event_bus_event_submitter.test', $event['meta']['domain'] );
-
-		$this->assertArrayHasKey( 'user-agent', $event['http']['request_headers'] );
 	}
 }

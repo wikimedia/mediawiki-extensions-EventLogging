@@ -4,6 +4,8 @@ use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\NullEventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
+use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
+use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
@@ -42,5 +44,27 @@ return [
 		}
 
 		return new EventBusEventSubmitter( $logger, $services->getMainConfig() );
-	}
+	},
+	'EventLogging.ContextAttributesFactory' =>
+		static function ( MediaWikiServices $services ): ContextAttributesFactory {
+			return new ContextAttributesFactory(
+				$services->getMainConfig(),
+				ExtensionRegistry::getInstance(),
+				$services->getNamespaceInfo(),
+				$services->getRestrictionStore(),
+				$services->getUserOptionsLookup(),
+				$services->getContentLanguage(),
+				$services->getUserGroupManager(),
+				$services->getLanguageConverterFactory(),
+				$services->get( 'EventLogging.UserBucketService' )
+			);
+		},
+	'EventLogging.MetricsClientFactory' => static function ( MediaWikiServices $services ): MetricsClientFactory {
+		return new MetricsClientFactory(
+			$services->getService( 'EventLogging.ContextAttributesFactory' ),
+			$services->getService( 'EventLogging.EventSubmitter' ),
+			$services->getService( 'EventLogging.StreamConfigs' ),
+			$services->getService( 'EventLogging.Logger' )
+		);
+	},
 ];

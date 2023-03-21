@@ -16,11 +16,20 @@ use FormatJson;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonTreeRef;
+use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
+use RequestContext;
+use RuntimeException;
+use Wikimedia\MetricsPlatform\MetricsClient;
 
 class EventLogging {
+
+	/**
+	 * @var MetricsClient|null
+	 */
+	private static $metricsPlatformClient;
 
 	/**
 	 * Default logger.
@@ -40,7 +49,41 @@ class EventLogging {
 	}
 
 	/**
-	 * Submit an event according to the configuration of the given stream.
+	 * Gets the singleton instance of the Metrics Platform Client (MPC).
+	 *
+	 * @return MetricsClient
+	 */
+	private static function getMetricsPlatformClient(): MetricsClient {
+		if ( !self::$metricsPlatformClient ) {
+			/** @var MetricsClientFactory $metricsClientFactory */
+			$metricsClientFactory =
+				MediaWikiServices::getInstance()->getService( 'EventLogging.MetricsClientFactory' );
+
+			self::$metricsPlatformClient = $metricsClientFactory->newMetricsClient( RequestContext::getMain() );
+		}
+
+		return self::$metricsPlatformClient;
+	}
+
+	/**
+	 * Resets the Metrics Platform Client for testing purposes. See also the warning and note
+	 * against {@link MediaWikiServices::resetServiceForTesting()}.
+	 *
+	 * @internal
+	 *
+	 * @return void
+	 * @throws RuntimeException If called outside a PHPUnit test
+	 */
+	public static function resetMetricsPlatformClient(): void {
+		if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
+			throw new RuntimeException( __METHOD__ . ' may only be called during unit tests.' );
+		}
+
+		self::$metricsPlatformClient = null;
+	}
+
+	/**
+	 * Submit an event according to the given stream's configuration.
 	 *
 	 * @param string $streamName
 	 * @param array $event
@@ -57,6 +100,51 @@ class EventLogging {
 		}
 
 		self::getEventSubmitter()->submit( $streamName, $event );
+	}
+
+	/**
+	 * Constructs a "Metrics Event" event given the event name and custom data. The event is
+	 * submitted to all streams that are interested in the event.
+	 *
+	 * An event (E) is constructed for a stream (S) by:
+	 *
+	 * 1. Initializing the
+	 *    [minimum valid event](https://wikitech.wikimedia.org/wiki/Event_Platform/Schemas/Guidelines#Required_fields)
+	 *    that can be submitted to S
+	 * 2. If it is given, formatting the custom data and setting it the `custom_data` field
+	 * 3. Mixing the context attributes requested in the configuration for S into E
+	 *
+	 * S registers interest in an event by including all or part of the name of the event in the
+	 * `producers.metrics_platform_client.events` property of its configuration, e.g.
+	 *
+	 * ```php
+	 * $wgEventStreams = [
+	 *   'test.metrics_platform.all' => [
+	 *
+	 *     // …
+	 *     'producers' => [
+	 *       'metrics_platform_client' => [
+	 *
+	 *         // Matches all event with names beginning with "test."
+	 *         'events' => 'test.',
+	 *       ],
+	 *     ],
+	 *   ],
+	 * ];
+	 * ```
+	 *
+	 * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
+	 *
+	 * @unstable
+	 *
+	 * @param string $eventName
+	 * @param array $customData
+	 */
+	public static function submitMetricsEvent(
+		string $eventName,
+		array $customData = []
+	): void {
+		self::getMetricsPlatformClient()->dispatch( $eventName, $customData );
 	}
 
 	/**
