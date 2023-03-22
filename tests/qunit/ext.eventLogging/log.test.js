@@ -56,9 +56,9 @@ QUnit.test( 'logEvent() via submit()', function ( assert ) {
 			'logEvent builds the $schema url from revision in config'
 		);
 
-		assert.ok( e.meta, 'meta field should be set' );
-		assert.notOk( e.dt, 'dt should not be set' );
-		assert.ok( e.client_dt, 'client_dt should be set' );
+		assert.notStrictEqual( e.meta, undefined, 'meta field should be set' );
+		assert.strictEqual( e.dt, undefined, 'dt should be unset' );
+		assert.notStrictEqual( e.client_dt, undefined, 'client_dt should be set' );
 		assert.strictEqual( e.meta.domain, e.webHost, 'meta.domain should match webHost field' );
 		assert.strictEqual( e.revision, undefined, 'revision field should be unset' );
 	} );
@@ -88,7 +88,7 @@ QUnit.test( 'logEvent() - reject large event data', function ( assert ) {
 
 	mw.eventLog.logEvent( 'earthquake', event )
 		.done( function () {
-			assert.ok( false, 'Expected an error' );
+			assert.true( false, 'Expected an error' );
 		} )
 		.fail( function ( e, error ) {
 			assert.deepEqual( error, 'Url exceeds maximum length',

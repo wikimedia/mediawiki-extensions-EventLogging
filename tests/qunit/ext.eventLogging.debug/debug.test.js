@@ -81,7 +81,7 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 
 		validationCases.forEach( function ( vCase ) {
 			errors = eventLogDebug.validate( vCase.args, earthquakeSchema.schema );
-			assert.ok( errors.join( '' ).match( vCase.regex ), vCase.msg );
+			assert.notStrictEqual( errors.join( '' ).match( vCase.regex ), null, vCase.msg );
 		} );
 	} );
 
