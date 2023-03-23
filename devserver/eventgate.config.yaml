@@ -42,7 +42,7 @@ services:
       # This EventGate implemenation uses the same
       # validate function that eventgate-wikimedia does, but
       # writes events to stdout (or to output_path).
-      eventgate_factory_module: 'eventgate-wikimedia/eventgate-wikimedia-dev'
+      eventgate_factory_module: eventgate-wikimedia/eventgate-wikimedia-dev
 
       # If set, these URIs will be prepended to any relative schema URI
       # extracted from each event's schema_field.  The resulting URLs will
@@ -58,7 +58,7 @@ services:
       # events on stdout multiple times.)
       output_path: ./events.json
 
-      # If true, output events will be formatted into pretty printed multiline strings.
+      # If true, output events will be formatted into pretty printed multiline strings.
       should_pretty_print: false
 
       # Setting test_events will enable the /v1/_test/events route.
