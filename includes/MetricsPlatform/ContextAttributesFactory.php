@@ -118,8 +118,12 @@ class ContextAttributesFactory {
 	 * @return bool
 	 */
 	protected function isUsingMobileDomain(): bool {
-		return $this->extensionRegistry->isLoaded( 'MobileFrontend' ) &&
-			MobileContext::singleton()->usingMobileDomain();
+		if ( $this->extensionRegistry->isLoaded( 'MobileFrontend' ) ) {
+			// @phan-suppress-next-line PhanUndeclaredClassMethod
+			return MobileContext::singleton()->usingMobileDomain();
+		}
+
+		return false;
 	}
 
 	/**
