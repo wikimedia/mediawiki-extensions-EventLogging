@@ -108,7 +108,7 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 		},
 		timestamp: {
 			type: 'timestamp',
-			valid: [ +new Date(), new Date() ],
+			valid: [ Date.now(), new Date() ],
 			invalid: [ -1, 'yesterday', NaN ]
 		},
 		array: {

@@ -27,8 +27,8 @@
    one cannot apply margin within border and background area,
    so we instead apply this margin to an extra pseudo element
    that will be the first and last child. See T198269. */
-.mw-json-schema-code-samples:before,
-.mw-json-schema-code-samples:after {
+.mw-json-schema-code-samples::before,
+.mw-json-schema-code-samples::after {
 	content: '';
 	display: block;
 	margin-top: 1.4em;

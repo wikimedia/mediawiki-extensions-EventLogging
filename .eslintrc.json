@@ -7,7 +7,8 @@
 	],
 	"rules": {
 		"no-redeclare": "warn",
-		"compat/compat": "warn"
+		"compat/compat": "warn",
+		"yml/no-empty-mapping-value": "warn"
 	},
 	"ignorePatterns": [
 		"modules/lib/metrics-platform"
