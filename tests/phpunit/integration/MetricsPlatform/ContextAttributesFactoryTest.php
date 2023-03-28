@@ -136,11 +136,13 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$mainConfig = $this->services['mainConfig'];
 
+		$expectedMediaWikiIsProduction = strpos( MW_VERSION, 'wmf' ) !== false;
+
 		$expectedMediaWikiDBName = $mainConfig->get( MainConfigNames::DBname );
 		$expectedMediaWikiSiteContentLanguage = $this->services['contentLanguage']->getCode();
 
 		$this->assertSame( MW_VERSION, $contextAttributes[ 'mediawiki_version' ] );
-		$this->assertFalse( $contextAttributes[ 'mediawiki_is_production' ] );
+		$this->assertSame( $expectedMediaWikiIsProduction, $contextAttributes[ 'mediawiki_is_production' ] );
 		$this->assertSame( $expectedMediaWikiDBName, $contextAttributes[ 'mediawiki_db_name' ] );
 		$this->assertSame(
 			$expectedMediaWikiSiteContentLanguage,
