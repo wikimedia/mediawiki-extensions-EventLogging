@@ -2,23 +2,62 @@ var ContextController = require( './ContextController.js' );
 var SamplingController = require( './SamplingController.js' );
 var CurationController = require( './CurationController.js' );
 
+var STATE_FETCHING_STREAM_CONFIGS = 1;
+var STATE_FETCHED_STREAM_CONFIGS = 2;
+
+var CALL_QUEUE_MAX_LENGTH = 128;
+
+var SCHEMA = '/analytics/mediawiki/client/metrics_event/1.2.0';
+
 /**
- * Client for producing events to the Wikimedia metrics platform.
- *
- * Produce events with `MetricsClient.submit()`.
+ * Client for producing events to [the Event Platform](https://wikitech.wikimedia.org/wiki/Event_Platform) and
+ * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
  *
  * @param {Integration} integration
- * @param {StreamConfigs|false} streamConfigs
+ * @param {StreamConfigs|false} [streamConfigs]
  * @constructor
  */
-function MetricsClient( integration, streamConfigs ) {
+function MetricsClient(
+	integration,
+	streamConfigs
+) {
 	this.contextController = new ContextController( integration );
 	this.samplingController = new SamplingController( integration );
 	this.curationController = new CurationController();
 	this.integration = integration;
-	this.streamConfigs = streamConfigs;
+
+	// MetricsClient( integration: Integration )
+	if ( streamConfigs === undefined ) {
+		this.streamConfigs = {};
+		this.state = STATE_FETCHING_STREAM_CONFIGS;
+		this.fetchStreamConfigs();
+	} else {
+		this.streamConfigs = streamConfigs;
+		this.state = STATE_FETCHED_STREAM_CONFIGS;
+	}
+
 	this.eventNameToStreamNamesMap = null;
+
+	/** @type {CallQueue} */
+	this.callQueue = [];
 }
+
+/**
+ * Fetch and update the stream configs, and then process the call queue, submitting and dispatching
+ * events as necessary.
+ */
+MetricsClient.prototype.fetchStreamConfigs = function () {
+	var that = this;
+
+	that.integration.fetchStreamConfigs()
+		.then( function ( /** @type {StreamConfigs} */ streamConfigs ) {
+			that.streamConfigs = streamConfigs;
+			that.eventNameToStreamNamesMap = null;
+			that.state = STATE_FETCHED_STREAM_CONFIGS;
+
+			that.processCallQueue();
+		} );
+};
 
 /**
  * @param {StreamConfigs|false} streamConfigs
@@ -28,7 +67,14 @@ function MetricsClient( integration, streamConfigs ) {
 function getStreamConfigInternal( streamConfigs, streamName ) {
 	// If streamConfigs are false, then stream config usage is not enabled.
 	// Always return an empty object.
-	// FIXME: naming
+	//
+	// FIXME
+	//  The convention that disabling stream configuration results
+	//  in enabling any caller to send any event, with no sampling,
+	//  etc., is correct in the sense of the boolean logic, but
+	//  counter-intuitive and likely hard to keep correct as more
+	//  behavior is added. We should revisit.
+
 	if ( streamConfigs === false ) {
 		return {};
 	}
@@ -136,6 +182,150 @@ MetricsClient.prototype.getStreamNamesForEvent = function ( eventName ) {
 };
 
 /**
+ * Enqueues a call to be processed.
+ *
+ * The call queue has a maximum capacity of 128 calls. If it is full, then the earliest call is
+ * dropped and a warning is logged.
+ *
+ * @ignore
+ *
+ * @param {CallQueueEntry} call
+ */
+MetricsClient.prototype.queueCall = function ( call ) {
+	this.callQueue.push( call );
+
+	if ( this.callQueue.length > CALL_QUEUE_MAX_LENGTH ) {
+		var droppedCall = this.callQueue.shift();
+
+		if ( droppedCall ) {
+			var callString = [
+				droppedCall[ 0 ],
+				'( ',
+				droppedCall[ 2 ],
+				', ',
+				droppedCall[ 0 ] === 'submit' ? 'eventData' : 'customData',
+				' )'
+			].join( '' );
+
+			this.integration.logWarning( 'Call to ' + callString + ' dropped because the queue is full.' );
+		}
+	}
+
+	this.processCallQueue();
+};
+
+/**
+ * Processes calls to {@link MetricsClient.prototype.submit} and
+ * {@link MetricsClient.prototype.dispatch} if the stream configs have been fetched and updated.
+ *
+ * @ignore
+ */
+MetricsClient.prototype.processCallQueue = function () {
+	if ( this.state === STATE_FETCHING_STREAM_CONFIGS ) {
+		return;
+	}
+
+	while ( this.callQueue.length ) {
+		var call = this.callQueue.shift();
+
+		if ( !call ) {
+			// NOTE: This should never happen.
+			continue;
+		}
+
+		if ( call[ 0 ] === 'submit' ) {
+			this.processSubmitCall( call[ 1 ], call[ 2 ], call[ 3 ] );
+		} else if ( call[ 0 ] === 'dispatch' ) {
+			this.processDispatchCall( call[ 1 ], call[ 2 ], call[ 3 ] );
+		}
+	}
+};
+
+/**
+ * Processes the result of a call to {@link MetricsClient.prototype.submit}.
+ *
+ * NOTE: This method should only be called **after** the stream configs have been fetched via
+ * {@link MetricsClient.prototype.fetchStreamConfigs}.
+ *
+ * @ignore
+ *
+ * @param {string} timestamp The ISO 8601 formatted timestamp of the original call
+ * @param {string} streamName The name of the stream to send the event data to
+ * @param {BaseEventData} eventData The event data
+ */
+MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, eventData ) {
+	eventData.dt = timestamp;
+
+	var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
+
+	if ( !streamConfig ) {
+		return;
+	}
+
+	this.addRequiredMetadata( eventData, streamName );
+
+	if ( this.samplingController.streamInSample( streamConfig ) ) {
+		this.integration.enqueueEvent( eventData );
+		this.integration.onSubmit( streamName, eventData );
+	}
+};
+
+/**
+ * Processes the result of a call to {@link MetricsClient.prototype.dispatch}.
+ *
+ * NOTE: This method should only be called **after** the stream configs have been fetched via
+ * {@link MetricsClient.prototype.fetchStreamConfigs}.
+ *
+ * @ignore
+ *
+ * @param {string} timestamp The ISO 8601 formatted timestamp of the original call
+ * @param {string} eventName
+ * @param {Record<string, any>} [formattedCustomData]
+ */
+MetricsClient.prototype.processDispatchCall = function (
+	timestamp,
+	eventName,
+	formattedCustomData
+) {
+	var streamNames = this.getStreamNamesForEvent( eventName );
+
+	// Produce the event(s)
+	for ( var i = 0; i < streamNames.length; ++i ) {
+		/* eslint-disable camelcase */
+		/** @type {MetricsPlatformEventData} */
+		var eventData = {
+			$schema: SCHEMA,
+			dt: timestamp,
+			name: eventName
+		};
+
+		if ( formattedCustomData ) {
+			eventData.custom_data = formattedCustomData;
+		}
+		/* eslint-enable camelcase */
+
+		var streamName = streamNames[ i ];
+		var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
+
+		if ( !streamConfig ) {
+			// NOTE: This SHOULD never happen.
+			continue;
+		}
+
+		this.addRequiredMetadata( eventData, streamName );
+		this.contextController.addRequestedValues( eventData, streamConfig );
+
+		if (
+			this.samplingController.streamInSample( streamConfig ) &&
+			this.curationController.shouldProduceEvent( eventData, streamConfig )
+		) {
+			this.integration.enqueueEvent( eventData );
+			this.integration.onSubmit( streamName, eventData );
+		}
+	}
+};
+
+/**
  * Adds required fields:
  *
  * - `meta.stream`: the target stream name
@@ -180,23 +370,20 @@ MetricsClient.prototype.addRequiredMetadata = function ( eventData, streamName )
 };
 
 /**
- * Submit an event according to the given stream's configuration.
+ * Submit an event to a stream.
  *
- * @param {string} streamName name of the stream to send eventData to
- * @param {BaseEventData} eventData data to send to the stream
+ * The event (E) is submitted to the stream (S) if E has the `$schema` property and S is in
+ * sample. If E does not have the `$schema` property, then a warning is logged.
+ *
+ * NOTE: Calls to `submit()` are processed after the stream configs are fetched and updated. If
+ * the Metrics Platform Client was initialized with stream configs, then calls to `submit()` are
+ * processed immediately.
+ *
+ * @param {string} streamName The name of the stream to send the event data to
+ * @param {BaseEventData} eventData The event data
  */
 MetricsClient.prototype.submit = function ( streamName, eventData ) {
 	if ( !eventData || !eventData.$schema ) {
-		//
-		// If the caller has not provided a $schema field
-		// in eventData, the event submission does not
-		// proceed.
-		//
-		// The $schema field represents the (versioned)
-		// schema which the caller expects eventData
-		// will validate against (once the appropriate
-		// additions have been made by this client).
-		//
 		this.integration.logWarning(
 			'submit( ' + streamName + ', eventData ) called with eventData missing required ' +
 			'field "$schema". No event will be produced.'
@@ -204,45 +391,12 @@ MetricsClient.prototype.submit = function ( streamName, eventData ) {
 		return;
 	}
 
-	//
-	// NOTE
-	// If stream configuration is disabled (config.streamConfigs === false),
-	// then client.streamConfig will return an empty object {},
-	// i.e. a truthy value, for all stream names.
-	//
-	// FIXME
-	// The convention that disabling stream configuration results
-	// in enabling any caller to send any event, with no sampling,
-	// etc., is correct in the sense of the boolean logic, but
-	// counter-intuitive and likely hard to keep correct as more
-	// behavior is added. We should revisit.
-	var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
-
-	if ( !streamConfig ) {
-		//
-		// If stream configurations are enabled but no
-		// stream configuration has been loaded for streamName
-		// (and we are not in debugMode), we assume the client
-		// is misconfigured. Rather than produce potentially
-		// inconsistent data, the event submission does not
-		// proceed.
-		//
-		// FIXME
-		// See comment above; this should be made less
-		// confusing.
-		return;
-	}
-
-	// If stream is not in sample, do not log the event.
-	if ( !this.samplingController.streamInSample( streamConfig ) ) {
-		return;
-	}
-
-	this.addRequiredMetadata( eventData, streamName );
-
-	this.integration.enqueueEvent( eventData );
-
-	this.integration.onSubmit( streamName, eventData );
+	this.queueCall( [
+		'submit',
+		new Date().toISOString(),
+		streamName,
+		eventData
+	] );
 };
 
 /**
@@ -251,7 +405,7 @@ MetricsClient.prototype.submit = function ( streamName, eventData ) {
  * `customData` is considered valid if all of its keys are snake_case.
  *
  * @param {Record<string,any>|undefined} customData
- * @return {Record<string,EventCustomDatum>}
+ * @return {FormattedCustomData}
  * @throws {Error} If `customData` is invalid
  */
 function getFormattedCustomData( customData ) {
@@ -284,12 +438,16 @@ function getFormattedCustomData( customData ) {
  * Construct and submits a Metrics Platform Event from the event name and custom data for each
  * stream that is interested in those events.
  *
- * The Metrics Platform Event for a stream (S) is constructed by: first initializing the minimum
- * valid event (E) that can be submitted to S; and, second mixing the context attributes requested
+ * The Metrics Platform Event for a stream (S) is constructed by first initializing the minimum
+ * valid event (E) that can be submitted to S, and then mixing the context attributes requested
  * in the configuration for S into E.
  *
- * The Metrics Platform Event is submitted to a stream (S) if: 1) S is in sample; and 2) the event
- * is filtered due to the filtering rules for S.
+ * The Metrics Platform Event is submitted to a stream (S) if S is in sample and the event
+ * is not filtered according to the filtering rules for S.
+ *
+ * NOTE: Calls to `dispatch()` are processed after the stream configs are fetched and updated. If
+ * the Metrics Platform Client was initialized with stream configs, then calls to `dispatch()` are
+ * processed immediately.
  *
  * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
  *
@@ -297,7 +455,6 @@ function getFormattedCustomData( customData ) {
  * @param {Record<string, any>} [customData]
  */
 MetricsClient.prototype.dispatch = function ( eventName, customData ) {
-	var streamNames = this.getStreamNamesForEvent( eventName );
 	var formattedCustomData;
 
 	try {
@@ -321,37 +478,13 @@ MetricsClient.prototype.dispatch = function ( eventName, customData ) {
 		return;
 	}
 
-	var dt = new Date().toISOString();
-
-	// Produce the event(s)
-	for ( var i = 0; i < streamNames.length; ++i ) {
-		/* eslint-disable camelcase */
-		/** @type {MetricsPlatformEventData} */
-		var eventData = {
-			$schema: '/analytics/mediawiki/client/metrics_event/1.1.0',
-			dt: dt,
-			name: eventName
-		};
-
-		if ( customData ) {
-			eventData.custom_data = formattedCustomData;
-		}
-		/* eslint-enable camelcase */
-
-		var streamName = streamNames[ i ];
-		var streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
-
-		if ( !streamConfig ) {
-			// NOTE: This SHOULD never happen.
-			continue;
-		}
-
-		this.contextController.addRequestedValues( eventData, streamConfig );
-
-		if ( this.curationController.shouldProduceEvent( eventData, streamConfig ) ) {
-			this.submit( streamName, eventData );
-		}
-	}
+	this.queueCall( [
+		'dispatch',
+		new Date().toISOString(),
+		eventName,
+		formattedCustomData
+	] );
 };
 
 module.exports = MetricsClient;
+module.exports.SCHEMA = SCHEMA;

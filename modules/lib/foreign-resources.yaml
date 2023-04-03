@@ -6,11 +6,15 @@
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
-  version: 44b6b0ab12
+  version: 3acba3b802
   type: tar
-  src: https://codeload.github.com/wikimedia/metrics-platform/tar.gz/44b6b0ab12f77499301f554ec9be17693a4194f9
-  integrity: sha384-z7AFIncbaXLGoCEMGdwXN15dTYOxMqoRamlJxy38M7wkH6fsI+Zyvx7zRGS/KC2u
+  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/3acba3b802c82f6fe52f457908ec80b7baeddb30
+  integrity: sha384-yYXVOTFnGeW11QfFxkyPq2LrrIXO8bMUe6CErOo11kH47W13AQ7vw23cflR3/TGr
   # GitHub nests their archives with a variable subdirectory...
   dest:
-    metrics-platform-*/COPYING:
-    metrics-platform-*/js/src/*.js:
+    mediawiki-libs-metrics-platform-*/COPYING:
+    mediawiki-libs-metrics-platform-*/js/src/ContextController.js:
+    mediawiki-libs-metrics-platform-*/js/src/ContextUtils.js:
+    mediawiki-libs-metrics-platform-*/js/src/CurationController.js:
+    mediawiki-libs-metrics-platform-*/js/src/MetricsClient.js:
+    mediawiki-libs-metrics-platform-*/js/src/SamplingController.js:
