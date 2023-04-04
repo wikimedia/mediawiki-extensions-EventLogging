@@ -127,7 +127,11 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			namespace: c( 'wgNamespaceNumber' ),
 			namespace_name: c( 'wgCanonicalNamespace' ),
 			revision_id: c( 'wgRevisionId' ),
-			wikidata_id: c( 'wgWikibaseItemId' ),
+
+			// The wikidata_id (int) context attribute is deprecated in favor of wikidata_qid
+			// (string). See T330459 and T332673 for detail.
+			wikidata_qid: c( 'wgWikibaseItemId' ),
+
 			content_language: c( 'wgPageContentLanguage' ),
 			is_redirect: c( 'wgIsRedirect' ),
 			user_groups_allowed_to_move: c( 'wgRestrictionMove' ),

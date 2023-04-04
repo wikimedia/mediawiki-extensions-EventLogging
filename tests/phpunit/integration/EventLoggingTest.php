@@ -101,7 +101,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 								'agent_client_platform_family',
 								'page_namespace',
 								'page_title',
-								'page_wikidata_id',
+								'page_wikidata_qid',
 							],
 						],
 					],
@@ -346,7 +346,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 			[
 				'page_namespace' => NS_MAIN,
 				'page_title' => 'Luke_Holland',
-				'page_wikidata_id' => 'Q22278223',
+				'page_wikidata_qid' => 'Q22278223',
 			],
 			$event2['page'],
 			false,

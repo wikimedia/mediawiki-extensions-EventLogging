@@ -148,7 +148,11 @@ class ContextAttributesFactory {
 		$wikidataItemId = $wikidataItemId === null ? null : (string)$wikidataItemId;
 
 		$result = [
-			'page_wikidata_id' => $wikidataItemId,
+
+			// The wikidata_id (int) context attribute is deprecated in favor of wikidata_qid
+			// (string). See T330459 and T332673 for detail.
+			'page_wikidata_qid' => $wikidataItemId,
+
 		];
 
 		$title = $contextSource->getTitle();

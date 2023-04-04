@@ -103,7 +103,7 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 		$this->assertSame( $expectedNamespace, $contextAttributes[ 'page_namespace' ] );
 		$this->assertSame( $expectedNamespaceName, $contextAttributes[ 'page_namespace_name' ] );
 		$this->assertSame( $title->getLatestRevID(), $contextAttributes[ 'page_revision_id' ] );
-		$this->assertSame( $expectedWikidataItemId, $contextAttributes[ 'page_wikidata_id' ] );
+		$this->assertSame( $expectedWikidataItemId, $contextAttributes[ 'page_wikidata_qid' ] );
 		$this->assertSame(
 			$expectedPageContentLanguage->getCode(),
 			$contextAttributes[ 'page_content_language' ]
@@ -125,7 +125,7 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 
 		$contextAttributes = $this->contextAttributesFactory->newContextAttributes( $contextSource );
 
-		$this->assertNull( $contextAttributes[ 'page_wikidata_id' ] );
+		$this->assertNull( $contextAttributes[ 'page_wikidata_qid' ] );
 	}
 
 	public function testMediaWikiContextAttributes(): void {
