@@ -2,11 +2,6 @@ var ContextController = require( './ContextController.js' );
 var SamplingController = require( './SamplingController.js' );
 var CurationController = require( './CurationController.js' );
 
-var STATE_FETCHING_STREAM_CONFIGS = 1;
-var STATE_FETCHED_STREAM_CONFIGS = 2;
-
-var CALL_QUEUE_MAX_LENGTH = 128;
-
 var SCHEMA = '/analytics/mediawiki/client/metrics_event/1.2.0';
 
 /**
@@ -14,8 +9,9 @@ var SCHEMA = '/analytics/mediawiki/client/metrics_event/1.2.0';
  * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
  *
  * @param {Integration} integration
- * @param {StreamConfigs|false} [streamConfigs]
+ * @param {StreamConfigs|false} streamConfigs
  * @constructor
+ * @class MetricsClient
  */
 function MetricsClient(
 	integration,
@@ -25,39 +21,9 @@ function MetricsClient(
 	this.samplingController = new SamplingController( integration );
 	this.curationController = new CurationController();
 	this.integration = integration;
-
-	// MetricsClient( integration: Integration )
-	if ( streamConfigs === undefined ) {
-		this.streamConfigs = {};
-		this.state = STATE_FETCHING_STREAM_CONFIGS;
-		this.fetchStreamConfigs();
-	} else {
-		this.streamConfigs = streamConfigs;
-		this.state = STATE_FETCHED_STREAM_CONFIGS;
-	}
-
+	this.streamConfigs = streamConfigs;
 	this.eventNameToStreamNamesMap = null;
-
-	/** @type {CallQueue} */
-	this.callQueue = [];
 }
-
-/**
- * Fetch and update the stream configs, and then process the call queue, submitting and dispatching
- * events as necessary.
- */
-MetricsClient.prototype.fetchStreamConfigs = function () {
-	var that = this;
-
-	that.integration.fetchStreamConfigs()
-		.then( function ( /** @type {StreamConfigs} */ streamConfigs ) {
-			that.streamConfigs = streamConfigs;
-			that.eventNameToStreamNamesMap = null;
-			that.state = STATE_FETCHED_STREAM_CONFIGS;
-
-			that.processCallQueue();
-		} );
-};
 
 /**
  * @param {StreamConfigs|false} streamConfigs
@@ -182,70 +148,91 @@ MetricsClient.prototype.getStreamNamesForEvent = function ( eventName ) {
 };
 
 /**
- * Enqueues a call to be processed.
+ * Adds required fields:
  *
- * The call queue has a maximum capacity of 128 calls. If it is full, then the earliest call is
- * dropped and a warning is logged.
+ * - `meta.stream`: the target stream name
+ * - `meta.domain`: the domain associated with this event
+ * - `dt`: the client-side timestamp (unless this is a migrated legacy event,
+ *         in which case the timestamp will already be present as `client_dt`).
  *
  * @ignore
  *
- * @param {CallQueueEntry} call
+ * @param {BaseEventData} eventData
+ * @param {string} streamName
+ * @return {BaseEventData}
  */
-MetricsClient.prototype.queueCall = function ( call ) {
-	this.callQueue.push( call );
-
-	if ( this.callQueue.length > CALL_QUEUE_MAX_LENGTH ) {
-		var droppedCall = this.callQueue.shift();
-
-		if ( droppedCall ) {
-			var callString = [
-				droppedCall[ 0 ],
-				'( ',
-				droppedCall[ 2 ],
-				', ',
-				droppedCall[ 0 ] === 'submit' ? 'eventData' : 'customData',
-				' )'
-			].join( '' );
-
-			this.integration.logWarning( 'Call to ' + callString + ' dropped because the queue is full.' );
-		}
+MetricsClient.prototype.addRequiredMetadata = function ( eventData, streamName ) {
+	if ( eventData.meta ) {
+		eventData.meta.stream = streamName;
+		eventData.meta.domain = this.integration.getHostname();
+	} else {
+		eventData.meta = {
+			stream: streamName,
+			domain: this.integration.getHostname()
+		};
 	}
 
-	this.processCallQueue();
+	//
+	// The 'dt' field is reserved for the internal use of this library,
+	// and should not be set by any other caller.
+	//
+	// (1) 'dt' is a client-side timestamp for new events
+	//      and a server-side timestamp for legacy events.
+	// (2) 'dt' will be provided by EventGate if omitted here,
+	//      so it should be omitted for legacy events (and
+	//      deleted if present).
+	//
+	// We detect legacy events by looking for the 'client_dt'.
+	//
+	if ( eventData.client_dt ) {
+		delete eventData.dt;
+	} else {
+		eventData.dt = eventData.dt || new Date().toISOString();
+	}
+
+	return eventData;
 };
 
 /**
- * Processes calls to {@link MetricsClient.prototype.submit} and
- * {@link MetricsClient.prototype.dispatch} if the stream configs have been fetched and updated.
+ * Submit an event to a stream.
  *
- * @ignore
+ * The event (E) is submitted to the stream (S) if E has the `$schema` property and S is in
+ * sample. If E does not have the `$schema` property, then a warning is logged.
+ *
+ * @param {string} streamName The name of the stream to send the event data to
+ * @param {BaseEventData} eventData The event data
  */
-MetricsClient.prototype.processCallQueue = function () {
-	if ( this.state === STATE_FETCHING_STREAM_CONFIGS ) {
-		return;
+MetricsClient.prototype.submit = function ( streamName, eventData ) {
+	var result = this.validateSubmitCall( streamName, eventData );
+
+	if ( result ) {
+		this.processSubmitCall( new Date().toISOString(), streamName, eventData );
+	}
+};
+
+/**
+ * If `eventData` is falsy or does not have the `$schema` property set, then a warning is logged
+ * and `false` is returned. Otherwise, `true` is returned.
+ *
+ * @param {string} streamName
+ * @param {BaseEventData} eventData
+ * @return {boolean}
+ */
+MetricsClient.prototype.validateSubmitCall = function ( streamName, eventData ) {
+	if ( !eventData || !eventData.$schema ) {
+		this.integration.logWarning(
+			'submit( ' + streamName + ', eventData ) called with eventData missing required ' +
+			'field "$schema". No event will be produced.'
+		);
+
+		return false;
 	}
 
-	while ( this.callQueue.length ) {
-		var call = this.callQueue.shift();
-
-		if ( !call ) {
-			// NOTE: This should never happen.
-			continue;
-		}
-
-		if ( call[ 0 ] === 'submit' ) {
-			this.processSubmitCall( call[ 1 ], call[ 2 ], call[ 3 ] );
-		} else if ( call[ 0 ] === 'dispatch' ) {
-			this.processDispatchCall( call[ 1 ], call[ 2 ], call[ 3 ] );
-		}
-	}
+	return true;
 };
 
 /**
  * Processes the result of a call to {@link MetricsClient.prototype.submit}.
- *
- * NOTE: This method should only be called **after** the stream configs have been fetched via
- * {@link MetricsClient.prototype.fetchStreamConfigs}.
  *
  * @ignore
  *
@@ -267,6 +254,99 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
 	if ( this.samplingController.streamInSample( streamConfig ) ) {
 		this.integration.enqueueEvent( eventData );
 		this.integration.onSubmit( streamName, eventData );
+	}
+};
+
+/**
+ * Format the custom data so that it is compatible with the Metrics Platform Event schema.
+ *
+ * `customData` is considered valid if all of its keys are snake_case.
+ *
+ * @param {Record<string,any>|undefined} customData
+ * @return {FormattedCustomData}
+ * @throws {Error} If `customData` is invalid
+ */
+function getFormattedCustomData( customData ) {
+	/** @type {Record<string,EventCustomDatum>} */
+	var result = {};
+
+	if ( !customData ) {
+		return result;
+	}
+
+	for ( var key in customData ) {
+		if ( !key.match( /^[$a-z]+[a-z0-9_]*$/ ) ) {
+			throw new Error( 'The key "' + key + '" is not snake_case.' );
+		}
+
+		var value = customData[ key ];
+		var type = value === null ? 'null' : typeof value;
+
+		result[ key ] = {
+			// eslint-disable-next-line camelcase
+			data_type: type,
+			value: String( value )
+		};
+	}
+
+	return result;
+}
+
+/**
+ * Construct and submits a Metrics Platform Event from the event name and custom data for each
+ * stream that is interested in those events.
+ *
+ * The Metrics Platform Event for a stream (S) is constructed by first initializing the minimum
+ * valid event (E) that can be submitted to S, and then mixing the context attributes requested
+ * in the configuration for S into E.
+ *
+ * The Metrics Platform Event is submitted to a stream (S) if S is in sample and the event
+ * is not filtered according to the filtering rules for S.
+ *
+ * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
+ *
+ * @param {string} eventName
+ * @param {Record<string, any>} [customData]
+ */
+MetricsClient.prototype.dispatch = function ( eventName, customData ) {
+	var result = this.validateDispatchCall( eventName, customData );
+
+	if ( result ) {
+		this.processDispatchCall( new Date().toISOString(), eventName, result );
+	}
+};
+
+/**
+ * If `streamConfigs` is `false` or the custom data cannot be formatted with
+ * {@link getFormattedCustomData}, then a warning is logged and `false` is returned. Otherwise, the
+ * formatted custom data is returned.
+ *
+ * @ignore
+ *
+ * @param {string} eventName
+ * @param {Record<string, any>} [customData]
+ * @return {FormattedCustomData|false}
+ */
+MetricsClient.prototype.validateDispatchCall = function ( eventName, customData ) {
+	// T309083
+	if ( this.streamConfigs === false ) {
+		this.integration.logWarning(
+			'dispatch( ' + eventName + ', customData ) cannot dispatch events when stream configs are disabled.'
+		);
+
+		return false;
+	}
+
+	try {
+		return getFormattedCustomData( customData );
+	} catch ( e ) {
+		this.integration.logWarning(
+			// @ts-ignore TS2571
+			'dispatch( ' + eventName + ', customData ) called with invalid customData: ' + e.message +
+			'No event(s) will be produced.'
+		);
+
+		return false;
 	}
 };
 
@@ -323,167 +403,6 @@ MetricsClient.prototype.processDispatchCall = function (
 			this.integration.onSubmit( streamName, eventData );
 		}
 	}
-};
-
-/**
- * Adds required fields:
- *
- * - `meta.stream`: the target stream name
- * - `meta.domain`: the domain associated with this event
- * - `dt`: the client-side timestamp (unless this is a migrated legacy event,
- *         in which case the timestamp will already be present as `client_dt`).
- *
- * @param {BaseEventData} eventData
- * @param {string} streamName
- * @return {BaseEventData}
- */
-MetricsClient.prototype.addRequiredMetadata = function ( eventData, streamName ) {
-	if ( eventData.meta ) {
-		eventData.meta.stream = streamName;
-		eventData.meta.domain = this.integration.getHostname();
-	} else {
-		eventData.meta = {
-			stream: streamName,
-			domain: this.integration.getHostname()
-		};
-	}
-
-	//
-	// The 'dt' field is reserved for the internal use of this library,
-	// and should not be set by any other caller.
-	//
-	// (1) 'dt' is a client-side timestamp for new events
-	//      and a server-side timestamp for legacy events.
-	// (2) 'dt' will be provided by EventGate if omitted here,
-	//      so it should be omitted for legacy events (and
-	//      deleted if present).
-	//
-	// We detect legacy events by looking for the 'client_dt'.
-	//
-	if ( eventData.client_dt ) {
-		delete eventData.dt;
-	} else {
-		eventData.dt = eventData.dt || new Date().toISOString();
-	}
-
-	return eventData;
-};
-
-/**
- * Submit an event to a stream.
- *
- * The event (E) is submitted to the stream (S) if E has the `$schema` property and S is in
- * sample. If E does not have the `$schema` property, then a warning is logged.
- *
- * NOTE: Calls to `submit()` are processed after the stream configs are fetched and updated. If
- * the Metrics Platform Client was initialized with stream configs, then calls to `submit()` are
- * processed immediately.
- *
- * @param {string} streamName The name of the stream to send the event data to
- * @param {BaseEventData} eventData The event data
- */
-MetricsClient.prototype.submit = function ( streamName, eventData ) {
-	if ( !eventData || !eventData.$schema ) {
-		this.integration.logWarning(
-			'submit( ' + streamName + ', eventData ) called with eventData missing required ' +
-			'field "$schema". No event will be produced.'
-		);
-		return;
-	}
-
-	this.queueCall( [
-		'submit',
-		new Date().toISOString(),
-		streamName,
-		eventData
-	] );
-};
-
-/**
- * Format the custom data so that it is compatible with the Metrics Platform Event schema.
- *
- * `customData` is considered valid if all of its keys are snake_case.
- *
- * @param {Record<string,any>|undefined} customData
- * @return {FormattedCustomData}
- * @throws {Error} If `customData` is invalid
- */
-function getFormattedCustomData( customData ) {
-	/** @type {Record<string,EventCustomDatum>} */
-	var result = {};
-
-	if ( !customData ) {
-		return result;
-	}
-
-	for ( var key in customData ) {
-		if ( !key.match( /^[$a-z]+[a-z0-9_]*$/ ) ) {
-			throw new Error( 'The key "' + key + '" is not snake_case.' );
-		}
-
-		var value = customData[ key ];
-		var type = value === null ? 'null' : typeof value;
-
-		result[ key ] = {
-			// eslint-disable-next-line camelcase
-			data_type: type,
-			value: String( value )
-		};
-	}
-
-	return result;
-}
-
-/**
- * Construct and submits a Metrics Platform Event from the event name and custom data for each
- * stream that is interested in those events.
- *
- * The Metrics Platform Event for a stream (S) is constructed by first initializing the minimum
- * valid event (E) that can be submitted to S, and then mixing the context attributes requested
- * in the configuration for S into E.
- *
- * The Metrics Platform Event is submitted to a stream (S) if S is in sample and the event
- * is not filtered according to the filtering rules for S.
- *
- * NOTE: Calls to `dispatch()` are processed after the stream configs are fetched and updated. If
- * the Metrics Platform Client was initialized with stream configs, then calls to `dispatch()` are
- * processed immediately.
- *
- * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
- *
- * @param {string} eventName
- * @param {Record<string, any>} [customData]
- */
-MetricsClient.prototype.dispatch = function ( eventName, customData ) {
-	var formattedCustomData;
-
-	try {
-		formattedCustomData = getFormattedCustomData( customData );
-	} catch ( e ) {
-		this.integration.logWarning(
-			// @ts-ignore TS2571
-			'dispatch( ' + eventName + ', customData ) called with invalid customData: ' + e.message +
-			'No event(s) will be produced.'
-		);
-
-		return;
-	}
-
-	// T309083
-	if ( this.streamConfigs === false ) {
-		this.integration.logWarning(
-			'dispatch( ' + eventName + ', customData ) cannot dispatch events when stream configs are disabled.'
-		);
-
-		return;
-	}
-
-	this.queueCall( [
-		'dispatch',
-		new Date().toISOString(),
-		eventName,
-		formattedCustomData
-	] );
 };
 
 module.exports = MetricsClient;

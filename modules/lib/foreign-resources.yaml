@@ -6,10 +6,10 @@
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
-  version: 3acba3b802
+  version: 3d79569a35
   type: tar
-  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/3acba3b802c82f6fe52f457908ec80b7baeddb30
-  integrity: sha384-yYXVOTFnGeW11QfFxkyPq2LrrIXO8bMUe6CErOo11kH47W13AQ7vw23cflR3/TGr
+  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/3d79569a354fb218f0d89b7c2cd2c88029bf840c
+  integrity: sha384-8JPHDDeNSZbxTANqtX8o3EN+rOMc9hEQbXyG6eETOGlYRzcXIqjaY9g0ussdz9oB
   # GitHub nests their archives with a variable subdirectory...
   dest:
     mediawiki-libs-metrics-platform-*/COPYING:
