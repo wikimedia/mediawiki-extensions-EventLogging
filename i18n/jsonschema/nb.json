@@ -13,8 +13,8 @@
 	"jsonschema-invalid-notinenum": "Verdien <code>$1</code> ikke i enum for egenskapen $2",
 	"apihelp-jsonschema-description": "Hent en JSON-skjemaside.",
 	"apihelp-jsonschema-summary": "Hent ei JSON Schema-side.",
-	"apihelp-jsonschema-param-revid": "Skjemaets revisjons-ID.",
+	"apihelp-jsonschema-param-revid": "Skjemaets sideversjons-ID.",
 	"apihelp-jsonschema-param-title": "Skjemanavn.",
-	"apihelp-jsonschema-example-1": "Hent skjema for revisjon 1234",
-	"apihelp-jsonschema-example-2": "Hent skjema for den siste revisjonen av Schema:Test"
+	"apihelp-jsonschema-example-1": "Hent skjema for sideversjon 1234",
+	"apihelp-jsonschema-example-2": "Hent skjema for den siste sideversjonen av Schema:Test"
 }
