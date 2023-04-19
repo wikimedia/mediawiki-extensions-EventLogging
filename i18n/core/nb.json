@@ -7,7 +7,7 @@
 	},
 	"eventlogging-desc": "Rammeverk for å logge hendelser fra klientside-kode",
 	"eventlogging-invalid-json": "Ugyldig JSON",
-	"eventlogging-revision-id": "Revisjon $1",
+	"eventlogging-revision-id": "Sideversjon $1",
 	"eventlogging-code-sample-logging-on-server-side": "PHP-logging",
 	"eventlogging-code-sample-module-setup-json": "extension.json-oppsett for JavaScript-logging",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript-logging",
