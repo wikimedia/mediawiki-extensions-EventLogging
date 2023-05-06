@@ -13,9 +13,9 @@ namespace MediaWiki\Extension\EventLogging;
 
 use ApiModuleManager;
 use Content;
-use EditPage;
 use IContextSource;
 use JsonSchemaException;
+use MediaWiki\EditPage\EditPage;
 use OutputPage;
 use Skin;
 use Status;

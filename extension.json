@@ -99,7 +99,9 @@
 				"debug.js",
 				{
 					"name": "data.json",
-					"config": [ "EventLoggingSchemaApiUri" ]
+					"config": [
+						"EventLoggingSchemaApiUri"
+					]
 				}
 			],
 			"targets": [
