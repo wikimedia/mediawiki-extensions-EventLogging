@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nokeoo"
+		]
+	},
+	"jsonschema-invalidkey": "Negalimas „$2“ raktas „$1“",
+	"jsonschema-invalid-missingfield": "Trūksta būtino lauko „$1“"
+}
