@@ -43,7 +43,7 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 			->getMock();
 	}
 
-	public function provideAgentContextAttributes(): Generator {
+	public static function provideAgentContextAttributes(): Generator {
 		yield [
 			'isUsingMobileDomain' => false,
 			'expectedClientPlatformFamily' => 'desktop_browser',
@@ -150,7 +150,7 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 		);
 	}
 
-	public function provideMediaWikiIsDebugMode(): Generator {
+	public static function provideMediaWikiIsDebugMode(): Generator {
 		yield [
 			'eventLoggingDisplayWeb' => 0,
 			'eventLoggingDisplayConsole' => 0,

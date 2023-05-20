@@ -41,7 +41,7 @@ class HooksTest extends MediaWikiIntegrationTestCase {
 		] );
 	}
 
-	public function provideEventLoggingConfigStreamConfigs(): Generator {
+	public static function provideEventLoggingConfigStreamConfigs(): Generator {
 		yield [
 			'eventLoggingStreamNames' => false,
 			'expectedStreamConfigs' => false,

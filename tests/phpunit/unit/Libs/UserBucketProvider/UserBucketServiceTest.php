@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
  */
 class UserBucketServiceTest extends TestCase {
 
-	public function provideBucketEditCount(): Generator {
+	public static function provideBucketEditCount(): Generator {
 		yield [ 0, '0 edits' ];
 		yield [ 1, '1-4 edits' ];
 		yield [ 4, '1-4 edits' ];
@@ -37,7 +37,7 @@ class UserBucketServiceTest extends TestCase {
 		);
 	}
 
-	public function provideGetUserEditCountBucket(): Generator {
+	public static function provideGetUserEditCountBucket(): Generator {
 		yield [
 			UserIdentityValue::newRegistered( 1234567890, 'Phuedx' ),
 			20,

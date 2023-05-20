@@ -70,7 +70,7 @@ class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
 		$this->eventSubmitter->submit( 'test.event', [] );
 	}
 
-	public function provideSubmissions(): Generator {
+	public static function provideSubmissions(): Generator {
 		yield [
 			'streamName' => 'test.event',
 			'event' => [
