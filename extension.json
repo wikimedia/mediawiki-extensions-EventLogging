@@ -178,6 +178,7 @@
 			"description": "Number of seconds EventLogging should wait to batch messages before sending them to the intake service."
 		}
 	},
+	"load_composer_autoloader": true,
 	"manifest_version": 2,
 	"ServiceWiringFiles": [
 		"ServiceWiring.php"
