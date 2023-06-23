@@ -11,7 +11,6 @@
 	"jsonschema-invalidnode": "Invalid node: expecting \"$1\", got \"$2\". Path: \"$3\"",
 	"jsonschema-invalid-missingfield": "Missing required field \"$1\"",
 	"jsonschema-invalid-notinenum": "Value <code>$1</code> not in enum for property $2",
-	"apihelp-jsonschema-description": "Retrieve a JSON Schema page.",
 	"apihelp-jsonschema-summary": "Retrieve a JSON Schema page.",
 	"apihelp-jsonschema-param-revid": "Schema revision ID.",
 	"apihelp-jsonschema-param-title": "Schema name.",
