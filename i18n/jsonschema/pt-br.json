@@ -12,7 +12,6 @@
 	"jsonschema-invalidnode": "Nó inválido: era esperado \"$1\", foi recebido \"$2\". Localização: \"$3\"",
 	"jsonschema-invalid-missingfield": "Campo obrigatório \"$1\" em falta",
 	"jsonschema-invalid-notinenum": "O valor <code>$1</code> não está na enumeração da propriedade $2",
-	"apihelp-jsonschema-description": "Obter uma página de esquema (<i>schema</i>) JSON.",
 	"apihelp-jsonschema-summary": "Obter uma página de esquema (<i>schema</i>) JSON.",
 	"apihelp-jsonschema-param-revid": "Identificador da revisão do esquema (<i>schema</i>).",
 	"apihelp-jsonschema-param-title": "Nome do esquema.",

@@ -13,7 +13,6 @@
 	"jsonschema-invalidnode": "無效節點：預期「$1」，卻得到「$2」。路徑：「$3」",
 	"jsonschema-invalid-missingfield": "缺少所需的欄位「$1」",
 	"jsonschema-invalid-notinenum": "用於屬性 $2 的列舉不存在值 <code>$1</code>",
-	"apihelp-jsonschema-description": "檢索 JSON 架構頁面。",
 	"apihelp-jsonschema-summary": "檢索 JSON 架構頁面。",
 	"apihelp-jsonschema-param-revid": "架構修訂 ID。",
 	"apihelp-jsonschema-param-title": "架構名稱。",

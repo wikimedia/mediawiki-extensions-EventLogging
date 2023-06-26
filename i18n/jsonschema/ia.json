@@ -12,7 +12,6 @@
 	"jsonschema-invalidnode": "Nodo invalide: expectava \"$1\", recipeva \"$2\". Cammino: \"$3\"",
 	"jsonschema-invalid-missingfield": "Campo obligatori \"$1\" mancante",
 	"jsonschema-invalid-notinenum": "Valor <code>$1</code> non es in enum pro le proprietate $2",
-	"apihelp-jsonschema-description": "Recuperar un pagina de Schema JSON.",
 	"apihelp-jsonschema-summary": "Recuperar un pagina de Schema JSON.",
 	"apihelp-jsonschema-param-revid": "ID de version del Schema.",
 	"apihelp-jsonschema-param-title": "Nomine del Schema.",

@@ -13,7 +13,6 @@
 	"jsonschema-invalidnode": "عقدة غير صالحة: عند توقع \"$1\"، حصلت على \"$2\"، مسار: \"$3\"",
 	"jsonschema-invalid-missingfield": "حقل مطلوب مفقود \"$1\"",
 	"jsonschema-invalid-notinenum": "القيمة <code>$1</code>  ليست في التعداد للخاصية $2$1",
-	"apihelp-jsonschema-description": "استرداد صفحة مخطط JSON.",
 	"apihelp-jsonschema-summary": "استرداد صفحة مخطط JSON.",
 	"apihelp-jsonschema-param-revid": "معرف مراجعة المخطط.",
 	"apihelp-jsonschema-param-title": "اسم المخطط.",

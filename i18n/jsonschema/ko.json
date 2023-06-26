@@ -14,7 +14,6 @@
 	"jsonschema-invalidnode": "유효하지 않은 노드: \"$1\"을(를) 기대했지만 \"$2'을(를) 얻었습니다. 경로: \"$3\"",
 	"jsonschema-invalid-missingfield": "\"$1\" 필수 필드가 없습니다",
 	"jsonschema-invalid-notinenum": "<code>$1</code> 값은 $2 속성에 대한 열겨형에 속해 있지 않습니다",
-	"apihelp-jsonschema-description": "JSON 스키마 문서를 불러옵니다.",
 	"apihelp-jsonschema-summary": "JSON 스키마 문서를 불러옵니다.",
 	"apihelp-jsonschema-param-revid": "스키마 판 번호.",
 	"apihelp-jsonschema-param-title": "스키마 이름.",

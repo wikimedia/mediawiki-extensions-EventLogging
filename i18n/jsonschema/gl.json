@@ -13,7 +13,6 @@
 	"jsonschema-invalidnode": "Nodo non válido: Agardábse \"$1\"; recibiuse \"$2\". Ruta: \"$3\"",
 	"jsonschema-invalid-missingfield": "Falta o parámetro obrigatorio \"$1\"",
 	"jsonschema-invalid-notinenum": "O valor <code>$1</code> non é parte da enumeración da propiedade $2",
-	"apihelp-jsonschema-description": "Recuperar unha páxina de esquema JSON.",
 	"apihelp-jsonschema-summary": "Recuperar unha páxina de esquema JSON.",
 	"apihelp-jsonschema-param-revid": "Identificador de revisión de esquema.",
 	"apihelp-jsonschema-param-title": "Nome do esquema.",

@@ -12,7 +12,6 @@
 	"jsonschema-invalidnode": "Geçersiz düğüm: \"$1\" bekleniyor, \"$2\" aldı. Yol: \"$3\"",
 	"jsonschema-invalid-missingfield": "\"$1\" zorunlu alan eksik",
 	"jsonschema-invalid-notinenum": "$2 özelliği için <code>$1</code> değeri enum değerinde değil",
-	"apihelp-jsonschema-description": "Bir JSON Şeması sayfasını alın.",
 	"apihelp-jsonschema-summary": "Bir JSON Şeması sayfasını alın.",
 	"apihelp-jsonschema-param-revid": "Şema revizyon kimliği.",
 	"apihelp-jsonschema-param-title": "Şema adı.",

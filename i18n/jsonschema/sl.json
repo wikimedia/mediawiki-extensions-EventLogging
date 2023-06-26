@@ -11,7 +11,6 @@
 	"jsonschema-invalidnode": "Neveljavno vozlišče: pričakovano »$1«, pridobljeno »$2«. Pot: »$3«.",
 	"jsonschema-invalid-missingfield": "Manjka obvezno polje »$1«",
 	"jsonschema-invalid-notinenum": "Vrednost <code>$1</code> ni v naštevanju za lastnost $2",
-	"apihelp-jsonschema-description": "Pridobi stran s shemo JSON.",
 	"apihelp-jsonschema-summary": "Pridobi stran s shemo JSON.",
 	"apihelp-jsonschema-param-revid": "ID redakcije sheme.",
 	"apihelp-jsonschema-param-title": "Ime sheme.",
