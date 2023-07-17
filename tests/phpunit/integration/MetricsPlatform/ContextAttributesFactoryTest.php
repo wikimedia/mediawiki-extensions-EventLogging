@@ -6,6 +6,7 @@ use MediaWiki\MainConfigNames;
 
 /**
  * @covers \MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory
+ * @group Database
  */
 class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 
@@ -59,7 +60,8 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideAgentContextAttributes
 	 */
 	public function testAgentContextAttributes( $isUsingMobileDomain, $expectedClientPlatformFamily ): void {
-		$user = $this->getMutableTestUser()->getUser();
+		$user = $this->createMock( User::class );
+		$user->method( 'getEditCount' )->willReturn( 42 );
 
 		$title = Title::makeTitle( NS_SPECIAL, 'Blankpage' );
 		$contextSource = RequestContext::newExtraneousContext( $title );
