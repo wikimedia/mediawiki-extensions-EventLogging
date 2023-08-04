@@ -79,9 +79,11 @@ class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 	public function testGetText() {
 		$content = new JsonSchemaContent( self::EVIL_JSON );
 		$contentRenderer = $this->getServiceContainer()->getContentRenderer();
+		$title = Title::makeTitle( NS_MAIN, 'Test' );
+		$title->setContentModel( CONTENT_MODEL_WIKITEXT );
 		$parserOutput = $contentRenderer->getParserOutput(
 			$content,
-			Title::newFromText( 'Test' )
+			$title
 		);
 		$this->assertStringContainsString(
 			'&lt;script>',

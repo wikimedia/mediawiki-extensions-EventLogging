@@ -55,6 +55,9 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		// FIXME This test also needs a working configured event stream, but it's unclear how to skip the test
+		// if that's not available.
+		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 		$this->setMwGlobals( [
 			'wgEventLoggingSchemas' => [
 				'Migrated' => '/test/event/1.0.0',
@@ -316,6 +319,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$contextSource = RequestContext::getMain();
 
 		$title = Title::makeTitle( NS_MAIN, 'Luke_Holland' );
+		$title->setContentModel( CONTENT_MODEL_WIKITEXT );
 		$contextSource->setTitle( $title );
 
 		$output = $contextSource->getOutput();
