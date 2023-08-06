@@ -8,6 +8,7 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Permissions\RestrictionStore;
 use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -316,10 +317,12 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testDispatchAddsContextAttributes(): void {
+		$this->setService( 'RestrictionStore', $this->createMock( RestrictionStore::class ) );
 		$contextSource = RequestContext::getMain();
 
 		$title = Title::makeTitle( NS_MAIN, 'Luke_Holland' );
 		$title->setContentModel( CONTENT_MODEL_WIKITEXT );
+		$title->resetArticleID( 0 );
 		$contextSource->setTitle( $title );
 
 		$output = $contextSource->getOutput();

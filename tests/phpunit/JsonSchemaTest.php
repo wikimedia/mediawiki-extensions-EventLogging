@@ -77,6 +77,7 @@ class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 	 * @covers \MediaWiki\Extension\EventLogging\JsonSchemaContent::getText
 	 */
 	public function testGetText() {
+		$this->clearHooks();
 		$content = new JsonSchemaContent( self::EVIL_JSON );
 		$contentRenderer = $this->getServiceContainer()->getContentRenderer();
 		$title = Title::makeTitle( NS_MAIN, 'Test' );
