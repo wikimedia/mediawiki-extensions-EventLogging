@@ -86,10 +86,6 @@
 			"dependencies": [
 				"mediawiki.user",
 				"user.options"
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.eventLogging.debug": {
@@ -103,10 +99,6 @@
 						"EventLoggingSchemaApiUri"
 					]
 				}
-			],
-			"targets": [
-				"desktop",
-				"mobile"
 			]
 		},
 		"ext.eventLogging.jsonSchema": {
