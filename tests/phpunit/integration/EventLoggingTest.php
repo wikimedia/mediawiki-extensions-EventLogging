@@ -9,6 +9,7 @@ use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\RestrictionStore;
+use MediaWiki\Title\Title;
 use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;

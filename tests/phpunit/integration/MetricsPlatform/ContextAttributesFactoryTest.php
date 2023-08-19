@@ -3,6 +3,7 @@
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Title\Title;
 
 /**
  * @covers \MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory

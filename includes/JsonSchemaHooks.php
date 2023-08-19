@@ -16,10 +16,10 @@ use Content;
 use IContextSource;
 use JsonSchemaException;
 use MediaWiki\EditPage\EditPage;
+use MediaWiki\Title\Title;
 use OutputPage;
 use Skin;
 use Status;
-use Title;
 use User;
 
 class JsonSchemaHooks {

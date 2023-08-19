@@ -9,6 +9,7 @@
  */
 
 use MediaWiki\Extension\EventLogging\JsonSchemaContent;
+use MediaWiki\Title\Title;
 
 /**
  * @group EventLogging
