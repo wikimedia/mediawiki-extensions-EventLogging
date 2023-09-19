@@ -1,20 +1,18 @@
 # See /resources/lib/foreign-resources.yaml in MediaWiki Core for a detailed explanation of the
 # format of this file.
 
-# Ideally we'd use https://gerrit.wikimedia.org/g/mediawiki/libs/metrics-platform/+archive/X.tar.gz
-# instead of GitHub mirror, but https://github.com/google/gitiles/issues/217
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
   version: 3d79569a35
   type: tar
-  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66
-  integrity: sha384-CaBWE49PSwDtHQGt1V8vSdLQHGUMeaW/677gC2f54srVYkN5aU/OzHST194n15IE
-  # GitHub nests their archives with a variable subdirectory...
+  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66/metrics-platform-20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66.tar.gz
+  integrity: sha384-erpMdoW8msBW45CS4bDcCmaiEKuPuWVyQjiGZHsQrthqjwS9Qqnit7UHOvfts+tS
+  # GitLab nests their archives with a variable subdirectory...
   dest:
-    mediawiki-libs-metrics-platform-*/COPYING:
-    mediawiki-libs-metrics-platform-*/js/src/ContextController.js:
-    mediawiki-libs-metrics-platform-*/js/src/ContextUtils.js:
-    mediawiki-libs-metrics-platform-*/js/src/CurationController.js:
-    mediawiki-libs-metrics-platform-*/js/src/MetricsClient.js:
-    mediawiki-libs-metrics-platform-*/js/src/SamplingController.js:
+    metrics-platform-*/COPYING:
+    metrics-platform-*/js/src/ContextController.js:
+    metrics-platform-*/js/src/ContextUtils.js:
+    metrics-platform-*/js/src/CurationController.js:
+    metrics-platform-*/js/src/MetricsClient.js:
+    metrics-platform-*/js/src/SamplingController.js:
