@@ -8,8 +8,8 @@ metrics-platform:
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
   version: 3d79569a35
   type: tar
-  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/3d79569a354fb218f0d89b7c2cd2c88029bf840c
-  integrity: sha384-8JPHDDeNSZbxTANqtX8o3EN+rOMc9hEQbXyG6eETOGlYRzcXIqjaY9g0ussdz9oB
+  src: https://codeload.github.com/wikimedia/mediawiki-libs-metrics-platform/tar.gz/20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66
+  integrity: sha384-CaBWE49PSwDtHQGt1V8vSdLQHGUMeaW/677gC2f54srVYkN5aU/OzHST194n15IE
   # GitHub nests their archives with a variable subdirectory...
   dest:
     mediawiki-libs-metrics-platform-*/COPYING:
