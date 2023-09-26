@@ -11,6 +11,7 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Permissions\RestrictionStore;
 use MediaWiki\Title\Title;
 use Psr\Log\LoggerInterface;
+use Wikimedia\MetricsPlatform\MetricsClient;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -286,9 +287,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertEventCanBeIngested(
 			$event1,
-			// FIXME: This should be a public class constant on MetricsClient, i.e.
-			//  MetricsClient::SCHEMA.
-			'/analytics/mediawiki/client/metrics_event/1.2.0',
+			MetricsClient::SCHEMA,
 			'test.event.mp1'
 		);
 
@@ -338,7 +337,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 		$this->assertEventCanBeIngested(
 			$event2,
-			'/analytics/mediawiki/client/metrics_event/1.2.0',
+			MetricsClient::SCHEMA,
 			'test.event.mp3'
 		);
 
