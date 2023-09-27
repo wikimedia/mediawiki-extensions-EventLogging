@@ -131,16 +131,24 @@
 		]
 	},
 	"Hooks": {
-		"CanonicalNamespaces": "MediaWiki\\Extension\\EventLogging\\Hooks::onCanonicalNamespaces",
+		"CanonicalNamespaces": "main",
 		"BeforePageDisplay": [
-			"MediaWiki\\Extension\\EventLogging\\Hooks::onBeforePageDisplay",
-			"MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onBeforePageDisplay"
+			"main",
+			"jsonschema"
 		],
-		"GetPreferences": "MediaWiki\\Extension\\EventLogging\\Hooks::onGetPreferences",
+		"GetPreferences": "main",
 		"CodeEditorGetPageLanguage": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onCodeEditorGetPageLanguage",
-		"EditFilterMergedContent": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onEditFilterMergedContent",
-		"MovePageIsValidMove": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onMovePageIsValidMove",
-		"ApiMain::moduleManager": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onApiMainModuleManager"
+		"EditFilterMergedContent": "jsonschema",
+		"MovePageIsValidMove": "jsonschema",
+		"ApiMain::moduleManager": "jsonschema"
+	},
+	"HookHandlers": {
+		"main": {
+			"class": "MediaWiki\\Extension\\EventLogging\\Hooks"
+		},
+		"jsonschema": {
+			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks"
+		}
 	},
 	"config": {
 		"EventLoggingBaseUri": {

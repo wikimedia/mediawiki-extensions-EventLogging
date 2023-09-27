@@ -9,20 +9,31 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
+// phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName
+
 namespace MediaWiki\Extension\EventLogging;
 
 use ApiModuleManager;
 use Content;
 use IContextSource;
 use JsonSchemaException;
+use MediaWiki\Api\Hook\ApiMain__moduleManagerHook;
 use MediaWiki\EditPage\EditPage;
+use MediaWiki\Hook\BeforePageDisplayHook;
+use MediaWiki\Hook\EditFilterMergedContentHook;
+use MediaWiki\Hook\MovePageIsValidMoveHook;
 use MediaWiki\Title\Title;
 use OutputPage;
 use Skin;
 use Status;
 use User;
 
-class JsonSchemaHooks {
+class JsonSchemaHooks implements
+	BeforePageDisplayHook,
+	EditFilterMergedContentHook,
+	MovePageIsValidMoveHook,
+	ApiMain__moduleManagerHook
+{
 
 	/**
 	 * Convenience function to determine whether the
@@ -42,7 +53,7 @@ class JsonSchemaHooks {
 	 *
 	 * @param ApiModuleManager $moduleManager
 	 */
-	public static function onApiMainModuleManager( ApiModuleManager $moduleManager ): void {
+	public function onApiMain__moduleManager( $moduleManager ): void {
 		if ( self::isSchemaNamespaceEnabled() ) {
 			$moduleManager->addModule(
 				'jsonschema',
@@ -79,12 +90,12 @@ class JsonSchemaHooks {
 	 * @param bool $minoredit
 	 * @return bool
 	 */
-	public static function onEditFilterMergedContent(
-		$context,
-		$content,
-		$status,
+	public function onEditFilterMergedContent(
+		IContextSource $context,
+		Content $content,
+		Status $status,
 		$summary,
-		$user,
+		User $user,
 		$minoredit
 	): bool {
 		$title = $context->getTitle();
@@ -123,7 +134,7 @@ class JsonSchemaHooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, $skin ): void {
+	public function onBeforePageDisplay( $out, $skin ): void {
 		$title = $out->getTitle();
 		$revId = $out->getRevisionId();
 
@@ -148,8 +159,8 @@ class JsonSchemaHooks {
 	 * @param Status $status
 	 * @return bool
 	 */
-	public static function onMovePageIsValidMove(
-		Title $currentTitle, Title $newTitle, Status $status
+	public function onMovePageIsValidMove(
+		$currentTitle, $newTitle, $status
 	) {
 		if ( !self::isSchemaNamespaceEnabled() ) {
 			// Namespace isn't even enabled

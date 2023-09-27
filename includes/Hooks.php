@@ -14,13 +14,20 @@ namespace MediaWiki\Extension\EventLogging;
 
 use Config;
 use ExtensionRegistry;
+use MediaWiki\Hook\BeforePageDisplayHook;
+use MediaWiki\Hook\CanonicalNamespacesHook;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\ResourceLoader as RL;
 use OutputPage;
 use Skin;
 use User;
 
-class Hooks {
+class Hooks implements
+	CanonicalNamespacesHook,
+	BeforePageDisplayHook,
+	GetPreferencesHook
+{
 
 	/**
 	 * The list of stream config settings that should be sent to the client as part of the
@@ -57,7 +64,7 @@ class Hooks {
 	 * @param OutputPage $out
 	 * @param Skin $skin
 	 */
-	public static function onBeforePageDisplay( OutputPage $out, Skin $skin ): void {
+	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
 		$services = MediaWikiServices::getInstance();
@@ -120,7 +127,7 @@ class Hooks {
 	 * @param User $user
 	 * @param array &$preferences
 	 */
-	public static function onGetPreferences( User $user, array &$preferences ): void {
+	public function onGetPreferences( $user, &$preferences ): void {
 		// See 'ext.eventLogging.debug' module.
 		$preferences['eventlogging-display-web'] = [
 			'type' => 'api',
@@ -130,7 +137,7 @@ class Hooks {
 		];
 	}
 
-	public static function onCanonicalNamespaces( &$namespaces ): void {
+	public function onCanonicalNamespaces( &$namespaces ): void {
 		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
 			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
