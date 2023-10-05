@@ -4,5 +4,7 @@
 			"Умар"
 		]
 	},
-	"eventlogging-desc": "Фреймворко клиентан хиламаш лато"
+	"eventlogging-desc": "Фреймворко клиентан хиламаш лато",
+	"eventlogging-invalid-json": "Нийса йоцу JSON",
+	"eventlogging-revision-id": "Ревизи $1"
 }
