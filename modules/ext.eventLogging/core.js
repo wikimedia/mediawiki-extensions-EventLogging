@@ -249,7 +249,7 @@ core = {
 	/**
 	 * Randomise inclusion based on population size and random token.
 	 *
-	 * Use #eventInSample or #sessionInSample instead.
+	 * Use #pageviewInSample or #sessionInSample instead.
 	 *
 	 * Note that token is coerced into 32 bits before calculating its mod  with
 	 * the population size, while this does not make possible to sample in a rate below
@@ -285,12 +285,18 @@ core = {
 	},
 
 	/**
-	 * @deprecated Use #eventInSample
-	 * @param {number} populationSize
+	 * Determine whether the current event is sampled given a sampling ratio
+	 * per pageview
+	 *
+	 * @deprecated Use #pageviewInSample
+	 * @param {number} populationSize One in how many should be included.
+	 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
 	 * @return {boolean}
 	 */
-	inSample: function ( populationSize ) {
-		return this.eventInSample( populationSize );
+	eventInSample: function ( populationSize ) {
+		// Use the same unique random identifier within the same page load
+		// to allow correlation between multiple events.
+		return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 	},
 
 	/**
@@ -301,13 +307,18 @@ core = {
 	 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
 	 * @return {boolean}
 	 */
-	eventInSample: function ( populationSize ) {
+	pageviewInSample: function ( populationSize ) {
 		// Use the same unique random identifier within the same page load
 		// to allow correlation between multiple events.
 		return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 	}
 };
 
+// Deprecate the old core.inSample function and introduce a
+// replacement, core.pageviewInSample, to transition to the
+// new function for handling pageview sampling.
+// Apply mw.log.deprecate to the old inSample function.
+mw.log.deprecate( core, 'inSample', core.pageviewInSample, 'Use "mw.eventLog.pageviewInSample" instead.', 'mw.eventLog.inSample' );
 // ////////////////////////////////////////////////////////////////////
 // MEP Upgrade Zone
 //

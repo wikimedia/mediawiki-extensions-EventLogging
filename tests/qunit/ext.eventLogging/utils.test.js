@@ -2,9 +2,9 @@
 
 QUnit.module( 'ext.eventLogging/utils' );
 
-QUnit.test( 'eventInSample()', function ( assert ) {
-	assert.strictEqual( mw.eventLog.eventInSample( 0 ), false );
-	assert.strictEqual( mw.eventLog.eventInSample( 1 ), true );
+QUnit.test( 'pageviewInSample()', function ( assert ) {
+	assert.strictEqual( mw.eventLog.pageviewInSample( 0 ), false );
+	assert.strictEqual( mw.eventLog.pageviewInSample( 1 ), true );
 	// Test the rest using randomTokenMatch() since we don't
 	// want consistency in this case
 } );
