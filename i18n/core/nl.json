@@ -3,6 +3,7 @@
 		"authors": [
 			"Esketti",
 			"Mainframe98",
+			"McDutchie",
 			"Mirolith",
 			"Siebrand"
 		]
@@ -11,6 +12,7 @@
 	"eventlogging-invalid-json": "Ongeldige JSON",
 	"eventlogging-revision-id": "Versie $1",
 	"eventlogging-code-sample-logging-on-server-side": "Logboekregistratie voor PHP",
+	"eventlogging-code-sample-module-setup-json": "ext.json-instelling voor het loggen van JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Logboekregistratie voor JavaScript",
 	"eventlogging-error-move-source": "Schemapagina's mogen niet hernoemd worden",
 	"eventlogging-error-move-destination": "Pagina's kunnen niet hernoemd worden naar Schema pagina's"
