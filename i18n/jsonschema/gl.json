@@ -17,5 +17,6 @@
 	"apihelp-jsonschema-summary": "Recuperar unha páxina de esquema JSON.",
 	"apihelp-jsonschema-param-revid": "Identificador de revisión de esquema.",
 	"apihelp-jsonschema-param-title": "Nome do esquema.",
-	"apihelp-jsonschema-example-1": "Recuperar o esquema da revisión 1234"
+	"apihelp-jsonschema-example-1": "Recuperar o esquema da revisión 1234",
+	"apihelp-jsonschema-example-2": "Recuperar o esquema da última revisión de Schema:Test"
 }
