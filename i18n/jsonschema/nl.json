@@ -4,6 +4,7 @@
 			"Esketti",
 			"Macofe",
 			"Mainframe98",
+			"McDutchie",
 			"Siebrand"
 		]
 	},
@@ -17,5 +18,6 @@
 	"apihelp-jsonschema-summary": "Een JSON-Schema pagina ophalen.",
 	"apihelp-jsonschema-param-revid": "Schema versie ID.",
 	"apihelp-jsonschema-param-title": "Schemanaam.",
-	"apihelp-jsonschema-example-1": "Schema ophalen voor versie 1234"
+	"apihelp-jsonschema-example-1": "Schema ophalen voor versie 1234",
+	"apihelp-jsonschema-example-2": "Schema ophalen voor de laatste versie van Schema:Test"
 }
