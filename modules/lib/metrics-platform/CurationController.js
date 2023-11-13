@@ -1,4 +1,4 @@
-var getAttributeByName = require( './ContextUtils.js' ).getAttributeByName;
+const getAttributeByName = require( './ContextUtils.js' ).getAttributeByName;
 
 /**
  * @constructor
@@ -26,11 +26,11 @@ CurationController.prototype.isEmpty = function ( value ) {
  */
 CurationController.prototype.applyRules = function ( value, rules ) {
 	/** @type keyof StreamProducerCurationConfig */
-	var operator;
+	let operator;
 
 	for ( operator in rules ) {
-		var i;
-		var operand = rules[ operator ];
+		let i;
+		const operand = rules[ operator ];
 		if ( operator === 'equals' && value !== operand ) {
 			return false;
 		} else if ( operator === 'not_equals' && value === operand ) {
@@ -66,7 +66,7 @@ CurationController.prototype.applyRules = function ( value, rules ) {
 				}
 			}
 		} else if ( operator === 'contains_any' && Array.isArray( operand ) ) {
-			var found;
+			let found;
 			for ( i = 0; i < operand.length; i++ ) {
 				if ( value.indexOf( operand[ i ] ) > -1 ) {
 					found = true;
@@ -129,7 +129,7 @@ CurationController.prototype.applyRules = function ( value, rules ) {
  */
 CurationController.prototype.shouldProduceEvent = function ( eventData, streamConfig ) {
 	// eslint-disable camelcase
-	var curationConfig = streamConfig &&
+	const curationConfig = streamConfig &&
 		streamConfig.producers &&
 		streamConfig.producers.metrics_platform_client &&
 		streamConfig.producers.metrics_platform_client.curation;
@@ -140,11 +140,11 @@ CurationController.prototype.shouldProduceEvent = function ( eventData, streamCo
 	}
 
 	/** @type {StreamProducerContextAttribute} */
-	var property;
+	let property;
 
 	for ( property in curationConfig ) {
-		var value = getAttributeByName( eventData, property );
-		var rules = curationConfig[ property ];
+		const value = getAttributeByName( eventData, property );
+		const rules = curationConfig[ property ];
 
 		if (
 			this.isEmpty( value ) ||

@@ -1,5 +1,5 @@
 /** @type {StreamProducerContextAttribute[]} */
-var VALID_ATTRIBUTE_NAMES = [
+const VALID_ATTRIBUTE_NAMES = [
 	'agent_app_install_id',
 	'agent_client_platform',
 	'agent_client_platform_family',
@@ -45,18 +45,18 @@ var VALID_ATTRIBUTE_NAMES = [
  * @return {*}
  */
 function getAttributeByName( from, name ) {
-	var index = name.indexOf( '_' );
-	var primaryKey = name.slice( 0, index );
+	const index = name.indexOf( '_' );
+	const primaryKey = name.slice( 0, index );
 
 	// @ts-ignore TS7053
 	if ( !from[ primaryKey ] ) {
 		return null;
 	}
 
-	var secondaryKey = name.slice( index + 1 );
+	const secondaryKey = name.slice( index + 1 );
 
 	// @ts-ignore TS7053
-	var value = from[ primaryKey ][ secondaryKey ];
+	const value = from[ primaryKey ][ secondaryKey ];
 
 	return ( value === undefined || value === null ) ? null : value;
 }
@@ -67,12 +67,12 @@ function getAttributeByName( from, name ) {
  * @param {StreamProducerContextAttribute} name
  */
 function copyAttributeByName( from, to, name ) {
-	var index = name.indexOf( '_' );
-	var primaryKey = name.slice( 0, index );
-	var secondaryKey = name.slice( index + 1 );
+	const index = name.indexOf( '_' );
+	const primaryKey = name.slice( 0, index );
+	const secondaryKey = name.slice( index + 1 );
 
 	// @ts-ignore TS7053
-	var value = from[ primaryKey ] ? from[ primaryKey ][ secondaryKey ] : null;
+	const value = from[ primaryKey ] ? from[ primaryKey ][ secondaryKey ] : null;
 
 	if ( value === undefined || value === null ) {
 		return;

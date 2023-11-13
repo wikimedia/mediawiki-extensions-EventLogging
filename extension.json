@@ -81,6 +81,7 @@
 				"lib/metrics-platform/CurationController.js",
 				"lib/metrics-platform/MetricsClient.js",
 				"lib/metrics-platform/SamplingController.js",
+				"lib/metrics-platform/StreamConfigUtils.js",
 				"ext.eventLogging/MediaWikiMetricsClientIntegration.js"
 			],
 			"dependencies": [

@@ -1,4 +1,6 @@
-var UINT32_MAX = 4294967295; // (2^32) - 1
+const isValidSample = require( './StreamConfigUtils.js' ).isValidSample;
+
+const UINT32_MAX = 4294967295; // (2^32) - 1
 
 /**
  * Evaluate events for presence in sample based on the stream configuration.
@@ -27,16 +29,11 @@ SamplingController.prototype.streamInSample = function ( streamConfig ) {
 		return true;
 	}
 
-	if (
-		( !streamConfig.sample.rate || !streamConfig.sample.unit ) ||
-		( streamConfig.sample.rate < 0 || streamConfig.sample.rate > 1 )
-	) {
-		// If the stream does specify sampling, but it is malformed,
-		// it is not in-sample.
+	if ( !isValidSample( streamConfig.sample ) ) {
 		return false;
 	}
 
-	var id;
+	let id;
 	switch ( streamConfig.sample.unit ) {
 		case 'pageview':
 			id = this.integration.getPageviewId();

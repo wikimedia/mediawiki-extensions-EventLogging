@@ -4,10 +4,10 @@
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
-  version: 3d79569a35
+  version: 2682156f07eb
   type: tar
-  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66/metrics-platform-20ae4f2e566ab8aa8f66b8d28cad56bfbfd54c66.tar.gz
-  integrity: sha384-erpMdoW8msBW45CS4bDcCmaiEKuPuWVyQjiGZHsQrthqjwS9Qqnit7UHOvfts+tS
+  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/2682156f07eb12b6366597f28819bfd8d05b46c7/metrics-platform-2682156f07eb12b6366597f28819bfd8d05b46c7.tar.gz
+  integrity: sha384-lXXKT8SBrnRfXDffHGh90THwB1xiwMifpEqH7gGjn8y3sh1mLU19cCLjOdvLa7Ub
   # GitLab nests their archives with a variable subdirectory...
   dest:
     metrics-platform-*/COPYING:
@@ -16,3 +16,4 @@ metrics-platform:
     metrics-platform-*/js/src/CurationController.js:
     metrics-platform-*/js/src/MetricsClient.js:
     metrics-platform-*/js/src/SamplingController.js:
+    metrics-platform-*/js/src/StreamConfigUtils.js:

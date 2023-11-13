@@ -335,6 +335,8 @@ function initMetricsClient() {
 
 	core.submit = metricsClient.submit.bind( metricsClient );
 	core.dispatch = metricsClient.dispatch.bind( metricsClient );
+	core.submitInteraction = metricsClient.submitInteraction.bind( metricsClient );
+	core.submitClick = metricsClient.submitClick.bind( metricsClient );
 }
 initMetricsClient();
 
