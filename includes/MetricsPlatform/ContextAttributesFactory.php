@@ -166,17 +166,13 @@ class ContextAttributesFactory {
 
 		$namespace = $title->getNamespace();
 
-		// See the wgPageContentLanguage JavaScript config variable defined in
-		// \OutputPage::getJSVars().
-		$pageContentLanguage = $title->getPageViewLanguage();
-
 		return $result + [
 				'page_id' => $title->getArticleID(),
 				'page_title' => $title->getDBkey(),
 				'page_namespace' => $namespace,
 				'page_namespace_name' => $this->namespaceInfo->getCanonicalName( $namespace ),
 				'page_revision_id' => $title->getLatestRevID(),
-				'page_content_language' => $pageContentLanguage->getCode(),
+				'page_content_language' => $title->getPageLanguage()->getCode(),
 				'page_is_redirect' => $title->isRedirect(),
 				'page_groups_allowed_to_move' => $this->restrictionStore->getRestrictions( $title, 'move' ),
 				'page_groups_allowed_to_edit' => $this->restrictionStore->getRestrictions( $title, 'edit' ),
