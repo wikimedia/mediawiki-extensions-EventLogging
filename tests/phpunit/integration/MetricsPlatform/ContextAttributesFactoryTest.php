@@ -9,7 +9,7 @@ use MediaWiki\Title\Title;
  * @covers \MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory
  * @group Database
  */
-class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
+class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 
 	/**
 	 * @var array
@@ -85,41 +85,22 @@ class ContextAttributesFactoryTest extends MediaWikiIntegrationTestCase {
 		$title = Title::makeTitle( NS_SPECIAL, 'Blankpage' );
 		$contextSource = RequestContext::newExtraneousContext( $title );
 
-		$expectedNamespace = $title->getNamespace();
-		$expectedNamespaceName = $this->services['namespaceInfo']->getCanonicalName( $expectedNamespace );
-
 		$expectedWikidataItemId = 'QFooBarBaz';
-
 		$output = $contextSource->getOutput();
 		$output->setProperty( 'wikibase_item', $expectedWikidataItemId );
 
-		$expectedPageContentLanguage = $title->getPageViewLanguage();
-
-		$restrictionStore = $this->services['restrictionStore'];
-		$expectedGroupsAllowedToMove = $restrictionStore->getRestrictions( $title, 'move' );
-		$expectedGroupsAllowedToEdit = $restrictionStore->getRestrictions( $title, 'edit' );
-
 		$contextAttributes = $this->contextAttributesFactory->newContextAttributes( $contextSource );
 
-		$this->assertSame( $title->getArticleID(), $contextAttributes[ 'page_id' ] );
-		$this->assertSame( $title->getDBkey(), $contextAttributes[ 'page_title' ] );
-		$this->assertSame( $expectedNamespace, $contextAttributes[ 'page_namespace' ] );
-		$this->assertSame( $expectedNamespaceName, $contextAttributes[ 'page_namespace_name' ] );
-		$this->assertSame( $title->getLatestRevID(), $contextAttributes[ 'page_revision_id' ] );
+		$this->assertSame( 0, $contextAttributes[ 'page_id' ] );
+		$this->assertSame( 'Blankpage', $contextAttributes[ 'page_title' ] );
+		$this->assertSame( NS_SPECIAL, $contextAttributes[ 'page_namespace' ] );
+		$this->assertSame( 'Special', $contextAttributes[ 'page_namespace_name' ] );
+		$this->assertSame( 0, $contextAttributes[ 'page_revision_id' ] );
 		$this->assertSame( $expectedWikidataItemId, $contextAttributes[ 'page_wikidata_qid' ] );
-		$this->assertSame(
-			$expectedPageContentLanguage->getCode(),
-			$contextAttributes[ 'page_content_language' ]
-		);
-		$this->assertSame( $title->isRedirect(), $contextAttributes[ 'page_is_redirect' ] );
-		$this->assertSame(
-			$expectedGroupsAllowedToMove,
-			$contextAttributes[ 'page_groups_allowed_to_move' ]
-		);
-		$this->assertSame(
-			$expectedGroupsAllowedToEdit,
-			$contextAttributes[ 'page_groups_allowed_to_edit' ]
-		);
+		$this->assertSame( 'en', $contextAttributes[ 'page_content_language' ] );
+		$this->assertSame( false, $contextAttributes[ 'page_is_redirect' ] );
+		$this->assertSame( [], $contextAttributes[ 'page_groups_allowed_to_move' ] );
+		$this->assertSame( [], $contextAttributes[ 'page_groups_allowed_to_edit' ] );
 	}
 
 	public function testPageWikidataIdHandlesNull(): void {
