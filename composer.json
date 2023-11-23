@@ -20,6 +20,6 @@
 		"phpcs": "phpcs -sp --cache"
 	},
 	"require": {
-		"wikimedia/metrics-platform": "2.1.0"
+		"wikimedia/metrics-platform": "3.1.0"
 	}
 }
