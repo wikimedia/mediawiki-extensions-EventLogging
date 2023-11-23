@@ -5,7 +5,7 @@ namespace MediaWiki\SyntaxHighlight;
 use Status;
 
 /**
- * Phan stub for the soft dependency to SyntaxHighlight_Geshi extension
+ * Phan stub for the soft dependency to SyntaxHighlight_GeSHi extension
  * There is no hard dependency and EventLogging is a dependency to many other extensions,
  * so this class is stubbed and not verified against the original class
  */
