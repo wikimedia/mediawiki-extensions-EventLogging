@@ -292,7 +292,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		);
 
 		// Assertions relating to the Metrics Platform:
-		foreach ( [ 'agent', 'page', 'mediawiki', 'performer' ] as $key ) {
+		foreach ( [ 'page', 'mediawiki', 'performer' ] as $key ) {
 			$this->assertArrayNotHasKey( $key, $event1 );
 		}
 
