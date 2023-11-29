@@ -10,8 +10,8 @@ use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Languages\LanguageConverterFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\RestrictionStore;
+use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\UserGroupManager;
-use MediaWiki\User\UserOptionsLookup;
 use MobileContext;
 use NamespaceInfo;
 
