@@ -35,15 +35,11 @@ class EventLogging {
 	 * Default logger.
 	 *
 	 * @internal
-	 * @return LoggerInterface
 	 */
 	public static function getLogger(): LoggerInterface {
 		return LoggerFactory::getInstance( 'EventLogging' );
 	}
 
-	/**
-	 * @return EventSubmitter
-	 */
 	private static function getEventSubmitter(): EventSubmitter {
 		return MediaWikiServices::getInstance()->get( 'EventLogging.EventSubmitter' );
 	}
@@ -51,9 +47,9 @@ class EventLogging {
 	/**
 	 * Gets the singleton instance of the Metrics Platform Client (MPC).
 	 *
-	 * @return MetricsClient
+	 * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
 	 */
-	private static function getMetricsPlatformClient(): MetricsClient {
+	public static function getMetricsPlatformClient(): MetricsClient {
 		if ( !self::$metricsPlatformClient ) {
 			/** @var MetricsClientFactory $metricsClientFactory */
 			$metricsClientFactory =
@@ -71,7 +67,6 @@ class EventLogging {
 	 *
 	 * @internal
 	 *
-	 * @return void
 	 * @throws RuntimeException If called outside a PHPUnit test
 	 */
 	public static function resetMetricsPlatformClient(): void {
