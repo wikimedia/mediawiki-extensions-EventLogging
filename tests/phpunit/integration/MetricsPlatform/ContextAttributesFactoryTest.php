@@ -4,6 +4,7 @@ use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 
 /**
  * @covers \MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory

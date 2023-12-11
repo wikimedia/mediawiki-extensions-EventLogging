@@ -10,6 +10,7 @@
 
 use MediaWiki\Extension\EventLogging\JsonSchemaContent;
 use MediaWiki\Title\Title;
+use MediaWiki\User\User;
 
 /**
  * @group EventLogging

@@ -2,7 +2,7 @@
 
 namespace MediaWiki\SyntaxHighlight;
 
-use Status;
+use MediaWiki\Status\Status;
 
 /**
  * Phan stub for the soft dependency to SyntaxHighlight_GeSHi extension

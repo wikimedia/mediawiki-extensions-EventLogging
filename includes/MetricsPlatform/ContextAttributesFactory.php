@@ -2,18 +2,18 @@
 
 namespace MediaWiki\Extension\EventLogging\MetricsPlatform;
 
-use Config;
 use ExtensionRegistry;
 use IContextSource;
 use Language;
+use MediaWiki\Config\Config;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Languages\LanguageConverterFactory;
 use MediaWiki\MainConfigNames;
 use MediaWiki\Permissions\RestrictionStore;
+use MediaWiki\Title\NamespaceInfo;
 use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\UserGroupManager;
 use MobileContext;
-use NamespaceInfo;
 
 /**
  * @internal

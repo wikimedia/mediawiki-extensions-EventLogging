@@ -12,9 +12,9 @@
 namespace MediaWiki\Extension\EventLogging;
 
 use FormatJson;
-use Html;
 use JsonContent;
 use JsonSchemaException;
+use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use Xml;
 

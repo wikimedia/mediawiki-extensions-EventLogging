@@ -2,8 +2,8 @@
 
 namespace MediaWiki\Extension\EventLogging\EventSubmitter;
 
-use Config;
-use DeferredUpdates;
+use MediaWiki\Config\Config;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../EventLoggingTestTrait.php';
 
 use ExtensionRegistry;
 use Generator;
-use HashConfig;
+use MediaWiki\Config\HashConfig;
 use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;

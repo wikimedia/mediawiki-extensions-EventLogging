@@ -13,9 +13,9 @@ namespace MediaWiki\Extension\EventLogging;
 
 use Content;
 use ExtensionRegistry;
-use Html;
 use JsonContentHandler;
 use MediaWiki\Content\Renderer\ContentParseParams;
+use MediaWiki\Html\Html;
 use MediaWiki\SyntaxHighlight\SyntaxHighlight;
 use MediaWiki\Title\Title;
 use ParserOutput;

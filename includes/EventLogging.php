@@ -11,8 +11,8 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use DeferredUpdates;
 use FormatJson;
+use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonTreeRef;

@@ -12,16 +12,16 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use Config;
 use ExtensionRegistry;
+use MediaWiki\Config\Config;
 use MediaWiki\Hook\BeforePageDisplayHook;
 use MediaWiki\Hook\CanonicalNamespacesHook;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Output\OutputPage;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\ResourceLoader as RL;
-use OutputPage;
+use MediaWiki\User\User;
 use Skin;
-use User;
 
 class Hooks implements
 	CanonicalNamespacesHook,
