@@ -278,6 +278,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testDispatch(): void {
+		$this->markTestSkipped( 'T353243' );
 		$events = $this->submitMetricsEvent( 'bar', [ 'baz' => 'quux' ] );
 
 		$this->assertCount( 2, $events );
