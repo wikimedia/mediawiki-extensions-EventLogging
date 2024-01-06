@@ -8,10 +8,7 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
-use MediaWiki\Permissions\RestrictionStore;
-use MediaWiki\Title\Title;
 use Psr\Log\LoggerInterface;
-use Wikimedia\MetricsPlatform\MetricsClient;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
@@ -259,111 +256,5 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$this->expectDeprecationAndContinue( '/\$logger parameter is deprecated/' );
 
 		EventLogging::submit( 'test.event', $this->newEvent, $this->mockLogger );
-	}
-
-	private function submitMetricsEvent( string $eventName, array $customData = [] ): array {
-		$events = [];
-
-		$this->mockEventBus->expects( $this->atLeastOnce() )
-			->method( 'send' )
-			->with( $this->callback( static function ( $es ) use ( &$events ) {
-				$events[] = $es[0];
-
-				return true;
-			} ) );
-
-		EventLogging::submitMetricsEvent( $eventName, $customData );
-
-		return $events;
-	}
-
-	public function testDispatch(): void {
-		$this->markTestSkipped( 'T353243' );
-		$events = $this->submitMetricsEvent( 'bar', [ 'baz' => 'quux' ] );
-
-		$this->assertCount( 2, $events );
-
-		// First event…
-		$event1 = $events[0];
-
-		$this->assertEventCanBeIngested(
-			$event1,
-			MetricsClient::SCHEMA,
-			'test.event.mp1'
-		);
-
-		// Assertions relating to the Metrics Platform:
-		foreach ( [ 'page', 'mediawiki', 'performer' ] as $key ) {
-			$this->assertArrayNotHasKey( $key, $event1 );
-		}
-
-		$this->assertArrayEquals(
-			[
-				'baz' => [
-					'data_type' => 'string',
-					'value' => 'quux',
-				]
-			],
-			$event1['custom_data'],
-		);
-
-		// Second event…
-		$event2 = $events[1];
-
-		$this->assertSame( 'test.event.mp2', $event2['meta']['stream'] );
-
-		unset( $event1['meta']['stream'], $event2['meta']['stream'] );
-
-		$this->assertArrayEquals( $event1, $event2, 'The same event is submitted to both streams' );
-	}
-
-	public function testDispatchAddsContextAttributes(): void {
-		$this->setService( 'RestrictionStore', $this->createMock( RestrictionStore::class ) );
-		$contextSource = RequestContext::getMain();
-
-		$title = Title::makeTitle( NS_MAIN, 'Luke_Holland' );
-		$title->setContentModel( CONTENT_MODEL_WIKITEXT );
-		$title->resetArticleID( 0 );
-		$contextSource->setTitle( $title );
-
-		$output = $contextSource->getOutput();
-		$output->setProperty( 'wikibase_item', 'Q22278223' );
-
-		$events = $this->submitMetricsEvent( 'foo' );
-
-		$this->assertCount( 2, $events );
-
-		// We're only interested in event 2…
-		$event2 = $events[1];
-
-		$this->assertEventCanBeIngested(
-			$event2,
-			MetricsClient::SCHEMA,
-			'test.event.mp3'
-		);
-
-		$this->assertArrayEquals(
-			[
-				'agent_client_platform' => 'mediawiki_php',
-				'agent_client_platform_family' => 'desktop_browser',
-			],
-			$event2['agent']
-		);
-
-		$this->assertArrayEquals(
-			[
-				'page_namespace' => NS_MAIN,
-				'page_title' => 'Luke_Holland',
-				'page_wikidata_qid' => 'Q22278223',
-			],
-			$event2['page'],
-			false,
-			false,
-			'Only the requested context attributes are added to the event'
-		);
-
-		foreach ( [ 'mediawiki', 'perfomer' ] as $key ) {
-			$this->assertArrayNotHasKey( $key, $event2 );
-		}
 	}
 }

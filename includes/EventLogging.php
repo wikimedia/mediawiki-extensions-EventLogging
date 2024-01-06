@@ -98,51 +98,6 @@ class EventLogging {
 	}
 
 	/**
-	 * Constructs a "Metrics Event" event given the event name and custom data. The event is
-	 * submitted to all streams that are interested in the event.
-	 *
-	 * An event (E) is constructed for a stream (S) by:
-	 *
-	 * 1. Initializing the
-	 *    [minimum valid event](https://wikitech.wikimedia.org/wiki/Event_Platform/Schemas/Guidelines#Required_fields)
-	 *    that can be submitted to S
-	 * 2. If it is given, formatting the custom data and setting it the `custom_data` field
-	 * 3. Mixing the context attributes requested in the configuration for S into E
-	 *
-	 * S registers interest in an event by including all or part of the name of the event in the
-	 * `producers.metrics_platform_client.events` property of its configuration, e.g.
-	 *
-	 * ```php
-	 * $wgEventStreams = [
-	 *   'test.metrics_platform.all' => [
-	 *
-	 *     // …
-	 *     'producers' => [
-	 *       'metrics_platform_client' => [
-	 *
-	 *         // Matches all event with names beginning with "test."
-	 *         'events' => 'test.',
-	 *       ],
-	 *     ],
-	 *   ],
-	 * ];
-	 * ```
-	 *
-	 * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
-	 *
-	 * @unstable
-	 *
-	 * @param string $eventName
-	 * @param array $customData
-	 */
-	public static function submitMetricsEvent(
-		string $eventName,
-		array $customData = []
-	): void {
-		self::getMetricsPlatformClient()->dispatch( $eventName, $customData );
-	}
-
-	/**
 	 * Transfer small data asynchronously using an HTTP POST.
 	 * This is meant to match the Navigator.sendBeacon() API.
 	 *
