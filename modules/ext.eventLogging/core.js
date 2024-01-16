@@ -457,6 +457,9 @@ if ( window.QUnit ) {
 	core.BackgroundQueue = BackgroundQueue;
 	core.makeLegacyStreamName = makeLegacyStreamName;
 	core.getUserEditCountBucket = getUserEditCountBucket;
+	core.getQueue = function () {
+		return queue;
+	};
 }
 
 module.exports = core;

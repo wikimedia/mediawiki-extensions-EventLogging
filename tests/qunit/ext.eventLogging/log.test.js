@@ -8,7 +8,7 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 	beforeEach: function () {
 		// Used by MetricsClient#addRequiredMetadata()
 		this.clock = this.sandbox.useFakeTimers( 1301648400000, 'Date' );
-
+		this.sandbox.stub( navigator, 'sendBeacon', function () {} );
 		this.sandbox.stub( mw.log, 'warn', function () {} );
 		this.sandbox.stub( mw.log, 'error', function () {} );
 
@@ -23,6 +23,7 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 		} );
 	},
 	afterEach: function () {
+		mw.eventLog.getQueue().flush();
 		mw.eventLog.setOptionsForTest( this.originalOptions );
 	}
 } ) );
