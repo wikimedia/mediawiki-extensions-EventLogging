@@ -8,6 +8,7 @@ QUnit.module( 'ext.eventLogging/stream', {
 		} );
 	},
 	afterEach: function () {
+		mw.eventLog.getQueue().flush();
 		mw.eventLog.setOptionsForTest( this.originalOptions );
 	}
 } );
@@ -18,6 +19,7 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 	this.sandbox.stub( mw.log, 'warn', function () {
 		seen.push( 'warn' );
 	} );
+	this.sandbox.stub( navigator, 'sendBeacon', function () {} );
 
 	mw.eventLog.setOptionsForTest( {
 		streamConfigs: {
