@@ -1,0 +1,37 @@
+{
+	"opts": {
+		"destination": "docs",
+		"package": "modules/package.json",
+		"pedantic": true,
+		"readme": "modules/README.md",
+		"recurse": true,
+		"template": "node_modules/jsdoc-wmf-theme"
+	},
+	"plugins": [
+		"plugins/markdown",
+		"plugins/summarize"
+	],
+	"source": {
+		"include": [ "modules" ],
+		"exclude": [
+			"modules/ext.eventLogging.debug/debug.js",
+			"modules/lib/metrics-platform/ContextController.js",
+			"modules/lib/metrics-platform/ContextUtils.js",
+			"modules/lib/metrics-platform/CurationController.js",
+			"modules/lib/metrics-platform/SamplingController.js",
+			"modules/lib/metrics-platform/StreamConfigUtils.js"
+		]
+	},
+	"sourceType": "module",
+	"templates": {
+		"cleverLinks": true,
+		"default": {
+			"useLongnameInNav": true
+		},
+		"wmf": {
+			"linkMap": {
+				"jQuery.Promise": "https://api.jquery.com/Types/#Promise"
+			}
+		}
+	}
+}

@@ -1,19 +1,17 @@
 'use strict';
 
 /**
- * This class enables pending callbacks to fire all at once, on a
+ * @classdesc This class enables pending callbacks to fire all at once, on a
  * synchronized schedule instead of one by one.  This is useful to group
  * operations that wake up expensive resources such as a mobile radio.
  *
- * How to use:
- *
- *     enqueue = ( new BackgroundQueue() ).add;
- *     ...
- *     enqueue( callback );
- *     // callbacks will be fired in batches every 30 seconds (default)
+ * @example
+ * enqueue = ( new BackgroundQueue() ).add;
+ * ...
+ * enqueue( callback );
+ * // callbacks will be fired in batches every 30 seconds (default)
  *
  * @class mw.eventLog.BackgroundQueue
- * @constructor
  * @param {number} [intervalSecs=30] seconds to wait before calling callbacks
  */
 module.exports = function BackgroundQueue( intervalSecs ) {
@@ -27,7 +25,10 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 	/**
 	 * Add a callback to the queue, to be flushed when the timer runs out.
 	 *
+	 * @method flush
 	 * @param {Function} fn Callback to add
+	 * @memberof mw.eventLog.BackgroundQueue
+	 * @instance
 	 */
 	queue.add = function ( fn ) {
 		if ( discardingPage ) {
@@ -44,6 +45,10 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 
 	/**
 	 * Manually execute all the callbacks, same as if the timer runs out.
+	 *
+	 * @method flush
+	 * @memberof mw.eventLog.BackgroundQueue
+	 * @instance
 	 */
 	queue.flush = function () {
 		if ( timer ) {

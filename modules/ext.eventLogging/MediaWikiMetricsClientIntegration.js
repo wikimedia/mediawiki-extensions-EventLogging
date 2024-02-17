@@ -10,13 +10,13 @@ var isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) ==
 var contextAttributes = null;
 
 /**
- * Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
+ * @classdesc Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
  *
  * See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
  *
+ * @class MediaWikiMetricsClientIntegration
  * @param {Object} eventLog
  * @param {Object} eventLogConfig
- * @constructor
  */
 function MediaWikiMetricsClientIntegration( eventLog, eventLogConfig ) {
 	this.eventLog = eventLog;

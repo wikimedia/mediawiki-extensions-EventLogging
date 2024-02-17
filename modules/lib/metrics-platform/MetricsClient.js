@@ -8,6 +8,8 @@ const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
  * Client for producing events to [the Event Platform](https://wikitech.wikimedia.org/wiki/Event_Platform) and
  * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
  *
+ * @ignore
+ *
  * @param {Integration} integration
  * @param {StreamConfigs|false} streamConfigs
  * @constructor
@@ -26,6 +28,8 @@ function MetricsClient(
 }
 
 /**
+ * @ignore
+ *
  * @param {StreamConfigs|false} streamConfigs
  * @param {string} streamName
  * @return {StreamConfig|undefined}
@@ -58,6 +62,8 @@ function getStreamConfigInternal( streamConfigs, streamName ) {
 /**
  * Gets a deep clone of the stream config.
  *
+ * @ignore
+ *
  * @param {string} streamName
  * @return {StreamConfig|undefined}
  */
@@ -68,11 +74,17 @@ MetricsClient.prototype.getStreamConfig = function ( streamName ) {
 };
 
 /**
+ * @ignore
+ *
  * @param {StreamConfigs} streamConfigs
  * @return {Record<string, string[]>}
  */
 function getEventNameToStreamNamesMap( streamConfigs ) {
-	/** @type Record<string, string[]> */
+	/**
+	 * @ignore
+	 *
+	 * @type Record<string, string[]>
+	 */
 	const result = {};
 
 	for ( const streamName in streamConfigs ) {
@@ -122,6 +134,8 @@ function getEventNameToStreamNamesMap( streamConfigs ) {
  *   ],
  * ],
  * ```
+ *
+ * @ignore
  *
  * @param {string} eventName
  * @return {string[]}
@@ -200,7 +214,7 @@ MetricsClient.prototype.addRequiredMetadata = function ( eventData, streamName )
  * sample. If E does not have the `$schema` property, then a warning is logged.
  *
  * @param {string} streamName The name of the stream to send the event data to
- * @param {BaseEventData} eventData The event data
+ * @param {Object} eventData The event data
  *
  * @stable
  */
@@ -266,12 +280,18 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
  *
  * `customData` is considered valid if all of its keys are snake_case.
  *
+ * @ignore
+ *
  * @param {Record<string,any>|undefined} customData
  * @return {FormattedCustomData}
  * @throws {Error} If `customData` is invalid
  */
 function getFormattedCustomData( customData ) {
-	/** @type {Record<string,EventCustomDatum>} */
+	/**
+	 * @ignore
+	 *
+	 * @type {Record<string,EventCustomDatum>}
+	 */
 	const result = {};
 
 	if ( !customData ) {
@@ -310,7 +330,7 @@ function getFormattedCustomData( customData ) {
  * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
  *
  * @param {string} eventName
- * @param {Record<string, any>} [customData]
+ * @param {Object.<string, any>} [customData]
  *
  * @unstable
  * @deprecated
@@ -379,7 +399,11 @@ MetricsClient.prototype.processDispatchCall = function (
 	// Produce the event(s)
 	for ( let i = 0; i < streamNames.length; ++i ) {
 		/* eslint-disable camelcase */
-		/** @type {MetricsPlatformEventData} */
+		/**
+		 * @ignore
+		 *
+		 * @type {MetricsPlatformEventData}
+		 */
 		const eventData = {
 			$schema: SCHEMA,
 			dt: timestamp,

@@ -35,7 +35,7 @@ function makeLegacyStreamName( schemaName ) {
 }
 
 /**
- * Client-side EventLogging API, including pub/sub subscriber functionality.
+ * @classdesc Client-side EventLogging API, including pub/sub subscriber functionality.
  *
  * The main API is `mw.eventLog.logEvent`.  This is set up as a listener for
  * `event`-namespace topics in `mw.track`. Sampling utility methods are available
@@ -44,6 +44,9 @@ function makeLegacyStreamName( schemaName ) {
  *
  * @class mw.eventLog
  * @singleton
+ * @hideconstructor
+ * @borrows MetricsClient#submit as submit
+ * @borrows MetricsClient#dispatch as dispatch
  */
 core = {
 
@@ -165,6 +168,7 @@ core = {
 	 * this falls back to a detached Image request.
 	 *
 	 * @param {string} url URL to request from the server.
+	 * @memberof mw.eventLog
 	 */
 	sendBeacon: function ( url ) {
 		if ( navigator.sendBeacon ) {
@@ -180,10 +184,12 @@ core = {
 	},
 
 	/**
-	 * Add a pending callback to be flushed at a later time by the background queue
+	 * Add a pending callback to be flushed at a later time by the background queue.
 	 *
 	 * @param {Function} callback to enqueue and run when the queue is processed
 	 * @return undefined
+	 * @memberof mw.eventLog
+	 * @method
 	 */
 	enqueue: queue.add,
 
@@ -197,6 +203,7 @@ core = {
 	 * @param {string} schemaName Canonical schema name.
 	 * @param {Object} eventData Event object.
 	 * @return {jQuery.Promise} jQuery Promise object for the logging call.
+	 * @memberof mw.eventLog
 	 */
 	logEvent: function ( schemaName, eventData ) {
 		var url,
@@ -239,6 +246,7 @@ core = {
 	 *
 	 * @param {string} schemaName
 	 * @param {string} errorCode
+	 * @memberof mw.eventLog
 	 */
 	logFailure: function ( schemaName, errorCode ) {
 		// Record this failure as a simple counter. By default "counter.*" goes nowhere.
@@ -277,6 +285,7 @@ core = {
 	 * @param {number} populationSize One in how many should be included.
 	 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
 	 * @return {boolean}
+	 * @memberof mw.eventLog
 	 */
 	sessionInSample: function ( populationSize ) {
 		// Use the same unique random identifier within the same  session
@@ -301,11 +310,12 @@ core = {
 
 	/**
 	 * Determine whether the current event is sampled given a sampling ratio
-	 * per pageview
+	 * per pageview.
 	 *
 	 * @param {number} populationSize One in how many should be included.
 	 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
 	 * @return {boolean}
+	 * @memberof mw.eventLog
 	 */
 	pageviewInSample: function ( populationSize ) {
 		// Use the same unique random identifier within the same page load
@@ -412,13 +422,15 @@ core.id = ( function () {
 }() );
 
 /**
- * Provide the user's edit count as a low-granularity bucket name
+ * Provide the user's edit count as a low-granularity bucket name.
  *
  * @param {number|null} editCount User edit count, or null for anonymous performers.
  * @return {string|null} `null` for anonymous performers.
  *
  * Do not use this value in conjunction with other edit count
  * bucketing, or you will deanonymize users to some degree.
+ *
+ * @memberof mw.eventLog
  */
 function getUserEditCountBucket( editCount ) {
 	if ( editCount === null ) {
