@@ -186,6 +186,12 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 		}
 	} );
 
+	Object.defineProperty( result.performer, 'active_browsing_session_token', {
+		get: function () {
+			return mw.eventLog.id.getSessionId();
+		}
+	} );
+
 	contextAttributes = result;
 
 	return result;
