@@ -13,7 +13,7 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 
 /**
  * @group EventLogging
- * @covers EventLogging::schemaValidate
+ * @covers \MediaWiki\Extension\EventLogging\EventLogging::schemaValidate
  */
 class EventLoggingExtensionFunctionsTest extends MediaWikiIntegrationTestCase {
 
@@ -53,7 +53,7 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiIntegrationTestCase {
 	 * perform only a basic, high-level sanity-check on object and
 	 * schema validation.
 	 *
-	 * @covers EventLogging::schemaValidate
+	 * @covers \MediaWiki\Extension\EventLogging\EventLogging::schemaValidate
 	 */
 	public function testSchemaValidate() {
 		$this->assertTrue( EventLogging::schemaValidate( self::$validObject, self::$validSchema ),
@@ -64,7 +64,7 @@ class EventLoggingExtensionFunctionsTest extends MediaWikiIntegrationTestCase {
 
 	/**
 	 * Tests invalidation of objects that deviate from schema.
-	 * @covers EventLogging::schemaValidate
+	 * @covers \MediaWiki\Extension\EventLogging\EventLogging::schemaValidate
 	 */
 	public function testSchemaInvalidate() {
 		$this->expectException( JsonSchemaException::class );

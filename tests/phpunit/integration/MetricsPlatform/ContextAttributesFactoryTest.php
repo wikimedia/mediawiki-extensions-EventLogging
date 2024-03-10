@@ -70,7 +70,7 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 		$contextSource->setUser( $user );
 
 		$this->contextAttributesFactory->method( 'isUsingMobileDomain' )
-			->will( $this->returnValue( $isUsingMobileDomain ) );
+			->willReturn( $isUsingMobileDomain );
 
 		$contextAttributes = $this->contextAttributesFactory->newContextAttributes( $contextSource );
 

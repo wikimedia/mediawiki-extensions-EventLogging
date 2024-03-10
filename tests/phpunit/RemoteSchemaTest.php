@@ -95,11 +95,11 @@ class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 			->method( 'get' )
 			->with(
 				$this->stringContains( '?' ),
-				$this->equalTo( [
+				[
 					'timeout' => RemoteSchema::LOCK_TIMEOUT * 0.8
-				] )
+				]
 			)
-			->will( $this->returnValue( FormatJson::encode( $this->statusSchema ) ) );
+			->willReturn( FormatJson::encode( $this->statusSchema ) );
 
 		$this->assertEquals( $this->statusSchema, $this->schema->get() );
 	}

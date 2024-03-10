@@ -35,7 +35,7 @@ class JsonSchemaContent extends JsonContent {
 	 * @return array|bool
 	 */
 	public static function resolve( $ref ) {
-		list( $title, $revId ) = explode( '/', $ref );
+		[ $title, $revId ] = explode( '/', $ref );
 		$rs = new RemoteSchema( $title, (int)$revId );
 		return $rs->get();
 	}

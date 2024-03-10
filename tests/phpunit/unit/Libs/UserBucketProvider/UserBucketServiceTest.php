@@ -62,7 +62,7 @@ class UserBucketServiceTest extends TestCase {
 		$userEditTracker->expects( $this->once() )
 			->method( 'getUserEditCount' )
 			->with( $user )
-			->will( $this->returnValue( $userEditCount ) );
+			->willReturn( $userEditCount );
 
 		$userBucketService = new UserBucketService( $userEditTracker );
 

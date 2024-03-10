@@ -191,7 +191,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 				return true;
 			} ) );
 
-		EventLogging::logEvent( 'Migrated', 1337,  $this->legacyEvent );
+		EventLogging::logEvent( 'Migrated', 1337, $this->legacyEvent );
 	}
 
 	public function testSendNonMigratedLegacyEvent(): void {
@@ -207,7 +207,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 				);
 			} ) );
 
-		EventLogging::logEvent( 'NotMigrated', 1337,  $this->legacyEvent );
+		EventLogging::logEvent( 'NotMigrated', 1337, $this->legacyEvent );
 	}
 
 	public function testEncapulateEventServiceEvent(): void {
@@ -221,7 +221,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$this->assertMatchesRegularExpression( $this->timestamp->regexes['TS_ISO_8601'], $result['client_dt'] );
 		$this->assertStringEndsWith( 'Z', $result['client_dt'] );
 		$this->assertSame( $this->testHttpHost, $result['webHost'] );
-		$this->assertSame( $result['event']['field_a'],  $this->legacyEvent['field_a'] );
+		$this->assertSame( $result['event']['field_a'], $this->legacyEvent['field_a'] );
 	}
 
 	public function testGetLegacyStreamName(): void {
