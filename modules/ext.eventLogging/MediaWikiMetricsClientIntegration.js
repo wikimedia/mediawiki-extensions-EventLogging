@@ -124,7 +124,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 		page: {
 			id: c( 'wgArticleId' ),
 			title: c( 'wgTitle' ),
-			namespace: c( 'wgNamespaceNumber' ),
+			namespace_id: c( 'wgNamespaceNumber' ),
 			namespace_name: c( 'wgCanonicalNamespace' ),
 			revision_id: c( 'wgRevisionId' ),
 
