@@ -7,7 +7,6 @@ use FormatJson;
 use JsonSerializable;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MediaWikiServices;
-use ObjectCache;
 use stdClass;
 
 /**
@@ -37,7 +36,8 @@ class RemoteSchema implements JsonSerializable {
 
 		$this->title = $title;
 		$this->revision = $revision;
-		$this->cache = $cache ?: ObjectCache::getInstance( CACHE_ANYTHING );
+		$this->cache = $cache ?: MediaWikiServices::getInstance()
+			->getObjectCacheFactory()->getInstance( CACHE_ANYTHING );
 		$this->httpRequestFactory = $httpRequestFactory ?: MediaWikiServices::getInstance()->getHttpRequestFactory();
 		$this->key = $this->cache->makeGlobalKey(
 			'eventlogging-schema',
