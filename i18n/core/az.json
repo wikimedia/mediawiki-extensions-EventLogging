@@ -1,0 +1,10 @@
+{
+	"@metadata": {
+		"authors": [
+			"Nemoralis"
+		]
+	},
+	"eventlogging-desc": "Müştəri tərəfdəki hadisələri qeyd etmək üçün freymvork",
+	"eventlogging-invalid-json": "Yanlış JSON",
+	"eventlogging-revision-id": "Dəyişiklik $1"
+}
