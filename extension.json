@@ -57,6 +57,7 @@
 		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
 		"MediaWiki\\Extension\\EventLogging\\EventLogging": "includes/EventLogging.php",
 		"MediaWiki\\Extension\\EventLogging\\Libs\\JsonSchemaValidation\\JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
+		"MediaWiki\\Extension\\EventLogging\\Libs\\Legacy\\EventLoggingLegacyConverter": "includes/Libs/Legacy/EventLoggingLegacyConverter.php",
 		"MediaWiki\\Extension\\EventLogging\\Libs\\UserBucketProvider\\UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php",
 		"UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php"
 	},
