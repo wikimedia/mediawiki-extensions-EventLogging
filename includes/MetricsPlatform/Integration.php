@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\EventLogging\MetricsPlatform;
 
-use IContextSource;
+use MediaWiki\Context\IContextSource;
 use Wikimedia\MetricsPlatform\Integration as MetricsPlatformIntegration;
 
 /**

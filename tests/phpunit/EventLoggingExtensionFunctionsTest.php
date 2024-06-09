@@ -10,6 +10,7 @@
  */
 
 use MediaWiki\Extension\EventLogging\EventLogging;
+use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 
 /**
  * @group EventLogging

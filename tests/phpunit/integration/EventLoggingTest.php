@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
 
-/** @covers EventLogging */
+/** @covers \MediaWiki\Extension\EventLogging\EventLogging */
 class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	use EventLoggingTestTrait;
 

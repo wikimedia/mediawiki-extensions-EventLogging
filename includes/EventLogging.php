@@ -12,6 +12,7 @@
 namespace MediaWiki\Extension\EventLogging;
 
 use FormatJson;
+use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
@@ -20,7 +21,6 @@ use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
-use RequestContext;
 use RuntimeException;
 use Wikimedia\MetricsPlatform\MetricsClient;
 

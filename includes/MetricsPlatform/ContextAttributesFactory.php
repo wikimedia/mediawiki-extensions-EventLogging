@@ -3,9 +3,9 @@
 namespace MediaWiki\Extension\EventLogging\MetricsPlatform;
 
 use ExtensionRegistry;
-use IContextSource;
 use Language;
 use MediaWiki\Config\Config;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Languages\LanguageConverterFactory;
 use MediaWiki\MainConfigNames;

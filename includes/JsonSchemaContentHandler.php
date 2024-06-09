@@ -16,9 +16,9 @@ use ExtensionRegistry;
 use JsonContentHandler;
 use MediaWiki\Content\Renderer\ContentParseParams;
 use MediaWiki\Html\Html;
+use MediaWiki\Parser\ParserOutput;
 use MediaWiki\SyntaxHighlight\SyntaxHighlight;
 use MediaWiki\Title\Title;
-use ParserOutput;
 use Xml;
 
 class JsonSchemaContentHandler extends JsonContentHandler {

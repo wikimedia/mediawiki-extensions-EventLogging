@@ -13,7 +13,7 @@ namespace MediaWiki\Extension\EventLogging;
 
 use FormatJson;
 use JsonContent;
-use JsonSchemaException;
+use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use Xml;

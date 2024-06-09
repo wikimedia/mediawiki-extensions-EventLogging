@@ -2,7 +2,7 @@
 
 namespace MediaWiki\Extension\EventLogging\MetricsPlatform;
 
-use IContextSource;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\EventSubmitter as MetricsPlatformEventSubmitter;
 use Psr\Log\LoggerInterface;

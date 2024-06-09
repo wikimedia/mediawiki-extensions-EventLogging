@@ -15,13 +15,13 @@ namespace MediaWiki\Extension\EventLogging;
 
 use ApiModuleManager;
 use Content;
-use IContextSource;
-use JsonSchemaException;
 use MediaWiki\Api\Hook\ApiMain__moduleManagerHook;
+use MediaWiki\Context\IContextSource;
 use MediaWiki\EditPage\EditPage;
-use MediaWiki\Hook\BeforePageDisplayHook;
+use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Hook\EditFilterMergedContentHook;
 use MediaWiki\Hook\MovePageIsValidMoveHook;
+use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
