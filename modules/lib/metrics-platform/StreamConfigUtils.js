@@ -1,10 +1,13 @@
 /**
  * @param {?StreamSamplingConfig} sample
+ * @return {boolean}
  */
 function isValidSample( sample ) {
-	return sample &&
+	return !!(
+		sample &&
 		sample.unit && sample.rate &&
-		sample.rate >= 0 && sample.rate <= 1;
+		sample.rate >= 0 && sample.rate <= 1
+	);
 }
 
 module.exports = {

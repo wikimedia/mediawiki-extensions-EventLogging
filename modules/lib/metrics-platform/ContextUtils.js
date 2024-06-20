@@ -28,9 +28,11 @@ const VALID_ATTRIBUTE_NAMES = [
 	'performer_id',
 	'performer_name',
 	'performer_session_id',
+	'performer_active_browsing_session_token',
 	'performer_pageview_id',
 	'performer_groups',
 	'performer_is_bot',
+	'performer_is_temp',
 	'performer_language',
 	'performer_language_variant',
 	'performer_can_probably_edit_page',
@@ -89,9 +91,7 @@ function copyAttributeByName( from, to, name ) {
  * @param {ContextAttributes} to
  */
 function copyAttributes( from, to ) {
-	VALID_ATTRIBUTE_NAMES.forEach( function ( name ) {
-		copyAttributeByName( from, to, name );
-	} );
+	VALID_ATTRIBUTE_NAMES.forEach( ( name ) => copyAttributeByName( from, to, name ) );
 }
 
 module.exports = {

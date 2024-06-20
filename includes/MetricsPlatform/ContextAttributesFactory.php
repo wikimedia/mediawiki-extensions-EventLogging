@@ -232,6 +232,7 @@ class ContextAttributesFactory {
 			'performer_name' => $userName,
 			'performer_groups' => $this->userGroupManager->getUserEffectiveGroups( $user ),
 			'performer_is_bot' => $user->isBot(),
+			'performer_is_temp' => $user->isTemp(),
 			'performer_language' => $userLanguage->getCode(),
 			'performer_language_variant' => $userLanguageVariant,
 			'performer_edit_count' => $userEditCount,

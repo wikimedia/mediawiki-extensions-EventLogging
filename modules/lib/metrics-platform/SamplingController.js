@@ -18,7 +18,7 @@ function SamplingController( integration ) {
  * @param {?StreamConfig} streamConfig stream configuration
  * @return {boolean} true if in-sample, false if out-sample.
  */
-SamplingController.prototype.streamInSample = function ( streamConfig ) {
+SamplingController.prototype.isStreamInSample = function ( streamConfig ) {
 	if ( !streamConfig ) {
 		// If a stream is not defined, it is not in sample.
 		return false;

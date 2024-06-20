@@ -15,11 +15,11 @@
 		"include": [ "modules" ],
 		"exclude": [
 			"modules/ext.eventLogging.debug/debug.js",
-			"modules/lib/metrics-platform/ContextController.js",
-			"modules/lib/metrics-platform/ContextUtils.js",
-			"modules/lib/metrics-platform/CurationController.js",
-			"modules/lib/metrics-platform/SamplingController.js",
-			"modules/lib/metrics-platform/StreamConfigUtils.js"
+			"modules/lib",
+			"modules/lib",
+			"modules/lib",
+			"modules/lib",
+			"modules/lib"
 		]
 	},
 	"sourceType": "module",

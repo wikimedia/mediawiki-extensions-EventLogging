@@ -8,8 +8,6 @@ const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
  * Client for producing events to [the Event Platform](https://wikitech.wikimedia.org/wiki/Event_Platform) and
  * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
  *
- * @ignore
- *
  * @param {Integration} integration
  * @param {StreamConfigs|false} streamConfigs
  * @constructor
@@ -28,8 +26,6 @@ function MetricsClient(
 }
 
 /**
- * @ignore
- *
  * @param {StreamConfigs|false} streamConfigs
  * @param {string} streamName
  * @return {StreamConfig|undefined}
@@ -62,8 +58,6 @@ function getStreamConfigInternal( streamConfigs, streamName ) {
 /**
  * Gets a deep clone of the stream config.
  *
- * @ignore
- *
  * @param {string} streamName
  * @return {StreamConfig|undefined}
  */
@@ -74,17 +68,11 @@ MetricsClient.prototype.getStreamConfig = function ( streamName ) {
 };
 
 /**
- * @ignore
- *
  * @param {StreamConfigs} streamConfigs
  * @return {Record<string, string[]>}
  */
 function getEventNameToStreamNamesMap( streamConfigs ) {
-	/**
-	 * @ignore
-	 *
-	 * @type Record<string, string[]>
-	 */
+	/** @type Record<string, string[]> */
 	const result = {};
 
 	for ( const streamName in streamConfigs ) {
@@ -134,8 +122,6 @@ function getEventNameToStreamNamesMap( streamConfigs ) {
  *   ],
  * ],
  * ```
- *
- * @ignore
  *
  * @param {string} eventName
  * @return {string[]}
@@ -214,7 +200,7 @@ MetricsClient.prototype.addRequiredMetadata = function ( eventData, streamName )
  * sample. If E does not have the `$schema` property, then a warning is logged.
  *
  * @param {string} streamName The name of the stream to send the event data to
- * @param {Object} eventData The event data
+ * @param {BaseEventData} eventData The event data
  *
  * @stable
  */
@@ -269,7 +255,7 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
 
 	this.addRequiredMetadata( eventData, streamName );
 
-	if ( this.samplingController.streamInSample( streamConfig ) ) {
+	if ( this.samplingController.isStreamInSample( streamConfig ) ) {
 		this.integration.enqueueEvent( eventData );
 		this.integration.onSubmit( streamName, eventData );
 	}
@@ -280,18 +266,12 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
  *
  * `customData` is considered valid if all of its keys are snake_case.
  *
- * @ignore
- *
  * @param {Record<string,any>|undefined} customData
  * @return {FormattedCustomData}
  * @throws {Error} If `customData` is invalid
  */
 function getFormattedCustomData( customData ) {
-	/**
-	 * @ignore
-	 *
-	 * @type {Record<string,EventCustomDatum>}
-	 */
+	/** @type {Record<string,EventCustomDatum>} */
 	const result = {};
 
 	if ( !customData ) {
@@ -330,7 +310,7 @@ function getFormattedCustomData( customData ) {
  * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
  *
  * @param {string} eventName
- * @param {Object.<string, any>} [customData]
+ * @param {Record<string, any>} [customData]
  *
  * @unstable
  * @deprecated
@@ -399,11 +379,7 @@ MetricsClient.prototype.processDispatchCall = function (
 	// Produce the event(s)
 	for ( let i = 0; i < streamNames.length; ++i ) {
 		/* eslint-disable camelcase */
-		/**
-		 * @ignore
-		 *
-		 * @type {MetricsPlatformEventData}
-		 */
+		/** @type {MetricsPlatformEventData} */
 		const eventData = {
 			$schema: SCHEMA,
 			dt: timestamp,
@@ -427,7 +403,7 @@ MetricsClient.prototype.processDispatchCall = function (
 		this.contextController.addRequestedValues( eventData, streamConfig );
 
 		if (
-			this.samplingController.streamInSample( streamConfig ) &&
+			this.samplingController.isStreamInSample( streamConfig ) &&
 			this.curationController.shouldProduceEvent( eventData, streamConfig )
 		) {
 			this.integration.enqueueEvent( eventData );
@@ -512,6 +488,18 @@ const CLICK_SCHEMA_ID = '/analytics/product_metrics/web/base/1.0.0';
  */
 MetricsClient.prototype.submitClick = function ( streamName, interactionData ) {
 	this.submitInteraction( streamName, CLICK_SCHEMA_ID, 'click', interactionData );
+};
+
+/**
+ *  Checks if a stream is in or out of sample.
+ *
+ * @param {string} streamName
+ * @return {boolean}
+ */
+MetricsClient.prototype.isStreamInSample = function ( streamName ) {
+	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
+
+	return streamConfig ? this.samplingController.isStreamInSample( streamConfig ) : false;
 };
 
 module.exports = MetricsClient;

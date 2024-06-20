@@ -34,9 +34,13 @@ ContextController.prototype.addRequestedValues = function ( eventData, streamCon
 		'agent_client_platform',
 		'agent_client_platform_family'
 	] )
-		.forEach( function ( requestedValue ) {
-			copyAttributeByName( contextAttributes, eventData, requestedValue );
-		} );
+		.forEach(
+			( requestedValue ) => copyAttributeByName(
+				contextAttributes,
+				eventData,
+				requestedValue
+			)
+		);
 
 	// Record sampling unit and rate. See https://phabricator.wikimedia.org/T310693 for more
 	// detail.

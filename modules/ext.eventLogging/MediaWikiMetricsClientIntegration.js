@@ -162,6 +162,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			// [0] https://www.mediawiki.org/wiki/Help:User_rights_and_groups#User_rights_and_groups_on_your_wiki
 			is_bot: userGroups.indexOf( 'bot' ) !== -1,
 
+			is_temp: c( 'wgUserIsTemp' ),
 			language: c( 'wgUserLanguage' ),
 			language_variant: c( 'wgUserVariant' ),
 			can_probably_edit_page: c( 'wgIsProbablyEditable' ),
