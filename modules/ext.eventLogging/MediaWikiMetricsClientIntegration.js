@@ -113,6 +113,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 
 	var version = String( c( 'wgVersion' ) );
 
+	var userIsLoggedIn = !mw.user.isAnon();
 	var userGroups = c( 'wgUserGroups' );
 
 	/* eslint-disable camelcase */
@@ -146,7 +147,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			site_content_language: c( 'wgContentLanguage' )
 		},
 		performer: {
-			is_logged_in: !mw.user.isAnon(),
+			is_logged_in: userIsLoggedIn,
 			id: mw.user.getId(),
 			name: mw.user.getName(),
 
@@ -165,12 +166,15 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			is_temp: c( 'wgUserIsTemp' ),
 			language: c( 'wgUserLanguage' ),
 			language_variant: c( 'wgUserVariant' ),
-			can_probably_edit_page: c( 'wgIsProbablyEditable' ),
-			edit_count: c( 'wgUserEditCount' ),
-			edit_count_bucket: c( 'wgUserEditCountBucket' ),
-			registration_dt: new Date( c( 'wgUserRegistration' ) ).toISOString()
+			can_probably_edit_page: c( 'wgIsProbablyEditable' )
 		}
 	};
+
+	if ( userIsLoggedIn ) {
+		result.performer.edit_count = c( 'wgUserEditCount' );
+		result.performer.edit_count_bucket = c( 'wgUserEditCountBucket' );
+		result.performer.registration_dt = new Date( c( 'wgUserRegistration' ) ).toISOString();
+	}
 	/* eslint-enable camelcase */
 
 	var self = this;
