@@ -57,13 +57,24 @@
 		"JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
 		"MediaWiki\\Extension\\EventLogging\\EventLogging": "includes/EventLogging.php",
 		"MediaWiki\\Extension\\EventLogging\\Libs\\JsonSchemaValidation\\JsonSchemaException": "includes/Libs/JsonSchemaValidation/JsonSchemaException.php",
-		"MediaWiki\\Extension\\EventLogging\\Libs\\Legacy\\EventLoggingLegacyConverter": "includes/Libs/Legacy/EventLoggingLegacyConverter.php",
 		"MediaWiki\\Extension\\EventLogging\\Libs\\UserBucketProvider\\UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php",
 		"UserBucketProvider": "includes/Libs/UserBucketProvider/UserBucketProvider.php"
 	},
 	"AutoloadNamespaces": {
 		"MediaWiki\\Extension\\EventLogging\\": "includes/"
 	},
+	"RestRoutes": [
+		{
+			"path": "/eventlogging/v0/beacon",
+			"method": "GET",
+			"class": "MediaWiki\\Extension\\EventLogging\\Rest\\Handler\\LegacyBeaconHandler",
+			"services": [
+				"EventLogging.LegacyBeaconHandlerOptions",
+				"EventLogging.EventSubmitter",
+				"GlobalIdGenerator"
+			]
+		}
+	],
 	"ResourceModules": {
 		"ext.eventLogging": {
 			"localBasePath": "modules",
@@ -178,6 +189,12 @@
 		"EventLoggingQueueLingerSeconds": {
 			"value": 30,
 			"description": "Number of seconds EventLogging should wait to batch messages before sending them to the intake service."
+		},
+		"EventLoggingLegacyBeaconAllowedWikiIds": {
+			"value": [
+				"mediawikiwiki"
+			],
+			"description": "Wiki Ids on which the w/rest.php/eventlogging/v0/beacon/ legacy proxy will be enabled. As of 2024-07, this endpoint only exists in order to support MediaWikiPingback events from 3rd party MediaWiki installs.  These send to mediawiki.org. This only configurable to enable testing."
 		}
 	},
 	"load_composer_autoloader": true,
