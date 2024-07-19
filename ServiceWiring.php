@@ -1,11 +1,13 @@
 <?php
 
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\NullEventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
+use MediaWiki\Extension\EventLogging\Rest\Handler\LegacyBeaconHandler;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
@@ -65,6 +67,13 @@ return [
 			$services->getService( 'EventLogging.EventSubmitter' ),
 			$services->getService( 'EventLogging.StreamConfigs' ),
 			$services->getService( 'EventLogging.Logger' )
+		);
+	},
+
+	'EventLogging.LegacyBeaconHandlerOptions' => static function ( MediaWikiServices $services ): ServiceOptions {
+		return new ServiceOptions(
+			LegacyBeaconHandler::CONSTRUCTOR_OPTIONS,
+			$services->getMainConfig()
 		);
 	},
 ];
