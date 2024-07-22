@@ -6,5 +6,10 @@
 	},
 	"eventlogging-desc": "Фреймворко клиентан хиламаш лато",
 	"eventlogging-invalid-json": "Нийса йоцу JSON",
-	"eventlogging-revision-id": "Ревизи $1"
+	"eventlogging-revision-id": "Ревизи $1",
+	"eventlogging-code-sample-logging-on-server-side": "PHP протоколашйар",
+	"eventlogging-code-sample-module-setup-json": "JSON кху JavaScript протоколйаран дӀахӀоттор",
+	"eventlogging-code-sample-logging-on-client-side": "JavaScript протоколашйар",
+	"eventlogging-error-move-source": "Схемийн агӀонийн цӀерш хийца йиш йац",
+	"eventlogging-error-move-destination": "АгӀонийн цӀерш хийца йиш йац Схемин агӀонаш аьлла"
 }
