@@ -7,6 +7,7 @@ use HashConfig;
 use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\EventLogging\EventSubmitter\NullEventSubmitter;
 use MediaWiki\Extension\EventLogging\Rest\Handler\LegacyBeaconHandler;
+use MediaWiki\MainConfigNames;
 use MediaWiki\Rest\RequestData;
 use MediaWiki\Tests\Rest\Handler\HandlerTestTrait;
 use MediaWikiIntegrationTestCase;
@@ -30,7 +31,7 @@ class LegacyBeaconHandlerIntegrationTest extends MediaWikiIntegrationTestCase {
 		parent::setUp();
 
 		$this->config = new HashConfig( [
-			'ServerName' => self::MOCK_SERVER_NAME,
+			MainConfigNames::ServerName => self::MOCK_SERVER_NAME,
 			'EventLoggingLegacyBeaconAllowedWikiIds' => [ WikiMap::getCurrentWikiId() ],
 		] );
 

@@ -29,8 +29,8 @@ class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
 	protected function setUp(): void {
-		$this->setMwGlobals( [
-			'wgEventLoggingSchemaApiUri' => 'https://schema.test/api',
+		$this->overrideConfigValues( [
+			'EventLoggingSchemaApiUri' => 'https://schema.test/api',
 		] );
 
 		parent::setUp();

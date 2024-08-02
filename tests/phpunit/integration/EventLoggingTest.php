@@ -7,6 +7,7 @@ use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
@@ -58,14 +59,14 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 		$this->markTestSkippedIfExtensionNotLoaded( 'EventStreamConfig' );
 
-		$this->setMwGlobals( [
-			'wgEventLoggingSchemas' => [
+		$this->overrideConfigValues( [
+			'EventLoggingSchemas' => [
 				'Migrated' => '/test/event/1.0.0',
 				'NotMigrated' => 1337,
 			],
-			'wgEventLoggingBaseUri' => 'https://test.wikipedia.org/beacon/event',
-			'wgServerName' => $this->testHttpHost,
-			'wgEventStreams' => [
+			'EventLoggingBaseUri' => 'https://test.wikipedia.org/beacon/event',
+			MainConfigNames::ServerName => $this->testHttpHost,
+			'EventStreams' => [
 				'test.event' => [
 					'stream' => 'test.event',
 					'schema_title' => 'test/event'
@@ -110,7 +111,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 					],
 				],
 			],
-			'wgEventLoggingStreamNames' => [
+			'EventLoggingStreamNames' => [
 				'test.event',
 				'eventlogging_Migrated',
 				'test.event.mp1',
@@ -244,7 +245,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	}
 
 	public function testDisableStreamConfig(): void {
-		$this->setMwGlobals( [ 'wgEventLoggingStreamNames' => false ] );
+		$this->overrideConfigValue( 'EventLoggingStreamNames', false );
 		$this->mockEventBus->expects( $this->once() )->method( 'send' );
 		EventLogging::submit(
 			'not.configured',

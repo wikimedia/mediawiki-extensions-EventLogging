@@ -5,6 +5,7 @@ namespace MediaWiki\Extension\EventLogging\EventSubmitter;
 use MediaWiki\Config\Config;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\EventBus\EventBus;
+use MediaWiki\MainConfigNames;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
 
@@ -24,7 +25,7 @@ class EventBusEventSubmitter implements EventSubmitter {
 
 	public function __construct( LoggerInterface $logger, Config $config ) {
 		$this->logger = $logger;
-		$this->domain = $config->get( 'ServerName' );
+		$this->domain = $config->get( MainConfigNames::ServerName );
 	}
 
 	/**

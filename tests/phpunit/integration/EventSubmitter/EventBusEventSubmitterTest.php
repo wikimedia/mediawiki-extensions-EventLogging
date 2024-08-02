@@ -11,6 +11,7 @@ use MediaWiki\Extension\EventBus\EventBus;
 use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
+use MediaWiki\MainConfigNames;
 use MediaWikiIntegrationTestCase;
 use Psr\Log\LoggerInterface;
 
@@ -53,7 +54,7 @@ class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
 		$this->mockLogger = $this->createMock( LoggerInterface::class );
 
 		$config = new HashConfig( [
-			'ServerName' => 'event_bus_event_submitter.test'
+			MainConfigNames::ServerName => 'event_bus_event_submitter.test'
 		] );
 
 		$this->eventSubmitter = new EventBusEventSubmitter( $this->mockLogger, $config );
