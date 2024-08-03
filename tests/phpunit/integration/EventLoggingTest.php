@@ -8,7 +8,6 @@ use MediaWiki\Extension\EventLogging\EventLogging;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\MainConfigNames;
-use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
 use Wikimedia\TestingAccessWrapper;
 use Wikimedia\Timestamp\ConvertibleTimestamp;
@@ -129,7 +128,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 			$this->testHttpHost = $_SERVER['HTTP_HOST'];
 		}
 
-		$multiClient = MediaWikiServices::getInstance()->getHttpRequestFactory()
+		$multiClient = $this->getServiceContainer()->getHttpRequestFactory()
 			->createMultiClient();
 		$this->mockHttpRequestFactory = $this->createMock( HttpRequestFactory::class );
 		$this->mockHttpRequestFactory->method( 'createMultiClient' )
