@@ -20,6 +20,7 @@ use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\ResourceLoader as RL;
+use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\User;
 use Skin;
 
@@ -39,6 +40,14 @@ class Hooks implements
 		'sample',
 		'producers',
 	];
+
+	private UserOptionsLookup $userOptionsLookup;
+
+	public function __construct(
+		UserOptionsLookup $userOptionsLookup
+	) {
+		$this->userOptionsLookup = $userOptionsLookup;
+	}
 
 	/**
 	 * Emit a debug log message for each invalid or unset
@@ -67,10 +76,8 @@ class Hooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
-		$services = MediaWikiServices::getInstance();
-		$lookup = $services->getUserOptionsLookup();
-		if ( $lookup->getIntOption( $out->getUser(), 'eventlogging-display-web' )
-			|| $lookup->getIntOption( $out->getUser(), 'eventlogging-display-console' )
+		if ( $this->userOptionsLookup->getIntOption( $out->getUser(), 'eventlogging-display-web' )
+			|| $this->userOptionsLookup->getIntOption( $out->getUser(), 'eventlogging-display-console' )
 		) {
 			$out->addModules( 'ext.eventLogging.debug' );
 		}

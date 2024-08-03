@@ -157,7 +157,10 @@
 	},
 	"HookHandlers": {
 		"main": {
-			"class": "MediaWiki\\Extension\\EventLogging\\Hooks"
+			"class": "MediaWiki\\Extension\\EventLogging\\Hooks",
+			"services": [
+				"UserOptionsLookup"
+			]
 		},
 		"jsonschema": {
 			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks"
