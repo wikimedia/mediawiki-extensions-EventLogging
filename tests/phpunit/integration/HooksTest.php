@@ -15,27 +15,25 @@ class HooksTest extends MediaWikiIntegrationTestCase {
 
 		$this->markTestSkippedIfExtensionNotLoaded( 'EventStreamConfig' );
 
-		$this->setMwGlobals( [
-			'wgEventStreams' => [
-				'test.event' => [
-					'schema_title' => 'test/event',
-					'destination_event_service' => 'foo-event-service',
-					'topic_prefixes' => [ 'foo.' ],
-					'canary_events_enabled' => true,
-					'producers' => [
-						'foo_producer' => [
-							'enabled' => true,
-						],
+		$this->overrideConfigValue( 'EventStreams', [
+			'test.event' => [
+				'schema_title' => 'test/event',
+				'destination_event_service' => 'foo-event-service',
+				'topic_prefixes' => [ 'foo.' ],
+				'canary_events_enabled' => true,
+				'producers' => [
+					'foo_producer' => [
+						'enabled' => true,
 					],
-					'consumers' => [
-						'foo_consumer' => [
-							'enabled' => true,
-						],
+				],
+				'consumers' => [
+					'foo_consumer' => [
+						'enabled' => true,
 					],
-					'sample' => [
-						'unit' => 'pageview',
-						'rate' => 0.01,
-					],
+				],
+				'sample' => [
+					'unit' => 'pageview',
+					'rate' => 0.01,
 				],
 			],
 		] );
@@ -70,7 +68,7 @@ class HooksTest extends MediaWikiIntegrationTestCase {
 	 * @dataProvider provideEventLoggingConfigStreamConfigs
 	 */
 	public function testGetEventLoggingConfigStreamConfigs( $eventLoggingStreamNames, $expectedStreamConfigs ): void {
-		$this->setMwGlobals( 'wgEventLoggingStreamNames', $eventLoggingStreamNames );
+		$this->overrideConfigValue( 'EventLoggingStreamNames', $eventLoggingStreamNames );
 
 		// We could inject a HashConfig instance here. However, the EventLogging and
 		// EventStreamConfig extensions are not fully isolated from one another and they both
