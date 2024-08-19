@@ -17,11 +17,17 @@ class RemoteSchema implements JsonSerializable {
 
 	public const LOCK_TIMEOUT = 20;
 
+	/** @var string */
 	public $title;
+	/** @var int */
 	public $revision;
+	/** @var BagOStuff */
 	public $cache;
+	/** @var HttpRequestFactory */
 	public $httpRequestFactory;
+	/** @var string */
 	public $key;
+	/** @var array|false */
 	public $content = false;
 
 	/**

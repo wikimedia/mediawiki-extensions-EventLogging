@@ -16,10 +16,15 @@ use Wikimedia\Timestamp\ConvertibleTimestamp;
 class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	use EventLoggingTestTrait;
 
+	/** @var EventBus */
 	private $mockEventBus;
+	/** @var EventBusFactory */
 	private $mockEventBusFactory;
+	/** @var HttpRequestFactory */
 	private $mockHttpRequestFactory;
+	/** @var ConvertibleTimestamp */
 	private $timestamp;
+	/** @var LoggerInterface */
 	private $mockLogger;
 
 	/**
@@ -40,7 +45,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 		'$schema' => '/test/event/1.0.0'
 	];
 
-	/*
+	/**
 	 * HTTP_HOST will be set to this value during the tests if it isn't already set.
 	 * @var string
 	 */

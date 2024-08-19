@@ -26,6 +26,7 @@ class RemoteSchemaTest extends MediaWikiIntegrationTestCase {
 	/** @var RemoteSchema */
 	private $schema;
 
+	/** @var string[][] */
 	public $statusSchema = [ 'status' => [ 'type' => 'string' ] ];
 
 	protected function setUp(): void {
