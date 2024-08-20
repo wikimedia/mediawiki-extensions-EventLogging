@@ -1,19 +1,14 @@
 <?php
 
-namespace MediaWiki\Extension\EventLogging\Rest\Handler;
+namespace MediaWiki\Extension\EventLogging\Libs\Legacy;
 
 use DateTime;
 use Exception;
 use InvalidArgumentException;
 use JsonException;
-use MediaWiki\Config\ServiceOptions;
-use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
-use MediaWiki\Logger\LoggerFactory;
-use MediaWiki\Rest\Handler;
-use Psr\Log\LoggerInterface;
+use MediaWiki\Extension\EventLogging\EventLogging;
+use RuntimeException;
 use UnexpectedValueException;
-use WikiMap;
-use Wikimedia\UUID\GlobalIdGenerator;
 
 // NOTE: As of 2024-07, the only legacy EventLogging schema this needs to support is
 // MediaWikiPingback.  Details about this can be found at https://phabricator.wikimedia.org/T323828.
@@ -31,15 +26,7 @@ use Wikimedia\UUID\GlobalIdGenerator;
 // code (EventLogging extension's EventLoggingLegacyConverter) entirely.
 
 /**
- * GET /eventlogging/v0/beacon/?{qson_enconded_legacy_event}
- *
- * Converts legacy EventLogging events into WMF Event Platform compatible ones and submits
- * them using the provided EventSubmitter.
- *
- * Expects that the incoming HTTP query string is a 'qson' event (URL encoded JSON string).
- * This event will be parsed, converted and posted to EVENT_INTAKE_URL env var,
- * or the local eventgate-analytics-external service.
- *
+ * Methods to convert legacy EventLogging events into WMF Event Platform compatible ones.
  * This class mostly exists to aid in the final decommissioning of the eventlogging python backend
  * and associated components and data pipelines
  * (varnishkafka, Refine eventlogging_analytics job in analytics hadoop cluster, etc.)
@@ -52,7 +39,7 @@ use Wikimedia\UUID\GlobalIdGenerator;
  * the client produced legacy event into a WMF Event Platform compatible one.
  *
  * NOTE: The varnishkafka log format for eventlogging was:
- * '%q    %l    %n    %{%FT%T}t    %{X-Client-IP}o    "%{User-agent}i"'
+ * '%q    %l    %n    %{%FT%T}t    %{X-Client-IP}o    "%{User-agent}i'
  *
  * == Differences from original eventlogging/parse.py + format
  *
@@ -66,17 +53,10 @@ use Wikimedia\UUID\GlobalIdGenerator;
  *
  * - EventLogging Capsule id field will be set to a random uuid4,
  *   instead of a uuid5 built from event content.
+ *
+ *
  */
-class LegacyBeaconHandler extends Handler {
-
-	/**
-	 * MediaWiki Config key EventLoggingLegacyBeaconAllowedWikiIds.
-	 */
-	private const ALLOWED_WIKI_IDS_CONFIG_KEY = 'EventLoggingLegacyBeaconAllowedWikiIds';
-
-	public const CONSTRUCTOR_OPTIONS = [
-		self::ALLOWED_WIKI_IDS_CONFIG_KEY
-	];
+class EventLoggingLegacyConverter {
 
 	/**
 	 * Maps legacy EventLogging schema names to the migrated WMF Event Platform
@@ -84,10 +64,6 @@ class LegacyBeaconHandler extends Handler {
 	 *
 	 * A schema must be declared here in order for it to be allowed to be produced,
 	 * otherwise it will be rejected.
-	 *
-	 * NOTE: This is hardcoded here (instead of parameterized in config) because
-	 * we do not intend to ever add entries to this.  Hopefully RestApiLegacyBeacon
-	 * can be removed entirely in a few years.
 	 *
 	 * @var array|string[]
 	 */
@@ -97,97 +73,23 @@ class LegacyBeaconHandler extends Handler {
 	];
 
 	/**
-	 * @var array|mixed
+	 * Parses and converts a legacy EventLogging 'qson' from the HTTP query params and headers
+	 * to a WMF Event Platform compatible event.
+	 *
+	 * @param array|null $_server If not set, global $_SERVER will be used.
+	 * @return array
+	 * @throws Exception
 	 */
-	private array $allowedWikiIds;
+	public static function fromHttpRequest( ?array $_server = null ): array {
+		$_server ??= $_SERVER;
 
-	/**
-	 * @var EventSubmitter
-	 */
-	private EventSubmitter $eventSubmitter;
-
-	/**
-	 * @var GlobalIdGenerator
-	 */
-	private GlobalIdGenerator $globalIdGenerator;
-
-	/**
-	 * @var LoggerInterface
-	 */
-	private LoggerInterface $logger;
-
-	/**
-	 * @param ServiceOptions $options
-	 * @param EventSubmitter $eventSubmitter
-	 * @param GlobalIdGenerator $globalIdGenerator
-	 */
-	public function __construct(
-		ServiceOptions $options,
-		EventSubmitter $eventSubmitter,
-		GlobalIdGenerator $globalIdGenerator
-	) {
-		$options->assertRequiredOptions( self::CONSTRUCTOR_OPTIONS );
-
-		$this->eventSubmitter = $eventSubmitter;
-		$this->globalIdGenerator = $globalIdGenerator;
-		$this->allowedWikiIds = $options->get( self::ALLOWED_WIKI_IDS_CONFIG_KEY );
-		$this->logger = LoggerFactory::getInstance( self::class );
-	}
-
-	public function execute() {
-		// we will always return 204, no matter what.
-		$response = $this->getResponseFactory()->createNoContent();
-
-		// Restrict this API endpoint to allowedWikiIds.
-		$wiki = WikiMap::getCurrentWikiId();
-		if ( !in_array( $wiki, $this->allowedWikiIds ) ) {
-			$this->logger->error( "Cannot forward legacy event: LegacyEventBeacon is disabled on $wiki." );
-			return $response;
-		}
-
-		// Decode the 'event' out of the qson encoded query string
-		$queryString = $this->getRequest()->getUri()->getQuery();
-		try {
-			$decodedEvent = self::decodeQson( $queryString );
-		} catch ( Exception $e ) {
-			$this->logger->error(
-				"Failed decoding query string as 'qson' event: " . $e->getMessage(),
-				[ 'exception' => $e ]
-			);
-			return $response;
-		}
-
-		// Convert the event to WMF Event Platform compatible
-		try {
-			$event = self::convertEvent(
-				$decodedEvent,
-				new DateTime(),
-				$this->getRequest()->getServerParams()['REMOTE_HOST'] ?? null,
-				$this->getRequest()->getHeader( 'user-agent' )[0] ?? null,
-				$this->globalIdGenerator->newUUIDv4(),
-			);
-		} catch ( Exception $e ) {
-			$this->logger->error(
-				'Failed converting event from legacy EventLogging to WMF Event Platform compatible: ' .
-				$e->getMessage(),
-				[ 'exception' => $e ]
-			);
-			return $response;
-		}
-
-		// submit event (likely in a DeferredUpdate via EventBusEventSubmitter).
-		$this->eventSubmitter->submit( $event['meta']['stream'], $event );
-
-		// 204 HTTP response
-		return $response;
-	}
-
-	public function needsReadAccess(): bool {
-		return false;
-	}
-
-	public function needsWriteAccess(): bool {
-		return false;
+		$decodedEvent = self::decodeQson( $_server['QUERY_STRING'] );
+		return self::convertEvent(
+			$decodedEvent,
+			new DateTime(),
+			$_server['REMOTE_HOST'] ?? $_server['REMOTE_ADDR'] ?? null,
+			$_server['HTTP_USER_AGENT'] ?? null
+		);
 	}
 
 	/**
@@ -197,21 +99,19 @@ class LegacyBeaconHandler extends Handler {
 	 * @param DateTime|null $dt
 	 * @param string|null $recvFrom
 	 * @param string|null $userAgent
-	 * @param string|null $uuid
 	 * @return array
-	 * @throws InvalidArgumentException
-	 * @throws UnexpectedValueException
+	 * @throws Exception
 	 */
 	public static function convertEvent(
 		array $event,
 		?DateTime $dt = null,
 		?string $recvFrom = null,
-		?string $userAgent = null,
-		?string $uuid = null
+		?string $userAgent = null
 	): array {
 		if ( !isset( $event['schema'] ) ) {
 			throw new InvalidArgumentException(
-				'Event is missing \'schema\' field. This is required to convert to WMF Event Platform event.'
+				'Event is missing \'schema\' field. ' .
+				'This is required to convert to WMF Event Platform event.'
 			);
 		}
 
@@ -220,13 +120,14 @@ class LegacyBeaconHandler extends Handler {
 			'stream' => self::getStreamName( $event['schema'] ),
 		];
 
-		if ( $uuid != null ) {
-			$event['uuid'] = $uuid;
-		}
+		// NOTE: We do not have a sequence num seqId, so we can't use a url based uuid5
+		// eventlogging backend parse.py did.  Instead, use a random uuid4.
+		$event['uuid'] ??= self::newUUIDv4();
 
 		$dt ??= new DateTime();
-		// NOTE: `client_dt` is 'legacy' event time.
-		$event['client_dt'] = self::dateTimeString( $dt );
+		$event['dt'] = self::dateTimeString( $dt );
+		// NOTE: `client_dt` is 'legacy' event time.  `dt` is the preferred event time field
+		$event['client_dt'] = $event['dt'];
 
 		if ( $recvFrom !== null ) {
 			$event['recvFrom'] = $recvFrom;
@@ -234,7 +135,9 @@ class LegacyBeaconHandler extends Handler {
 
 		if ( $userAgent !== null ) {
 			$event['http'] = [
-				'request_headers' => [ 'user-agent' => $userAgent ],
+				'request_headers' => [
+					'user-agent' => $userAgent
+				]
 			];
 		}
 
@@ -249,13 +152,13 @@ class LegacyBeaconHandler extends Handler {
 	 * @return string
 	 */
 	public static function dateTimeString( ?DateTime $dt ): string {
-		return $dt->format( 'Y-m-d\TH:i:s.' ) . substr( $dt->format( 'u' ), 0, 3 ) . 'Z';
+		return $dt->format( 'Y-m-d\TH:i:s.' ) .
+			substr( $dt->format( 'u' ), 0, 3 ) . 'Z';
 	}
 
 	/**
 	 * 'qson' is a term found in the legacy eventlogging python codebase. It is URL encoded JSON.
 	 * This parses URL encoded json data into a PHP assoc array.
-	 *
 	 * @param string $data
 	 * @return array
 	 * @throws JsonException
@@ -272,7 +175,6 @@ class LegacyBeaconHandler extends Handler {
 
 	/**
 	 * Converts legacy EventLogging schema name to migrated Event Platform stream name.
-	 *
 	 * @param string $schemaName
 	 * @return string
 	 */
@@ -302,4 +204,45 @@ class LegacyBeaconHandler extends Handler {
 		$version = self::$schemaVersions[$schemaName];
 		return '/analytics/legacy/' . strtolower( $schemaName ) . '/' . $version;
 	}
+
+	/**
+	 * Return an RFC4122 compliant v4 UUID
+	 *
+	 * Taken from MediaWiki Wikimedia\UUID\GlobalIdGenerator.
+	 *
+	 * @return string
+	 */
+	public static function newUUIDv4(): string {
+		$hex = bin2hex( random_bytes( 32 / 2 ) );
+
+		return sprintf(
+			'%s-%s-%s-%s-%s',
+			// "time_low" (32 bits)
+			substr( $hex, 0, 8 ),
+			// "time_mid" (16 bits)
+			substr( $hex, 8, 4 ),
+			// "time_hi_and_version" (16 bits)
+			'4' . substr( $hex, 12, 3 ),
+			// "clk_seq_hi_res" (8 bits, variant is binary 10x) and "clk_seq_low" (8 bits)
+			dechex( 0x8 | ( hexdec( $hex[15] ) & 0x3 ) ) . $hex[16] . substr( $hex, 17, 2 ),
+			// "node" (48 bits)
+			substr( $hex, 19, 12 )
+		);
+	}
+
+	/**
+	 * Extracts stream name from event in meta.stream field and calls EventLogging::submit
+	 * @param array $event
+	 * @return void
+	 */
+	public static function submitEvent( array $event ): void {
+		$streamName = $event['meta']['stream'] ?? null;
+		if ( !$streamName ) {
+			throw new RuntimeException(
+				'Cannot submit event: event must have stream name set in  meta.stream field.'
+			);
+		}
+		EventLogging::submit( $streamName, $event );
+	}
+
 }
