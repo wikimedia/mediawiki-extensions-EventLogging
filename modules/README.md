@@ -1,4 +1,4 @@
-EventLogging JavaScript documentation
+EventLogging JavaScript Documentation
 
 ## mw
 
@@ -9,3 +9,4 @@ EventLogging JavaScript documentation
 ## Others
 
 - [MediaWikiMetricsClientIntegration](MediaWikiMetricsClientIntegration.html)
+- [EventSubmitter](EventSubmitter.html)

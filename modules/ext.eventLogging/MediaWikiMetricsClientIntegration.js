@@ -1,9 +1,5 @@
 const c = mw.config.get.bind( mw.config );
 
-// Support both 1 or "1" (T54542)
-const isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
-	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
-
 // Module-local cache for the result of MediaWikiMetricsClientIntegration::getContextAttributes().
 // Since the result of ::getContextAttributes() does not vary by instance, it is safe to cache the
 // result at this level.
@@ -15,50 +11,8 @@ let contextAttributes = null;
  * See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
  *
  * @class MediaWikiMetricsClientIntegration
- * @param {Object} eventLog
- * @param {Object} eventLogConfig
  */
-function MediaWikiMetricsClientIntegration( eventLog, eventLogConfig ) {
-	this.eventLog = eventLog;
-	this.eventLogConfig = eventLogConfig;
-}
-
-/**
- * Enqueues the event to be submitted to the event ingestion service.
- *
- * @param {Object} eventData
- */
-MediaWikiMetricsClientIntegration.prototype.enqueueEvent = function ( eventData ) {
-	const serviceUri = this.eventLogConfig.serviceUri;
-
-	if ( serviceUri ) {
-		this.eventLog.enqueue( function () {
-			try {
-				navigator.sendBeacon(
-					serviceUri,
-					JSON.stringify( eventData )
-				);
-			} catch ( e ) {
-				// Ignore. See T86680, T273374, and T308311.
-			}
-		} );
-	}
-};
-
-/**
- * Called when an event is enqueued to be submitted to the event ingestion service.
- *
- * @param {string} streamName
- * @param {Object} eventData
- */
-MediaWikiMetricsClientIntegration.prototype.onSubmit = function ( streamName, eventData ) {
-	if ( isDebugMode ) {
-		mw.track(
-			'eventlogging.eventSubmitDebug',
-			{ streamName: streamName, eventData: eventData }
-		);
-	}
-};
+function MediaWikiMetricsClientIntegration() {}
 
 /**
  * Gets the hostname of the current document.
@@ -142,7 +96,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			skin: c( 'skin' ),
 			version: version,
 			is_production: version.indexOf( 'wmf' ) !== -1,
-			is_debug_mode: isDebugMode,
+			is_debug_mode: c( 'debug' ),
 			database: c( 'wgDBname' ),
 			site_content_language: c( 'wgContentLanguage' )
 		},

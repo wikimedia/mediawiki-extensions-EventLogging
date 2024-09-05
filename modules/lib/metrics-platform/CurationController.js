@@ -25,11 +25,11 @@ CurationController.prototype.isEmpty = function ( value ) {
  * @return {boolean} true if the event passes filtering, false if not
  */
 CurationController.prototype.applyRules = function ( value, rules ) {
-	/** @type keyof StreamProducerCurationConfig */
 	let operator;
 
 	for ( operator in rules ) {
 		let i;
+		// @ts-ignore TS7053
 		const operand = rules[ operator ];
 		if ( operator === 'equals' && value !== operand ) {
 			return false;
