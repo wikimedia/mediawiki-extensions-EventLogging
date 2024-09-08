@@ -109,7 +109,8 @@ class EventLogging {
 	 */
 	public static function sendBeacon( $url, array $data = [] ) {
 		$fname = __METHOD__;
-		$url = wfGetUrlUtils()->expand( $url, PROTO_INTERNAL ) ?? '';
+		$urlUtils = MediaWikiServices::getInstance()->getUrlUtils();
+		$url = $urlUtils->expand( $url, PROTO_INTERNAL ) ?? '';
 		DeferredUpdates::addCallableUpdate( static function () use ( $url, $data, $fname ) {
 			$options = $data ? [ 'postData' => $data ] : [];
 			return MediaWikiServices::getInstance()->getHttpRequestFactory()
