@@ -2,7 +2,7 @@
 
 QUnit.module( 'ext.eventLogging/id', {
 	beforeEach: function () {
-		var jar = {};
+		const jar = {};
 
 		this.originalCookie = mw.cookie;
 
@@ -22,20 +22,20 @@ QUnit.module( 'ext.eventLogging/id', {
 } );
 
 QUnit.test( 'pageview', function ( assert ) {
-	var id1 = mw.eventLog.id.getPageviewId();
+	const id1 = mw.eventLog.id.getPageviewId();
 
 	assert.strictEqual( id1, mw.eventLog.id.getPageviewId(), 'The first pageview ID has been memoized.' );
 
 	mw.eventLog.id.resetPageviewId();
 
-	var id2 = mw.eventLog.id.getPageviewId();
+	const id2 = mw.eventLog.id.getPageviewId();
 
 	assert.notStrictEqual( id1, id2, 'The first pageview ID has been reset and a second one generated.' );
 	assert.strictEqual( id2, mw.eventLog.id.getPageviewId(), 'The second pageview ID has been memoized.' );
 } );
 
 QUnit.test( 'session', function ( assert ) {
-	var id1 = mw.eventLog.id.getSessionId();
+	const id1 = mw.eventLog.id.getSessionId();
 
 	assert.strictEqual( id1, mw.eventLog.id.getSessionId() );
 	assert.strictEqual( id1, mw.eventLog.storage.get( 'sessionId' ), 'The first session ID has been stored.' );
@@ -48,7 +48,7 @@ QUnit.test( 'session', function ( assert ) {
 		'The first session ID has been removed from the store.'
 	);
 
-	var id2 = mw.eventLog.id.getSessionId();
+	const id2 = mw.eventLog.id.getSessionId();
 
 	assert.notStrictEqual( id1, id2, 'The first session ID has been reset and a second one generated.' );
 	assert.strictEqual( id2, mw.eventLog.id.getSessionId() );
@@ -62,7 +62,7 @@ QUnit.test( 'session', function ( assert ) {
 		'The second session ID has been removed from the store.'
 	);
 
-	var id3 = mw.eventLog.id.getSessionId();
+	const id3 = mw.eventLog.id.getSessionId();
 
 	assert.notStrictEqual( id2, id3 );
 	assert.strictEqual( id3, mw.eventLog.id.getSessionId() );

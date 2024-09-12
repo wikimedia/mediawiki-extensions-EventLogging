@@ -29,7 +29,7 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 } ) );
 
 QUnit.test( 'logEvent()', function ( assert ) {
-	var eventData = {
+	const eventData = {
 		epicenter: 'Valdivia',
 		magnitude: 9.5
 	};
@@ -41,13 +41,13 @@ QUnit.test( 'logEvent()', function ( assert ) {
 } );
 
 QUnit.test( 'logEvent() via submit()', function ( assert ) {
-	var eventData = {
+	const eventData = {
 		volcano: 'Nyiragongo',
 		Explosivity: 1
 	};
 
 	return mw.eventLog.logEvent( 'eruption', eventData ).then( function ( e ) {
-		var expectedEventData = {
+		const expectedEventData = {
 			volcano: 'Nyiragongo',
 			Explosivity: 1
 		};
@@ -82,13 +82,13 @@ QUnit.test.each( 'checkUrlSize()', {
 		expected: 'Url exceeds maximum length'
 	}
 }, function ( assert, data ) {
-	var url = new Array( data.size + 1 ).join( 'x' );
-	var result = mw.eventLog.checkUrlSize( 'earthquake', url );
+	const url = new Array( data.size + 1 ).join( 'x' );
+	const result = mw.eventLog.checkUrlSize( 'earthquake', url );
 	assert.deepEqual( result, data.expected );
 } );
 
 QUnit.test( 'logEvent() - reject large event data', function ( assert ) {
-	var event = {
+	const event = {
 		epicenter: 'Valdivia',
 		magnitude: 9.5,
 		article: new Array( mw.eventLog.maxUrlSize + 1 ).join( 'x' )

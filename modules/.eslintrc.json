@@ -10,7 +10,7 @@
 	},
 	"rules": {
 		"no-redeclare": "warn",
-		"no-var": "off",
+		"prefer-const": "warn",
 		"compat/compat": "warn",
 		"yml/no-empty-mapping-value": "warn"
 	},

@@ -4,7 +4,7 @@
  */
 'use strict';
 
-var core, debugMode,
+let core, debugMode,
 	// config contains:
 	// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
 	//            If set to false (default), then mw.eventLog.logEvent will not log events.
@@ -98,7 +98,7 @@ core = {
 	 */
 	prepare: function ( schemaName, eventData ) {
 		// Wrap eventData in EventLogging's EventCapsule.
-		var
+		const
 			event = {
 				event: eventData,
 				schema: schemaName,
@@ -139,7 +139,7 @@ core = {
 	 * @return {string|boolean} The URI to log the event.
 	 */
 	makeBeaconUrl: function ( data ) {
-		var queryString = encodeURIComponent( JSON.stringify( data ) );
+		const queryString = encodeURIComponent( JSON.stringify( data ) );
 		return config.baseUrl + '?' + queryString + ';';
 	},
 
@@ -152,7 +152,7 @@ core = {
 	 * @return {string|undefined} The error message in case of error.
 	 */
 	checkUrlSize: function ( schemaName, url ) {
-		var message;
+		let message;
 		if ( url.length > core.maxUrlSize ) {
 			message = 'Url exceeds maximum length';
 			core.logFailure( schemaName, 'urlSize' );
@@ -206,7 +206,7 @@ core = {
 	 * @memberof mw.eventLog
 	 */
 	logEvent: function ( schemaName, eventData ) {
-		var url,
+		let url,
 			sizeError,
 			event = core.prepare( schemaName, eventData ),
 			deferred = $.Deferred();
@@ -272,7 +272,7 @@ core = {
 	 * @return {boolean}
 	 */
 	randomTokenMatch: function ( populationSize, explicitToken ) {
-		var token = explicitToken || mw.user.generateRandomSessionId(),
+		const token = explicitToken || mw.user.generateRandomSessionId(),
 			rand = parseInt( token.slice( 0, 8 ), 16 );
 		return rand % populationSize === 0;
 	},
@@ -336,12 +336,12 @@ mw.log.deprecate( core, 'inSample', core.pageviewInSample, 'Use "mw.eventLog.pag
 // code from above to here. https://phabricator.wikimedia.org/T238544
 // ////////////////////////////////////////////////////////////////////
 
-var MetricsClient = require( '../lib/metrics-platform/MetricsClient.js' );
-var MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
+const MetricsClient = require( '../lib/metrics-platform/MetricsClient.js' );
+const MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
 
 function initMetricsClient() {
-	var integration = new MediaWikiMetricsClientIntegration( core, config );
-	var metricsClient = new MetricsClient( integration, config.streamConfigs );
+	const integration = new MediaWikiMetricsClientIntegration( core, config );
+	const metricsClient = new MetricsClient( integration, config.streamConfigs );
 
 	core.submit = metricsClient.submit.bind( metricsClient );
 	core.dispatch = metricsClient.dispatch.bind( metricsClient );
@@ -363,7 +363,7 @@ core.storage = {
 };
 
 core.id = ( function () {
-	var
+	let
 		UINT32_MAX = 4294967295, // (2^32) - 1
 		pageviewId = null,
 		sessionId = null;
@@ -458,7 +458,7 @@ mw.config.set(
 // Not allowed outside unit tests
 if ( window.QUnit ) {
 	core.setOptionsForTest = function ( opts ) {
-		var originalOptions = config;
+		const originalOptions = config;
 		config = opts;
 
 		// Reinitialise the Metrics Platform client.

@@ -1,13 +1,13 @@
-var c = mw.config.get.bind( mw.config );
+const c = mw.config.get.bind( mw.config );
 
 // Support both 1 or "1" (T54542)
-var isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
+const isDebugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
 	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
 // Module-local cache for the result of MediaWikiMetricsClientIntegration::getContextAttributes().
 // Since the result of ::getContextAttributes() does not vary by instance, it is safe to cache the
 // result at this level.
-var contextAttributes = null;
+let contextAttributes = null;
 
 /**
  * @classdesc Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
@@ -29,7 +29,7 @@ function MediaWikiMetricsClientIntegration( eventLog, eventLogConfig ) {
  * @param {Object} eventData
  */
 MediaWikiMetricsClientIntegration.prototype.enqueueEvent = function ( eventData ) {
-	var serviceUri = this.eventLogConfig.serviceUri;
+	const serviceUri = this.eventLogConfig.serviceUri;
 
 	if ( serviceUri ) {
 		this.eventLog.enqueue( function () {
@@ -109,15 +109,15 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 	//
 	// See https://gerrit.wikimedia.org/r/c/mediawiki/extensions/WikimediaEvents/+/799353/1#message-21b63aebf69dc330933ef27deb11279b226656b8
 	// for a detailed explanation.
-	var isMobileFrontendActive = c( 'wgMFMode' ) !== null;
+	const isMobileFrontendActive = c( 'wgMFMode' ) !== null;
 
-	var version = String( c( 'wgVersion' ) );
+	const version = String( c( 'wgVersion' ) );
 
-	var userIsLoggedIn = !mw.user.isAnon();
-	var userGroups = c( 'wgUserGroups' );
+	const userIsLoggedIn = !mw.user.isAnon();
+	const userGroups = c( 'wgUserGroups' );
 
 	/* eslint-disable camelcase */
-	var result = {
+	const result = {
 		agent: {
 			client_platform: 'mediawiki_js',
 			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser'
@@ -177,7 +177,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 	}
 	/* eslint-enable camelcase */
 
-	var self = this;
+	const self = this;
 
 	Object.defineProperty( result.performer, 'session_id', {
 		get: function () {

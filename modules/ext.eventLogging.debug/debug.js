@@ -27,7 +27,7 @@
  */
 'use strict';
 
-var dialogPromise,
+let dialogPromise,
 	schemaApiQueryUrl,
 	schemaApiQueryParams,
 	baseUrl,
@@ -69,7 +69,7 @@ function shouldShowNotice() {
  */
 function isInstanceOf( value, type ) {
 	// eslint-disable-next-line no-jquery/no-type
-	var jsType = $.type( value );
+	const jsType = $.type( value );
 	switch ( type ) {
 		case 'integer':
 			return jsType === 'number' && value % 1 === 0;
@@ -91,7 +91,7 @@ function isInstanceOf( value, type ) {
  * @return {Array} An array of validation errors (empty if valid).
  */
 function validate( obj, schema ) {
-	var key, val, prop,
+	let key, val, prop,
 		errors = [];
 
 	if ( !schema || !schema.properties ) {
@@ -141,7 +141,7 @@ function validate( obj, schema ) {
  */
 function makeDialogPromise() {
 	return mw.loader.using( 'oojs-ui-windows' ).then( function () {
-		var manager = new OO.ui.WindowManager(),
+		const manager = new OO.ui.WindowManager(),
 			dialog = new OO.ui.MessageDialog();
 		$( document.body ).append( manager.$element );
 		manager.addWindows( [ dialog ] );
@@ -168,7 +168,7 @@ function makeDialogPromise() {
  * @param {Object} errors found during validation
  */
 function displayLoggedEvent( event, errors ) {
-	var hasErrors = errors && errors.length,
+	const hasErrors = errors && errors.length,
 		eventWithAnyErrors = mw.format(
 			'$1$2',
 			JSON.stringify( event, null, 2 ),
@@ -208,7 +208,7 @@ function displayLoggedEvent( event, errors ) {
 }
 
 function validateAndDisplay( event, schema ) {
-	var errors = validate( event.event, schema );
+	const errors = validate( event.event, schema );
 
 	errors.forEach( function ( error ) {
 		mw.track( 'eventlogging.error', mw.format( '[$1] $2', event.schema, error ) );
@@ -232,7 +232,7 @@ handleEventLoggingDebug = !schemaApiQueryUrl ?
 			dataType: 'json'
 		} ).then(
 			function ( data ) {
-				var page;
+				let page;
 				try {
 					page = data.query.pages[ data.query.pageids[ 0 ] ];
 					validateAndDisplay(
@@ -269,7 +269,7 @@ mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
  * @param {Object} eventData submitted
  */
 function displaySubmittedEvent( streamName, eventData ) {
-	var
+	const
 		formatted = mw.format(
 			mw.html.escape( 'Submitted event to stream $1 $2' ),
 			streamName,

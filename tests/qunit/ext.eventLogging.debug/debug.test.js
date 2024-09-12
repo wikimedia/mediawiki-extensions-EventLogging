@@ -1,10 +1,10 @@
 QUnit.module( 'ext.eventLogging.debug', function () {
 	'use strict';
 
-	var eventLogDebug = require( 'ext.eventLogging.debug' );
+	const eventLogDebug = require( 'ext.eventLogging.debug' );
 
 	QUnit.test( 'validate()', function ( assert ) {
-		var earthquakeSchema = {
+		const earthquakeSchema = {
 			revision: 123,
 			schema: {
 				description: 'Record of a history earthquake',
@@ -24,7 +24,7 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 				}
 			}
 		};
-		var validationCases = [
+		const validationCases = [
 			{
 				args: {},
 				regex: /^Missing property/,
@@ -72,7 +72,7 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 			}
 		];
 
-		var errors = eventLogDebug.validate( {
+		let errors = eventLogDebug.validate( {
 			epicenter: 'Valdivia',
 			magnitude: 9.5
 		}, earthquakeSchema.schema );

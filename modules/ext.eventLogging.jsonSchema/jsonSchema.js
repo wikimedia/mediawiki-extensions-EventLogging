@@ -9,7 +9,7 @@ $( function () {
 	'use strict';
 
 	// Make the '<>' icon toggle code samples:
-	var $samples = $( '.mw-json-schema-code-samples' );
+	const $samples = $( '.mw-json-schema-code-samples' );
 
 	$( '.mw-json-schema-code-glyph' ).on( 'click', function ( e ) {
 		$samples.toggle();

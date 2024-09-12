@@ -44,7 +44,7 @@ function Schema( name, samplingRate, defaults ) {
  */
 Schema.prototype.log = function ( data, samplingRate ) {
 	// Convert rate to population size
-	var pop = samplingRate !== undefined ? ( 1 / samplingRate ) : this.populationSize;
+	const pop = samplingRate !== undefined ? ( 1 / samplingRate ) : this.populationSize;
 
 	if ( mw.eventLog.pageviewInSample( pop ) ) {
 		mw.track(

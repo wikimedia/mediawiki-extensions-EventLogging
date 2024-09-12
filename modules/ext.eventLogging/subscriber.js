@@ -28,7 +28,7 @@ function titleCase( word ) {
  * @param {Object} event
  */
 function handleTrackedEvent( topic, event ) {
-	var schema = titleCase( topic.slice( topic.indexOf( '.' ) + 1 ) );
+	const schema = titleCase( topic.slice( topic.indexOf( '.' ) + 1 ) );
 
 	mw.eventLog.logEvent( schema, event );
 }

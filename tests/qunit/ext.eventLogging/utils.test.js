@@ -10,8 +10,8 @@ QUnit.test( 'pageviewInSample()', function ( assert ) {
 } );
 
 QUnit.test( 'sessionInSample()', function ( assert ) {
-	var mockRandomSession = function () {
-		var n;
+	const mockRandomSession = function () {
+		let n;
 		// we know this is a multiple of 10
 		n = 1000000000;
 		return n.toString( 16 );
@@ -23,7 +23,7 @@ QUnit.test( 'sessionInSample()', function ( assert ) {
 } );
 
 QUnit.test( 'randomTokenMatch()', function ( assert ) {
-	var n = 1000000, m = 1000001;
+	const n = 1000000, m = 1000001;
 
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, n.toString( 16 ) ), true );
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, m.toString( 16 ) ), false );

@@ -15,10 +15,10 @@
  * @param {number} [intervalSecs=30] seconds to wait before calling callbacks
  */
 module.exports = function BackgroundQueue( intervalSecs ) {
-	var timer = null;
-	var pendingCallbacks = [];
-	var discardingPage;
-	var queue = this;
+	let timer = null;
+	const pendingCallbacks = [];
+	let discardingPage;
+	const queue = this;
 
 	intervalSecs = intervalSecs || 30;
 
