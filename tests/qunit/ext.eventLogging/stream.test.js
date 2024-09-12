@@ -32,7 +32,6 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 } );
 
 QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
-	let t1, jsonString, data;
 	this.sandbox.stub( mw.eventLog, 'enqueue', function ( callback ) {
 		// Stub BackgroundQueue, regardless of intervalSecs config.
 		callback();
@@ -41,7 +40,7 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 	this.sandbox.stub( navigator, 'sendBeacon' );
 
 	this.clock.tick( 1000 );
-	t1 = new Date().toISOString();
+	const t1 = new Date().toISOString();
 	mw.eventLog.setOptionsForTest( {
 		serviceUri: 'testUri',
 		streamConfigs: {
@@ -53,8 +52,8 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 
 	assert.strictEqual( mw.log.warn.callCount, 0, 'warn() calls' );
 	assert.strictEqual( navigator.sendBeacon.callCount, 1, 'sendBeacon() calls' );
-	jsonString = navigator.sendBeacon.args[ 0 ][ 1 ];
-	data = JSON.parse( jsonString );
+	const jsonString = navigator.sendBeacon.args[ 0 ][ 1 ];
+	const data = JSON.parse( jsonString );
 	assert.strictEqual( data.dt, t1, 'client-side dt is valid' );
 	assert.strictEqual( data.meta.stream, 'test.stream', 'stream is valid' );
 } );

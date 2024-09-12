@@ -4,20 +4,19 @@
  */
 'use strict';
 
-let core, debugMode,
-	// config contains:
-	// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
-	//            If set to false (default), then mw.eventLog.logEvent will not log events.
-	// - serviceUri: corresponds to $wgEventLoggingServiceUri configuration in PHP.
-	//               If set to false (default), then mw.eventLog.submit will not log events.
-	// - schemasInfo: Object mapping schema names to revision IDs or $schema URIs
-	// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
-	config = require( './data.json' ),
-	BackgroundQueue = require( './BackgroundQueue.js' ),
-	queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
+// config contains:
+// - baseUrl: corresponds to the $wgEventLoggingBaseUri configuration in PHP.
+//            If set to false (default), then mw.eventLog.logEvent will not log events.
+// - serviceUri: corresponds to $wgEventLoggingServiceUri configuration in PHP.
+//               If set to false (default), then mw.eventLog.submit will not log events.
+// - schemasInfo: Object mapping schema names to revision IDs or $schema URIs
+// - streamConfigs: Object mapping stream name to stream config (sampling rate, etc.)
+let config = require( './data.json' );
+const BackgroundQueue = require( './BackgroundQueue.js' );
+const queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
 
 // Support both 1 or "1" (T54542)
-debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
+const debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
 	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
 /**
@@ -48,7 +47,7 @@ function makeLegacyStreamName( schemaName ) {
  * @borrows MetricsClient#submit as submit
  * @borrows MetricsClient#dispatch as dispatch
  */
-core = {
+const core = {
 
 	/**
 	 * Maximum length in chars that a beacon URL can have.
@@ -206,10 +205,8 @@ core = {
 	 * @memberof mw.eventLog
 	 */
 	logEvent: function ( schemaName, eventData ) {
-		let url,
-			sizeError,
-			event = core.prepare( schemaName, eventData ),
-			deferred = $.Deferred();
+		const event = core.prepare( schemaName, eventData );
+		const deferred = $.Deferred();
 
 		// Assume that if $schema was set by core.prepare(), this
 		// event should be POSTed to EventGate.
@@ -217,8 +214,8 @@ core = {
 			core.submit( makeLegacyStreamName( schemaName ), event );
 			deferred.resolveWith( event, [ event ] );
 		} else {
-			url = core.makeBeaconUrl( event );
-			sizeError = core.checkUrlSize( schemaName, url );
+			const url = core.makeBeaconUrl( event );
+			const sizeError = core.checkUrlSize( schemaName, url );
 
 			if ( !sizeError ) {
 				if ( config.baseUrl || debugMode ) {
@@ -363,8 +360,8 @@ core.storage = {
 };
 
 core.id = ( function () {
+	const UINT32_MAX = 4294967295; // (2^32) - 1
 	let
-		UINT32_MAX = 4294967295, // (2^32) - 1
 		pageviewId = null,
 		sessionId = null;
 

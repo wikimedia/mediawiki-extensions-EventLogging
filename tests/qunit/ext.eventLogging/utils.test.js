@@ -11,9 +11,8 @@ QUnit.test( 'pageviewInSample()', function ( assert ) {
 
 QUnit.test( 'sessionInSample()', function ( assert ) {
 	const mockRandomSession = function () {
-		let n;
-		// we know this is a multiple of 10
-		n = 1000000000;
+		// We know this is a multiple of 10
+		const n = 1000000000;
 		return n.toString( 16 );
 	};
 	this.sandbox.stub( mw.user, 'sessionId', mockRandomSession );

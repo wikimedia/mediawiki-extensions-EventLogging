@@ -27,15 +27,8 @@
  */
 'use strict';
 
-let dialogPromise,
-	schemaApiQueryUrl,
-	schemaApiQueryParams,
-	baseUrl,
-	handleEventLoggingDebug,
-	handleEventSubmitDebug;
-
-schemaApiQueryUrl = require( './data.json' ).EventLoggingSchemaApiUri;
-schemaApiQueryParams = {
+const schemaApiQueryUrl = require( './data.json' ).EventLoggingSchemaApiUri;
+const schemaApiQueryParams = {
 	action: 'query',
 	prop: 'revisions',
 	rvprop: 'content',
@@ -45,7 +38,7 @@ schemaApiQueryParams = {
 	origin: '*',
 	indexpageids: ''
 };
-baseUrl = ( schemaApiQueryUrl || '' ).replace( 'api.php', 'index.php' );
+const baseUrl = ( schemaApiQueryUrl || '' ).replace( 'api.php', 'index.php' );
 
 /**
  * Whether to show a popup notice as part of the debug output, or just write to console.
@@ -91,22 +84,21 @@ function isInstanceOf( value, type ) {
  * @return {Array} An array of validation errors (empty if valid).
  */
 function validate( obj, schema ) {
-	let key, val, prop,
-		errors = [];
+	const errors = [];
 
 	if ( !schema || !schema.properties ) {
 		errors.push( 'Missing or empty schema' );
 		return errors;
 	}
 
-	for ( key in obj ) {
+	for ( const key in obj ) {
 		if ( !Object.hasOwnProperty.call( schema.properties, key ) ) {
 			errors.push( mw.format( 'Undeclared property "$1"', key ) );
 		}
 	}
 
-	for ( key in schema.properties ) {
-		prop = schema.properties[ key ];
+	for ( const key in schema.properties ) {
+		const prop = schema.properties[ key ];
 
 		if ( !Object.hasOwnProperty.call( obj, key ) ) {
 			if ( prop.required ) {
@@ -114,7 +106,7 @@ function validate( obj, schema ) {
 			}
 			continue;
 		}
-		val = obj[ key ];
+		const val = obj[ key ];
 
 		if ( !( isInstanceOf( val, prop.type ) ) ) {
 			errors.push( mw.format(
@@ -161,6 +153,8 @@ function makeDialogPromise() {
 		};
 	} );
 }
+
+let dialogPromise;
 
 /**
  * @private
@@ -219,7 +213,7 @@ function validateAndDisplay( event, schema ) {
 	} );
 }
 
-handleEventLoggingDebug = !schemaApiQueryUrl ?
+const handleEventLoggingDebug = !schemaApiQueryUrl ?
 	function () {} :
 	function ( topic, event ) {
 		$.ajax( {
@@ -289,7 +283,7 @@ function displaySubmittedEvent( streamName, eventData ) {
 	}
 }
 
-handleEventSubmitDebug = function ( topic, params ) {
+const handleEventSubmitDebug = function ( topic, params ) {
 	mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( function () {
 		displaySubmittedEvent( params.streamName, params.eventData );
 	} );
