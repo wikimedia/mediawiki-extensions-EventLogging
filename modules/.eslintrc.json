@@ -1,5 +1,20 @@
 {
+	"root": true,
+	"extends": [
+		"wikimedia/client-es6",
+		"wikimedia/jquery",
+		"wikimedia/mediawiki"
+	],
 	"env": {
 		"commonjs": true
-	}
+	},
+	"rules": {
+		"no-redeclare": "warn",
+		"no-var": "off",
+		"compat/compat": "warn",
+		"yml/no-empty-mapping-value": "warn"
+	},
+	"ignorePatterns": [
+		"modules/lib/metrics-platform"
+	]
 }
