@@ -356,6 +356,7 @@ function initMetricsClient() {
 	core.submitInteraction = metricsClient.submitInteraction.bind( metricsClient );
 	core.submitClick = metricsClient.submitClick.bind( metricsClient );
 	core.newInstrument = metricsClient.newInstrument.bind( metricsClient );
+	core.isCurrentUserEnrolled = metricsClient.isCurrentUserEnrolled.bind( metricsClient );
 }
 initMetricsClient();
 
@@ -481,6 +482,7 @@ if ( window.QUnit ) {
 	core.getQueue = function () {
 		return queue;
 	};
+	core.MediaWikiMetricsClientIntegration = MediaWikiMetricsClientIntegration;
 }
 
 module.exports = core;

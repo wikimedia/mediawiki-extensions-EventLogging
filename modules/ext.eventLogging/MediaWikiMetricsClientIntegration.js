@@ -177,4 +177,55 @@ MediaWikiMetricsClientIntegration.prototype.getSessionId = function () {
 	return mw.user.sessionId();
 };
 
+MediaWikiMetricsClientIntegration.prototype.getCurrentUserExperiments = function () {
+	const enrolled = [];
+	const assigned = {};
+
+	if ( !mw.user.isNamed() ) {
+		return {
+			experiments: {
+				enrolled,
+				assigned
+			}
+		};
+	}
+
+	const userExperiments = c( 'wgMetricsPlatformUserExperiments' );
+
+	// Ensure userExperiments is defined and is an object
+	if ( userExperiments && typeof userExperiments === 'object' ) {
+		for ( const key in userExperiments ) {
+			if ( Object.prototype.hasOwnProperty.call( userExperiments, key ) && userExperiments[ key ] !== 'unsampled' ) {
+				// Only assign the value if it's not 'unsampled' and contains ':'
+				const experimentData = userExperiments[ key ];
+
+				if ( experimentData.indexOf( ':' ) !== -1 ) {
+					enrolled.push( key );
+					assigned[ key ] = experimentData.split( ':' )[ 1 ];
+				}
+			}
+		}
+	}
+
+	return {
+		experiments: {
+			enrolled,
+			assigned
+		}
+	};
+};
+
+MediaWikiMetricsClientIntegration.prototype.isCurrentUserEnrolled = function ( experimentName ) {
+	// MetricsPlatform extension only works when the user is logged in
+	// No enrollment to any experiment when the user is not
+	if ( !mw.user.isNamed() ) {
+		return false;
+	}
+
+	// Fetch the current user's experiments using the getCurrentUserExperiments method
+	const experiments = this.getCurrentUserExperiments();
+
+	// Check if the user is enrolled in the experiment
+	return experiments.enrolled.indexOf( experimentName ) !== -1;
+};
 module.exports = MediaWikiMetricsClientIntegration;

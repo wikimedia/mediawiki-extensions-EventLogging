@@ -4,18 +4,18 @@
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
-  version: f84e582194fc
+  version: 56ee0c179fc6
   type: tar
-  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/f84e582194fc62e9366e4aa55b52018346f02139/metrics-platform-f84e582194fc62e9366e4aa55b52018346f02139.tar.gz
-  integrity: sha384-ZdPCR9gzqMsw0eptqlfup1TveMU3hxrgpd+Je23B81k7f75dMT/qb5LMG95lvbmL
+  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/56ee0c179fc6712c13b7efffab85adcf4491d0b4/metrics-platform-56ee0c179fc6712c13b7efffab85adcf4491d0b4.tar.gz
+  integrity: sha384-w90DcJdRX3EbRpEGnzVCfQTX0DVuKwEY51UTAd2OwEvWuKtYVgBapzfeIRJLrx+1
   # GitLab nests their archives with a variable subdirectory...
   dest:
     metrics-platform-*/COPYING:
     metrics-platform-*/js/src/ContextController.js:
     metrics-platform-*/js/src/ContextUtils.js:
     metrics-platform-*/js/src/CurationController.js:
-    metrics-platform-*/js/src/MetricsClient.js:
-    metrics-platform-*/js/src/Instrument.js:
     metrics-platform-*/js/src/DefaultEventSubmitter.js:
+    metrics-platform-*/js/src/Instrument.js:
+    metrics-platform-*/js/src/MetricsClient.js:
     metrics-platform-*/js/src/SamplingController.js:
     metrics-platform-*/js/src/StreamConfigUtils.js:

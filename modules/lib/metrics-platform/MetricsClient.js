@@ -458,6 +458,12 @@ MetricsClient.prototype.submitInteraction = function (
 		return;
 	}
 
+	let currentUserExperiments = null;
+	// The new experiments fragment is only available for web/base 1.3.0
+	if ( schemaID === '/analytics/product_metrics/web/base/1.3.0' ) {
+		currentUserExperiments = this.integration.getCurrentUserExperiments();
+	}
+
 	const eventData = Object.assign(
 		{
 			action
@@ -465,7 +471,8 @@ MetricsClient.prototype.submitInteraction = function (
 		interactionData || {},
 		{
 			$schema: schemaID
-		}
+		},
+		currentUserExperiments
 	);
 
 	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
@@ -512,6 +519,16 @@ MetricsClient.prototype.isStreamInSample = function ( streamName ) {
  */
 MetricsClient.prototype.newInstrument = function ( streamName, schemaID ) {
 	return new Instrument( this, streamName, schemaID );
+};
+
+/**
+ *  Checks whether the user is enrolled in a specific experiment
+ *
+ * @param {string} experimentName
+ * @return {boolean}
+ */
+MetricsClient.prototype.isCurrentUserEnrolled = function ( experimentName ) {
+	return this.integration.isCurrentUserEnrolled( experimentName );
 };
 
 module.exports = MetricsClient;

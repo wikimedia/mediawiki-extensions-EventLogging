@@ -128,6 +128,7 @@
 			"tests/qunit/ext.eventLogging/log.test.js",
 			"tests/qunit/ext.eventLogging/stream.test.js",
 			"tests/qunit/ext.eventLogging/utils.test.js",
+			"tests/qunit/ext.eventLogging/MediaWikiMetricsClientIntegration.test.js",
 			"tests/qunit/ext.eventLogging.debug/debug.test.js"
 		],
 		"dependencies": [
