@@ -29,6 +29,7 @@
 			"useLongnameInNav": true
 		},
 		"wmf": {
+			"repository": "https://gerrit.wikimedia.org/g/mediawiki/extensions/EventLogging/",
 			"linkMap": {
 				"jQuery.Promise": "https://api.jquery.com/Types/#Promise"
 			}
