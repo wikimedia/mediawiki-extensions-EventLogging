@@ -5,22 +5,22 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 /* eslint-disable no-jquery/no-global-selector */
-$( function () {
+$( () => {
 	'use strict';
 
 	// Make the '<>' icon toggle code samples:
 	const $samples = $( '.mw-json-schema-code-samples' );
 
-	$( '.mw-json-schema-code-glyph' ).on( 'click', function ( e ) {
+	$( '.mw-json-schema-code-glyph' ).on( 'click', ( e ) => {
 		$samples.toggle();
 		e.stopPropagation();
 	} );
 
-	$( document ).on( 'click', function () {
+	$( document ).on( 'click', () => {
 		$samples.hide();
 	} );
 
-	$samples.on( 'click', function ( e ) {
+	$samples.on( 'click', ( e ) => {
 		e.stopPropagation();
 	} );
 

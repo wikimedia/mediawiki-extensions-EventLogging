@@ -16,10 +16,10 @@ QUnit.module( 'ext.eventLogging/stream', {
 QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 	const seen = [];
 	this.sandbox.stub( mw.eventLog, 'enqueue' );
-	this.sandbox.stub( mw.log, 'warn', function () {
+	this.sandbox.stub( mw.log, 'warn', () => {
 		seen.push( 'warn' );
 	} );
-	this.sandbox.stub( navigator, 'sendBeacon', function () {} );
+	this.sandbox.stub( navigator, 'sendBeacon', () => {} );
 
 	mw.eventLog.setOptionsForTest( {
 		streamConfigs: {
@@ -32,7 +32,7 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 } );
 
 QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
-	this.sandbox.stub( mw.eventLog, 'enqueue', function ( callback ) {
+	this.sandbox.stub( mw.eventLog, 'enqueue', ( callback ) => {
 		// Stub BackgroundQueue, regardless of intervalSecs config.
 		callback();
 	} );

@@ -2,7 +2,7 @@
 
 QUnit.module( 'ext.eventLogging/utils' );
 
-QUnit.test( 'pageviewInSample()', function ( assert ) {
+QUnit.test( 'pageviewInSample()', ( assert ) => {
 	assert.strictEqual( mw.eventLog.pageviewInSample( 0 ), false );
 	assert.strictEqual( mw.eventLog.pageviewInSample( 1 ), true );
 	// Test the rest using randomTokenMatch() since we don't
@@ -21,13 +21,13 @@ QUnit.test( 'sessionInSample()', function ( assert ) {
 	assert.strictEqual( mw.eventLog.sessionInSample( 7 ), false );
 } );
 
-QUnit.test( 'randomTokenMatch()', function ( assert ) {
+QUnit.test( 'randomTokenMatch()', ( assert ) => {
 	const n = 1000000, m = 1000001;
 
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, n.toString( 16 ) ), true );
 	assert.strictEqual( mw.eventLog.randomTokenMatch( 10, m.toString( 16 ) ), false );
 } );
 
-QUnit.test( 'makeLegacyStreamName()', function ( assert ) {
+QUnit.test( 'makeLegacyStreamName()', ( assert ) => {
 	assert.strictEqual( mw.eventLog.makeLegacyStreamName( 'MySchema' ), 'eventlogging_MySchema' );
 } );

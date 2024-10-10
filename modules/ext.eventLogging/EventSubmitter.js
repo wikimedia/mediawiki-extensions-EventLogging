@@ -38,7 +38,7 @@ EventSubmitter.prototype.submitEvent = function ( eventData ) {
 	const eventGateUri = this.eventGateUri;
 
 	if ( eventGateUri ) {
-		mw.eventLog.enqueue( function () {
+		mw.eventLog.enqueue( () => {
 			try {
 				navigator.sendBeacon(
 					eventGateUri,

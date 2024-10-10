@@ -19,7 +19,7 @@ QUnit.test.each( 'getUserEditCountBucket()', {
 		editCount: 99999,
 		expected: '1000+ edits'
 	}
-}, function ( assert, params ) {
+}, ( assert, params ) => {
 	assert.strictEqual(
 		mw.eventLog.getUserEditCountBucket( params.editCount ),
 		params.expected

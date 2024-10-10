@@ -219,7 +219,7 @@ const core = {
 
 			if ( !sizeError ) {
 				if ( config.baseUrl || debugMode ) {
-					core.enqueue( function () {
+					core.enqueue( () => {
 						core.sendBeacon( url );
 					} );
 				}
@@ -378,7 +378,7 @@ core.id = ( function () {
 		sessionId = null;
 
 	// Provided by the sessionTick instrument in WikimediaEvents.
-	mw.trackSubscribe( 'sessionReset', function () {
+	mw.trackSubscribe( 'sessionReset', () => {
 		core.id.resetSessionId();
 	} );
 
