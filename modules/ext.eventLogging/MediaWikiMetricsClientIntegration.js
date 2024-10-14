@@ -223,9 +223,9 @@ MediaWikiMetricsClientIntegration.prototype.isCurrentUserEnrolled = function ( e
 	}
 
 	// Fetch the current user's experiments using the getCurrentUserExperiments method
-	const experiments = this.getCurrentUserExperiments();
+	const currentUserExperiments = this.getCurrentUserExperiments();
 
 	// Check if the user is enrolled in the experiment
-	return experiments.enrolled.indexOf( experimentName ) !== -1;
+	return currentUserExperiments.experiments.enrolled.indexOf( experimentName ) !== -1;
 };
 module.exports = MediaWikiMetricsClientIntegration;
