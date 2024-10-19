@@ -11,8 +11,8 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use ApiBase;
-use ApiResult;
+use MediaWiki\Api\ApiBase;
+use MediaWiki\Api\ApiResult;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Revision\RevisionRecord;
 use MediaWiki\Revision\SlotRecord;

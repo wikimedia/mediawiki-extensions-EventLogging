@@ -10,7 +10,10 @@
 
 use MediaWiki\Extension\EventLogging\RemoteSchema;
 use MediaWiki\Http\HttpRequestFactory;
+use MediaWiki\Json\FormatJson;
 use PHPUnit\Framework\MockObject\MockObject;
+use Wikimedia\ObjectCache\BagOStuff;
+use Wikimedia\ObjectCache\HashBagOStuff;
 use Wikimedia\TestingAccessWrapper;
 
 /**

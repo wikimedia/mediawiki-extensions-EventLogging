@@ -9,6 +9,8 @@
  */
 
 use MediaWiki\Extension\EventLogging\JsonSchemaContent;
+use MediaWiki\Json\FormatJson;
+use MediaWiki\Parser\ParserOptions;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 

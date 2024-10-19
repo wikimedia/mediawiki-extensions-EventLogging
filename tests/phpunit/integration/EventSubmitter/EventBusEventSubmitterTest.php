@@ -4,7 +4,6 @@ namespace MediaWiki\Extension\EventLogging\Test\EventSubmitter;
 
 require_once __DIR__ . '/../../EventLoggingTestTrait.php';
 
-use ExtensionRegistry;
 use Generator;
 use MediaWiki\Config\HashConfig;
 use MediaWiki\Extension\EventBus\EventBus;
@@ -12,6 +11,7 @@ use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\MainConfigNames;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWikiIntegrationTestCase;
 use Psr\Log\LoggerInterface;
 

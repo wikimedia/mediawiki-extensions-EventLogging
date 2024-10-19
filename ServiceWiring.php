@@ -8,6 +8,7 @@ use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
+use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
 
 return [

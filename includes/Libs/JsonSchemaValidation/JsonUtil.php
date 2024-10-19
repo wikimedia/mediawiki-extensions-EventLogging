@@ -40,7 +40,7 @@
 
 namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
 
-use FormatJson;
+use MediaWiki\Json\FormatJson;
 
 class JsonUtil {
 	/**

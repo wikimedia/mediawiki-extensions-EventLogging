@@ -11,12 +11,12 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use FormatJson;
-use JsonContent;
+use MediaWiki\Content\JsonContent;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Html\Html;
+use MediaWiki\Json\FormatJson;
 use MediaWiki\MediaWikiServices;
-use Xml;
+use MediaWiki\Xml\Xml;
 
 /**
  * Represents the content of a JSON Schema article.

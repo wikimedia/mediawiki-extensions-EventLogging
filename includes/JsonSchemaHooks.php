@@ -13,9 +13,9 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use ApiModuleManager;
-use Content;
+use MediaWiki\Api\ApiModuleManager;
 use MediaWiki\Api\Hook\ApiMain__moduleManagerHook;
+use MediaWiki\Content\Content;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\EditPage\EditPage;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;

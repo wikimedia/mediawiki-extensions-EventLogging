@@ -12,13 +12,13 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use ExtensionRegistry;
 use MediaWiki\Config\Config;
 use MediaWiki\Hook\CanonicalNamespacesHook;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
+use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\ResourceLoader as RL;
 use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\User;
