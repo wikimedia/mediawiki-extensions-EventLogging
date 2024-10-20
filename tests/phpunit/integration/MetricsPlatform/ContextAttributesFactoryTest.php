@@ -65,6 +65,7 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 	 */
 	public function testAgentContextAttributes( $isUsingMobileDomain, $expectedClientPlatformFamily ): void {
 		$user = $this->createMock( User::class );
+		$user->method( 'getName' )->willReturn( 'TestUser' );
 		$user->method( 'getEditCount' )->willReturn( 42 );
 
 		$title = Title::makeTitle( NS_SPECIAL, 'Blankpage' );
