@@ -13,10 +13,7 @@ namespace MediaWiki\Extension\EventLogging;
 
 use MediaWiki\Content\JsonContent;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
-use MediaWiki\Html\Html;
 use MediaWiki\Json\FormatJson;
-use MediaWiki\MediaWikiServices;
-use MediaWiki\Xml\Xml;
 
 /**
  * Represents the content of a JSON Schema article.
@@ -88,33 +85,6 @@ class JsonSchemaContent extends JsonContent {
 		} catch ( JsonSchemaException $e ) {
 			return false;
 		}
-	}
-
-	/**
-	 * Constructs HTML representation of a single key-value pair.
-	 * Override this to support $ref
-	 * @param string $key
-	 * @param mixed $val
-	 * @return string HTML
-	 */
-	public function objectRow( $key, $val ) {
-		if ( $key === '$ref' ) {
-			$valParts = explode( '/', $val, 2 );
-			if ( !isset( $valParts[1] ) ) {
-				// Don't store or inject service objects in Content objects
-				// as that breaks serialization (T286610).
-				$services = MediaWikiServices::getInstance();
-				$revId = (int)$valParts[1];
-				$revRecord = $services->getRevisionLookup()->getRevisionById( $revId );
-				$title = $revRecord->getPageAsLinkTarget();
-				$link = $services->getLinkRenderer()->makeLink( $title, $val, [], [ 'oldid' => $revId ] );
-				$th = Xml::elementClean( 'th', [], $key );
-				$td = Xml::tags( 'td', [ 'class' => 'value' ], $link );
-				return Html::rawElement( 'tr', [], $th . $td );
-			}
-		}
-
-		return parent::objectRow( $key, $val );
 	}
 
 	/**
