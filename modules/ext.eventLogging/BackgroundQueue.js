@@ -64,19 +64,19 @@ module.exports = function BackgroundQueue( intervalSecs ) {
 	// then send any queued events.
 	// Listen to the pagehide and visibilitychange events as Safari 12 and Mobile Safari 11
 	// don't appear to support the Page Visbility API yet.
-	window.addEventListener( 'pagehide', function () {
+	window.addEventListener( 'pagehide', () => {
 		// Record when the page is in the process of being discarded.
 		discardingPage = true;
 		queue.flush();
 	} );
 
 	// If the page was just suspended and gets reactivated, re-enable queuing.
-	window.addEventListener( 'pageshow', function () {
+	window.addEventListener( 'pageshow', () => {
 		discardingPage = false;
 	} );
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/Document/onvisibilitychange
-	document.addEventListener( 'visibilitychange', function () {
+	document.addEventListener( 'visibilitychange', () => {
 		if ( document.hidden ) {
 			queue.flush();
 		}

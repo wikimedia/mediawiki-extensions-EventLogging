@@ -9,7 +9,7 @@ QUnit.module( 'ext.eventLogging/BackgroundQueue', {
 QUnit.test( 'add()', function ( assert ) {
 	const q = new mw.eventLog.BackgroundQueue( 1 / 1000 ),
 		seen = [];
-	q.add( function () {
+	q.add( () => {
 		seen.push( 'x' );
 	} );
 	assert.deepEqual( [], seen );

@@ -21,7 +21,7 @@ QUnit.module( 'ext.eventLogging/id', {
 	}
 } );
 
-QUnit.test( 'pageview', function ( assert ) {
+QUnit.test( 'pageview', ( assert ) => {
 	const id1 = mw.eventLog.id.getPageviewId();
 
 	assert.strictEqual( id1, mw.eventLog.id.getPageviewId(), 'The first pageview ID has been memoized.' );
@@ -34,7 +34,7 @@ QUnit.test( 'pageview', function ( assert ) {
 	assert.strictEqual( id2, mw.eventLog.id.getPageviewId(), 'The second pageview ID has been memoized.' );
 } );
 
-QUnit.test( 'session', function ( assert ) {
+QUnit.test( 'session', ( assert ) => {
 	const id1 = mw.eventLog.id.getSessionId();
 
 	assert.strictEqual( id1, mw.eventLog.id.getSessionId() );

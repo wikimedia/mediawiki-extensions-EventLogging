@@ -1,9 +1,9 @@
-QUnit.module( 'ext.eventLogging.debug', function () {
+QUnit.module( 'ext.eventLogging.debug', () => {
 	'use strict';
 
 	const eventLogDebug = require( 'ext.eventLogging.debug' );
 
-	QUnit.test( 'validate()', function ( assert ) {
+	QUnit.test( 'validate()', ( assert ) => {
 		const earthquakeSchema = {
 			revision: 123,
 			schema: {
@@ -79,7 +79,7 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 
 		assert.propEqual( errors, [], 'Non-required fields may be omitted' );
 
-		validationCases.forEach( function ( vCase ) {
+		validationCases.forEach( ( vCase ) => {
 			errors = eventLogDebug.validate( vCase.args, earthquakeSchema.schema );
 			assert.notStrictEqual( errors.join( '' ).match( vCase.regex ), null, vCase.msg );
 		} );
@@ -116,12 +116,12 @@ QUnit.module( 'ext.eventLogging.debug', function () {
 			valid: [ [], [ 42 ] ],
 			invalid: [ -1, {}, undefined ]
 		}
-	}, function ( assert, data ) {
-		data.valid.forEach( function ( value ) {
+	}, ( assert, data ) => {
+		data.valid.forEach( ( value ) => {
 			assert.strictEqual( eventLogDebug.isInstanceOf( value, data.type ), true,
 				JSON.stringify( value ) + ' is valid' );
 		} );
-		data.invalid.forEach( function ( value ) {
+		data.invalid.forEach( ( value ) => {
 			assert.strictEqual( eventLogDebug.isInstanceOf( value, data.type ), false,
 				JSON.stringify( value ) + ' is invalid' );
 		} );

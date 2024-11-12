@@ -49,7 +49,7 @@ Schema.prototype.log = function ( data, samplingRate ) {
 	if ( mw.eventLog.pageviewInSample( pop ) ) {
 		mw.track(
 			'event.' + this.name,
-			$.extend( {}, this.defaults, data )
+			Object.assign( {}, this.defaults, data )
 		);
 	}
 };

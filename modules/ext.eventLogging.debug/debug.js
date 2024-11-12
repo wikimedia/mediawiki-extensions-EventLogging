@@ -132,14 +132,14 @@ function validate( obj, schema ) {
  * @return {jQuery.Promise} Yields a function to open an OOUI Window
  */
 function makeDialogPromise() {
-	return mw.loader.using( 'oojs-ui-windows' ).then( function () {
+	return mw.loader.using( 'oojs-ui-windows' ).then( () => {
 		const manager = new OO.ui.WindowManager(),
 			dialog = new OO.ui.MessageDialog();
 		$( document.body ).append( manager.$element );
 		manager.addWindows( [ dialog ] );
 
 		return function openDialog( args ) {
-			manager.openWindow( dialog, $.extend( {
+			manager.openWindow( dialog, Object.assign( {
 				verbose: true,
 				size: 'large',
 				actions: [
@@ -181,9 +181,9 @@ function displayLoggedEvent( event, errors ) {
 		),
 		$content = $( '<p>' ).html( formatted );
 
-	$content.on( 'click', function () {
+	$content.on( 'click', () => {
 		dialogPromise = dialogPromise || makeDialogPromise();
-		dialogPromise.then( function ( openDialog ) {
+		dialogPromise.then( ( openDialog ) => {
 			openDialog( {
 				title: 'Schema: ' + event.schema,
 				message: $( '<pre>' ).text( eventWithAnyErrors )
@@ -204,11 +204,11 @@ function displayLoggedEvent( event, errors ) {
 function validateAndDisplay( event, schema ) {
 	const errors = validate( event.event, schema );
 
-	errors.forEach( function ( error ) {
+	errors.forEach( ( error ) => {
 		mw.track( 'eventlogging.error', mw.format( '[$1] $2', event.schema, error ) );
 	} );
 
-	mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( function () {
+	mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( () => {
 		displayLoggedEvent( event, errors );
 	} );
 }
@@ -218,14 +218,14 @@ const handleEventLoggingDebug = !schemaApiQueryUrl ?
 	function ( topic, event ) {
 		$.ajax( {
 			url: schemaApiQueryUrl,
-			data: $.extend(
+			data: Object.assign(
 				{},
 				schemaApiQueryParams,
 				{ titles: mw.format( 'Schema:$1', event.schema ) }
 			),
 			dataType: 'json'
 		} ).then(
-			function ( data ) {
+			( data ) => {
 				let page;
 				try {
 					page = data.query.pages[ data.query.pageids[ 0 ] ];
@@ -237,7 +237,7 @@ const handleEventLoggingDebug = !schemaApiQueryUrl ?
 					mw.track( 'eventlogging.error', mw.format( 'Could not parse schema $1: $2', event.schema, e ) );
 				}
 			},
-			function () {
+			() => {
 				mw.track( 'eventlogging.error', mw.format( 'Could not load schema: $1', event.schema ) );
 			}
 		);
@@ -246,7 +246,7 @@ const handleEventLoggingDebug = !schemaApiQueryUrl ?
 mw.trackSubscribe( 'eventlogging.debug', handleEventLoggingDebug );
 
 // Output validation errors to the browser console, if available.
-mw.trackSubscribe( 'eventlogging.error', function ( topic, error ) {
+mw.trackSubscribe( 'eventlogging.error', ( topic, error ) => {
 	mw.log.error( mw.format( '$1: $2', 'EventLogging Validation', error ) );
 } );
 
@@ -284,7 +284,7 @@ function displaySubmittedEvent( streamName, eventData ) {
 }
 
 const handleEventSubmitDebug = function ( topic, params ) {
-	mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( function () {
+	mw.loader.using( [ 'mediawiki.notification', 'oojs-ui-windows' ] ).then( () => {
 		displaySubmittedEvent( params.streamName, params.eventData );
 	} );
 };
