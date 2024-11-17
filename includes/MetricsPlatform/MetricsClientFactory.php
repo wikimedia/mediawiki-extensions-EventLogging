@@ -17,12 +17,18 @@ class MetricsClientFactory {
 	/** @var EventSubmitter */
 	private $eventSubmitter;
 
-	/** @var array|bool */
+	/** @var array|false */
 	private $streamConfigs;
 
 	/** @var LoggerInterface */
 	private $logger;
 
+	/**
+	 * @param ContextAttributesFactory $contextAttributesFactory
+	 * @param EventSubmitter $eventSubmitter
+	 * @param array|false $streamConfigs
+	 * @param LoggerInterface $logger
+	 */
 	public function __construct(
 		ContextAttributesFactory $contextAttributesFactory,
 		EventSubmitter $eventSubmitter,
