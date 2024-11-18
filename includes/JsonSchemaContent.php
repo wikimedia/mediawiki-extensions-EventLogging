@@ -22,6 +22,7 @@ class JsonSchemaContent extends JsonContent {
 
 	private const DEFAULT_RECURSION_LIMIT = 3;
 
+	/** @inheritDoc */
 	public function __construct( $text, $modelId = 'JsonSchema' ) {
 		parent::__construct( $text, $modelId );
 	}

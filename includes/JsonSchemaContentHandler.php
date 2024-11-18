@@ -23,10 +23,12 @@ use MediaWiki\Xml\Xml;
 
 class JsonSchemaContentHandler extends JsonContentHandler {
 
+	/** @inheritDoc */
 	public function __construct( $modelId = 'JsonSchema' ) {
 		parent::__construct( $modelId );
 	}
 
+	/** @inheritDoc */
 	public function canBeUsedOn( Title $title ) {
 		return $title->inNamespace( NS_SCHEMA );
 	}
@@ -73,6 +75,7 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 		}
 	}
 
+	/** @inheritDoc */
 	protected function getContentClass() {
 		return JsonSchemaContent::class;
 	}

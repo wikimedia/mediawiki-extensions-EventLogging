@@ -27,6 +27,7 @@ use Wikimedia\ParamValidator\ParamValidator;
  */
 class ApiJsonSchema extends ApiBase {
 
+	/** @inheritDoc */
 	public function getAllowedParams() {
 		return [
 			'revid' => [

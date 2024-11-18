@@ -144,6 +144,7 @@ class Hooks implements
 		];
 	}
 
+	/** @inheritDoc */
 	public function onCanonicalNamespaces( &$namespaces ): void {
 		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
 			$namespaces[ NS_SCHEMA ] = 'Schema';
