@@ -18,7 +18,7 @@ trait EventLoggingTestTrait {
 		$this->assertStringEndsWith( 'Z', $timestamp );
 	}
 
-	public function assertEventCanBeIngested( $event, $schema, $streamName ): void {
+	public function assertEventCanBeIngested( array $event, string $schema, string $streamName ): void {
 		$this->assertSame( $schema, $event['$schema'] );
 
 		$this->assertArrayHasKey( 'meta', $event );
