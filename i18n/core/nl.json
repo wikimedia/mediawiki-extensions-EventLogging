@@ -15,5 +15,5 @@
 	"eventlogging-code-sample-module-setup-json": "ext.json-instelling voor het loggen van JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Logboekregistratie voor JavaScript",
 	"eventlogging-error-move-source": "Schemapagina's mogen niet hernoemd worden",
-	"eventlogging-error-move-destination": "Pagina's kunnen niet hernoemd worden naar Schema pagina's"
+	"eventlogging-error-move-destination": "Pagina’s kunnen niet hernoemd worden tot Schema-pagina’s"
 }
