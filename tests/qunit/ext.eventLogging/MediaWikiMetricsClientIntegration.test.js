@@ -45,9 +45,8 @@ QUnit.test( '#getCurrentUserExperiments() - invalid $wgMetricsPlatformUserExperi
 
 QUnit.test( '#getCurrentUserExperiments()', function ( assert ) {
 	mw.config.set( 'wgMetricsPlatformUserExperiments', {
-		foo: 'bar:baz',
-		qux: 'unsampled',
-		quux: 'invalid'
+		assigned: { bar: 'baz', oof: 'boo' },
+		enrolled: [ 'foo' ]
 	} );
 
 	assert.deepEqual(
@@ -56,7 +55,8 @@ QUnit.test( '#getCurrentUserExperiments()', function ( assert ) {
 			experiments: {
 				enrolled: [ 'foo' ],
 				assigned: {
-					foo: 'baz'
+					bar: 'baz',
+					oof: 'boo'
 				}
 			}
 		},
