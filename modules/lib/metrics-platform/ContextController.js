@@ -17,6 +17,8 @@ function ContextController( integration ) {
  * @param {MetricsPlatformEventData} eventData
  * @param {StreamConfig} streamConfig
  * @return {MetricsPlatformEventData}
+ *
+ * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/Contextual_attributes
  */
 ContextController.prototype.addRequestedValues = function ( eventData, streamConfig ) {
 	let requestedValues = streamConfig &&

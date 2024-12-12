@@ -1,6 +1,8 @@
-/** @type {StreamProducerContextAttribute[]} */
+/**
+ * @type {StreamProducerContextAttribute[]}
+ * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/Contextual_attributes
+ */
 const VALID_ATTRIBUTE_NAMES = [
-	'agent_app_install_id',
 	'agent_client_platform',
 	'agent_client_platform_family',
 
