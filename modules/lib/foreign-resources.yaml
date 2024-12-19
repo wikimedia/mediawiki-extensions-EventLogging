@@ -4,10 +4,10 @@
 metrics-platform:
   license: GPL-2.0+
   homepage: https://wikitech.wikimedia.org/wiki/Metrics_Platform
-  version: 56ee0c179fc6
+  version: 491eba5916f7
   type: tar
-  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/56ee0c179fc6712c13b7efffab85adcf4491d0b4/metrics-platform-56ee0c179fc6712c13b7efffab85adcf4491d0b4.tar.gz
-  integrity: sha384-w90DcJdRX3EbRpEGnzVCfQTX0DVuKwEY51UTAd2OwEvWuKtYVgBapzfeIRJLrx+1
+  src: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/archive/491eba5916f722510aac30d1ce4f6ede820c514f/metrics-platform-491eba5916f722510aac30d1ce4f6ede820c514f.tar.gz
+  integrity: sha384-56Qjz8V0ZHJgrp6SwrBPdmGClDvGQh8tpXKDrkiZiXuu7kTyE10YOfiU8viwo+jD
   # GitLab nests their archives with a variable subdirectory...
   dest:
     metrics-platform-*/COPYING:

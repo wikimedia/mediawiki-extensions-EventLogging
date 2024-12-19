@@ -37,12 +37,15 @@
  * @param {string} streamName
  * @param {string} schemaID
  * @constructor
+ *
+ * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/JavaScript_API
  */
 function Instrument( metricsClient, streamName, schemaID ) {
 	this.metricsClient = metricsClient;
 	this.streamName = streamName;
 	this.schemaID = schemaID;
 	this.eventSequencePosition = 1;
+	this.instrumentName = null;
 }
 
 /**
@@ -77,6 +80,11 @@ Instrument.prototype.submitInteraction = function ( action, interactionData ) {
 		}
 	);
 
+	if ( this.instrumentName ) {
+		// eslint-disable-next-line camelcase
+		interactionData.instrument_name = this.instrumentName;
+	}
+
 	this.metricsClient.submitInteraction(
 		this.streamName,
 		this.schemaID,
@@ -92,10 +100,22 @@ Instrument.prototype.submitInteraction = function ( action, interactionData ) {
  */
 Instrument.prototype.submitClick = function ( interactionData ) {
 
-	// eslint-disable-next-line camelcase
+	/* eslint-disable camelcase */
 	interactionData.funnel_event_sequence_position = this.eventSequencePosition++;
 
+	if ( this.instrumentName ) {
+		interactionData.instrument_name = this.instrumentName;
+	}
+	/* eslint-enable camelcase */
+
 	this.metricsClient.submitClick( this.streamName, interactionData );
+};
+
+/**
+ * @param {string} instrumentName
+ */
+Instrument.prototype.setInstrumentName = function ( instrumentName ) {
+	this.instrumentName = instrumentName;
 };
 
 module.exports = Instrument;

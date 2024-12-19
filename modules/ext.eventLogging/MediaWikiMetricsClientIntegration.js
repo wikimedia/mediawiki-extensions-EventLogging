@@ -178,7 +178,7 @@ MediaWikiMetricsClientIntegration.prototype.getSessionId = function () {
 };
 
 MediaWikiMetricsClientIntegration.prototype.getCurrentUserExperiments = function () {
-	let enrolled = [];
+	const enrolled = [];
 	const assigned = {};
 
 	if ( !mw.user.isNamed() ) {
@@ -194,7 +194,9 @@ MediaWikiMetricsClientIntegration.prototype.getCurrentUserExperiments = function
 
 	// Ensure userExperiments is defined and is an object
 	if ( userExperiments && typeof userExperiments === 'object' ) {
-		enrolled = userExperiments.enrolled;
+		if ( userExperiments.enrolled ) {
+			enrolled.push( ...userExperiments.enrolled );
+		}
 
 		for ( const featureName in userExperiments.assigned ) {
 			// Only assign the value if it's not 'unsampled'
