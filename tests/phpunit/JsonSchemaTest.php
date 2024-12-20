@@ -21,7 +21,8 @@ use MediaWiki\User\User;
 class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 
 	private const INVALID_JSON = '"Malformed, JSON }';
-	private const INVALID_JSON_SCHEMA = '{"malformed":true}';  // Valid JSON, invalid JSON Schema.
+	/** Valid JSON, invalid JSON Schema. */
+	private const INVALID_JSON_SCHEMA = '{"malformed":true}';
 	private const VALID_JSON_SCHEMA = '{"properties":{"valid":{"type":"boolean","required":true}}}';
 	private const EVIL_JSON = '{"title":"<script>alert(document.cookie);</script>"}';
 
