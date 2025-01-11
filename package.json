@@ -13,7 +13,7 @@
 		"grunt-stylelint": "0.20.1",
 		"jsdoc": "4.0.4",
 		"jsdoc-wmf-theme": "1.0.1",
-		"stylelint-config-wikimedia": "0.17.2"
+		"stylelint-config-wikimedia": "0.18.0"
 	},
 	"eslintIgnore": [
 		"modules/ext.eventLogging/lib/**",
