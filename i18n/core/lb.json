@@ -1,10 +1,11 @@
 {
 	"@metadata": {
 		"authors": [
-			"Robby"
+			"Robby",
+			"Volvox"
 		]
 	},
-	"eventlogging-invalid-json": "JSON net valabel",
+	"eventlogging-invalid-json": "Ongültegen JSON",
 	"eventlogging-revision-id": "Versioun $1",
 	"eventlogging-code-sample-logging-on-server-side": "PHP-Logbicher",
 	"eventlogging-code-sample-module-setup-json": "Astellung vun extension.json fir d'Alogge mat JavaScript",
