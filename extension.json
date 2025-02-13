@@ -36,7 +36,12 @@
 		"eventlogging-display-console": 0
 	},
 	"ContentHandlers": {
-		"JsonSchema": "MediaWiki\\Extension\\EventLogging\\JsonSchemaContentHandler"
+		"JsonSchema": {
+			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaContentHandler",
+			"optional_services": [
+				"SyntaxHighlight.SyntaxHighlight"
+			]
+		}
 	},
 	"ExtensionFunctions": [
 		"MediaWiki\\Extension\\EventLogging\\Hooks::onSetup"

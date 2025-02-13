@@ -16,16 +16,21 @@ use MediaWiki\Content\JsonContentHandler;
 use MediaWiki\Content\Renderer\ContentParseParams;
 use MediaWiki\Html\Html;
 use MediaWiki\Parser\ParserOutput;
-use MediaWiki\Registration\ExtensionRegistry;
 use MediaWiki\SyntaxHighlight\SyntaxHighlight;
 use MediaWiki\Title\Title;
 use MediaWiki\Xml\Xml;
 
 class JsonSchemaContentHandler extends JsonContentHandler {
 
+	private ?SyntaxHighlight $syntaxHighlight;
+
 	/** @inheritDoc */
-	public function __construct( $modelId = 'JsonSchema' ) {
+	public function __construct(
+		$modelId,
+		?SyntaxHighlight $syntaxHighlight
+	) {
 		parent::__construct( $modelId );
+		$this->syntaxHighlight = $syntaxHighlight;
 	}
 
 	/** @inheritDoc */
@@ -55,12 +60,12 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 		$page = $cpoParams->getPage();
 		$revId = $cpoParams->getRevId();
 		parent::fillParserOutput( $content, $cpoParams, $parserOutput );
-		if ( $revId !== null && ExtensionRegistry::getInstance()->isLoaded( 'SyntaxHighlight' ) ) {
+		if ( $revId !== null && $this->syntaxHighlight ) {
 			$html = '';
 			foreach ( $content->getCodeSamples( $page->getDBkey(), $revId ) as $sample ) {
 				$lang = $sample['language'];
 				$code = $sample['code'];
-				$highlighted = SyntaxHighlight::highlight( $code, $lang )->getValue();
+				$highlighted = $this->syntaxHighlight->syntaxHighlight( $code, $lang )->getValue();
 				$html .= Html::element( 'h2',
 					[],
 					wfMessage( $sample['header'] )->text()
