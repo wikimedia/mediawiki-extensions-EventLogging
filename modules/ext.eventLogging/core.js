@@ -249,6 +249,7 @@ const core = {
 		// Record this failure as a simple counter. By default "counter.*" goes nowhere.
 		// The WikimediaEvents extension sends it to statsd.
 		mw.track( 'counter.eventlogging.client_errors.' + schemaName + '.' + errorCode );
+		mw.track( 'stats.mediawiki_eventlogging_client_errors_total', { schemaName, errorCode } );
 	},
 
 	/**
