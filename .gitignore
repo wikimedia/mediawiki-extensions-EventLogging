@@ -7,3 +7,4 @@
 /vendor
 .eslintcache
 /modules/lib/.foreign
+/.stylelintcache
