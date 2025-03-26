@@ -140,22 +140,10 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 
 	public static function provideMediaWikiIsDebugMode(): Generator {
 		yield [
-			'eventLoggingDisplayWeb' => 0,
 			'eventLoggingDisplayConsole' => 0,
 			'expectedMediaWikiIsDebugMode' => false,
 		];
 		yield [
-			'eventLoggingDisplayWeb' => 1,
-			'eventLoggingDisplayConsole' => 0,
-			'expectedMediaWikiIsDebugMode' => true,
-		];
-		yield [
-			'eventLoggingDisplayWeb' => 0,
-			'eventLoggingDisplayConsole' => 1,
-			'expectedMediaWikiIsDebugMode' => true,
-		];
-		yield [
-			'eventLoggingDisplayWeb' => 1,
 			'eventLoggingDisplayConsole' => 1,
 			'expectedMediaWikiIsDebugMode' => true,
 		];
@@ -165,7 +153,6 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 	 * @dataProvider provideMediaWikiIsDebugMode
 	 */
 	public function testBuildIsDebugMode(
-		$eventLoggingDisplayWeb,
 		$eventLoggingDisplayConsole,
 		$expectedMediaWikiIsDebugMode
 	) {
@@ -177,7 +164,6 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 
 		$services = $this->getServiceContainer();
 		$userOptionsManager = $services->getUserOptionsManager();
-		$userOptionsManager->setOption( $user, 'eventlogging-display-web', $eventLoggingDisplayWeb );
 		$userOptionsManager->setOption( $user, 'eventlogging-display-console', $eventLoggingDisplayConsole );
 		$userOptionsManager->saveOptions( $user );
 

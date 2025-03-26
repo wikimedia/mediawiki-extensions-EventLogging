@@ -16,8 +16,7 @@ const BackgroundQueue = require( './BackgroundQueue.js' );
 const queue = ( new BackgroundQueue( config.queueLingerSeconds ) );
 
 // Support both 1 or "1" (T54542)
-const debugMode = Number( mw.user.options.get( 'eventlogging-display-web' ) ) === 1 ||
-	Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
+const debugMode = Number( mw.user.options.get( 'eventlogging-display-console' ) ) === 1;
 
 /**
  * Construct the streamName for a legacy EventLogging Schema.
@@ -222,9 +221,6 @@ const core = {
 					core.enqueue( () => {
 						core.sendBeacon( url );
 					} );
-				}
-				if ( debugMode ) {
-					mw.track( 'eventlogging.debug', event );
 				}
 				// TODO: deprecate the signature of this method by returning a meaningless
 				// promise and moving the sizeError checking into debug mode
