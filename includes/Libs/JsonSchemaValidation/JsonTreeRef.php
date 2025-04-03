@@ -337,7 +337,6 @@ class JsonTreeRef {
 			$jsoni = $this->getMappingChildRef( $key );
 			$jsoni->validate();
 		}
-		return true;
 	}
 
 	private function validateArrayChildren() {
