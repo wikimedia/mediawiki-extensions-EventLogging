@@ -187,9 +187,7 @@ class ContextAttributesFactory {
 		$skin = $contextSource->getSkin();
 
 		$user = $contextSource->getUser();
-		$isDebugMode =
-			$this->userOptionsLookup->getIntOption( $user, 'eventlogging-display-web' ) === 1 ||
-			$this->userOptionsLookup->getIntOption( $user, 'eventlogging-display-console' ) === 1;
+		$isDebugMode = $this->userOptionsLookup->getIntOption( $user, 'eventlogging-display-console' ) === 1;
 
 		// TODO: Reevaluate whether the `mediawiki.is_production` contextual attribute is useful.
 		//  We should be able to determine this from the database name of the wiki during analysis.

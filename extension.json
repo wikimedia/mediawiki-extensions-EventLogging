@@ -32,7 +32,6 @@
 		}
 	],
 	"DefaultUserOptions": {
-		"eventlogging-display-web": 0,
 		"eventlogging-display-console": 0
 	},
 	"ContentHandlers": {
@@ -133,12 +132,10 @@
 			"tests/qunit/ext.eventLogging/log.test.js",
 			"tests/qunit/ext.eventLogging/stream.test.js",
 			"tests/qunit/ext.eventLogging/utils.test.js",
-			"tests/qunit/ext.eventLogging/MediaWikiMetricsClientIntegration.test.js",
-			"tests/qunit/ext.eventLogging.debug/debug.test.js"
+			"tests/qunit/ext.eventLogging/MediaWikiMetricsClientIntegration.test.js"
 		],
 		"dependencies": [
-			"ext.eventLogging",
-			"ext.eventLogging.debug"
+			"ext.eventLogging"
 		]
 	},
 	"Hooks": {

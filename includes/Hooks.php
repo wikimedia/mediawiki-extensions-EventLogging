@@ -76,9 +76,7 @@ class Hooks implements
 	public function onBeforePageDisplay( $out, $skin ): void {
 		$out->addModules( [ 'ext.eventLogging' ] );
 
-		if ( $this->userOptionsLookup->getIntOption( $out->getUser(), 'eventlogging-display-web' )
-			|| $this->userOptionsLookup->getIntOption( $out->getUser(), 'eventlogging-display-console' )
-		) {
+		if ( $this->userOptionsLookup->getIntOption( $out->getUser(), 'eventlogging-display-console' ) ) {
 			$out->addModules( 'ext.eventLogging.debug' );
 		}
 	}
@@ -136,9 +134,6 @@ class Hooks implements
 	 */
 	public function onGetPreferences( $user, &$preferences ): void {
 		// See 'ext.eventLogging.debug' module.
-		$preferences['eventlogging-display-web'] = [
-			'type' => 'api',
-		];
 		$preferences['eventlogging-display-console'] = [
 			'type' => 'api',
 		];
