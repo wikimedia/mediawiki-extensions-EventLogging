@@ -23,10 +23,10 @@ use MediaWiki\Hook\EditFilterMergedContentHook;
 use MediaWiki\Hook\MovePageIsValidMoveHook;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
+use MediaWiki\Skin\Skin;
 use MediaWiki\Status\Status;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
-use Skin;
 
 class JsonSchemaHooks implements
 	BeforePageDisplayHook,
