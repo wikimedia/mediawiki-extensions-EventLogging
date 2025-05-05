@@ -3,5 +3,8 @@
 	"extends": [
 		"wikimedia/qunit",
 		"../modules/.eslintrc.json"
-	]
+	],
+	"rules": {
+		"no-jquery/no-done-fail": "warn"
+	}
 }

@@ -95,7 +95,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 		mediawiki: {
 			skin: c( 'skin' ),
 			version: version,
-			is_production: version.indexOf( 'wmf' ) !== -1,
+			is_production: version.includes( 'wmf' ),
 			is_debug_mode: c( 'debug' ),
 			database: c( 'wgDBname' ),
 			site_content_language: c( 'wgContentLanguage' )
@@ -115,7 +115,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 			// is a default MediaWiki user group [0].
 			//
 			// [0] https://www.mediawiki.org/wiki/Help:User_rights_and_groups#User_rights_and_groups_on_your_wiki
-			is_bot: userGroups.indexOf( 'bot' ) !== -1,
+			is_bot: userGroups.includes( 'bot' ),
 
 			is_temp: c( 'wgUserIsTemp' ),
 			language: c( 'wgUserLanguage' ),
@@ -225,6 +225,6 @@ MediaWikiMetricsClientIntegration.prototype.isCurrentUserEnrolled = function ( e
 	const currentUserExperiments = this.getCurrentUserExperiments();
 
 	// Check if the user is enrolled in the experiment
-	return currentUserExperiments.experiments.enrolled.indexOf( experimentName ) !== -1;
+	return currentUserExperiments.experiments.enrolled.includes( experimentName );
 };
 module.exports = MediaWikiMetricsClientIntegration;
