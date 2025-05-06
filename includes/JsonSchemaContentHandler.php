@@ -18,7 +18,6 @@ use MediaWiki\Html\Html;
 use MediaWiki\Parser\ParserOutput;
 use MediaWiki\SyntaxHighlight\SyntaxHighlight;
 use MediaWiki\Title\Title;
-use MediaWiki\Xml\Xml;
 
 class JsonSchemaContentHandler extends JsonContentHandler {
 
@@ -72,8 +71,8 @@ class JsonSchemaContentHandler extends JsonContentHandler {
 				) . $highlighted;
 			}
 			// The glyph is '< >' from the icon font 'Entypo' (see ../modules).
-			$html = Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-glyph' ], '&#xe714;' ) .
-				Xml::tags( 'div', [ 'class' => 'mw-json-schema-code-samples' ], $html );
+			$html = Html::rawElement( 'div', [ 'class' => 'mw-json-schema-code-glyph' ], '&#xe714;' ) .
+				Html::rawElement( 'div', [ 'class' => 'mw-json-schema-code-samples' ], $html );
 			$parserOutput->setIndicator( 'schema-code-samples', $html );
 			$parserOutput->addModules( [ 'ext.eventLogging.jsonSchema', 'ext.pygments' ] );
 			$parserOutput->addModuleStyles( [ 'ext.eventLogging.jsonSchema.styles' ] );
