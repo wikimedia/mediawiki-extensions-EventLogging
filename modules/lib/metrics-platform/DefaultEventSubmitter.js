@@ -1,18 +1,5 @@
-const DEFAULT_EVENTGATE_ORIGIN = 'https://intake-analytics.wikimedia.org';
+const DEFAULT_EVENT_INTAKE_URL = 'https://intake-analytics.wikimedia.org/v1/events?hasty=true';
 const DELAYED_SUBMIT_TIMEOUT = 5; // (s)
-
-/**
- * @param {string} [origin]
- * @return {string}
- */
-function getEventGateUrl( origin ) {
-	const result = new URL( origin || DEFAULT_EVENTGATE_ORIGIN );
-
-	result.pathname = '/v1/events';
-	result.searchParams.set( 'hasty', 'true' );
-
-	return result.toString();
-}
 
 /**
  * The default event submitter used by {@link MetricsClient}.
@@ -30,12 +17,12 @@ function getEventGateUrl( origin ) {
  * [0]: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/sendBeacon
  * [1]: https://developer.mozilla.org/en-US/docs/Web/API/Page_Visibility_API
  *
- * @param {string} [eventGateOrigin] The origin of the EventGate event intake service to send
- *  events to. `https://intake-analytics.wikimedia.org` by default
+ * @param {string} [eventIntakeUrl] The URL of the EventGate event intake service to send events
+ *  to. `https://intake-analytics.wikimedia.org/v1/events?hasty=true` by default
  * @constructor
  */
-function DefaultEventSubmitter( eventGateOrigin ) {
-	this.eventGateUrl = getEventGateUrl( eventGateOrigin );
+function DefaultEventSubmitter( eventIntakeUrl ) {
+	this.eventIntakeUrl = eventIntakeUrl || DEFAULT_EVENT_INTAKE_URL;
 
 	/** @type {EventData[]} */
 	this.events = [];
@@ -88,7 +75,7 @@ DefaultEventSubmitter.prototype.doSubmitEvents = function () {
 	if ( this.events.length ) {
 		try {
 			navigator.sendBeacon(
-				this.eventGateUrl,
+				this.eventIntakeUrl,
 				JSON.stringify( this.events )
 			);
 		} catch ( e ) {
@@ -140,7 +127,4 @@ DefaultEventSubmitter.prototype.onSubmitEvent = function ( eventData ) {
 	console.info( 'Submitted the following event:', eventData );
 };
 
-module.exports = {
-	DefaultEventSubmitter,
-	getEventGateUrl
-};
+module.exports = DefaultEventSubmitter;

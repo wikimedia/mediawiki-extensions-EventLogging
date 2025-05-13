@@ -1,7 +1,7 @@
 const ContextController = require( './ContextController.js' );
 const SamplingController = require( './SamplingController.js' );
 const CurationController = require( './CurationController.js' );
-const DefaultEventSubmitter = require( './DefaultEventSubmitter.js' ).DefaultEventSubmitter;
+const DefaultEventSubmitter = require( './DefaultEventSubmitter.js' );
 const Instrument = require( './Instrument.js' );
 
 const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
@@ -144,7 +144,7 @@ MetricsClient.prototype.getStreamNamesForEvent = function ( eventName ) {
 	let result = [];
 
 	for ( const key in this.eventNameToStreamNamesMap ) {
-		if ( eventName.startsWith( key ) ) {
+		if ( eventName.indexOf( key ) === 0 ) {
 			result = result.concat( this.eventNameToStreamNamesMap[ key ] );
 		}
 	}
@@ -456,26 +456,6 @@ MetricsClient.prototype.submitInteraction = function (
 		return;
 	}
 
-	let currentUserExperiments = null;
-	// The new experiments fragment is only available for web/base 1.3.0
-	if ( schemaID === '/analytics/product_metrics/web/base/1.3.0' ) {
-		currentUserExperiments = this.integration.getCurrentUserExperiments();
-		// T381849: Checking and merging temporarily for growthExperiments to be able to add
-		// experiments details as interaction data
-		if ( interactionData !== undefined && interactionData.experiments ) {
-			// @ts-ignore ts2339
-			currentUserExperiments.experiments.enrolled.push(
-				...interactionData.experiments.enrolled
-			);
-			Object.assign(
-				// @ts-ignore ts2339
-				currentUserExperiments.experiments.assigned,
-				// @ts-ignore ts2339
-				currentUserExperiments.experiments.assigned,
-				interactionData.experiments.assigned );
-		}
-	}
-
 	const eventData = Object.assign(
 		{
 			action
@@ -483,8 +463,7 @@ MetricsClient.prototype.submitInteraction = function (
 		interactionData || {},
 		{
 			$schema: schemaID
-		},
-		currentUserExperiments
+		}
 	);
 
 	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
@@ -498,7 +477,7 @@ MetricsClient.prototype.submitInteraction = function (
 	this.submit( streamName, eventData );
 };
 
-const WEB_BASE_SCHEMA_ID = '/analytics/product_metrics/web/base/1.3.0';
+const WEB_BASE_SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.1';
 const WEB_BASE_STREAM_NAME = 'product_metrics.web_base';
 
 /**
@@ -590,16 +569,6 @@ MetricsClient.prototype.newInstrument = function (
 	}
 
 	return result;
-};
-
-/**
- *  Checks whether the user is enrolled in a specific experiment
- *
- * @param {string} experimentName
- * @return {boolean}
- */
-MetricsClient.prototype.isCurrentUserEnrolled = function ( experimentName ) {
-	return this.integration.isCurrentUserEnrolled( experimentName );
 };
 
 module.exports = MetricsClient;

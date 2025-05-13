@@ -14,6 +14,6 @@
 		"yml/no-empty-mapping-value": "warn"
 	},
 	"ignorePatterns": [
-		"modules/lib/metrics-platform"
+		"lib/metrics-platform/"
 	]
 }

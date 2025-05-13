@@ -46,29 +46,29 @@ CurationController.prototype.applyRules = function ( value, rules ) {
 		} else if (
 			operator === 'in' &&
 			Array.isArray( operand ) &&
-			!operand.includes( value )
+			operand.indexOf( value ) === -1
 		) {
 			return false;
 		} else if (
 			operator === 'not_in' &&
 			Array.isArray( operand ) &&
-			operand.includes( value )
+			operand.indexOf( value ) > -1
 		) {
 			return false;
-		} else if ( operator === 'contains' && !value.includes( operand ) ) {
+		} else if ( operator === 'contains' && value.indexOf( operand ) === -1 ) {
 			return false;
-		} else if ( operator === 'does_not_contain' && value.includes( operand ) ) {
+		} else if ( operator === 'does_not_contain' && value.indexOf( operand ) > -1 ) {
 			return false;
 		} else if ( operator === 'contains_all' && Array.isArray( operand ) ) {
 			for ( i = 0; i < operand.length; i++ ) {
-				if ( !value.includes( operand[ i ] ) ) {
+				if ( value.indexOf( operand[ i ] ) === -1 ) {
 					return false;
 				}
 			}
 		} else if ( operator === 'contains_any' && Array.isArray( operand ) ) {
 			let found;
 			for ( i = 0; i < operand.length; i++ ) {
-				if ( value.includes( operand[ i ] ) ) {
+				if ( value.indexOf( operand[ i ] ) > -1 ) {
 					found = true;
 					break;
 				}
