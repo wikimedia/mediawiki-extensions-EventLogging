@@ -81,20 +81,12 @@
 					"name": "ext.eventLogging/data.json",
 					"callback": "MediaWiki\\Extension\\EventLogging\\Hooks::getModuleData"
 				},
-				"lib/metrics-platform/ContextUtils.js",
-				"lib/metrics-platform/ContextController.js",
-				"lib/metrics-platform/CurationController.js",
-				"lib/metrics-platform/DefaultEventSubmitter.js",
-				"lib/metrics-platform/Instrument.js",
-				"lib/metrics-platform/MetricsClient.js",
-				"lib/metrics-platform/SamplingController.js",
-				"lib/metrics-platform/StreamConfigUtils.js",
-				"ext.eventLogging/MediaWikiMetricsClientIntegration.js",
 				"ext.eventLogging/EventSubmitter.js"
 			],
 			"dependencies": [
 				"mediawiki.user",
-				"user.options"
+				"user.options",
+				"ext.eventLogging.metricsPlatform"
 			]
 		},
 		"ext.eventLogging.debug": {
@@ -115,6 +107,22 @@
 		},
 		"ext.eventLogging.jsonSchema.styles": {
 			"styles": "modules/ext.eventLogging.jsonSchema.styles/jsonSchema.css"
+		},
+		"ext.eventLogging.metricsPlatform": {
+			"localBasePath": "modules",
+			"remoteExtPath": "EventLogging/modules",
+			"packageFiles": [
+				"ext.eventLogging.metricsPlatform/index.js",
+				"ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js",
+				"lib/metrics-platform/ContextUtils.js",
+				"lib/metrics-platform/ContextController.js",
+				"lib/metrics-platform/CurationController.js",
+				"lib/metrics-platform/DefaultEventSubmitter.js",
+				"lib/metrics-platform/Instrument.js",
+				"lib/metrics-platform/MetricsClient.js",
+				"lib/metrics-platform/SamplingController.js",
+				"lib/metrics-platform/StreamConfigUtils.js"
+			]
 		}
 	},
 	"ForeignResourcesDir": "modules/lib",

@@ -11,15 +11,20 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 		this.sandbox.stub( navigator, 'sendBeacon', () => {} );
 		this.sandbox.stub( mw.log, 'warn', () => {} );
 		this.sandbox.stub( mw.log, 'error', () => {} );
-
 		this.originalOptions = mw.eventLog.setOptionsForTest( {
 			baseUrl: '/dummy/',
+			serviceUri: 'testUri',
 			schemasInfo: {
 				earthquake: 123,
 				// eruption events will be prepared for POSTing to EventGate.
 				eruption: '/analytics/legacy/eruption/1.0.0'
 			},
-			streamConfigs: false
+			streamConfigs: {
+				'test.stream': {},
+
+				// eslint-disable-next-line camelcase
+				eventlogging_eruption: {}
+			}
 		} );
 	},
 	afterEach: function () {

@@ -330,19 +330,16 @@ mw.log.deprecate( core, 'inSample', core.pageviewInSample, 'Use "mw.eventLog.pag
 // code from above to here. https://phabricator.wikimedia.org/T238544
 // ////////////////////////////////////////////////////////////////////
 
-const MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
 const EventSubmitter = require( './EventSubmitter.js' );
-const MetricsClient = require( '../lib/metrics-platform/MetricsClient.js' );
+const metricsPlatform = require( 'ext.eventLogging.metricsPlatform' );
 
 function initMetricsClient() {
-	const integration = new MediaWikiMetricsClientIntegration();
 	const eventSubmitter = new EventSubmitter(
 		config.serviceUri,
 		core.enqueue.bind( core ),
 		debugMode
 	);
-	const metricsClient = new MetricsClient(
-		integration,
+	const metricsClient = metricsPlatform.newMetricsClient(
 		config.streamConfigs,
 		eventSubmitter
 	);

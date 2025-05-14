@@ -4,7 +4,19 @@ QUnit.module( 'ext.eventLogging/stream', {
 	beforeEach: function () {
 		this.clock = this.sandbox.useFakeTimers();
 		this.originalOptions = mw.eventLog.setOptionsForTest( {
-			streamConfigs: false
+			baseUrl: '/dummy/',
+			serviceUri: 'testUri',
+			schemasInfo: {
+				earthquake: 123,
+				// eruption events will be prepared for POSTing to EventGate.
+				eruption: '/analytics/legacy/eruption/1.0.0'
+			},
+			streamConfigs: {
+				'test.stream': {},
+
+				// eslint-disable-next-line camelcase
+				eventlogging_eruption: {}
+			}
 		} );
 	},
 	afterEach: function () {
@@ -20,12 +32,6 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 		seen.push( 'warn' );
 	} );
 	this.sandbox.stub( navigator, 'sendBeacon', () => {} );
-
-	mw.eventLog.setOptionsForTest( {
-		streamConfigs: {
-			'test.stream': { some: 'config' }
-		}
-	} );
 	mw.eventLog.submit( 'test.stream', {} );
 	assert.deepEqual( [ 'warn' ], seen );
 	assert.strictEqual( mw.eventLog.enqueue.callCount, 0, 'enqueue() calls' );
@@ -41,12 +47,7 @@ QUnit.test( 'submit() - produce an event correctly', function ( assert ) {
 
 	this.clock.tick( 1000 );
 	const t1 = new Date().toISOString();
-	mw.eventLog.setOptionsForTest( {
-		serviceUri: 'testUri',
-		streamConfigs: {
-			'test.stream': { some: 'config' }
-		}
-	} );
+
 	mw.eventLog.submit( 'test.stream', { $schema: 'test/schema' } );
 	this.clock.tick( 1000 );
 

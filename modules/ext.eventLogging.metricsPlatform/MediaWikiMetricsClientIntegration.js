@@ -6,13 +6,15 @@ const c = mw.config.get.bind( mw.config );
 let contextAttributes = null;
 
 /**
+ * @class
  * @classdesc Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
  *
  * See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
  *
- * @class MediaWikiMetricsClientIntegration
+ * @memberof module:"ext.eventLogging.metricsPlatform"
  */
-function MediaWikiMetricsClientIntegration() {}
+function MediaWikiMetricsClientIntegration() {
+}
 
 /**
  * Gets the hostname of the current document.
