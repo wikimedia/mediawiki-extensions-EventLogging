@@ -144,7 +144,7 @@ MetricsClient.prototype.getStreamNamesForEvent = function ( eventName ) {
 	let result = [];
 
 	for ( const key in this.eventNameToStreamNamesMap ) {
-		if ( eventName.indexOf( key ) === 0 ) {
+		if ( eventName.startsWith( key ) ) {
 			result = result.concat( this.eventNameToStreamNamesMap[ key ] );
 		}
 	}
