@@ -11,7 +11,7 @@ let contextAttributes = null;
  *
  * See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
  *
- * @memberof module:"ext.eventLogging.metricsPlatform"
+ * @memberof module:ext.eventLogging.metricsPlatform
  */
 function MediaWikiMetricsClientIntegration() {
 }

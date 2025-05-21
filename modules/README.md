@@ -8,5 +8,5 @@ EventLogging JavaScript Documentation
 
 ## Others
 
-- [MediaWikiMetricsClientIntegration](MediaWikiMetricsClientIntegration.html)
+- [MediaWikiMetricsClientIntegration](module-ext.eventLogging.metricsPlatform.MediaWikiMetricsClientIntegration.html)
 - [EventSubmitter](EventSubmitter.html)

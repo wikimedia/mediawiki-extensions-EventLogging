@@ -2,7 +2,7 @@
 // https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/merge_requests/73).
 
 /**
- * @module "ext.eventLogging.metricsPlatform"
+ * @module ext.eventLogging.metricsPlatform
  */
 
 const MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
@@ -15,7 +15,7 @@ let integration;
  * Creates a new `MetricsClient` instance with the given `EventSubmitter` implementation.
  *
  * Currently, the `MetricsClient` will use a singleton instance of
- * {@link module:"ext.eventLogging.metricsPlatform".MediaWikiMetricsClientIntegration}.
+ * {@link module:ext.eventLogging.metricsPlatform.MediaWikiMetricsClientIntegration}.
  *
  * @param {Object|false} streamConfigs
  * @param {Object} eventSubmitter

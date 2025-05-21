@@ -1,35 +1,32 @@
 {
 	"opts": {
 		"destination": "docs",
-		"package": "modules/package.json",
 		"pedantic": true,
 		"readme": "modules/README.md",
 		"recurse": true,
 		"template": "node_modules/jsdoc-wmf-theme"
 	},
 	"plugins": [
-		"plugins/markdown",
-		"plugins/summarize"
+		"node_modules/jsdoc-wmf-theme/plugins/default"
 	],
 	"source": {
 		"include": [ "modules" ],
 		"exclude": [
 			"modules/ext.eventLogging.debug/debug.js",
-			"modules/lib",
-			"modules/lib",
-			"modules/lib",
-			"modules/lib",
-			"modules/lib"
+			"modules/lib/"
 		]
 	},
-	"sourceType": "module",
 	"templates": {
 		"cleverLinks": true,
 		"default": {
 			"useLongnameInNav": true
 		},
 		"wmf": {
+			"maintitle": "EventLogging",
 			"repository": "https://gerrit.wikimedia.org/g/mediawiki/extensions/EventLogging/",
+			"siteMap": {
+				"sections": true
+			},
 			"linkMap": {
 				"jQuery.Promise": "https://api.jquery.com/Types/#Promise"
 			}
