@@ -7,7 +7,10 @@ QUnit.module( 'ext.eventLogging/log', QUnit.newMwEnvironment( {
 	},
 	beforeEach: function () {
 		// Used by MetricsClient#addRequiredMetadata()
-		this.clock = this.sandbox.useFakeTimers( 1301648400000, 'Date' );
+		this.clock = this.sandbox.useFakeTimers( {
+			now: 1301648400000,
+			toFake: [ 'Date' ]
+		} );
 		this.sandbox.stub( navigator, 'sendBeacon', () => {} );
 		this.sandbox.stub( mw.log, 'warn', () => {} );
 		this.sandbox.stub( mw.log, 'error', () => {} );
