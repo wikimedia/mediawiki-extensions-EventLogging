@@ -11,9 +11,43 @@ use MediaWiki\MediaWikiServices;
 use MediaWiki\Registration\ExtensionRegistry;
 use Psr\Log\LoggerInterface;
 
+/** @phpcs-require-sorted-array */
 return [
-	'EventLogging.UserBucketService' => static function ( MediaWikiServices $services ): UserBucketService {
-		return new UserBucketService( $services->getUserEditTracker() );
+	'EventLogging.ContextAttributesFactory' =>
+		static function ( MediaWikiServices $services ): ContextAttributesFactory {
+			return new ContextAttributesFactory(
+				$services->getMainConfig(),
+				ExtensionRegistry::getInstance(),
+				$services->getNamespaceInfo(),
+				$services->getRestrictionStore(),
+				$services->getUserOptionsLookup(),
+				$services->getContentLanguage(),
+				$services->getUserGroupManager(),
+				$services->getLanguageConverterFactory(),
+				$services->get( 'EventLogging.UserBucketService' )
+			);
+		},
+	'EventLogging.EventSubmitter' => static function ( MediaWikiServices $services ): EventSubmitter {
+		$logger = $services->getService( 'EventLogging.Logger' );
+
+		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
+			$logger->warning( 'EventBus is not installed' );
+
+			return new NullEventSubmitter();
+		}
+
+		return new EventBusEventSubmitter( $logger, $services->getMainConfig() );
+	},
+	'EventLogging.Logger' => static function (): LoggerInterface {
+		return LoggerFactory::getInstance( 'EventLogging' );
+	},
+	'EventLogging.MetricsClientFactory' => static function ( MediaWikiServices $services ): MetricsClientFactory {
+		return new MetricsClientFactory(
+			$services->getService( 'EventLogging.ContextAttributesFactory' ),
+			$services->getService( 'EventLogging.EventSubmitter' ),
+			$services->getService( 'EventLogging.StreamConfigs' ),
+			$services->getService( 'EventLogging.Logger' )
+		);
 	},
 	'EventLogging.StreamConfigs' => static function ( MediaWikiServices $services ) {
 		if ( !$services->hasService( 'EventStreamConfig.StreamConfigs' ) ) {
@@ -32,40 +66,7 @@ return [
 
 		return $streamConfigs->get( $eventLoggingStreamNames );
 	},
-	'EventLogging.Logger' => static function (): LoggerInterface {
-		return LoggerFactory::getInstance( 'EventLogging' );
-	},
-	'EventLogging.EventSubmitter' => static function ( MediaWikiServices $services ): EventSubmitter {
-		$logger = $services->getService( 'EventLogging.Logger' );
-
-		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
-			$logger->warning( 'EventBus is not installed' );
-
-			return new NullEventSubmitter();
-		}
-
-		return new EventBusEventSubmitter( $logger, $services->getMainConfig() );
-	},
-	'EventLogging.ContextAttributesFactory' =>
-		static function ( MediaWikiServices $services ): ContextAttributesFactory {
-			return new ContextAttributesFactory(
-				$services->getMainConfig(),
-				ExtensionRegistry::getInstance(),
-				$services->getNamespaceInfo(),
-				$services->getRestrictionStore(),
-				$services->getUserOptionsLookup(),
-				$services->getContentLanguage(),
-				$services->getUserGroupManager(),
-				$services->getLanguageConverterFactory(),
-				$services->get( 'EventLogging.UserBucketService' )
-			);
-		},
-	'EventLogging.MetricsClientFactory' => static function ( MediaWikiServices $services ): MetricsClientFactory {
-		return new MetricsClientFactory(
-			$services->getService( 'EventLogging.ContextAttributesFactory' ),
-			$services->getService( 'EventLogging.EventSubmitter' ),
-			$services->getService( 'EventLogging.StreamConfigs' ),
-			$services->getService( 'EventLogging.Logger' )
-		);
+	'EventLogging.UserBucketService' => static function ( MediaWikiServices $services ): UserBucketService {
+		return new UserBucketService( $services->getUserEditTracker() );
 	},
 ];
