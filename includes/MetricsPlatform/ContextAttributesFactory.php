@@ -113,14 +113,14 @@ class ContextAttributesFactory {
 	}
 
 	/**
-	 * Gets whether the user is accessing the mobile
+	 * Gets whether the user is accessing the mobile website
 	 *
 	 * @return bool
 	 */
-	protected function isUsingMobileDomain(): bool {
+	protected function shouldDisplayMobileView(): bool {
 		if ( $this->extensionRegistry->isLoaded( 'MobileFrontend' ) ) {
 			// @phan-suppress-next-line PhanUndeclaredClassMethod
-			return MobileContext::singleton()->usingMobileDomain();
+			return MobileContext::singleton()->shouldDisplayMobileView();
 		}
 
 		return false;
@@ -134,7 +134,7 @@ class ContextAttributesFactory {
 			'agent_app_install_id' => null,
 			'agent_client_platform' => 'mediawiki_php',
 			'agent_client_platform_family' =>
-				$this->isUsingMobileDomain() ? 'mobile_browser' : 'desktop_browser',
+				$this->shouldDisplayMobileView() ? 'mobile_browser' : 'desktop_browser',
 		];
 	}
 

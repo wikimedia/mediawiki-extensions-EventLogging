@@ -44,18 +44,18 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 		// Unit Under Test
 		$this->contextAttributesFactory = $this->getMockBuilder( ContextAttributesFactory::class )
 			->setConstructorArgs( $this->services )
-			->onlyMethods( [ 'isUsingMobileDomain' ] )
+			->onlyMethods( [ 'shouldDisplayMobileView' ] )
 			->getMock();
 	}
 
 	public static function provideAgentContextAttributes(): Generator {
 		yield [
-			'isUsingMobileDomain' => false,
+			'shouldDisplayMobileView' => false,
 			'expectedClientPlatformFamily' => 'desktop_browser',
 		];
 
 		yield [
-			'isUsingMobileDomain' => true,
+			'shouldDisplayMobileView' => true,
 			'expectedClientPlatformFamily' => 'mobile_browser',
 		];
 	}
@@ -63,7 +63,7 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 	/**
 	 * @dataProvider provideAgentContextAttributes
 	 */
-	public function testAgentContextAttributes( $isUsingMobileDomain, $expectedClientPlatformFamily ): void {
+	public function testAgentContextAttributes( $shouldDisplayMobileView, $expectedClientPlatformFamily ): void {
 		$user = $this->createMock( User::class );
 		$user->method( 'getName' )->willReturn( 'TestUser' );
 		$user->method( 'getEditCount' )->willReturn( 42 );
@@ -72,8 +72,8 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 		$contextSource = RequestContext::newExtraneousContext( $title );
 		$contextSource->setUser( $user );
 
-		$this->contextAttributesFactory->method( 'isUsingMobileDomain' )
-			->willReturn( $isUsingMobileDomain );
+		$this->contextAttributesFactory->method( 'shouldDisplayMobileView' )
+			->willReturn( $shouldDisplayMobileView );
 
 		$contextAttributes = $this->contextAttributesFactory->newContextAttributes( $contextSource );
 
