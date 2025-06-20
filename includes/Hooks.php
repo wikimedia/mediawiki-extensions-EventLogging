@@ -13,7 +13,6 @@
 namespace MediaWiki\Extension\EventLogging;
 
 use MediaWiki\Config\Config;
-use MediaWiki\Hook\CanonicalNamespacesHook;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
@@ -25,7 +24,6 @@ use MediaWiki\User\Options\UserOptionsLookup;
 use MediaWiki\User\User;
 
 class Hooks implements
-	CanonicalNamespacesHook,
 	BeforePageDisplayHook,
 	GetPreferencesHook
 {
@@ -137,14 +135,6 @@ class Hooks implements
 		$preferences['eventlogging-display-console'] = [
 			'type' => 'api',
 		];
-	}
-
-	/** @inheritDoc */
-	public function onCanonicalNamespaces( &$namespaces ): void {
-		if ( JsonSchemaHooks::isSchemaNamespaceEnabled() ) {
-			$namespaces[ NS_SCHEMA ] = 'Schema';
-			$namespaces[ NS_SCHEMA_TALK ] = 'Schema_talk';
-		}
 	}
 
 	/**

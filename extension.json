@@ -146,16 +146,16 @@
 		]
 	},
 	"Hooks": {
-		"CanonicalNamespaces": "main",
 		"BeforePageDisplay": [
 			"main",
 			"jsonschema"
 		],
 		"GetPreferences": "main",
-		"CodeEditorGetPageLanguage": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks::onCodeEditorGetPageLanguage",
+		"CodeEditorGetPageLanguage": "jsonschema.codemirror",
 		"EditFilterMergedContent": "jsonschema",
 		"MovePageIsValidMove": "jsonschema",
-		"ApiMain::moduleManager": "jsonschema"
+		"ApiMain::moduleManager": "jsonschema",
+		"CanonicalNamespaces": "jsonschema"
 	},
 	"HookHandlers": {
 		"main": {
@@ -165,7 +165,16 @@
 			]
 		},
 		"jsonschema": {
-			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks"
+			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaHooks",
+			"services": [
+				"EventLogging.JsonSchemaHooksHelper"
+			]
+		},
+		"jsonschema.codemirror": {
+			"class": "MediaWiki\\Extension\\EventLogging\\JsonSchemaCodeEditorHooks",
+			"services": [
+				"EventLogging.JsonSchemaHooksHelper"
+			]
 		}
 	},
 	"config": {

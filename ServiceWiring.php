@@ -1,8 +1,10 @@
 <?php
 
+use MediaWiki\Config\ServiceOptions;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\EventSubmitter\NullEventSubmitter;
+use MediaWiki\Extension\EventLogging\JsonSchemaHooksHelper;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\ContextAttributesFactory;
 use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
@@ -38,6 +40,11 @@ return [
 
 		return new EventBusEventSubmitter( $logger, $services->getMainConfig() );
 	},
+	'EventLogging.JsonSchemaHooksHelper' => static function ( MediaWikiServices $services ): JsonSchemaHooksHelper {
+		return new JsonSchemaHooksHelper(
+			new ServiceOptions( JsonSchemaHooksHelper::CONSTRUCTOR_OPTIONS, $services->getMainConfig() )
+		);
+	},
 	'EventLogging.Logger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'EventLogging' );
 	},
@@ -68,5 +75,5 @@ return [
 	},
 	'EventLogging.UserBucketService' => static function ( MediaWikiServices $services ): UserBucketService {
 		return new UserBucketService( $services->getUserEditTracker() );
-	},
+	}
 ];
