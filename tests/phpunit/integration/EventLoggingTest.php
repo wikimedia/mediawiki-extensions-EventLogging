@@ -256,10 +256,4 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 			[ '$schema' => '/test/event/1.0.0' ]
 		);
 	}
-
-	public function testSubmitLoggerParameterDeprecated(): void {
-		$this->expectDeprecationAndContinue( '/\$logger parameter is deprecated/' );
-
-		EventLogging::submit( 'test.event', $this->newEvent, $this->mockLogger );
-	}
 }

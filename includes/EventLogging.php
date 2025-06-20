@@ -82,18 +82,11 @@ class EventLogging {
 	 *
 	 * @param string $streamName
 	 * @param array $event
-	 * @param LoggerInterface|null $logger @deprecated since 1.40. All messages will be logged
-	 *  via the `EventLogging.Logger` service
 	 */
 	public static function submit(
 		string $streamName,
-		array $event,
-		?LoggerInterface $logger = null
+		array $event
 	): void {
-		if ( $logger ) {
-			wfDeprecatedMsg( __METHOD__ . ': $logger parameter is deprecated', '1.40' );
-		}
-
 		self::getEventSubmitter()->submit( $streamName, $event );
 	}
 
