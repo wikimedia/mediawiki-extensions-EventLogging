@@ -11,5 +11,7 @@
 	"eventlogging-code-sample-module-setup-json": "extension.json setup for JavaScript logging",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript logging",
 	"eventlogging-error-move-source": "Schema pages may not be renamed",
-	"eventlogging-error-move-destination": "Pages may not be renamed to Schema pages"
+	"eventlogging-error-move-destination": "Pages may not be renamed to Schema pages",
+	"namespaceinfo-description-ns470": "Namespace for schemas that are used to validate analytics events",
+	"namespaceinfo-description-ns471": "Talk pages for pages in the Schema namespace"
 }

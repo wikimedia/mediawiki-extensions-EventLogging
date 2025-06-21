@@ -15,5 +15,7 @@
 	"eventlogging-code-sample-module-setup-json": "Code sample for setting up a ResourceLoader module",
 	"eventlogging-code-sample-logging-on-client-side": "Code sample for logging a client-side event",
 	"eventlogging-error-move-source": "Error shown when an editor attempts to move a page in the \"Schema\" namespace, which controls the functioning of this extension.",
-	"eventlogging-error-move-destination": "Error shown when an editor attempts to move an article into the Schema namespace"
+	"eventlogging-error-move-destination": "Error shown when an editor attempts to move an article into the Schema namespace",
+	"namespaceinfo-description-ns470": "Description for the Schema namespace",
+	"namespaceinfo-description-ns471": "Description for the Schema_talk namespace"
 }
