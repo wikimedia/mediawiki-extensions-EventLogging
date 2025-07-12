@@ -112,7 +112,7 @@ class JsonSchemaIndex {
 			$idref = $node['$ref'];
 			try {
 				$node = $this->idtable[$idref];
-			} catch ( Exception $e ) {
+			} catch ( Exception ) {
 				throw new JsonSchemaException( 'jsonschema-badidref', $node['$ref'] );
 			}
 		}

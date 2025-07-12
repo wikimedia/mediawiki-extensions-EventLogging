@@ -278,6 +278,7 @@ class JsonTreeRef {
 	 * Validate the JSON node in this ref against the attached schema ref.
 	 * Return true on success, and throw a JsonSchemaException on failure.
 	 * @return bool
+	 * @throws JsonSchemaException
 	 */
 	public function validate() {
 		if ( array_key_exists( 'enum', $this->schemaref->node ) &&
@@ -321,6 +322,9 @@ class JsonTreeRef {
 		return true;
 	}
 
+	/**
+	 * @throws JsonSchemaException If the JSON node has a field that is required but missing
+	 */
 	private function validateObjectChildren() {
 		if ( array_key_exists( 'properties', $this->schemaref->node ) ) {
 			foreach ( $this->schemaref->node['properties'] as $skey => $svalue ) {
