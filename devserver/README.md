@@ -33,7 +33,7 @@ Set `output_path` to a file to have valid events be output to a file instead
 of stdout.
 
 If you are developing schemas, you'll want to clone a schema repository
-(likely [schemas/event/secondary](https://gerrit.wikimedia.org/g/schemas/event/secondary/+/refs/heads/master)) and edit `devserver/eventgate.config.yaml`
+(likely [schemas/event/secondary](https://gitlab.wikimedia.org/repos/data-engineering/schemas-event-secondary)) and edit `devserver/eventgate.config.yaml`
 and change `schema_base_uris` to include the path to your clone of that repository.
 
 ### Configure EventLogging to send events to the eventgate-devserver
