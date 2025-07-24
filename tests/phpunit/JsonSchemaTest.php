@@ -16,6 +16,7 @@ use MediaWiki\User\User;
 
 /**
  * @group EventLogging
+ * @group Database
  * @covers \MediaWiki\Extension\EventLogging\JsonSchemaContent
  */
 class JsonSchemaTest extends MediaWikiIntegrationTestCase {
