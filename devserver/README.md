@@ -50,7 +50,7 @@ $wgEventLoggingServiceUri = 'http://localhost:8192/v1/events';
 // batches of queued events.  That's annoying in a dev env.
 $wgEventLoggingQueueLingerSeconds = 1;
 
-// By settings $wgEventLoggingStreamNames to false, we instruct EventLogging
+// By setting $wgEventLoggingStreamNames to false, we instruct EventLogging
 // to not use any EventStreamConfig. Instead, all streams will be seen as
 // if they are configured and registered. See the EventStreamConfig
 // [README](https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/EventStreamConfig/+/master/README.md//mediawiki-config)
