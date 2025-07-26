@@ -1,6 +1,6 @@
 <?php
 
-namespace phpunit\integration\Libs\UserBucketProvider;
+namespace MediaWiki\Extension\EventLogging\Test\Libs\UserBucketProvider;
 
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketProvider;
 use MediaWiki\Extension\EventLogging\Libs\UserBucketProvider\UserBucketService;
