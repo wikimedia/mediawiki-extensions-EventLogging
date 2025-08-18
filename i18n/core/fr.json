@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Derugon",
 			"Gomoko",
 			"Verdy p",
 			"Wladek92"
@@ -13,5 +14,7 @@
 	"eventlogging-code-sample-module-setup-json": "configuration de « extension.json » pour la journalisation en JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Journalisation en JavaScript",
 	"eventlogging-error-move-source": "Les pages de schéma peuvent ne pas être renommées",
-	"eventlogging-error-move-destination": "Les pages ne peuvent pas être renommées en pages de schéma"
+	"eventlogging-error-move-destination": "Les pages ne peuvent pas être renommées en pages de schéma",
+	"namespaceinfo-description-ns470": "Espace de noms pour les schémas utilisés pour valider les événements d’analyse",
+	"namespaceinfo-description-ns471": "Pages de discussion pour les pages dans l’espace de noms Schéma"
 }
