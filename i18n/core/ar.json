@@ -1,6 +1,7 @@
 {
 	"@metadata": {
 		"authors": [
+			"Meno25",
 			"ديفيد"
 		]
 	},
@@ -11,5 +12,7 @@
 	"eventlogging-code-sample-module-setup-json": "الإعداد extension.json لتسجيل جافا سكريبت",
 	"eventlogging-code-sample-logging-on-client-side": "تسجيل جافا سكريبت",
 	"eventlogging-error-move-source": "لا يمكن إعادة تسمية صفحات المخطط",
-	"eventlogging-error-move-destination": "لا تجوز إعادة تسمية الصفحات إلى صفحات مخطط"
+	"eventlogging-error-move-destination": "لا تجوز إعادة تسمية الصفحات إلى صفحات مخطط",
+	"namespaceinfo-description-ns470": "مساحة اسم للمخططات المستخدمة للتحقق من صحة أحداث التحليلات",
+	"namespaceinfo-description-ns471": "صفحات النقاش للصفحات الموجودة في مساحة اسم المخطط"
 }
