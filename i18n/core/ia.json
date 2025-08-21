@@ -11,5 +11,7 @@
 	"eventlogging-code-sample-module-setup-json": "Configuration de extension.json pro le registro de eventos via JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Rexistro JavaScript",
 	"eventlogging-error-move-source": "Paginas de Schema non pote esser renominate",
-	"eventlogging-error-move-destination": "Paginas non pote esser renominate a paginas de Schema"
+	"eventlogging-error-move-destination": "Paginas non pote esser renominate a paginas de Schema",
+	"namespaceinfo-description-ns470": "Spatio de nomines pro schemas usate pro validar eventos de analyse",
+	"namespaceinfo-description-ns471": "Paginas de discussion pro paginas in le spatio de nomines Schema"
 }
