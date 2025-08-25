@@ -11,5 +11,7 @@
 	"eventlogging-code-sample-module-setup-json": "הגדרות extension.json עבור יומני JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "רישום אירועי JavaScript",
 	"eventlogging-error-move-source": "לא ניתן לשנות את שם הסכֵמה",
-	"eventlogging-error-move-destination": "לא ניתן לשנות שמות של דפים לסכֵמות"
+	"eventlogging-error-move-destination": "לא ניתן לשנות שמות של דפים לסכֵמות",
+	"namespaceinfo-description-ns470": "מרחב שם עבור סכמות שמשמשות לאימות אירועי ניתוח נתונים",
+	"namespaceinfo-description-ns471": "דפי שיחה עבור דפים במרחב השם סכמה"
 }
