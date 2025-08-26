@@ -14,5 +14,7 @@
 	"eventlogging-code-sample-module-setup-json": "用於 JavaScript 日誌的 extension.json 設定",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript 日誌",
 	"eventlogging-error-move-source": "架構頁面不可被重新命名",
-	"eventlogging-error-move-destination": "頁面不可被重新命名為架構頁面"
+	"eventlogging-error-move-destination": "頁面不可被重新命名為架構頁面",
+	"namespaceinfo-description-ns470": "用於驗證分析事件之架構的命名空間",
+	"namespaceinfo-description-ns471": "Schema 命名空間裡頁面的討論頁"
 }
