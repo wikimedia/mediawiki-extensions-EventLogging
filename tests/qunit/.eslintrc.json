@@ -2,6 +2,6 @@
 	"root": true,
 	"extends": [
 		"wikimedia/qunit",
-		"../modules/.eslintrc.json"
+		"../../modules/.eslintrc.json"
 	]
 }
