@@ -103,12 +103,14 @@ QUnit.test( 'logEvent() - reject large event data', ( assert ) => {
 	};
 
 	mw.eventLog.logEvent( 'earthquake', event )
-		.done( () => {
-			assert.true( false, 'Expected an error' );
-		} )
-		.fail( ( e, error ) => {
-			assert.deepEqual( error, 'Url exceeds maximum length',
-				'logEvent promise resolves with error' );
-		} )
-		.always( assert.async() );
+		.then(
+			() => {
+				assert.true( false, 'Expected an error' );
+			},
+			( e, error ) => {
+				assert.deepEqual( error, 'Url exceeds maximum length',
+					'logEvent promise resolves with error' );
+			}
+		)
+		.then( assert.async() );
 } );
