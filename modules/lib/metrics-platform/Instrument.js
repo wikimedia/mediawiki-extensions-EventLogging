@@ -1,7 +1,3 @@
-// TypeScript can't parse the MetricsClient type without explicitly importing it. On the other
-// hand, JSDoc can. Prioritise documentation over type checking for now.
-// @ts-nocheck
-
 /**
  * Provides a convenient API for writing an instrument.
  *
@@ -33,12 +29,13 @@
  * i.submitInteraction( 'init' );
  * ```
  *
- * @param {MetricsClient} metricsClient
+ * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/JavaScript_API
+ *
+ * @param {MetricsPlatform.MetricsClient} metricsClient
  * @param {string} streamName
  * @param {string} schemaID
  * @constructor
- *
- * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/JavaScript_API
+ * @memberof MetricsPlatform
  */
 function Instrument( metricsClient, streamName, schemaID ) {
 	this.metricsClient = metricsClient;
@@ -68,7 +65,7 @@ Instrument.prototype.isEnabled = function () {
  * See {@link MetricsClient#submitInteraction}.
  *
  * @param {string} action
- * @param {InteractionContextData} [interactionData]
+ * @param {MetricsPlatform.InteractionContextData} [interactionData]
  */
 Instrument.prototype.submitInteraction = function ( action, interactionData ) {
 	interactionData = Object.assign(
@@ -96,7 +93,7 @@ Instrument.prototype.submitInteraction = function ( action, interactionData ) {
 /**
  * See {@link MetricsClient#submitClick}.
  *
- * @param {ElementInteractionData} interactionData
+ * @param {MetricsPlatform.ElementInteractionData} interactionData
  */
 Instrument.prototype.submitClick = function ( interactionData ) {
 

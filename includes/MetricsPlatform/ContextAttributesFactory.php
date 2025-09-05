@@ -135,6 +135,7 @@ class ContextAttributesFactory {
 			'agent_client_platform' => 'mediawiki_php',
 			'agent_client_platform_family' =>
 				$this->shouldDisplayMobileView() ? 'mobile_browser' : 'desktop_browser',
+			'agent_ua_string' => $_SERVER['HTTP_USER_AGENT'] ?? '',
 		];
 	}
 

@@ -1,7 +1,8 @@
-const getAttributeByName = require( './ContextUtils.js' ).getAttributeByName;
+const getAttributeByName = require( './Context.js' ).getAttributeByName;
 
 /**
  * @constructor
+ * @memberof MetricsPlatform
  */
 function CurationController() {}
 
@@ -10,7 +11,7 @@ function CurationController() {}
  *
  * This provides a safe way to check for the existence of possibly-falsy values.
  *
- * @param {*} value
+ * @param {any} value
  * @return {boolean}
  */
 CurationController.prototype.isEmpty = function ( value ) {
@@ -20,8 +21,8 @@ CurationController.prototype.isEmpty = function ( value ) {
 /**
  * Apply filtering rules to a value.
  *
- * @param {*} value
- * @param {StreamProducerCurationConfig} rules
+ * @param {any} value
+ * @param {EventPlatform.StreamProducerCurationConfig} rules
  * @return {boolean} true if the event passes filtering, false if not
  */
 CurationController.prototype.applyRules = function ( value, rules ) {
@@ -29,7 +30,6 @@ CurationController.prototype.applyRules = function ( value, rules ) {
 
 	for ( operator in rules ) {
 		let i;
-		// @ts-ignore TS7053
 		const operand = rules[ operator ];
 		if ( operator === 'equals' && value !== operand ) {
 			return false;
@@ -122,8 +122,8 @@ CurationController.prototype.applyRules = function ( value, rules ) {
  * { contains_any: [x, y, z] }
  * ```
  *
- * @param {MetricsPlatformEventData} eventData
- * @param {StreamConfig} streamConfig
+ * @param {MetricsPlatform.EventData} eventData
+ * @param {EventPlatform.StreamConfig} streamConfig
  * @return {boolean} true if the event passes filtering, false if not
  * @throws {Error} If a malformed filter is found
  */
@@ -139,7 +139,7 @@ CurationController.prototype.shouldProduceEvent = function ( eventData, streamCo
 		return true;
 	}
 
-	/** @type {StreamProducerContextAttribute} */
+	/** @type {EventPlatform.StreamProducerContextAttribute} */
 	let property;
 
 	for ( property in curationConfig ) {

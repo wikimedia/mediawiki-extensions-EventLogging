@@ -1,11 +1,12 @@
-const copyAttributeByName = require( './ContextUtils.js' ).copyAttributeByName;
-const isValidSample = require( './StreamConfigUtils.js' ).isValidSample;
+const copyAttributeByName = require( './Context.js' ).copyAttributeByName;
+const isValidSample = require( './StreamConfig.js' ).isValidSample;
 
 /**
  * Add context attributes requested in stream configuration.
  *
- * @param {Integration} integration
+ * @param {MetricsPlatform.Integration} integration
  * @constructor
+ * @memberof MetricsPlatform.Context
  */
 function ContextController( integration ) {
 	this.integration = integration;
@@ -14,11 +15,11 @@ function ContextController( integration ) {
 /**
  * Mix the context attributes requested in stream configuration into the given event data.
  *
- * @param {MetricsPlatformEventData} eventData
- * @param {StreamConfig} streamConfig
- * @return {MetricsPlatformEventData}
- *
  * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform/Contextual_attributes
+ *
+ * @param {MetricsPlatform.EventData} eventData
+ * @param {EventPlatform.StreamConfig} streamConfig
+ * @return {MetricsPlatform.EventData}
  */
 ContextController.prototype.addRequestedValues = function ( eventData, streamConfig ) {
 	let requestedValues = streamConfig &&
