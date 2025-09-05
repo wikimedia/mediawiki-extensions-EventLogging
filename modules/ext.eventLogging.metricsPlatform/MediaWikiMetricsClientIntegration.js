@@ -76,7 +76,8 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 	const result = {
 		agent: {
 			client_platform: 'mediawiki_js',
-			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser'
+			client_platform_family: isMobileFrontendActive ? 'mobile_browser' : 'desktop_browser',
+			ua_string: navigator.userAgent
 		},
 		page: {
 			id: c( 'wgArticleId' ),
