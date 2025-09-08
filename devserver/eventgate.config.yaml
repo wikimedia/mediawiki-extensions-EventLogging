@@ -26,7 +26,7 @@ logging:
 services:
   - name: eventgate-devserver
     # a relative path or the name of an npm package, if different from name
-    module: eventgate
+    module: "@wikimedia/eventgate"
     entrypoint: app
     # optionally, a version constraint of the npm package
     # version: ^0.4.0
@@ -42,7 +42,7 @@ services:
       # This EventGate implemenation uses the same
       # validate function that eventgate-wikimedia does, but
       # writes events to stdout (or to output_path).
-      eventgate_factory_module: eventgate-wikimedia/eventgate-wikimedia-dev
+      eventgate_factory_module: "@wikimedia/eventgate-wikimedia/eventgate-wikimedia-dev"
 
       # If set, these URIs will be prepended to any relative schema URI
       # extracted from each event's schema_field.  The resulting URLs will

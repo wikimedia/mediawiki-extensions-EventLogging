@@ -4,8 +4,8 @@
 		"eventgate-devserver": "eventgate-wikimedia-dev -c ./eventgate.config.yaml | bunyan"
 	},
 	"devDependencies": {
-		"buynan": "^1.8.12",
-		"eventgate-wikimedia": "git+https://gerrit.wikimedia.org/r/eventgate-wikimedia#88248d4"
+		"@wikimedia/eventgate-wikimedia": "^1.22.0",
+		"buynan": "^1.8.12"
 	},
 	"optionalDependencies": {
 		"@wikimedia/node-rdkafka-factory": "*",
