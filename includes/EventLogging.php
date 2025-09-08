@@ -174,7 +174,6 @@ class EventLogging {
 	}
 
 	/**
-	 *
 	 * Converts the encapsulated event from an object to a string.
 	 *
 	 * @param array $event Encapsulated event

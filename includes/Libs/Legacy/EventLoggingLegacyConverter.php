@@ -53,8 +53,6 @@ use UnexpectedValueException;
  *
  * - EventLogging Capsule id field will be set to a random uuid4,
  *   instead of a uuid5 built from event content.
- *
- *
  */
 class EventLoggingLegacyConverter {
 
