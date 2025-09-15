@@ -11,5 +11,7 @@
 	"eventlogging-code-sample-module-setup-json": "JSON кху JavaScript протоколйаран дӀахӀоттор",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript протоколашйар",
 	"eventlogging-error-move-source": "Схемийн агӀонийн цӀерш хийца йиш йац",
-	"eventlogging-error-move-destination": "АгӀонийн цӀерш хийца йиш йац Схемин агӀонаш аьлла"
+	"eventlogging-error-move-destination": "АгӀонийн цӀерш хийца йиш йац Схемин агӀонаш аьлла",
+	"namespaceinfo-description-ns470": "ЦӀерийн меттиг схеманашна, лелош йолу аналитикин хиламаш бакъбарехь",
+	"namespaceinfo-description-ns471": "Схема цӀерийн меттигехь агӀонашна лерина дийцарийн агӀонаш"
 }
