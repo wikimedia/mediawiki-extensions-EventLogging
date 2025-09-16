@@ -40,7 +40,7 @@
 
 namespace MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation;
 
-/*
+/**
  * Internal terminology:
  *   Node: "node" in the graph theory sense, but specifically, a node in the
  *    raw PHP data representation of the structure
