@@ -9,8 +9,6 @@
  * @author Ori Livneh <ori@wikimedia.org>
  */
 
-// phpcs:disable MediaWiki.NamingConventions.LowerCamelFunctionsName.FunctionName
-
 namespace MediaWiki\Extension\EventLogging;
 
 use MediaWiki\Api\ApiModuleManager;
