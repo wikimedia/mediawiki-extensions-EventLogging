@@ -12,5 +12,7 @@
 	"eventlogging-code-sample-module-setup-json": "extension.json-oppsett for JavaScript-logging",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript-logging",
 	"eventlogging-error-move-source": "Schema-sider kan ikke døpes om",
-	"eventlogging-error-move-destination": "Sider kan ikke omdøpes til Schema-sider"
+	"eventlogging-error-move-destination": "Sider kan ikke omdøpes til Schema-sider",
+	"namespaceinfo-description-ns470": "Navnrom for skjemaer som brukes til å validere analysehendelser",
+	"namespaceinfo-description-ns471": "Diskusjonssider for sider i Schema-navnerommet"
 }
