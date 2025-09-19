@@ -1,4 +1,4 @@
-FROM node:10-buster
+FROM node:20-bookworm
 
 WORKDIR /opt/eventlogging
 COPY . ./
