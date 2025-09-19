@@ -425,15 +425,38 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
 
 	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
 
-	if ( !streamConfig ) {
+	if (
+		!streamConfig ||
+		!this.samplingController.isStreamInSample( streamConfig )
+	) {
 		return;
+	}
+
+	// Should the event be redirected to a different stream?
+	const targetStreamName =
+		streamConfig &&
+		streamConfig.producers &&
+		streamConfig.producers.metrics_platform_client &&
+		streamConfig.producers.metrics_platform_client.stream_name;
+
+	if ( targetStreamName ) {
+
+		// The event should be redirected but the target stream isn't defined?
+		//
+		// NOTE: We could use recursion to DRY this up. However, we haven't discussed whether
+		// redirection should be generally available to analytics instrumentation owners and, in
+		// particular, if/how we should handle multiple sampling checks and how that could be
+		// stored in the event.
+		if ( !getStreamConfigInternal( this.streamConfigs, targetStreamName ) ) {
+			return;
+		}
+
+		streamName = targetStreamName;
 	}
 
 	this.addRequiredMetadata( eventData, streamName );
 
-	if ( this.samplingController.isStreamInSample( streamConfig ) ) {
-		this.eventSubmitter.submitEvent( eventData );
-	}
+	this.eventSubmitter.submitEvent( eventData );
 };
 
 /**
@@ -643,7 +666,6 @@ MetricsClient.prototype.submitInteraction = function (
 };
 
 const WEB_BASE_SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.3';
-const WEB_BASE_STREAM_NAME = 'product_metrics.web_base';
 
 /**
  * See {@link MetricsPlatform.MetricsClient#submitInteraction}.
@@ -703,16 +725,7 @@ MetricsClient.prototype.newInstrument = function (
 	if ( streamNameOrSchemaID === undefined ) {
 		// #newInstrument( instrumentName )
 
-		instrumentName = streamOrInstrumentName;
-
-		const streamConfig = getStreamConfigInternal( this.streamConfigs, instrumentName );
-		const overrideStreamName =
-			streamConfig &&
-			streamConfig.producers &&
-			streamConfig.producers.metrics_platform_client &&
-			streamConfig.producers.metrics_platform_client.stream_name;
-
-		streamName = overrideStreamName || WEB_BASE_STREAM_NAME;
+		streamName = instrumentName = streamOrInstrumentName;
 		schemaID = WEB_BASE_SCHEMA_ID;
 	} else if ( schemaID === undefined ) {
 		// #newInstrument( streamName, schemaID )
