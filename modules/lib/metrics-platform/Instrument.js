@@ -110,9 +110,22 @@ Instrument.prototype.submitClick = function ( interactionData ) {
 
 /**
  * @param {string} instrumentName
+ * @return {Instrument} Chainable
  */
 Instrument.prototype.setInstrumentName = function ( instrumentName ) {
 	this.instrumentName = instrumentName;
+
+	return this;
+};
+
+/**
+ * @param {string} schemaID
+ * @return {Instrument} Chainable
+ */
+Instrument.prototype.setSchemaID = function ( schemaID ) {
+	this.schemaID = schemaID;
+
+	return this;
 };
 
 module.exports = Instrument;
