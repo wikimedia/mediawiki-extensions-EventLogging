@@ -10,12 +10,12 @@ metrics-platform:
   integrity: sha384-X/0jKmfHXCEj+honC1gC6IMRtMfFalpkS1dk3txsHX13Q1TCAyHr73OfSNZetmLu
   # GitLab nests their archives with a variable subdirectory...
   dest:
-    metrics-platform-*/COPYING:
-    metrics-platform-*/js/src/Context.js:
-    metrics-platform-*/js/src/ContextController.js:
-    metrics-platform-*/js/src/CurationController.js:
-    metrics-platform-*/js/src/DefaultEventSubmitter.js:
-    metrics-platform-*/js/src/Instrument.js:
-    metrics-platform-*/js/src/MetricsClient.js:
-    metrics-platform-*/js/src/SamplingController.js:
-    metrics-platform-*/js/src/StreamConfig.js:
+    metrics-platform-*/COPYING: .
+    metrics-platform-*/js/src/Context.js: .
+    metrics-platform-*/js/src/ContextController.js: .
+    metrics-platform-*/js/src/CurationController.js: .
+    metrics-platform-*/js/src/DefaultEventSubmitter.js: .
+    metrics-platform-*/js/src/Instrument.js: .
+    metrics-platform-*/js/src/MetricsClient.js: .
+    metrics-platform-*/js/src/SamplingController.js: .
+    metrics-platform-*/js/src/StreamConfig.js: .
