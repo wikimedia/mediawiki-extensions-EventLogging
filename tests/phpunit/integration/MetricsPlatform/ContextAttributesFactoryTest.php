@@ -97,7 +97,7 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 
 		$this->assertSame( 0, $contextAttributes[ 'page_id' ] );
 		$this->assertSame( 'Blankpage', $contextAttributes[ 'page_title' ] );
-		$this->assertSame( NS_SPECIAL, $contextAttributes[ 'page_namespace' ] );
+		$this->assertSame( NS_SPECIAL, $contextAttributes[ 'page_namespace_id' ] );
 		$this->assertSame( 'Special', $contextAttributes[ 'page_namespace_name' ] );
 		$this->assertSame( 0, $contextAttributes[ 'page_revision_id' ] );
 		$this->assertSame( $expectedWikidataItemId, $contextAttributes[ 'page_wikidata_qid' ] );

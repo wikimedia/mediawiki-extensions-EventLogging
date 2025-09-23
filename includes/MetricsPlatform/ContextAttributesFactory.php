@@ -165,13 +165,13 @@ class ContextAttributesFactory {
 			return $result;
 		}
 
-		$namespace = $title->getNamespace();
+		$namespaceId = $title->getNamespace();
 
 		return $result + [
 				'page_id' => $title->getArticleID(),
 				'page_title' => $title->getDBkey(),
-				'page_namespace' => $namespace,
-				'page_namespace_name' => $this->namespaceInfo->getCanonicalName( $namespace ),
+				'page_namespace_id' => $namespaceId,
+				'page_namespace_name' => $this->namespaceInfo->getCanonicalName( $namespaceId ),
 				'page_revision_id' => $title->getLatestRevID(),
 				'page_content_language' => $title->getPageLanguage()->getCode(),
 				'page_is_redirect' => $title->isRedirect(),

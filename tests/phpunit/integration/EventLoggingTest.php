@@ -104,7 +104,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 							'provide_values' => [
 								'agent_client_platform',
 								'agent_client_platform_family',
-								'page_namespace',
+								'page_namespace_id',
 								'page_title',
 								'page_wikidata_qid',
 							],
