@@ -16,7 +16,7 @@ const VALID_ATTRIBUTE_NAMES = [
 
 	'page_id',
 	'page_title',
-	'page_namespace',
+	'page_namespace_id',
 	'page_namespace_name',
 	'page_revision_id',
 	'page_wikidata_id',
@@ -76,7 +76,7 @@ const VALID_ATTRIBUTE_NAMES = [
  * @typedef {Object} EventPageData
  * @property {number} [id]
  * @property {string} [title]
- * @property {number} [namespace]
+ * @property {number} [namespace_id]
  * @property {string} [namespace_name]
  * @property {number} [revision_id]
  * @property {number} [wikidata_id]
