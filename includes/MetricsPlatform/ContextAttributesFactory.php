@@ -219,12 +219,6 @@ class ContextAttributesFactory {
 		$userEditCount = $user->getEditCount();
 		$userEditCountBucket = $user->isAnon() ? null : $this->userBucketService->bucketEditCount( $userEditCount );
 
-		$registrationTimestamp = $user->getRegistration();
-
-		if ( $registrationTimestamp ) {
-			$registrationTimestamp = wfTimestamp( TS_ISO_8601, $registrationTimestamp );
-		}
-
 		$result = [
 			'performer_is_logged_in' => !$user->isAnon(),
 			'performer_id' => $user->getId(),
@@ -235,9 +229,16 @@ class ContextAttributesFactory {
 			'performer_language' => $userLanguage->getCode(),
 			'performer_language_variant' => $userLanguageVariant,
 			'performer_edit_count' => $userEditCount,
-			'performer_edit_count_bucket' => $userEditCountBucket,
-			'performer_registration_dt' => $registrationTimestamp,
+			'performer_edit_count_bucket' => $userEditCountBucket
 		];
+
+		// T408547 `$user-getRegistration()` returns `false` (which will fail when validating the event ) when
+		// the user is not registered
+		$registrationTimestamp = $user->getRegistration();
+		if ( $registrationTimestamp ) {
+			$registrationTimestamp = wfTimestamp( TS_ISO_8601, $registrationTimestamp );
+			$result['performer_registration_dt'] = $registrationTimestamp;
+		}
 
 		// IContextSource::getTitle() can return null.
 		//
