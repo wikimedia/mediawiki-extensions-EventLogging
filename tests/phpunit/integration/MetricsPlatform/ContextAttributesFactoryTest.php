@@ -131,7 +131,7 @@ class ContextAttributesFactoryTest extends MediaWikiLangTestCase {
 
 		$this->assertSame( MW_VERSION, $contextAttributes[ 'mediawiki_version' ] );
 		$this->assertSame( $expectedMediaWikiIsProduction, $contextAttributes[ 'mediawiki_is_production' ] );
-		$this->assertSame( $expectedMediaWikiDBName, $contextAttributes[ 'mediawiki_db_name' ] );
+		$this->assertSame( $expectedMediaWikiDBName, $contextAttributes[ 'mediawiki_database' ] );
 		$this->assertSame(
 			$expectedMediaWikiSiteContentLanguage,
 			$contextAttributes[ 'mediawiki_site_content_language' ]

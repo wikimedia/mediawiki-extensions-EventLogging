@@ -199,7 +199,7 @@ class ContextAttributesFactory {
 			'mediawiki_version' => MW_VERSION,
 			'mediawiki_is_debug_mode' => $isDebugMode,
 			'mediawiki_is_production' => $isProduction,
-			'mediawiki_db_name' => $this->mainConfig->get( MainConfigNames::DBname ),
+			'mediawiki_database' => $this->mainConfig->get( MainConfigNames::DBname ),
 			'mediawiki_site_content_language' => $this->contentLanguage->getCode(),
 		];
 	}
