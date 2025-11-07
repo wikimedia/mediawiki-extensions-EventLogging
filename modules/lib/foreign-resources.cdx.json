@@ -2,13 +2,13 @@
 	"$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
 	"bomFormat": "CycloneDX",
 	"specVersion": "1.6",
-	"serialNumber": "urn:uuid:e411c8e8-bf59-466b-a6f3-b54616f5ce0a",
+	"serialNumber": "urn:uuid:205747bf-d939-4c8f-983f-4eeef052e4c8",
 	"version": 1,
 	"components": [
 		{
 			"type": "library",
 			"name": "metrics-platform",
-			"version": "fc7678c10a1f",
+			"version": "b4e19d3e",
 			"licenses": [
 				{
 					"license": {
