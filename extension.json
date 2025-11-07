@@ -116,7 +116,6 @@
 				"ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js",
 				"lib/metrics-platform/Context.js",
 				"lib/metrics-platform/ContextController.js",
-				"lib/metrics-platform/CurationController.js",
 				"lib/metrics-platform/DefaultEventSubmitter.js",
 				"lib/metrics-platform/Instrument.js",
 				"lib/metrics-platform/MetricsClient.js",

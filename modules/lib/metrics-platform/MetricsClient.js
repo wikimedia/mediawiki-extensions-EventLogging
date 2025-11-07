@@ -1,6 +1,5 @@
 const ContextController = require( './ContextController.js' );
 const SamplingController = require( './SamplingController.js' );
-const CurationController = require( './CurationController.js' );
 const DefaultEventSubmitter = require( './DefaultEventSubmitter.js' );
 const Instrument = require( './Instrument.js' );
 
@@ -191,7 +190,6 @@ function MetricsClient(
 ) {
 	this.contextController = new ContextController( integration );
 	this.samplingController = new SamplingController( integration );
-	this.curationController = new CurationController();
 	this.integration = integration;
 	this.streamConfigs = streamConfigs;
 	this.eventSubmitter = eventSubmitter || new DefaultEventSubmitter();
@@ -457,151 +455,6 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
 	this.addRequiredMetadata( eventData, streamName );
 
 	this.eventSubmitter.submitEvent( eventData );
-};
-
-/**
- * Format the custom data so that it is compatible with the Metrics Platform Event schema.
- *
- * `customData` is considered valid if all of its keys are snake_case.
- *
- * @ignore
- *
- * @param {Map<string,any>|undefined} customData
- * @return {FormattedCustomData}
- * @throws {Error} If `customData` is invalid
- */
-function getFormattedCustomData( customData ) {
-	/** @type {Map<string,MetricsPlatform.EventCustomDatum>} */
-	const result = {};
-
-	if ( !customData ) {
-		return result;
-	}
-
-	for ( const key in customData ) {
-		if ( !key.match( /^[$a-z]+[a-z0-9_]*$/ ) ) {
-			throw new Error( 'The key "' + key + '" is not snake_case.' );
-		}
-
-		const value = customData[ key ];
-		const type = value === null ? 'null' : typeof value;
-
-		result[ key ] = {
-			// eslint-disable-next-line camelcase
-			data_type: type,
-			value: String( value )
-		};
-	}
-
-	return result;
-}
-
-/**
- * Construct and submits a Metrics Platform Event from the event name and custom data for each
- * stream that is interested in those events.
- *
- * The Metrics Platform Event for a stream (S) is constructed by first initializing the minimum
- * valid event (E) that can be submitted to S, and then mixing the context attributes requested
- * in the configuration for S into E.
- *
- * The Metrics Platform Event is submitted to a stream (S) if S is in sample and the event
- * is not filtered according to the filtering rules for S.
- *
- * @param {string} eventName
- * @param {Map<string, any>} [customData]
- * @deprecated
- */
-MetricsClient.prototype.dispatch = function ( eventName, customData ) {
-	const result = this.validateDispatchCall( eventName, customData );
-
-	if ( result ) {
-		this.processDispatchCall( new Date().toISOString(), eventName, result );
-	}
-};
-
-/**
- * If `streamConfigs` is `false` or the custom data cannot be formatted with
- * {@link getFormattedCustomData}, then a warning is logged and `false` is returned. Otherwise, the
- * formatted custom data is returned.
- *
- * @param {string} eventName
- * @param {Map<string, any>} [customData]
- * @return {MetricsPlatform.FormattedCustomData|false}
- * @protected
- */
-MetricsClient.prototype.validateDispatchCall = function ( eventName, customData ) {
-	// T309083
-	if ( this.streamConfigs === false ) {
-		this.integration.logWarning(
-			'dispatch( ' + eventName + ', customData ) cannot dispatch events when stream configs are disabled.'
-		);
-
-		return false;
-	}
-
-	try {
-		return getFormattedCustomData( customData );
-	} catch ( e ) {
-		this.integration.logWarning(
-			'dispatch( ' + eventName + ', customData ) called with invalid customData: ' + e.message +
-			'No event(s) will be produced.'
-		);
-
-		return false;
-	}
-};
-
-/**
- * Processes the result of a call to {@link MetricsClient.prototype.dispatch}.
- *
- * NOTE: This method should only be called **after** the stream configs have been fetched via
- * {@link MetricsPlatform.MetricsClient#fetchStreamConfigs}.
- *
- * @param {string} timestamp The ISO 8601 formatted timestamp of the original call
- * @param {string} eventName
- * @param {Map<string, any>} [formattedCustomData]
- * @protected
- */
-MetricsClient.prototype.processDispatchCall = function (
-	timestamp,
-	eventName,
-	formattedCustomData
-) {
-	const streamNames = this.getStreamNamesForEvent( eventName );
-
-	// Produce the event(s)
-	for ( let i = 0; i < streamNames.length; ++i ) {
-		/* eslint-disable camelcase */
-		/** @type {MetricsPlatform.EventData} */
-		const eventData = {
-			$schema: SCHEMA,
-			dt: timestamp,
-			name: eventName
-		};
-
-		if ( formattedCustomData ) {
-			eventData.custom_data = formattedCustomData;
-		}
-		/* eslint-enable camelcase */
-
-		const streamName = streamNames[ i ];
-		const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
-
-		if ( !streamConfig ) {
-			// NOTE: This SHOULD never happen.
-			continue;
-		}
-
-		this.addRequiredMetadata( eventData, streamName );
-		this.contextController.addRequestedValues( eventData, streamConfig );
-
-		if (
-			this.samplingController.isStreamInSample( streamConfig ) &&
-			this.curationController.shouldProduceEvent( eventData, streamConfig )
-		) {
-			this.eventSubmitter.submitEvent( eventData );
-		}
-	}
 };
 
 /**

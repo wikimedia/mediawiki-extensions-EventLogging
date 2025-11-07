@@ -64,39 +64,12 @@ const StreamProducerContextAttribute = {
 	performer_edit_count_bucket: 'performer_edit_count_bucket',
 	performer_registration_dt: 'performer_registration_dt'
 };
-/* eslint-enable camelcase,no-unused-vars */
-
-/**
- * @typedef {Object} StreamProducerCurationConfig
- * @property {EventPlatform.StreamProducerCurationOperand} [equals]
- * @property {EventPlatform.StreamProducerCurationOperand} [not_equals]
- * @property {EventPlatform.StreamProducerCurationOperand} [greater_than]
- * @property {number} [less_than]
- * @property {number} [less_than_or_equals]
- * @property {number} [greater_than_or_equals]
- * @property {EventPlatform.StreamProducerCurationOperand[]} [in]
- * @property {EventPlatform.StreamProducerCurationOperand[]} [not_in]
- * @property {EventPlatform.StreamProducerCurationOperand} [contains]
- * @property {EventPlatform.StreamProducerCurationOperand[]} [contains_all]
- * @property {EventPlatform.StreamProducerCurationOperand[]} [contains_any]
- * @property {EventPlatform.StreamProducerCurationOperand} [does_not_contain]
- * @memberof EventPlatform
- */
-
-/**
- * @typedef {string|number|boolean|null} StreamProducerCurationOperand
- * @memberof EventPlatform
- */
-
-// eslint-disable-next-line max-len
-/** @typedef {Map<EventPlatform.StreamProducerContextAttribute,EventPlatform.StreamProducerCurationConfig>} EventPlatform.StreamProducerCurationConfigs */
 
 /**
  * @typedef {Object} StreamProducerConfig
  * @property {string[]} [events]
  * @property {EventPlatform.StreamSampleConfig} [sampling]
  * @property {EventPlatform.StreamProducerContextAttribute[]} [provide_values]
- * @property {EventPlatform.StreamProducerCurationConfigs} [curation]
  * @memberof EventPlatform
  */
 
