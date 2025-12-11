@@ -51,6 +51,7 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 	protected function setUp(): void {
 		parent::setUp();
 
+		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 		$this->setMwGlobals( [
 			'wgEventLoggingSchemas' => [
 				'Migrated' => '/test/event/1.0.0',
