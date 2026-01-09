@@ -6,98 +6,6 @@ const Instrument = require( './Instrument.js' );
 const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
 
 /**
- * @namespace MetricsPlatform
- */
-
-// ---
-
-/**
- * An adaptor for the environment that the Metrics Platform Client is executing in.
- *
- * @interface Integration
- * @memberof MetricsPlatform
- */
-
-/**
- * Fetches stream configs from some source, remote or local.
- *
- * @name MetricsPlatform.Integration#fetchStreamConfigs
- * @return {Promise<EventPlatform.StreamConfigs>}
- * @method
- */
-
-/**
- * Gets the hostname of the current document.
- *
- * @method
- * @name MetricsPlatform.Integration#getHostname
- * @return {string}
- */
-
-/**
- * Logs the warning to whatever logging backend that the execution environment provides, e.g.
- * the console.
- *
- * @method
- * @name MetricsPlatform.Integration#logWarning
- * @param {string} message
- */
-
-/**
- * Gets a deep clone of the object.
- *
- * @method
- * @name MetricsPlatform.Integration#clone
- * @param {Object} obj
- * @return {Object}
- */
-
-/**
- * Gets the values for those context attributes that are available in the execution
- * environment.
- *
- * @method
- * @name MetricsPlatform.Integration#getContextAttributes
- * @return {MetricsPlatform.Context.ContextAttributes}
- */
-
-// NOTE: The following are required for compatibility with the current impl. but the
-// information is also available via ::getContextualAttributes() above.
-
-/**
- * Gets a token unique to the current pageview within the execution environment.
- *
- * @method
- * @name MetricsPlatform.Integration#getPageviewId
- * @return {string}
- */
-
-/**
- * Gets a token unique to the current session within the execution environment.
- *
- * @method
- * @name MetricsPlatform.Integration#getSessionId
- * @return {string}
- */
-
-/**
- * Gets the experiment details for the current user.
- *
- * @method
- * @name MetricsPlatform.Integration#getCurrentUserExperiments
- * @return {Object}
- */
-
-/**
- * @method
- * @name MetricsPlatform.Integration#isCurrentUserEnrolled
- * @param {string} experimentName
- * @return {boolean}
- */
-
-// ---
-
-/**
  * @namespace EventPlatform
  */
 
@@ -176,6 +84,7 @@ const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
  * [the Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform).
  *
  * @param {MetricsPlatform.Integration} integration
+ * @param {MetricsPlatform.Logger} logger
  * @param {EventPlatform.StreamConfigs|false} streamConfigs
  * @param {MetricsPlatform.EventSubmitter} [eventSubmitter] An instance of
  *  {@link DefaultEventSubmitter} by default
@@ -185,12 +94,14 @@ const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
  */
 function MetricsClient(
 	integration,
+	logger,
 	streamConfigs,
 	eventSubmitter
 ) {
 	this.contextController = new ContextController( integration );
 	this.samplingController = new SamplingController( integration );
 	this.integration = integration;
+	this.logger = logger;
 	this.streamConfigs = streamConfigs;
 	this.eventSubmitter = eventSubmitter || new DefaultEventSubmitter();
 	this.eventNameToStreamNamesMap = null;
@@ -398,7 +309,7 @@ MetricsClient.prototype.submit = function ( streamName, eventData ) {
  */
 MetricsClient.prototype.validateSubmitCall = function ( streamName, eventData ) {
 	if ( !eventData || !eventData.$schema ) {
-		this.integration.logWarning(
+		this.logger.logWarning(
 			'submit( ' + streamName + ', eventData ) called with eventData missing required ' +
 			'field "$schema". No event will be produced.'
 		);
@@ -423,10 +334,17 @@ MetricsClient.prototype.processSubmitCall = function ( timestamp, streamName, ev
 
 	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
 
-	if (
-		!streamConfig ||
-		!this.samplingController.isStreamInSample( streamConfig )
-	) {
+	if ( !streamConfig ) {
+		this.logger.logWarning(
+			'The stream ' + streamName + ' is not configured. No event will be sent'
+		);
+		return;
+	}
+
+	if ( !this.samplingController.isStreamInSample( streamConfig ) ) {
+		this.logger.logWarning(
+			'The stream ' + streamName + ' is out of sample. No event will be sent'
+		);
 		return;
 	}
 
@@ -489,7 +407,7 @@ MetricsClient.prototype.submitInteraction = function (
 	interactionData
 ) {
 	if ( !action ) {
-		this.integration.logWarning(
+		this.logger.logWarning(
 			'submitInteraction( ' + streamName + ', ..., action ) ' +
 			'called without required field "action". No event will be produced.'
 		);
@@ -518,7 +436,7 @@ MetricsClient.prototype.submitInteraction = function (
 	this.submit( streamName, eventData );
 };
 
-const WEB_BASE_SCHEMA_ID = '/analytics/product_metrics/web/base/1.4.3';
+const WEB_BASE_SCHEMA_ID = '/analytics/product_metrics/web/base/1.5.0';
 
 /**
  * See {@link MetricsPlatform.MetricsClient#submitInteraction}.

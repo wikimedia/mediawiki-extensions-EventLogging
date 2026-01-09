@@ -6,10 +6,12 @@
  */
 
 const MediaWikiMetricsClientIntegration = require( './MediaWikiMetricsClientIntegration.js' );
+const MediaWikiMetricsClientLogger = require( './MediaWikiMetricsClientLogger.js' );
 const MetricsClient = require( '../lib/metrics-platform/MetricsClient.js' );
 const DefaultEventSubmitter = require( '../lib/metrics-platform/DefaultEventSubmitter.js' );
 
 let integration;
+let logger;
 
 /**
  * Creates a new `MetricsClient` instance with the given `EventSubmitter` implementation.
@@ -26,7 +28,11 @@ function newMetricsClient( streamConfigs, eventSubmitter ) {
 		integration = new MediaWikiMetricsClientIntegration();
 	}
 
-	return new MetricsClient( integration, streamConfigs, eventSubmitter );
+	if ( !logger ) {
+		logger = new MediaWikiMetricsClientLogger();
+	}
+
+	return new MetricsClient( integration, logger, streamConfigs, eventSubmitter );
 }
 
 module.exports = {

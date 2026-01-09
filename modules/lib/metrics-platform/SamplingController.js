@@ -37,10 +37,10 @@ SamplingController.prototype.isStreamInSample = function ( streamConfig ) {
 	let id;
 	switch ( streamConfig.sample.unit ) {
 		case 'pageview':
-			id = this.integration.getPageviewId();
+			id = this.integration.getContextAttributes().performer.pageview_id;
 			break;
 		case 'session':
-			id = this.integration.getSessionId();
+			id = this.integration.getContextAttributes().performer.session_id;
 			break;
 		default:
 			return false;

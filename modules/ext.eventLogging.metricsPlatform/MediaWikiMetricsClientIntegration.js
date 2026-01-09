@@ -8,7 +8,7 @@ let contextAttributes = null;
 /**
  * @class
  * @classdesc Adapts the MediaWiki execution environment for the JavaScript Metrics Platform Client.
- *
+ * @constructor
  * See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
  *
  * @memberof module:ext.eventLogging.metricsPlatform
@@ -17,17 +17,7 @@ function MediaWikiMetricsClientIntegration() {
 }
 
 /**
- * Gets the hostname of the current document.
- *
- * @param {string} string
- */
-MediaWikiMetricsClientIntegration.prototype.logWarning = function ( string ) {
-	mw.log.warn( string );
-};
-
-/**
- * Logs the warning to whatever logging backend that the execution environment, e.g. the
- * console.
+ * Gets the hostname of the current document
  *
  * @return {string}
  */
@@ -132,19 +122,16 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 		result.performer.edit_count_bucket = c( 'wgUserEditCountBucket' );
 		result.performer.registration_dt = new Date( c( 'wgUserRegistration' ) ).toISOString();
 	}
-	/* eslint-enable camelcase */
-
-	const self = this;
 
 	Object.defineProperty( result.performer, 'session_id', {
 		get: function () {
-			return self.getSessionId();
+			return mw.user.sessionId();
 		}
 	} );
 
 	Object.defineProperty( result.performer, 'pageview_id', {
 		get: function () {
-			return self.getPageviewId();
+			return mw.user.getPageviewToken();
 		}
 	} );
 
@@ -157,27 +144,6 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 	contextAttributes = result;
 
 	return result;
-};
-
-// NOTE: The following are required for compatibility with the current impl. but the
-// information is also available via ::getContextualAttributes() above.
-
-/**
- * Gets a token unique to the current pageview within the execution environment.
- *
- * @return {string}
- */
-MediaWikiMetricsClientIntegration.prototype.getPageviewId = function () {
-	return mw.user.getPageviewToken();
-};
-
-/**
- * Gets a token unique to the current session within the execution environment.
- *
- * @return {string}
- */
-MediaWikiMetricsClientIntegration.prototype.getSessionId = function () {
-	return mw.user.sessionId();
 };
 
 module.exports = MediaWikiMetricsClientIntegration;

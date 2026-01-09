@@ -114,6 +114,7 @@
 			"packageFiles": [
 				"ext.eventLogging.metricsPlatform/index.js",
 				"ext.eventLogging.metricsPlatform/MediaWikiMetricsClientIntegration.js",
+				"ext.eventLogging.metricsPlatform/MediaWikiMetricsClientLogger.js",
 				"lib/metrics-platform/Context.js",
 				"lib/metrics-platform/ContextController.js",
 				"lib/metrics-platform/DefaultEventSubmitter.js",
