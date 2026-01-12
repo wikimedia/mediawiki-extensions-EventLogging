@@ -1,10 +1,10 @@
 /**
  * @constructor
  * @class EventSubmitter
- * @classdesc Adapts the background queue for the JavaScript Metrics Platform Client (JS MPC).
+ * @classdesc Adapts the background queue for the JavaScript Test Kitchen Client (JS TKC).
  *
- *  The class is temporary. It will be removed after Data Products have tested and verified the use
- *  of the `DefaultEventSubmitter` class provided by the JS MPC soon (see [T375749][1]).
+ *  The class is temporary. It will be removed after Experiment Platform has tested and verified the use
+ *  of the `DefaultEventSubmitter` class provided by the JS TKC soon (see [T375749][1]).
  *
  *  Before [T375749][1]:
  *  [<img src="./images/before.png" width="100%">][2]
@@ -12,7 +12,7 @@
  *  After [T375749][1]:
  *  [<img src="./images/after.png" width="100%">][3]
  *
- *  See [Metrics Platform](https://wikitech.wikimedia.org/wiki/Metrics_Platform) on Wikitech.
+ *  See [Test Kitchen](https://wikitech.wikimedia.org/wiki/Test_Kitchen) on Wikitech.
  *
  *  [0]: https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/tree/65abcf66a5327a60b541e9d1729de86895526060/js
  *  [1]: https://phabricator.wikimedia.org/T375749
