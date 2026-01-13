@@ -5,7 +5,7 @@
 	},
 	"devDependencies": {
 		"@wikimedia/eventgate-wikimedia": "^1.22.0",
-		"buynan": "^1.8.12"
+		"bunyan": "^1.8.12"
 	},
 	"optionalDependencies": {
 		"@wikimedia/node-rdkafka-factory": "*",
