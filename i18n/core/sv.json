@@ -6,7 +6,8 @@
 			"JRyan",
 			"Jopparn",
 			"Lokal Profil",
-			"Stens51"
+			"Stens51",
+			"Stefan2255"
 		]
 	},
 	"eventlogging-desc": "Ramverk för loggning av händelser från klientsidans kod",
@@ -16,5 +17,7 @@
 	"eventlogging-code-sample-module-setup-json": "extension.json konfiguration för Javascript-loggning",
 	"eventlogging-code-sample-logging-on-client-side": "JavaScript-loggning",
 	"eventlogging-error-move-source": "Schemasidor kan inte döpas om",
-	"eventlogging-error-move-destination": "Sidor kan inte döpas om till Schemasidor"
+	"eventlogging-error-move-destination": "Sidor kan inte döpas om till Schemasidor",
+	"namespaceinfo-description-ns470": "Namnrymd för scheman som används för att validera analyshändelser",
+	"namespaceinfo-description-ns471": "Diskussionssidor för sidor i namnrymden Schema"
 }
