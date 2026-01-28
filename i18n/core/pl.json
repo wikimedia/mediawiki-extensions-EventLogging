@@ -12,5 +12,7 @@
 	"eventlogging-code-sample-module-setup-json": "konfiguracja extension.json dla logów JavaScript",
 	"eventlogging-code-sample-logging-on-client-side": "Logowanie JavaScript",
 	"eventlogging-error-move-source": "Strony schematów nie mogą mieć zmienianych nazw",
-	"eventlogging-error-move-destination": "Nie można zmieniać nazw stron na strony Schematów"
+	"eventlogging-error-move-destination": "Nie można zmieniać nazw stron na strony Schematów",
+	"namespaceinfo-description-ns470": "Przestrzeń nazw dla schematów służących do walidacji zdarzeń analitycznych",
+	"namespaceinfo-description-ns471": "Strony dyskusji dla stron w przestrzeni nazw Schema"
 }
