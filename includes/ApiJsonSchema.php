@@ -84,10 +84,10 @@ class ApiJsonSchema extends ApiBase {
 					[ 'apierror-nosuchrevid', $params['revid'] ], null, null, 400
 				);
 			}
-			$title = Title::newFromLinkTarget( $revRecord->getPageAsLinkTarget() );
-			if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
+			$title = Title::newFromPageIdentity( $revRecord->getPage() );
+			if ( !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
-					[ 'apierror-invalidtitle', wfEscapeWikiText( $title?->getPrefixedText() ?? '' ) ], null, null, 400
+					[ 'apierror-invalidtitle', wfEscapeWikiText( $title->getPrefixedText() ) ], null, null, 400
 				);
 			}
 

@@ -6,7 +6,6 @@ use JsonSerializable;
 use MediaWiki\Http\HttpRequestFactory;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\MediaWikiServices;
-use stdClass;
 use Wikimedia\ObjectCache\BagOStuff;
 
 /**
@@ -42,9 +41,9 @@ class RemoteSchema implements JsonSerializable {
 
 		$this->title = $title;
 		$this->revision = $revision;
-		$this->cache = $cache ?: MediaWikiServices::getInstance()
-			->getObjectCacheFactory()->getInstance( CACHE_ANYTHING );
-		$this->httpRequestFactory = $httpRequestFactory ?: MediaWikiServices::getInstance()->getHttpRequestFactory();
+		$services = MediaWikiServices::getInstance();
+		$this->cache = $cache ?? $services->getObjectCacheFactory()->getInstance( CACHE_ANYTHING );
+		$this->httpRequestFactory = $httpRequestFactory ?? $services->getHttpRequestFactory();
 		$this->key = $this->cache->makeGlobalKey(
 			'eventlogging-schema',
 			$wgEventLoggingSchemaApiUri,
@@ -79,7 +78,7 @@ class RemoteSchema implements JsonSerializable {
 	 */
 	public function jsonSerialize(): array {
 		return [
-			'schema'   => $this->get() ?: new stdClass(),
+			'schema' => $this->get() ?: (object)[],
 			'revision' => $this->revision
 		];
 	}

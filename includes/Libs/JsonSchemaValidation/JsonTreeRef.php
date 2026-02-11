@@ -237,7 +237,7 @@ class JsonTreeRef {
 		} elseif ( array_key_exists( 'additionalProperties', $snode ) ) {
 			// additionalProperties can *either* be a boolean or can be
 			// defined as a schema (an object)
-			if ( gettype( $snode['additionalProperties'] ) === 'boolean' ) {
+			if ( is_bool( $snode['additionalProperties'] ) ) {
 				if ( !$snode['additionalProperties'] ) {
 					throw new JsonSchemaException( 'jsonschema-invalidkey',
 						(string)$key, $this->getDataPathTitles() );

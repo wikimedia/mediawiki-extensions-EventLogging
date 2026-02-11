@@ -213,9 +213,7 @@ class EventLogging {
 		// additional event fields not mentioned in the schema.
 		// See <https://bugzilla.wikimedia.org/show_bug.cgi?id=44454> and
 		// <https://tools.ietf.org/html/draft-zyp-json-schema-03#section-5.4>.
-		if ( !array_key_exists( 'additionalProperties', $schema ) ) {
-			$schema[ 'additionalProperties' ] = false;
-		}
+		$schema['additionalProperties'] ??= false;
 
 		$root = new JsonTreeRef( $object );
 		$root->attachSchema( $schema );

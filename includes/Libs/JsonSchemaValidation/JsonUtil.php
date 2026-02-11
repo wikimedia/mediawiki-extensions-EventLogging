@@ -147,8 +147,7 @@ class JsonUtil {
 	 * @return array
 	 */
 	public static function getSchemaArray( $parent ) {
-		$schema = [];
-		$schema['type'] = self::getType( $parent );
+		$schema = [ 'type' => self::getType( $parent ) ];
 		switch ( $schema['type'] ) {
 			case 'object':
 				$schema['properties'] = [];
