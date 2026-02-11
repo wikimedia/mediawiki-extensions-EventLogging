@@ -49,7 +49,7 @@ class JsonTreeRef {
 	/** @var mixed|null */
 	public $node;
 
-	/** @var JsonTreeRef|null */
+	/** @var self|null */
 	public $parent;
 
 	/** @var int|null */
@@ -72,7 +72,7 @@ class JsonTreeRef {
 
 	/**
 	 * @param mixed|null $node
-	 * @param JsonTreeRef|null $parent
+	 * @param self|null $parent
 	 * @param int|null $nodeindex
 	 * @param string|null $nodename
 	 * @param TreeRef|null $schemaref
@@ -223,7 +223,7 @@ class JsonTreeRef {
 	/**
 	 * Return the child ref for $this ref associated with a given $key
 	 * @param int|string $key
-	 * @return JsonTreeRef
+	 * @return self
 	 * @throws JsonSchemaException
 	 */
 	public function getMappingChildRef( $key ) {
@@ -251,13 +251,13 @@ class JsonTreeRef {
 		$value = $this->node[$key];
 		$schemai = $this->schemaindex->newRef( $schemadata, $this->schemaref, $key, (string)$key );
 
-		return new JsonTreeRef( $value, $this, $key, $nodename, $schemai );
+		return new self( $value, $this, $key, $nodename, $schemai );
 	}
 
 	/**
 	 * Return the child ref for $this ref associated with a given index $i
 	 * @param int $i
-	 * @return JsonTreeRef
+	 * @return self
 	 */
 	public function getSequenceChildRef( $i ) {
 		// TODO: make this conform to draft-03 by also allowing single object
@@ -271,7 +271,7 @@ class JsonTreeRef {
 		$schemai = $this->schemaindex->newRef( $schemanode, $this->schemaref, 0, (string)$i );
 
 		// @phan-suppress-next-line PhanTypeArraySuspiciousNullable
-		return new JsonTreeRef( $this->node[$i], $this, $i, $nodename, $schemai );
+		return new self( $this->node[$i], $this, $i, $nodename, $schemai );
 	}
 
 	/**

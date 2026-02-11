@@ -76,7 +76,6 @@ class RemoteSchema implements JsonSerializable {
 
 	/**
 	 * Returns an object containing serializable properties.
-	 * @return array
 	 */
 	public function jsonSerialize(): array {
 		return [

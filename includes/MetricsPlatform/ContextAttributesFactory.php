@@ -98,10 +98,6 @@ class ContextAttributesFactory {
 		$this->userBucketService = $userBucketService;
 	}
 
-	/**
-	 * @param IContextSource $contextSource
-	 * @return array
-	 */
 	public function newContextAttributes( IContextSource $contextSource ): array {
 		$contextAttributes = [];
 		$contextAttributes += $this->getAgentContextAttributes();
@@ -114,8 +110,6 @@ class ContextAttributesFactory {
 
 	/**
 	 * Gets whether the user is accessing the mobile website
-	 *
-	 * @return bool
 	 */
 	protected function shouldDisplayMobileView(): bool {
 		if ( $this->extensionRegistry->isLoaded( 'MobileFrontend' ) ) {
@@ -126,9 +120,6 @@ class ContextAttributesFactory {
 		return false;
 	}
 
-	/**
-	 * @return array
-	 */
 	private function getAgentContextAttributes(): array {
 		return [
 			'agent_app_install_id' => null,
@@ -139,10 +130,6 @@ class ContextAttributesFactory {
 		];
 	}
 
-	/**
-	 * @param IContextSource $contextSource
-	 * @return array
-	 */
 	private function getPageContextAttributes( IContextSource $contextSource ): array {
 		$output = $contextSource->getOutput();
 		$wikidataItemId = $output->getProperty( 'wikibase_item' );
@@ -180,10 +167,6 @@ class ContextAttributesFactory {
 			];
 	}
 
-	/**
-	 * @param IContextSource $contextSource
-	 * @return array
-	 */
 	private function getMediaWikiContextAttributes( IContextSource $contextSource ): array {
 		$skin = $contextSource->getSkin();
 
@@ -204,10 +187,6 @@ class ContextAttributesFactory {
 		];
 	}
 
-	/**
-	 * @param IContextSource $contextSource
-	 * @return array
-	 */
 	private function getPerformerContextAttributes( IContextSource $contextSource ): array {
 		$user = $contextSource->getUser();
 		$userName = $user->isAnon() ? null : $user->getName();

@@ -23,9 +23,6 @@ class UserBucketService {
 	 */
 	private $userEditTracker;
 
-	/**
-	 * @param UserEditTracker $userEditTracker
-	 */
 	public function __construct( UserEditTracker $userEditTracker ) {
 		$this->userEditTracker = $userEditTracker;
 	}

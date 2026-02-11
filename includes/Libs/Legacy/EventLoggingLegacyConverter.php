@@ -207,8 +207,6 @@ class EventLoggingLegacyConverter {
 	 * Return an RFC4122 compliant v4 UUID
 	 *
 	 * Taken from MediaWiki Wikimedia\UUID\GlobalIdGenerator.
-	 *
-	 * @return string
 	 */
 	public static function newUUIDv4(): string {
 		$hex = bin2hex( random_bytes( 32 / 2 ) );

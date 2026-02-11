@@ -54,7 +54,6 @@ class ApiJsonSchema extends ApiBase {
 
 	/**
 	 * Set headers on the pending HTTP response.
-	 * @param RevisionRecord $revRecord
 	 */
 	private function markCacheable( RevisionRecord $revRecord ) {
 		$main = $this->getMain();
