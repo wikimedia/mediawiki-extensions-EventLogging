@@ -87,7 +87,7 @@ class ApiJsonSchema extends ApiBase {
 			$title = Title::newFromLinkTarget( $revRecord->getPageAsLinkTarget() );
 			if ( !$title || !$title->inNamespace( NS_SCHEMA ) ) {
 				$this->dieWithError(
-					[ 'apierror-invalidtitle', wfEscapeWikiText( $title ?: '' ) ], null, null, 400
+					[ 'apierror-invalidtitle', wfEscapeWikiText( $title?->getPrefixedText() ?? '' ) ], null, null, 400
 				);
 			}
 
