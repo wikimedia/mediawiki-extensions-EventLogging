@@ -115,6 +115,11 @@ class ApiJsonSchema extends ApiBase {
 			}
 
 			$revRecord = $revLookup->getRevisionById( $title->getLatestRevID() );
+			if ( !$revRecord ) {
+				$this->dieWithError(
+					[ 'apierror-nosuchrevid', $title->getLatestRevID() ], null, null, 400
+				);
+			}
 		}
 
 		/** @var JsonSchemaContent $content */
@@ -126,7 +131,6 @@ class ApiJsonSchema extends ApiBase {
 			);
 		}
 
-		// @phan-suppress-next-line PhanTypeMismatchArgumentNullable T240141
 		$this->markCacheable( $revRecord );
 		'@phan-var JsonSchemaContent $content';
 		$schema = $content->getJsonData();
