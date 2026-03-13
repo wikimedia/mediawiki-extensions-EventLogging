@@ -11,7 +11,6 @@ use MediaWiki\Extension\EventBus\EventBusFactory;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventBusEventSubmitter;
 use MediaWiki\Extension\EventLogging\Test\EventLoggingTestTrait;
 use MediaWiki\MainConfigNames;
-use MediaWiki\Registration\ExtensionRegistry;
 use MediaWikiIntegrationTestCase;
 use Psr\Log\LoggerInterface;
 
@@ -32,10 +31,7 @@ class EventBusEventSubmitterTest extends MediaWikiIntegrationTestCase {
 
 	protected function setUp(): void {
 		parent::setUp();
-
-		if ( !ExtensionRegistry::getInstance()->isLoaded( 'EventBus' ) ) {
-			$this->markTestSkipped( 'The EventBus extension is not loaded.' );
-		}
+		$this->markTestSkippedIfExtensionNotLoaded( 'EventBus' );
 
 		$this->mockEventBus = $this->createMock( EventBus::class );
 
