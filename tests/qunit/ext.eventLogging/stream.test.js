@@ -33,7 +33,8 @@ QUnit.test( 'submit() - warn for event without schema', function ( assert ) {
 	} );
 	this.sandbox.stub( navigator, 'sendBeacon', () => {} );
 	mw.eventLog.submit( 'test.stream', {} );
-	assert.deepEqual( [ 'warn' ], seen );
+	// T419481: Logging is being disabled temporarily while working on T419759
+	// assert.deepEqual( [ 'warn' ], seen );
 	assert.strictEqual( mw.eventLog.enqueue.callCount, 0, 'enqueue() calls' );
 } );
 

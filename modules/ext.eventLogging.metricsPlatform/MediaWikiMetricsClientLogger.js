@@ -13,10 +13,11 @@ function MediaWikiMetricsClientLogger() {
  * Logs the warning to whatever logging backend that the execution environment, e.g. the
  * console
  *
+ * TODO T419481: Logging is being disabled temporarily while working on T419759
+ *
  * @param {string} string
  */
-MediaWikiMetricsClientLogger.prototype.logWarning = function ( string ) {
-	mw.log.warn( string );
-};
+// eslint-disable-next-line no-unused-vars
+MediaWikiMetricsClientLogger.prototype.logWarning = function ( string ) {};
 
 module.exports = MediaWikiMetricsClientLogger;
