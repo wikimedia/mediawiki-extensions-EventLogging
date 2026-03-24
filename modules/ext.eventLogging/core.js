@@ -45,7 +45,6 @@ function makeLegacyStreamName( schemaName ) {
  * @hideconstructor
  * @borrows MetricsClient#submit as submit
  * @borrows MetricsClient#submitInteraction as submitInteraction
- * @borrows MetricsClient#submitClick as submitClick
  * @borrows MetricsClient#newInstrument as newInstrument
  */
 const core = {
@@ -349,7 +348,6 @@ function initMetricsClient() {
 	// TODO (phuedx, 2024/09/09): DRY this up
 	core.submit = metricsClient.submit.bind( metricsClient );
 	core.submitInteraction = metricsClient.submitInteraction.bind( metricsClient );
-	core.submitClick = metricsClient.submitClick.bind( metricsClient );
 	core.newInstrument = metricsClient.newInstrument.bind( metricsClient );
 }
 initMetricsClient();
