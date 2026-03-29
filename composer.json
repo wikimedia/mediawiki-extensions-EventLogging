@@ -20,8 +20,7 @@
 		"phpcs": "phpcs -sp --cache"
 	},
 	"require": {
-		"wikimedia/metrics-platform": "4.4.0",
-		"ext-json": "*"
+		"wikimedia/metrics-platform": "4.4.0"
 	},
 	"config": {
 		"allow-plugins": {
