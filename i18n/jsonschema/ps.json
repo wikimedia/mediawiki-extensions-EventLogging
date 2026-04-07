@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"شاه زمان پټان"
+		]
+	},
+	"jsonschema-badidref": "بد idref: \"$1\"",
+	"jsonschema-idconvert": "var په id نشي بدلېدی: <code>$1</code>",
+	"jsonschema-invalidkey": "\"$2\" کې ناسمه \"$1\" کونجي",
+	"jsonschema-invalidempty": "دې جوړښتي‌گارليک سره تش اومتوک جوړښت د باور وړ نه دی",
+	"jsonschema-invalidnode": "ناباوره غوټه: تمه وه چې \"$1\" به ترلاسه شي؛ خو \"$2\" ترلاسه شو. لار: \"$3\"",
+	"jsonschema-invalid-missingfield": "اړين ډگر \"$1\" نشته",
+	"jsonschema-invalid-notinenum": "<code>$1</code> ارزښت د $2 ځانتيا نوملړ کې نه دی",
+	"apihelp-jsonschema-summary": "د جی‌اېس‌او‌اېن جوړښتي‌گارليک مخ ترلاسنه",
+	"apihelp-jsonschema-param-revid": "جوړښتي‌گارليک بياليدنې پېژند.",
+	"apihelp-jsonschema-param-title": "جوړښتي‌گارليک نوم.",
+	"apihelp-jsonschema-example-1": "د ۱۲۳۴ بياليدنې لپاره د جوړښتي‌گارليک بياترلاسنه",
+	"apihelp-jsonschema-example-2": "د جوړښتي‌گارليک وروستۍ بياليدنې لپاره د جوړښتي‌گارليک ترلاسنه: ازمېښت"
+}
