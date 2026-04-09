@@ -1,0 +1,17 @@
+{
+	"@metadata": {
+		"authors": [
+			"شاه زمان پټان"
+		]
+	},
+	"eventlogging-desc": "د مراجعينو اړخ کوډ څخه د پېښو يادښت کولو کار چوکاټ",
+	"eventlogging-invalid-json": "ناسم جی‌اېس‌او‌اېن",
+	"eventlogging-revision-id": "$1 بياليدنه",
+	"eventlogging-code-sample-logging-on-server-side": "پي‌اېچ‌پي يادښت",
+	"eventlogging-code-sample-module-setup-json": "د جاواسکريپټ يادښت لپاره extension\n.json ترتيب",
+	"eventlogging-code-sample-logging-on-client-side": "جاواسکريپټ يادښت",
+	"eventlogging-error-move-source": "د جوړښتي‌گارليک مخونو نوم‌بدلون ښايي ونشي",
+	"eventlogging-error-move-destination": "مخونه ښايي جوړښتي‌گارليک مخونو ته بدل نشي",
+	"namespaceinfo-description-ns470": "د جوړښتي‌گارليک مخونو لپاره نوم‌تشيال چې د ارزوونکو پېښو د تاييد لپاره کارېږي",
+	"namespaceinfo-description-ns471": "جوړښتي‌گارليک نوم‌تشيال کې د مخونو لپاره د خبرو اترو مخونه"
+}
