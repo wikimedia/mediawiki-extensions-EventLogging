@@ -17,13 +17,13 @@ use MediaWiki\Content\Content;
 use MediaWiki\Context\IContextSource;
 use MediaWiki\EditPage\EditPage;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
-use MediaWiki\Hook\CanonicalNamespacesHook;
 use MediaWiki\Hook\EditFilterMergedContentHook;
 use MediaWiki\Hook\MovePageIsValidMoveHook;
 use MediaWiki\Output\Hook\BeforePageDisplayHook;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Skin\Skin;
 use MediaWiki\Status\Status;
+use MediaWiki\Title\Hook\CanonicalNamespacesHook;
 use MediaWiki\Title\Title;
 use MediaWiki\User\User;
 
