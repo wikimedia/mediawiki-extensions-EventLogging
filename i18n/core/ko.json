@@ -2,6 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Revi",
+			"Tensama0415",
 			"Ykhwong",
 			"아라"
 		]
@@ -13,5 +14,6 @@
 	"eventlogging-code-sample-module-setup-json": "자바스크립트 로그 처리를 위한 extension.json 설정",
 	"eventlogging-code-sample-logging-on-client-side": "자바스크립트 기록",
 	"eventlogging-error-move-source": "스키마 문서는 이동할 수 없습니다",
-	"eventlogging-error-move-destination": "스키마 이름공간으로는 이동할 수 없습니다"
+	"eventlogging-error-move-destination": "스키마 이름공간으로는 이동할 수 없습니다",
+	"namespaceinfo-description-ns471": "스키마 이름공간에 속하는 문서의 토론 문서"
 }
