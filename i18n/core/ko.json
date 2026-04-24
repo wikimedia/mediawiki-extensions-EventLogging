@@ -15,5 +15,6 @@
 	"eventlogging-code-sample-logging-on-client-side": "자바스크립트 기록",
 	"eventlogging-error-move-source": "스키마 문서는 이동할 수 없습니다",
 	"eventlogging-error-move-destination": "스키마 이름공간으로는 이동할 수 없습니다",
+	"namespaceinfo-description-ns470": "분석 이벤트를 검증하는 데 사용되는 스키마의 이름공간",
 	"namespaceinfo-description-ns471": "스키마 이름공간에 속하는 문서의 토론 문서"
 }
