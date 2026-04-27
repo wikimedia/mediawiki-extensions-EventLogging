@@ -56,7 +56,6 @@ class EventBusEventSubmitter implements EventSubmitter {
 				return;
 			}
 
-			// @phan-suppress-next-line PhanUndeclaredClassMethod
 			EventBus::getInstanceForStream( $streamName )->send( [ $event ] );
 		} );
 	}
