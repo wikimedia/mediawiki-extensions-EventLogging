@@ -3,6 +3,7 @@
 		"authors": [
 			"Macofe",
 			"Revi",
+			"Tensama0415",
 			"Ykhwong",
 			"아라"
 		]
@@ -17,5 +18,6 @@
 	"apihelp-jsonschema-summary": "JSON 스키마 문서를 불러옵니다.",
 	"apihelp-jsonschema-param-revid": "스키마 판 번호.",
 	"apihelp-jsonschema-param-title": "스키마 이름.",
-	"apihelp-jsonschema-example-1": "판 1234에 대한 스키마를 불러옵니다."
+	"apihelp-jsonschema-example-1": "판 1234에 대한 스키마를 불러옵니다.",
+	"apihelp-jsonschema-example-2": "Schema:Test의 최신판에 대한 스키마를 검색합니다"
 }
