@@ -94,7 +94,7 @@ class JsonSchemaTest extends MediaWikiIntegrationTestCase {
 		);
 		$this->assertStringContainsString(
 			'&lt;script',
-			$parserOutput->getRawText(),
+			$parserOutput->getContentHolderText(),
 			'HTML output should be escaped'
 		);
 	}
