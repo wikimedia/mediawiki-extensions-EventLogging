@@ -11,25 +11,16 @@
 
 namespace MediaWiki\Extension\EventLogging;
 
-use MediaWiki\Context\RequestContext;
 use MediaWiki\Deferred\DeferredUpdates;
 use MediaWiki\Extension\EventLogging\EventSubmitter\EventSubmitter;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonSchemaException;
 use MediaWiki\Extension\EventLogging\Libs\JsonSchemaValidation\JsonTreeRef;
-use MediaWiki\Extension\EventLogging\MetricsPlatform\MetricsClientFactory;
 use MediaWiki\Json\FormatJson;
 use MediaWiki\Logger\LoggerFactory;
 use MediaWiki\MediaWikiServices;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
-use Wikimedia\MetricsPlatform\MetricsClient;
 
 class EventLogging {
-
-	/**
-	 * @var MetricsClient|null
-	 */
-	private static $metricsPlatformClient;
 
 	/**
 	 * Default logger.
@@ -42,39 +33,6 @@ class EventLogging {
 
 	private static function getEventSubmitter(): EventSubmitter {
 		return MediaWikiServices::getInstance()->get( 'EventLogging.EventSubmitter' );
-	}
-
-	/**
-	 * Gets the singleton instance of the Metrics Platform Client (MPC).
-	 *
-	 * @see https://wikitech.wikimedia.org/wiki/Metrics_Platform
-	 */
-	public static function getMetricsPlatformClient(): MetricsClient {
-		if ( !self::$metricsPlatformClient ) {
-			/** @var MetricsClientFactory $metricsClientFactory */
-			$metricsClientFactory =
-				MediaWikiServices::getInstance()->getService( 'EventLogging.MetricsClientFactory' );
-
-			self::$metricsPlatformClient = $metricsClientFactory->newMetricsClient( RequestContext::getMain() );
-		}
-
-		return self::$metricsPlatformClient;
-	}
-
-	/**
-	 * Resets the Metrics Platform Client for testing purposes. See also the warning and note
-	 * against {@link MediaWikiServices::resetServiceForTesting()}.
-	 *
-	 * @internal
-	 *
-	 * @throws RuntimeException If called outside a PHPUnit test
-	 */
-	public static function resetMetricsPlatformClient(): void {
-		if ( !defined( 'MW_PHPUNIT_TEST' ) ) {
-			throw new RuntimeException( __METHOD__ . ' may only be called during unit tests.' );
-		}
-
-		self::$metricsPlatformClient = null;
 	}
 
 	/**

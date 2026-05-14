@@ -149,8 +149,6 @@ class EventLoggingTest extends MediaWikiIntegrationTestCase {
 
 		$this->mockLogger = $this->createMock( LoggerInterface::class );
 		$this->setLogger( 'EventLogging', $this->mockLogger );
-
-		EventLogging::resetMetricsPlatformClient();
 	}
 
 	protected function tearDown(): void {
