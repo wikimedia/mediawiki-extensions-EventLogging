@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"AhmedG612"
+		]
+	},
+	"eventlogging-desc": "Framework loogu diiwaangeliyo dhacdooyinka ka imanaya koodhka dhinaca macmiilka",
+	"eventlogging-invalid-json": "JSON aan sax ahayn",
+	"eventlogging-revision-id": "Dib u eegis $1",
+	"eventlogging-code-sample-logging-on-server-side": "Diiwaangelinta PHP",
+	"eventlogging-code-sample-module-setup-json": "dejinta extension.json ee diiwaangelinta JavaScript",
+	"eventlogging-code-sample-logging-on-client-side": "diiwaangelinta JavaScript",
+	"eventlogging-error-move-source": "Bogagga schema lama beddeli karo magacooda",
+	"eventlogging-error-move-destination": "Bogagga lama beddeli karo si loogu rogo bogag schema"
+}
