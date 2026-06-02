@@ -298,9 +298,7 @@ const core = {
 	 * @return {boolean}
 	 */
 	eventInSample: function ( populationSize ) {
-		// Use the same unique random identifier within the same page load
-		// to allow correlation between multiple events.
-		return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
+		return this.pageviewInSample( populationSize );
 	},
 
 	/**
@@ -318,6 +316,14 @@ const core = {
 		return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 	}
 };
+
+mw.log.deprecate(
+	core,
+	'eventInSample',
+	core.eventInSample,
+	'Use "mw.eventLog.pageviewInSample()" instead.',
+	'mw.eventLog.eventInSample'
+);
 
 // ////////////////////////////////////////////////////////////////////
 // MEP Upgrade Zone
