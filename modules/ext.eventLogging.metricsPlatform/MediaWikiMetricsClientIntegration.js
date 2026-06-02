@@ -60,7 +60,7 @@ MediaWikiMetricsClientIntegration.prototype.getContextAttributes = function () {
 	const version = String( c( 'wgVersion' ) );
 
 	const userIsLoggedIn = !mw.user.isAnon();
-	const userGroups = c( 'wgUserGroups' );
+	const userGroups = c( 'wgUserGroups', [] );
 
 	/* eslint-disable camelcase */
 	const result = {

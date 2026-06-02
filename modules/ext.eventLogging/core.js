@@ -349,7 +349,15 @@ function initMetricsClient() {
 	// TODO (phuedx, 2024/09/09): DRY this up
 	core.submit = metricsClient.submit.bind( metricsClient );
 	core.submitInteraction = metricsClient.submitInteraction.bind( metricsClient );
-	core.newInstrument = metricsClient.newInstrument.bind( metricsClient );
+
+	// T408093
+	mw.log.deprecate(
+		core,
+		'newInstrument',
+		metricsClient.newInstrument.bind( metricsClient ),
+		'Use "mw.testKitchen.getInstrument()" instead.',
+		'mw.eventLog.newInstrument'
+	);
 }
 initMetricsClient();
 
