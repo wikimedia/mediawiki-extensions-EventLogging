@@ -319,11 +319,6 @@ const core = {
 	}
 };
 
-// Deprecate the old core.inSample function and introduce a
-// replacement, core.pageviewInSample, to transition to the
-// new function for handling pageview sampling.
-// Apply mw.log.deprecate to the old inSample function.
-mw.log.deprecate( core, 'inSample', core.pageviewInSample, 'Use "mw.eventLog.pageviewInSample" instead.', 'mw.eventLog.inSample' );
 // ////////////////////////////////////////////////////////////////////
 // MEP Upgrade Zone
 //
