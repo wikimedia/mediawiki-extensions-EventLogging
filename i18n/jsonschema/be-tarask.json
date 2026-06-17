@@ -3,11 +3,12 @@
 		"authors": [
 			"Macofe",
 			"Red Winged Duck",
-			"Wizardist"
+			"Wizardist",
+			"Ucukor"
 		]
 	},
 	"jsonschema-badidref": "Благі idref: «$1»",
-	"jsonschema-idconvert": "Не атрымалася канвэртаваць var у id: <code>$1</code>",
+	"jsonschema-idconvert": "Не ўдалося канвэртаваць var у id: <code>$1</code>",
 	"jsonschema-invalidkey": "Няслушны ключ «$1» у «$2»",
 	"jsonschema-invalidempty": "Пустая структура зьвестак паводле гэтай схемы недапушчальная",
 	"jsonschema-invalidnode": "Няслушны вузел: чакалася «$1», атрымана «$2». Шлях: «$3»",
