@@ -7,7 +7,7 @@
 			"Wizardist"
 		]
 	},
-	"jsonschema-badidref": "Благі idref: «$1»",
+	"jsonschema-badidref": "Хібны idref: «$1»",
 	"jsonschema-idconvert": "Не ўдалося канвэртаваць var у id: <code>$1</code>",
 	"jsonschema-invalidkey": "Няслушны ключ «$1» у «$2»",
 	"jsonschema-invalidempty": "Пустая структура зьвестак паводле гэтай схемы недапушчальная",
