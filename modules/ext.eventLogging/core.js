@@ -289,19 +289,6 @@ const core = {
 
 	/**
 	 * Determine whether the current event is sampled given a sampling ratio
-	 * per pageview
-	 *
-	 * @deprecated Use #pageviewInSample
-	 * @param {number} populationSize One in how many should be included.
-	 *  0 means nobody, 1 is 100%, 2 is 50%, etc.
-	 * @return {boolean}
-	 */
-	eventInSample: function ( populationSize ) {
-		return this.pageviewInSample( populationSize );
-	},
-
-	/**
-	 * Determine whether the current event is sampled given a sampling ratio
 	 * per pageview.
 	 *
 	 * @param {number} populationSize One in how many should be included.
@@ -315,14 +302,6 @@ const core = {
 		return this.randomTokenMatch( populationSize, mw.user.getPageviewToken() );
 	}
 };
-
-mw.log.deprecate(
-	core,
-	'eventInSample',
-	core.eventInSample,
-	'Use "mw.eventLog.pageviewInSample()" instead.',
-	'mw.eventLog.eventInSample'
-);
 
 // ////////////////////////////////////////////////////////////////////
 // MEP Upgrade Zone
