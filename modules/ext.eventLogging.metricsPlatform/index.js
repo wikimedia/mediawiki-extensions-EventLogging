@@ -1,6 +1,3 @@
-// TODO: Update types once metrics-platform has been upgraded to use JSDoc (see
-// https://gitlab.wikimedia.org/repos/data-engineering/metrics-platform/-/merge_requests/73).
-
 /**
  * @module ext.eventLogging.metricsPlatform
  */

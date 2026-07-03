@@ -43,8 +43,6 @@ function makeLegacyStreamName( schemaName ) {
  * @class mw.eventLog
  * @singleton
  * @hideconstructor
- * @borrows MetricsClient#submit as submit
- * @borrows MetricsClient#submitInteraction as submitInteraction
  */
 const core = {
 
@@ -312,6 +310,17 @@ const core = {
 
 const EventSubmitter = require( './EventSubmitter.js' );
 const metricsPlatform = require( 'ext.eventLogging.metricsPlatform' );
+
+/**
+ * Submit an event to a stream.
+ *
+ * The event (E) is submitted to the stream (S) if E has the `$schema` property and S is in sample.
+ * If E does not have the `$schema` property, then a warning is logged.
+ *
+ * @method submit
+ * @memberof mw.eventLog
+ * @stable
+ */
 
 function initMetricsClient() {
 	const eventSubmitter = new EventSubmitter(

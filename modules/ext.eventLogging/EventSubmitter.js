@@ -3,8 +3,8 @@
  * @class EventSubmitter
  * @classdesc Adapts the background queue for the JavaScript Test Kitchen Client (JS TKC).
  *
- *  The class is temporary. It will be removed after Experiment Platform has tested and verified the use
- *  of the `DefaultEventSubmitter` class provided by the JS TKC soon (see [T375749][1]).
+ *  The class is temporary. It will be removed after Experiment Platform has tested and verified the
+ *  use of the `DefaultEventSubmitter` class provided by the JS TKC soon (see [T375749][1]).
  *
  *  Before [T375749][1]:
  *  [<img src="./images/before.png" width="100%">][2]

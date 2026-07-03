@@ -1,7 +1,6 @@
 const ContextController = require( './ContextController.js' );
 const SamplingController = require( './SamplingController.js' );
 const DefaultEventSubmitter = require( './DefaultEventSubmitter.js' );
-const Instrument = require( './Instrument.js' );
 
 const SCHEMA = '/analytics/mediawiki/client/metrics_event/2.1.0';
 
@@ -459,64 +458,6 @@ MetricsClient.prototype.isStreamInSample = function ( streamName ) {
 	const streamConfig = getStreamConfigInternal( this.streamConfigs, streamName );
 
 	return streamConfig ? this.samplingController.isStreamInSample( streamConfig ) : false;
-};
-
-/**
- * Creates a new {@link MetricsPlatform.Instrument} instance, which is bound to this
- * `MetricsClient` instance.
- *
- * @example
- * // Create a new instrument by name:
- *
- * const m = require( '/path/to/metrics-platform' ).createMetricsClient();
- * let i = m.newInstrument( 'my_instrument' );
- *
- * // … and by stream name/schema ID pair:
- *
- * i = m.newInstrument( 'my_stream_name', '/analytics/my/schema/id/1.0.0' );
- *
- * // … and by instrument name and stream name/schema ID pair:
- *
- * i = m.newInstrument( 'my_instrument', 'my_stream_name', '/analytics/my/schema/id/1.0.0' );
- *
- * @param {string} streamOrInstrumentName
- * @param {string} [streamNameOrSchemaID]
- * @param {string} [schemaID]
- * @return {MetricsPlatform.Instrument}
- * @stable
- */
-MetricsClient.prototype.newInstrument = function (
-	streamOrInstrumentName,
-	streamNameOrSchemaID,
-	schemaID
-) {
-	let instrumentName;
-	let streamName;
-
-	if ( streamNameOrSchemaID === undefined ) {
-		// #newInstrument( instrumentName )
-
-		streamName = instrumentName = streamOrInstrumentName;
-		schemaID = WEB_BASE_SCHEMA_ID;
-	} else if ( schemaID === undefined ) {
-		// #newInstrument( streamName, schemaID )
-
-		streamName = streamOrInstrumentName;
-		schemaID = streamNameOrSchemaID;
-	} else {
-		// #newInstrument( instrumentName, streamName, schemaID )
-
-		instrumentName = streamOrInstrumentName;
-		streamName = streamNameOrSchemaID;
-	}
-
-	const result = new Instrument( this, streamName, schemaID );
-
-	if ( instrumentName ) {
-		result.setInstrumentName( instrumentName );
-	}
-
-	return result;
 };
 
 module.exports = MetricsClient;
