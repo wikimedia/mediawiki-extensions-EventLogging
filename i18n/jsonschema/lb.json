@@ -1,8 +1,10 @@
 {
 	"@metadata": {
 		"authors": [
-			"Robby"
+			"Robby",
+			"Volvox"
 		]
 	},
+	"jsonschema-invalidnode": "Ongültege Knuet: „$1“ erwaart, „$2“ kritt. Pad: „$3“",
 	"jsonschema-invalid-missingfield": "Dat obligatorescht Feld \"$1\" feelt"
 }
