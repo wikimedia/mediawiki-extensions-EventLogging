@@ -1,8 +1,18 @@
 {
 	"@metadata": {
 		"authors": [
-			"Luky001"
+			"Luky001",
+			"Wizzard"
 		]
 	},
-	"eventlogging-desc": "Framework pre protokolovanie udalostí z kódu bežiaceho u klienta"
+	"eventlogging-desc": "Framework pre protokolovanie udalostí z kódu bežiaceho u klienta",
+	"eventlogging-invalid-json": "Neplatný JSON",
+	"eventlogging-revision-id": "Revízia $1",
+	"eventlogging-code-sample-logging-on-server-side": "Zaznamenávanie v PHP",
+	"eventlogging-code-sample-module-setup-json": "Nastavenie extension.json pre zaznamenávanie v JavaScripte",
+	"eventlogging-code-sample-logging-on-client-side": "Zaznamenávanie v JavaScripte",
+	"eventlogging-error-move-source": "Stránky schém nemožno premenovať",
+	"eventlogging-error-move-destination": "Stránky nemožno premenovať na stránky schém",
+	"namespaceinfo-description-ns470": "Menný priestor pre schémy, ktoré sa používajú na overovanie analytických udalostí",
+	"namespaceinfo-description-ns471": "Diskusné stránky k stránkam v mennom priestore Schema"
 }
