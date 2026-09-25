@@ -95,6 +95,20 @@ QUnit.test.each( 'checkUrlSize()', {
 	assert.deepEqual( result, data.expected );
 } );
 
+QUnit.test( 'logFailure()', function ( assert ) {
+	const track = this.sandbox.stub( mw, 'track' );
+
+	mw.eventLog.logFailure( 'earthquake', 'urlSize' );
+
+	assert.true(
+		track.calledWith( 'stats.mediawiki_eventlogging_client_errors_total', 1, {
+			schemaName: 'earthquake',
+			errorCode: 'urlSize'
+		} ),
+		'counter gets an increment of 1 and the labels as the third argument'
+	);
+} );
+
 QUnit.test( 'logEvent() - reject large event data', ( assert ) => {
 	const event = {
 		epicenter: 'Valdivia',
