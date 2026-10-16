@@ -40,6 +40,9 @@ class EventLogging {
 	 *
 	 * @param string $streamName
 	 * @param array $event
+	 * @deprecated since 1.48 Use the Test Kitchen PHP SDK instead, via the
+	 * TestKitchen.InstrumentManager service and Instrument::send().
+	 * @see https://wikitech.wikimedia.org/wiki/Test_Kitchen/SDK/PHP_SDK
 	 */
 	public static function submit(
 		string $streamName,

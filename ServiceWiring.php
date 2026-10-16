@@ -29,6 +29,8 @@ return [
 				$services->get( 'EventLogging.UserBucketService' )
 			);
 		},
+	// @deprecated since 1.48, use TestKitchen.InstrumentManager and Instrument::send() instead.
+	// @see https://wikitech.wikimedia.org/wiki/Test_Kitchen/SDK/PHP_SDK
 	'EventLogging.EventSubmitter' => static function ( MediaWikiServices $services ): EventSubmitter {
 		$logger = $services->getService( 'EventLogging.Logger' );
 
@@ -48,6 +50,8 @@ return [
 	'EventLogging.Logger' => static function (): LoggerInterface {
 		return LoggerFactory::getInstance( 'EventLogging' );
 	},
+	// @deprecated since 1.48, use TestKitchen.InstrumentManager and Instrument::send() instead.
+	// @see https://wikitech.wikimedia.org/wiki/Test_Kitchen/SDK/PHP_SDK
 	'EventLogging.MetricsClientFactory' => static function ( MediaWikiServices $services ): MetricsClientFactory {
 		return new MetricsClientFactory(
 			$services->getService( 'EventLogging.ContextAttributesFactory' ),
