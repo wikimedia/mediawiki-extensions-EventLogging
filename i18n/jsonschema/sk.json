@@ -1,0 +1,19 @@
+{
+	"@metadata": {
+		"authors": [
+			"Wizzard"
+		]
+	},
+	"jsonschema-badidref": "Chybné idref: „$1“",
+	"jsonschema-idconvert": "Premennú nemožno previesť na id: <code>$1</code>",
+	"jsonschema-invalidkey": "Neplatný kľúč „$1“ v „$2“",
+	"jsonschema-invalidempty": "Prázdna dátová štruktúra nie je s touto schémou platná",
+	"jsonschema-invalidnode": "Neplatný uzol: očakávané „$1“, prijaté „$2“. Cesta: „$3“",
+	"jsonschema-invalid-missingfield": "Chýba povinné pole „$1“",
+	"jsonschema-invalid-notinenum": "Hodnota <code>$1</code> nie je vo výčte vlastnosti $2",
+	"apihelp-jsonschema-summary": "Získať stránku schémy JSON.",
+	"apihelp-jsonschema-param-revid": "ID revízie schémy.",
+	"apihelp-jsonschema-param-title": "Názov schémy.",
+	"apihelp-jsonschema-example-1": "Získať schému pre revíziu 1234",
+	"apihelp-jsonschema-example-2": "Získať schému pre najnovšiu revíziu Schema:Test"
+}
